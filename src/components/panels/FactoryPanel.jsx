@@ -573,16 +573,16 @@ const FactoryPanel = ({
             <div className="flex items-center justify-between border-t-2 border-slate-100 pt-8">
               <div className="flex items-center gap-6">
                 <img
-                  src={`https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(`https://nrzo0ne.vercel.app?track=${printSlip.id}`)}`}
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(`https://nrzo0ne.vercel.app?track=${printSlip.id}`)}`}
                   alt="QR"
-                  className="w-12 h-12 rounded-2xl border-2 border-slate-50 shadow-md"
+                  className="w-20 h-20 rounded-2xl border-2 border-slate-50 shadow-md"
                 />
                 <div>
-                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">
-                    NRZO0NE Tracking ID
+                  <p className="text-[12px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">
+                    NRZO0NE Smart Track™
                   </p>
-                  <p className="text-[9px] font-black text-slate-300 uppercase italic">
-                    {printSlip.id}
+                  <p className="text-[11px] font-black text-black bg-slate-100 px-3 py-1 rounded-full uppercase italic inline-block mt-2">
+                    ID: {printSlip.id}
                   </p>
                 </div>
               </div>

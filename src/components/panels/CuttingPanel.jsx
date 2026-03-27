@@ -238,7 +238,7 @@ const CuttingPanel = ({
                 <img
                   src={logoBlack}
                   alt="NRZO0NE"
-                  className="w-14 h-14 object-contain mix-blend-multiply"
+                  className="w-20 h-20 object-contain mix-blend-multiply"
                 />
                 <div>
                   <h1 className="text-2xl font-black italic tracking-tighter leading-none">
@@ -327,16 +327,16 @@ const CuttingPanel = ({
                 </div>
               </div>
 
-              <div className="flex flex-col items-center gap-3 pt-4 border-t-2 border-slate-50/10">
+              <div className="flex flex-col items-center gap-3 pt-6 border-t-2 border-slate-50/10 mt-4">
                 <div className="text-center">
-                  <p className="text-[9px] font-black uppercase tracking-[0.4em] text-slate-500">
+                  <p className="text-[12px] font-black uppercase tracking-[0.4em] text-slate-500">
                     NRZO0NE Smart Track™
                   </p>
-                  <p className="text-[7px] font-black text-slate-400 mt-1 uppercase italic">
-                    {printSlip.id}
+                  <p className="text-[10px] font-black text-black mt-2 uppercase italic bg-slate-100 px-4 py-1 rounded-full">
+                    ID: {printSlip.id}
                   </p>
                 </div>
-                <p className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-400 border-t-2 border-black/5 pt-3 w-full text-center">
+                <p className="text-[12px] font-black uppercase tracking-[0.4em] text-gray-400 border-t-2 border-black/5 pt-4 w-full text-center">
                   CUTTING UNIT - {copyTitle}
                 </p>
               </div>
