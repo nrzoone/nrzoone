@@ -1,6 +1,6 @@
 export const getStock = (masterData, design, color, size) => {
     // 0. Check Design Logic
-    const d = (masterData.designs || []).find(x => x.name === design);
+    const d = masterData.designs.find(x => x.name === design);
     const sRate = Number(d?.sewingRate || 0);
 
     // 1. Cutting Stock (Input)
@@ -38,7 +38,7 @@ export const getStock = (masterData, design, color, size) => {
 };
 
 export const getSewingStock = (masterData, design, color, size) => {
-    const d = (masterData.designs || []).find(x => x.name === design);
+    const d = masterData.designs.find(x => x.name === design);
     const sRate = Number(d?.sewingRate || 0);
 
     // IF Sewing Rate is 0, Stone takes DIRECTLY from Cutting
@@ -77,7 +77,7 @@ export const getSewingStock = (masterData, design, color, size) => {
 };
 
 export const getFinishingStock = (masterData, design, color, size) => {
-    const d = (masterData.designs || []).find(x => x.name === design);
+    const d = masterData.designs.find(x => x.name === design);
     const stRate = Number(d?.stoneRate || 0);
 
     // Determine Source for Finishing
@@ -147,7 +147,7 @@ export const getFinishedStock = (masterData, design, color, size) => {
 
     if (!hasFinishingEntries) {
         // LEGACY FLOW / NEW CIRCULAR FLOW (Swing Pending -> Stone -> Swing Receive)
-        const d = (masterData.designs || []).find(x => x.name === design);
+        const d = masterData.designs.find(x => x.name === design);
         const stRate = Number(d?.stoneRate || 0);
         const ptRate = Number(d?.pataRate || 0);
 
@@ -187,7 +187,7 @@ export const getFinishedStock = (masterData, design, color, size) => {
 };
 
 export const getStats = (masterData, type) => {
-    const items = (masterData.productions || []).filter(p => p.type === type);
+    const items = masterData.productions.filter(p => p.type === type);
     const pending = items.filter(i => i.status === 'Pending').reduce((a, b) => a + b.issueBorka + b.issueHijab, 0);
     const finished = items.filter(i => i.status === 'Received').reduce((a, b) => {
         const netBorka = b.issueBorka - (b.shortBorka || 0);
@@ -197,7 +197,7 @@ export const getStats = (masterData, type) => {
 
     // Production (Piece rate) bill
     const productionBill = items.filter(i => i.status === 'Received').reduce((acc, b) => {
-        const design = (masterData.designs || []).find(d => d.name === b.design);
+        const design = masterData.designs.find(d => d.name === b.design);
         const netBorka = (b.receivedBorka || 0);
         const netHijab = (b.receivedHijab || 0);
 
@@ -214,7 +214,7 @@ export const getStats = (masterData, type) => {
     }, 0);
 
     // Monthly worker attendance bill for this department
-    const attendanceBill = (masterData.attendance || []).filter(a => a.department === type)
+    const attendanceBill = masterData.attendance?.filter(a => a.department === type)
         .reduce((sum, record) => sum + (record.wage || 0), 0) || 0;
 
     return { pending, finished, bill: productionBill + attendanceBill };
@@ -228,7 +228,7 @@ export const getPataStats = (masterData) => {
     const totalAdded = receivedEntries.reduce((a, b) => a + Number(b.pataQty || 0), 0);
 
     // Total Spent: Based on Stone Productions (pataQty)
-    const totalSpent = ((masterData.productions || []).filter(p => p.type === 'stone').reduce((a, b) => {
+    const totalSpent = (masterData.productions?.filter(p => p.type === 'stone').reduce((a, b) => {
         return a + Number(b.pataQty || 0);
     }, 0) || 0);
 
@@ -236,7 +236,7 @@ export const getPataStats = (masterData) => {
     const pataProductionBill = receivedEntries.reduce((acc, e) => acc + Number(e.amount || 0), 0);
 
     // Monthly worker attendance bill for pata department
-    const attendanceBill = (masterData.attendance || []).filter(a => a.department === 'pata')
+    const attendanceBill = masterData.attendance?.filter(a => a.department === 'pata')
         .reduce((sum, record) => sum + (record.wage || 0), 0) || 0;
 
     return {
@@ -250,7 +250,7 @@ export const getPataStats = (masterData) => {
 export const getPataStockSummary = (masterData) => {
     const summary = {};
 
-    (masterData.pataEntries || []).filter(e => e.status === 'Received').forEach(e => {
+    masterData.pataEntries?.filter(e => e.status === 'Received').forEach(e => {
         const key = `${e.design}-${e.color}-${e.pataType}`;
         if (!summary[key]) {
             summary[key] = { design: e.design, color: e.color, type: e.pataType, added: 0, spent: 0 };

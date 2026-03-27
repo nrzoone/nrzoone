@@ -45,7 +45,7 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
         prods.forEach(p => {
             earnings += Number(p.amount || 0);
         });
-        const paid = (masterData.workerPayments || []).filter(p => p.worker === name && p.dept === 'pata').reduce((s, p) => s + Number(p.amount || 0), 0);
+        const paid = (masterData.workerPayments || []).filter(p => p.worker === name && p.dept === 'pata').reduce((s, p) => s + Number(p.amount), 0);
         return earnings - paid;
     };
 
@@ -207,7 +207,7 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
 
         setMasterData(prev => ({
             ...prev,
-            pataEntries: (prev.pataEntries || []).map(e => e.id === item.id ? {
+            pataEntries: prev.pataEntries.map(e => e.id === item.id ? {
                 ...e,
                 status: 'Received',
                 receivedQty: receivedQty,
@@ -253,7 +253,7 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
 
         setMasterData(prev => ({
             ...prev,
-            pataEntries: (prev.pataEntries || []).map(ent => ent.id === updated.id ? updated : ent)
+            pataEntries: prev.pataEntries.map(ent => ent.id === updated.id ? updated : ent)
         }));
 
         setEditPataModal(null);
@@ -412,14 +412,14 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                             <div className="flex items-center gap-5">
                                 <div className="p-2 bg-white rounded-xl border-2 border-slate-50 shadow-lg">
                                     <img
-                                        src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(`https://nrzo0ne.vercel.app?track=${printSlip.id}`)}`}
+                                        src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(`https://nrzo0ne.vercel.app?track=${printSlip.id}`)}`}
                                         alt="QR"
-                                        className="w-20 h-20"
+                                        className="w-16 h-16"
                                     />
                                 </div>
                                 <div>
-                                    <p className="text-[12px] font-black text-slate-400 uppercase tracking-widest leading-none">NRZO0NE Smart Track™</p>
-                                    <p className="text-[11px] font-black text-black bg-slate-100 px-3 py-1 rounded-full uppercase italic inline-block mt-2">ID: {printSlip.id}</p>
+                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">NRZO0NE Smart Track™</p>
+                                    <p className="text-[8px] font-black text-slate-300 uppercase mt-1.5 italic opacity-60">ID: {printSlip.id}</p>
                                 </div>
                             </div>
                             <div className="text-right">
@@ -534,7 +534,7 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                 {workers.map((w, idx) => {
                     const due = getWorkerDue(w);
                     return (
-                        <div key={idx} className="premium-card flex flex-col justify-between h-72 group relative overflow-hidden">
+                        <div key={idx} className="bg-white p-10 rounded-[4rem] border border-slate-100 flex flex-col justify-between h-72 group hover:border-black transition-all relative overflow-hidden shadow-sm">
                             <div className="absolute top-0 right-0 p-8 opacity-[0.02] group-hover:opacity-[0.05] transition-opacity">
                                 <DollarSign size={140} className="text-black" />
                             </div>

@@ -38,7 +38,7 @@ const WorkerSummary = ({ masterData }) => {
             const entries = (masterData.productions || []).filter(p => p.worker === name && p.type === dept && p.status === 'Received');
             const totalQty = entries.reduce((a, b) => a + Number(b.receivedBorka || 0) + Number(b.receivedHijab || 0), 0);
             const totalBill = entries.reduce((acc, b) => {
-                const design = (masterData.designs || []).find(d => d.name === b.design);
+                const design = masterData.designs.find(d => d.name === b.design);
                 const netBorka = Number(b.receivedBorka || 0);
                 const netHijab = Number(b.receivedHijab || 0);
                 if (dept === 'sewing') {

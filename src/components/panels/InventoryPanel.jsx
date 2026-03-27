@@ -31,9 +31,9 @@ const InventoryPanel = ({
 
   const summary = useMemo(() => {
     const items = [];
-    (masterData.designs || []).forEach((d) => {
-      (masterData.colors || []).forEach((c) => {
-        (masterData.sizes || []).forEach((s) => {
+    masterData.designs.forEach((d) => {
+      masterData.colors.forEach((c) => {
+        masterData.sizes.forEach((s) => {
           const res = getFinishedStock(masterData, d.name, c, s);
           if (res.borka > 0 || res.hijab > 0) {
             items.push({
@@ -145,8 +145,8 @@ const InventoryPanel = ({
               Finished Assets
             </p>
             <p className="text-xl font-black italic tracking-tighter text-black leading-none uppercase">
-              {(masterData.productions || [])
-                .filter((p) => p.status === "Received")
+              {masterData.productions
+                ?.filter((p) => p.status === "Received")
                 .length.toLocaleString()}{" "}
               <span className="text-[10px] not-italic text-slate-300 ml-1">
                 BATCHES
@@ -216,7 +216,7 @@ const InventoryPanel = ({
               summary.map((item, idx) => (
                 <div
                   key={idx}
-                  className="item-card group relative overflow-hidden"
+                  className="bg-white p-4 md:p-5 rounded-2xl border-2 border-slate-50 shadow-2xl hover:border-black transition-all group relative overflow-hidden"
                 >
                   <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
                     <Package size={100} className="text-black" />
@@ -265,7 +265,7 @@ const InventoryPanel = ({
 
       {view === "raw" && (
         <div className="space-y-10">
-          <div className="premium-card flex items-center gap-6 md:gap-10 group focus-within:border-black transition-all">
+          <div className="bg-white p-5 md:p-6 rounded-3xl border-2 border-slate-50 shadow-2xl flex items-center gap-6 md:gap-10 group focus-within:border-black transition-all">
             <Search
               size={32}
               strokeWidth={3}
@@ -289,7 +289,7 @@ const InventoryPanel = ({
               filteredInventory.map((item, idx) => (
                 <div
                   key={idx}
-                  className="item-card flex flex-col justify-between h-72 md:h-80 group relative overflow-hidden"
+                  className="bg-white p-6 md:p-6 rounded-3xl border-2 border-slate-50 shadow-2xl flex flex-col justify-between h-72 md:h-80 group hover:border-black transition-all relative overflow-hidden"
                 >
                   <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
                     <Database size={100} className="text-black" />

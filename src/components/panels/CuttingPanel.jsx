@@ -12,7 +12,6 @@ import {
   Minus,
   Printer,
   ArrowLeft,
-  Box,
 } from "lucide-react";
 import { getStock, getSewingStock } from "../../utils/calculations";
 import { syncToSheet } from "../../utils/syncUtils";
@@ -238,7 +237,7 @@ const CuttingPanel = ({
                 <img
                   src={logoBlack}
                   alt="NRZO0NE"
-                  className="w-20 h-20 object-contain mix-blend-multiply"
+                  className="w-14 h-14 object-contain mix-blend-multiply"
                 />
                 <div>
                   <h1 className="text-2xl font-black italic tracking-tighter leading-none">
@@ -327,16 +326,16 @@ const CuttingPanel = ({
                 </div>
               </div>
 
-              <div className="flex flex-col items-center gap-3 pt-6 border-t-2 border-slate-50/10 mt-4">
+              <div className="flex flex-col items-center gap-3 pt-4 border-t-2 border-slate-50/10">
                 <div className="text-center">
-                  <p className="text-[12px] font-black uppercase tracking-[0.4em] text-slate-500">
+                  <p className="text-[9px] font-black uppercase tracking-[0.4em] text-slate-500">
                     NRZO0NE Smart Track™
                   </p>
-                  <p className="text-[10px] font-black text-black mt-2 uppercase italic bg-slate-100 px-4 py-1 rounded-full">
-                    ID: {printSlip.id}
+                  <p className="text-[7px] font-black text-slate-400 mt-1 uppercase italic">
+                    {printSlip.id}
                   </p>
                 </div>
-                <p className="text-[12px] font-black uppercase tracking-[0.4em] text-gray-400 border-t-2 border-black/5 pt-4 w-full text-center">
+                <p className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-400 border-t-2 border-black/5 pt-3 w-full text-center">
                   CUTTING UNIT - {copyTitle}
                 </p>
               </div>
@@ -407,24 +406,24 @@ const CuttingPanel = ({
           </div>
         </div>
         <div className="flex items-center gap-6 w-full md:w-auto">
-          <div className="bg-white px-8 py-4 rounded-[2rem] border border-slate-100 shadow-sm hidden md:block">
+          <div className="bg-white px-6 py-3 rounded-2xl border border-slate-100 shadow-sm hidden md:block">
             <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">Lot Intelligence</p>
-            <p className="text-3xl font-black italic text-black leading-none uppercase">
-                {uniqueLots.length} <span className="text-[11px] text-slate-300 ml-1">Lots</span>
+            <p className="text-2xl font-black italic text-black leading-none uppercase">
+                {uniqueLots.length} <span className="text-[10px] text-slate-300 ml-1">Lots</span>
             </p>
           </div>
           <button
             onClick={() => setShowModal(true)}
-            className="black-button"
+            className="black-button px-8 py-4 text-[11px] flex-1 md:flex-none justify-center"
           >
-            <Plus size={18} strokeWidth={4} /> নতুন এন্ট্রি
+            <Plus size={16} strokeWidth={4} /> নতুন এন্ট্রি
           </button>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
         <div className="lg:col-span-2 space-y-10">
-          <div className="premium-card relative overflow-hidden group">
+          <div className="bg-white rounded-3xl p-5 md:p-6 border-2 border-slate-50 shadow-2xl relative overflow-hidden group">
             <div className="relative z-10">
               <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
                 <div>
@@ -512,7 +511,7 @@ const CuttingPanel = ({
                 </select>
               </div>
 
-              <div className="bg-slate-50 rounded-[2rem] p-8 md:p-10 border border-slate-100 italic relative overflow-hidden shadow-inner">
+              <div className="bg-slate-50 rounded-xl p-5 md:p-6 border border-slate-100 italic relative overflow-hidden shadow-inner">
                 {checkMode ? (
                   <div className="w-full animate-fade-up">
                     {checkSelection.design &&
@@ -549,7 +548,7 @@ const CuttingPanel = ({
                             return (
                               <div
                                 key={s}
-                                className="item-card flex justify-between items-center"
+                                className="flex justify-between items-center bg-white p-6 rounded-3xl border border-slate-100 shadow-sm"
                               >
                                 <span className="text-2xl font-black italic text-black">
                                   {s}
@@ -721,7 +720,7 @@ const CuttingPanel = ({
         </div>
 
         <div className="space-y-10">
-          <div className="premium-card flex items-center justify-between">
+          <div className="bg-white rounded-3xl p-12 flex items-center justify-between border-4 border-slate-50 shadow-2xl">
             <div className="flex items-center gap-6">
               <div className="p-4 bg-emerald-50 rounded-2xl border border-emerald-100 text-emerald-500">
                 <CheckCircle size={32} />

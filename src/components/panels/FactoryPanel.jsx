@@ -59,7 +59,7 @@ const FactoryPanel = ({
     color: "",
     lotNo: "",
     date: new Date().toISOString().split("T")[0],
-    pataType: (masterData.pataTypes || ["Single"])[0],
+    pataType: masterData.pataTypes?.[0] || "Single",
     rate: "",
     worker: "",
     note: "",
@@ -71,16 +71,16 @@ const FactoryPanel = ({
   const [selectedLot, setSelectedLot] = useState("");
 
   const isWorker = user?.role !== "admin" && user?.role !== "manager";
-  const workers = (masterData.workerCategories || {})[type] || [];
+  const workers = masterData.workerCategories[type] || [];
 
   const filteredProductions = (masterData.productions || []).filter((p) => {
     if (p.type !== type) return false;
     if (isWorker && p.worker?.toLowerCase() !== user?.name?.toLowerCase())
       return false;
     return (
-      (p.worker?.toLowerCase() || '').includes(lotSearch.toLowerCase()) ||
-      (p.design?.toLowerCase() || '').includes(lotSearch.toLowerCase()) ||
-      (p.lotNo?.toLowerCase() || '').includes(lotSearch.toLowerCase())
+      p.worker.toLowerCase().includes(lotSearch.toLowerCase()) ||
+      p.design.toLowerCase().includes(lotSearch.toLowerCase()) ||
+      p.lotNo.toLowerCase().includes(lotSearch.toLowerCase())
     );
   });
 
@@ -104,7 +104,7 @@ const FactoryPanel = ({
 
     allKeys.forEach((key) => {
       const [design, color, lotNo] = key.split("|");
-      const designObj = (masterData.designs || []).find((d) => d.name === design);
+      const designObj = masterData.designs.find((d) => d.name === design);
       if (!designObj) return;
 
       const stoneRate = Number(designObj.stoneRate || 0);
@@ -251,7 +251,7 @@ const FactoryPanel = ({
     });
 
     if (isAdmin && showAllLots) {
-      (masterData.designs || []).forEach((d) => {
+      masterData.designs.forEach((d) => {
         const colors = masterData.colors || [];
         colors.forEach((c) => {
           const exists = lots.find((l) => l.design === d.name && l.color === c);
@@ -263,7 +263,7 @@ const FactoryPanel = ({
               totalAvailable: 198,
               hasStoneRate: d.stoneRate > 0,
               hasSewingRate: d.sewingRate > 0,
-              sizes: (masterData.sizes || []).reduce(
+              sizes: masterData.sizes.reduce(
                 (acc, s) => ({
                   ...acc,
                   [s]: {
@@ -295,7 +295,7 @@ const FactoryPanel = ({
       (l) => l.lotNo === lotNo && l.design === design && l.color === color,
     );
     if (lot) {
-      const d = (masterData.designs || []).find((x) => x.name === lot.design);
+      const d = masterData.designs.find((x) => x.name === lot.design);
       const defaultRate =
         type === "sewing" ? d?.sewingRate || 0 : d?.stoneRate || 0;
       setSelection((p) => ({
@@ -304,7 +304,7 @@ const FactoryPanel = ({
         color: lot.color,
         lotNo: lot.lotNo,
         rate:
-          p.worker && (masterData.workerWages || {})[type]?.[p.worker] > 0
+          p.worker && masterData.workerWages?.[type]?.[p.worker] > 0
             ? masterData.workerWages[type][p.worker]
             : defaultRate,
       }));
@@ -391,7 +391,7 @@ const FactoryPanel = ({
 
     setMasterData((prev) => ({
       ...prev,
-      productions: (prev.productions || []).map((p) =>
+      productions: prev.productions.map((p) =>
         p.id === receiveModal.id
           ? {
               ...p,
@@ -573,16 +573,16 @@ const FactoryPanel = ({
             <div className="flex items-center justify-between border-t-2 border-slate-100 pt-8">
               <div className="flex items-center gap-6">
                 <img
-                  src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(`https://nrzo0ne.vercel.app?track=${printSlip.id}`)}`}
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(`https://nrzo0ne.vercel.app?track=${printSlip.id}`)}`}
                   alt="QR"
-                  className="w-20 h-20 rounded-2xl border-2 border-slate-50 shadow-md"
+                  className="w-12 h-12 rounded-2xl border-2 border-slate-50 shadow-md"
                 />
                 <div>
-                  <p className="text-[12px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">
-                    NRZO0NE Smart Track™
+                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">
+                    NRZO0NE Tracking ID
                   </p>
-                  <p className="text-[11px] font-black text-black bg-slate-100 px-3 py-1 rounded-full uppercase italic inline-block mt-2">
-                    ID: {printSlip.id}
+                  <p className="text-[9px] font-black text-slate-300 uppercase italic">
+                    {printSlip.id}
                   </p>
                 </div>
               </div>
@@ -819,7 +819,7 @@ const FactoryPanel = ({
                               if(confirm('মুছে ফেলবেন?')) {
                                   setMasterData(prev => ({
                                       ...prev,
-                                      productions: (prev.productions || []).filter(x => x.id !== p.id)
+                                      productions: prev.productions.filter(x => x.id !== p.id)
                                   }));
                               }
                           }}
@@ -849,7 +849,7 @@ const FactoryPanel = ({
               return (
                 <div
                   key={w}
-                  className="item-card flex flex-col md:flex-row justify-between items-center gap-10 group"
+                  className="bg-white p-5 md:p-6 rounded-3xl border-2 border-slate-50 shadow-2xl flex flex-col md:flex-row justify-between items-center gap-10 group hover:border-black transition-all"
                 >
                   <div className="flex items-center gap-8 flex-1">
                     <div className="w-12 h-12 md:w-16 md:h-16 bg-black text-white rounded-full flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform">

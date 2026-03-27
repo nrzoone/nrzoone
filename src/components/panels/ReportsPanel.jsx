@@ -24,7 +24,7 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t }) => {
   const isWorker = user?.role === "worker";
   const isAdmin = user?.role === "admin";
 
-  const filteredProductions = (masterData.productions || []).filter((p) => {
+  const filteredProductions = masterData.productions.filter((p) => {
     const matchesUser = isWorker
       ? p.worker.toLowerCase() === user.name.toLowerCase()
       : true;
@@ -34,7 +34,7 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t }) => {
     return matchesUser && matchesSearch;
   });
 
-  const filteredCutting = (masterData.cuttingStock || []).filter(
+  const filteredCutting = masterData.cuttingStock.filter(
     (c) =>
       c.design.toLowerCase().includes(search.toLowerCase()) ||
       (c.cutterName &&
@@ -419,12 +419,12 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t }) => {
       </div>
 
       <div className="bg-white rounded-[2rem] md:rounded-[4rem] border-2 md:border-4 border-slate-50 shadow-2xl overflow-hidden min-h-[60vh]">
-        {activeTab === "intel" && <BusinessIntel masterData={masterData} setActivePanel={setActivePanel} />}
+        {activeTab === "intel" && <BusinessIntel masterData={masterData} />}
         {activeTab === "summary" && (
           <WorkerSummary masterData={masterData} user={user} />
         )}
         {activeTab === "invoice" && (
-          <WeeklyInvoice masterData={masterData} user={user} setActivePanel={setActivePanel} />
+          <WeeklyInvoice masterData={masterData} user={user} />
         )}
         {activeTab === "dispatch" && (
           <div className="p-6 md:p-12 space-y-12 animate-fade-up">

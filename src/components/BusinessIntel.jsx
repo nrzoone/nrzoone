@@ -4,7 +4,7 @@ import { getPataStockSummary } from '../utils/calculations';
 import logoWhite from '../assets/logo_white.png';
 import logoBlack from '../assets/logo_black.png';
 
-const BusinessIntel = ({ masterData, setActivePanel }) => {
+const BusinessIntel = ({ masterData }) => {
     const stats = useMemo(() => {
         // 1. Production vs Sales
         const totalProduced = (masterData.productions || []).filter(p => p.status === 'Received').reduce((s, p) => s + (p.issueBorka || 0) + (p.issueHijab || 0), 0);
@@ -45,7 +45,7 @@ const BusinessIntel = ({ masterData, setActivePanel }) => {
             <div className="flex flex-col md:flex-row justify-between items-center gap-8">
                 <div className="flex items-center gap-6 md:gap-10">
                     <button
-                        onClick={() => setActivePanel('Overview')}
+                        onClick={() => window.dispatchEvent(new CustomEvent('setActivePanel', { detail: 'Overview' }))}
                         className="p-4 md:p-6 bg-white text-black rounded-[2rem] border-4 border-slate-50 shadow-2xl hover:bg-black hover:text-white transition-all group active:scale-95"
                     >
                         <ArrowLeft size={24} strokeWidth={3} className="group-hover:-translate-x-2 transition-transform" />

@@ -121,7 +121,7 @@ const SettingsPanel = ({
     if (!confirm("Delete this item?")) return;
     setMasterData((prev) => ({
       ...prev,
-      [category]: (prev[category] || []).filter((_, i) => i !== index),
+      [category]: prev[category].filter((_, i) => i !== index),
     }));
   };
 
@@ -129,7 +129,7 @@ const SettingsPanel = ({
     if (!newValue.trim()) return;
     setMasterData((prev) => ({
       ...prev,
-      [category]: (prev[category] || []).map((item, i) =>
+      [category]: prev[category].map((item, i) =>
         i === index ? newValue.toUpperCase() : item,
       ),
     }));
@@ -255,7 +255,7 @@ const SettingsPanel = ({
     setMasterData((prev) => ({
       ...prev,
       designs: [
-        ...(prev.designs || []),
+        ...prev.designs,
         {
           name,
           sewingRate: Number(sewingRate) || 0,
@@ -275,7 +275,7 @@ const SettingsPanel = ({
   const handleUpdateDesignFull = (index, updatedDesign) => {
     setMasterData((prev) => ({
       ...prev,
-      designs: (prev.designs || []).map((d, i) =>
+      designs: prev.designs.map((d, i) =>
         i === index ? { ...d, ...updatedDesign } : d,
       ),
     }));
@@ -288,7 +288,7 @@ const SettingsPanel = ({
     if (!confirm("Delete this design?")) return;
     setMasterData((prev) => ({
       ...prev,
-      designs: (prev.designs || []).filter((_, i) => i !== index),
+      designs: prev.designs.filter((_, i) => i !== index),
     }));
   };
 
@@ -759,7 +759,7 @@ const SettingsPanel = ({
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-50">
-                  {(masterData.designs || []).map((design, idx) => (
+                  {masterData.designs.map((design, idx) => (
                     <tr
                       key={idx}
                       className="hover:bg-slate-50 transition-all group"
@@ -856,7 +856,7 @@ const SettingsPanel = ({
                   if (newPass !== confirmPass)
                     return alert("Passwords do not match");
 
-                  const userIdx = (masterData.users || []).findIndex(
+                  const userIdx = masterData.users.findIndex(
                     (u) => u.id === currentUser.id,
                   );
                   handleUpdateUser(userIdx, { password: newPass });
@@ -1403,7 +1403,6 @@ const SettingsPanel = ({
                 value={newWorkerDept}
                 onChange={(e) => setNewWorkerDept(e.target.value)}
               >
-                <option value="cutting">Cutting Dept / Master</option>
                 <option value="sewing">Sewing Dept</option>
                 <option value="stone">Stone Dept</option>
                 <option value="pata">Pata Dept</option>
@@ -1436,7 +1435,7 @@ const SettingsPanel = ({
                   onClick={() =>
                     handleAddWorker(
                       newWorkerDept,
-                      document.getElementById("new-worker-name")?.value || "",
+                      document.getElementById("new-worker-name").value,
                       document.getElementById("new-worker-wage")?.value || 0,
                     )
                   }

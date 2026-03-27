@@ -80,7 +80,7 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
 
         setMasterData(prev => ({
             ...prev,
-            outsideWorkEntries: (prev.outsideWorkEntries || []).map(entry => entry.id === receiveModal.id ? {
+            outsideWorkEntries: prev.outsideWorkEntries.map(entry => entry.id === receiveModal.id ? {
                 ...entry,
                 borkaQty: rBorka,
                 hijabQty: rHijab,
@@ -117,7 +117,7 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
     const handleSaveNote = () => {
         setMasterData(prev => ({
             ...prev,
-            outsideWorkEntries: (prev.outsideWorkEntries || []).map(e => e.id === noteModal.id ? {
+            outsideWorkEntries: prev.outsideWorkEntries.map(e => e.id === noteModal.id ? {
                 ...e,
                 note: noteModal.note
             } : e)
@@ -131,7 +131,7 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
 
         setMasterData(prev => ({
             ...prev,
-            outsideWorkEntries: (prev.outsideWorkEntries || []).map(e => e.id === payModal.id ? {
+            outsideWorkEntries: prev.outsideWorkEntries.map(e => e.id === payModal.id ? {
                 ...e,
                 paidAmount: Number(e.paidAmount || 0) + Number(paymentAmount)
             } : e)

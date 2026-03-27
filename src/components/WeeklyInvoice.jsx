@@ -3,7 +3,7 @@ import { Printer, Calendar, Search, CreditCard, FileText, ChevronRight, ArrowLef
 import logoWhite from '../assets/logo_white.png';
 import logoBlack from '../assets/logo_black.png';
 
-const WeeklyInvoice = ({ masterData, setActivePanel }) => {
+const WeeklyInvoice = ({ masterData }) => {
     const [selectedDept, setSelectedDept] = useState('sewing');
     const [showPreview, setShowPreview] = useState(false);
 
@@ -47,7 +47,7 @@ const WeeklyInvoice = ({ masterData, setActivePanel }) => {
                 return p.worker === name && p.type === selectedDept && p.status === 'Received' && pDate >= range.saturday && pDate <= range.thursday;
             });
             const totalBill = items.reduce((acc, b) => {
-                const design = (masterData.designs || []).find(d => d.name === b.design);
+                const design = masterData.designs.find(d => d.name === b.design);
                 const netBorka = Number(b.receivedBorka || 0);
                 const netHijab = Number(b.receivedHijab || 0);
                 if (selectedDept === 'sewing') {
@@ -114,7 +114,7 @@ const WeeklyInvoice = ({ masterData, setActivePanel }) => {
             <div className="flex flex-col md:flex-row justify-between items-center gap-8">
                 <div className="flex items-center gap-6 md:gap-10">
                     <button
-                        onClick={() => setActivePanel('Overview')}
+                        onClick={() => window.dispatchEvent(new CustomEvent('setActivePanel', { detail: 'Overview' }))}
                         className="p-4 md:p-6 bg-white text-black rounded-[2rem] border-4 border-slate-50 shadow-2xl hover:bg-black hover:text-white transition-all group active:scale-95"
                     >
                         <ArrowLeft size={24} strokeWidth={3} className="group-hover:-translate-x-2 transition-transform" />
