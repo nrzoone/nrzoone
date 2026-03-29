@@ -13,6 +13,7 @@ import {
   Archive,
   Database,
   ArrowLeft,
+  Box,
 } from "lucide-react";
 import { syncToSheet } from "../../utils/syncUtils";
 import { getFinishedStock, getSewingStock, getFinishingStock } from "../../utils/calculations";
