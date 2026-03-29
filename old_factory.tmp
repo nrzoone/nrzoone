@@ -1,12 +1,4 @@
 import React, { useState, useMemo } from "react";
-import { Card, Row, Col, Typography, Divider, QRCode, Tag, ConfigProvider } from 'antd';
-const { Title, Text } = Typography;
-
-const QR_Slip_Theme = {
-  token: { fontFamily: 'Inter, sans-serif', borderRadius: 8, fontSize: 12, colorTextBase: '#000000' },
-  components: { Card: { paddingLG: 16 }, Typography: { fontSizeHeading4: 18, fontSizeHeading5: 14 } }
-};
-
 import {
   Scissors,
   Database,
@@ -67,7 +59,7 @@ const FactoryPanel = ({
     color: "",
     lotNo: "",
     date: new Date().toISOString().split("T")[0],
-    pataType: (masterData.pataTypes || ["Single"])[0],
+    pataType: masterData.pataTypes?.[0] || "Single",
     rate: "",
     worker: "",
     note: "",
@@ -79,16 +71,16 @@ const FactoryPanel = ({
   const [selectedLot, setSelectedLot] = useState("");
 
   const isWorker = user?.role !== "admin" && user?.role !== "manager";
-  const workers = (masterData.workerCategories || {})[type] || [];
+  const workers = masterData.workerCategories[type] || [];
 
   const filteredProductions = (masterData.productions || []).filter((p) => {
     if (p.type !== type) return false;
     if (isWorker && p.worker?.toLowerCase() !== user?.name?.toLowerCase())
       return false;
     return (
-      (p.worker?.toLowerCase() || '').includes(lotSearch.toLowerCase()) ||
-      (p.design?.toLowerCase() || '').includes(lotSearch.toLowerCase()) ||
-      (p.lotNo?.toLowerCase() || '').includes(lotSearch.toLowerCase())
+      p.worker.toLowerCase().includes(lotSearch.toLowerCase()) ||
+      p.design.toLowerCase().includes(lotSearch.toLowerCase()) ||
+      p.lotNo.toLowerCase().includes(lotSearch.toLowerCase())
     );
   });
 
@@ -112,7 +104,7 @@ const FactoryPanel = ({
 
     allKeys.forEach((key) => {
       const [design, color, lotNo] = key.split("|");
-      const designObj = (masterData.designs || []).find((d) => d.name === design);
+      const designObj = masterData.designs.find((d) => d.name === design);
       if (!designObj) return;
 
       const stoneRate = Number(designObj.stoneRate || 0);
@@ -259,7 +251,7 @@ const FactoryPanel = ({
     });
 
     if (isAdmin && showAllLots) {
-      (masterData.designs || []).forEach((d) => {
+      masterData.designs.forEach((d) => {
         const colors = masterData.colors || [];
         colors.forEach((c) => {
           const exists = lots.find((l) => l.design === d.name && l.color === c);
@@ -271,7 +263,7 @@ const FactoryPanel = ({
               totalAvailable: 198,
               hasStoneRate: d.stoneRate > 0,
               hasSewingRate: d.sewingRate > 0,
-              sizes: (masterData.sizes || []).reduce(
+              sizes: masterData.sizes.reduce(
                 (acc, s) => ({
                   ...acc,
                   [s]: {
@@ -303,7 +295,7 @@ const FactoryPanel = ({
       (l) => l.lotNo === lotNo && l.design === design && l.color === color,
     );
     if (lot) {
-      const d = (masterData.designs || []).find((x) => x.name === lot.design);
+      const d = masterData.designs.find((x) => x.name === lot.design);
       const defaultRate =
         type === "sewing" ? d?.sewingRate || 0 : d?.stoneRate || 0;
       setSelection((p) => ({
@@ -312,7 +304,7 @@ const FactoryPanel = ({
         color: lot.color,
         lotNo: lot.lotNo,
         rate:
-          p.worker && (masterData.workerWages || {})[type]?.[p.worker] > 0
+          p.worker && masterData.workerWages?.[type]?.[p.worker] > 0
             ? masterData.workerWages[type][p.worker]
             : defaultRate,
       }));
@@ -321,8 +313,6 @@ const FactoryPanel = ({
           size: s,
           borka: lot.sizes[s].remB,
           hijab: lot.sizes[s].remH,
-          maxBorka: lot.sizes[s].remB,
-          maxHijab: lot.sizes[s].remH,
           pataQty: "",
         }))
         .filter((s) => s.borka > 0 || s.hijab > 0);
@@ -401,21 +391,21 @@ const FactoryPanel = ({
 
     setMasterData((prev) => ({
       ...prev,
-      productions: (prev.productions || []).map((p) =>
+      productions: prev.productions.map((p) =>
         p.id === receiveModal.id
           ? {
-            ...p,
-            status: "Received",
-            receivedBorka: rBorka,
-            receivedHijab: rHijab,
-            wasteBorka: Math.max(0, p.issueBorka - rBorka),
-            wasteHijab: Math.max(0, p.issueHijab - rHijab),
-            receiveDate: e.target.receiveDate?.value
-              ? new Date(e.target.receiveDate.value).toLocaleDateString(
-                "en-GB",
-              )
-              : new Date().toLocaleDateString("en-GB"),
-          }
+              ...p,
+              status: "Received",
+              receivedBorka: rBorka,
+              receivedHijab: rHijab,
+              wasteBorka: Math.max(0, p.issueBorka - rBorka),
+              wasteHijab: Math.max(0, p.issueHijab - rHijab),
+              receiveDate: e.target.receiveDate?.value
+                ? new Date(e.target.receiveDate.value).toLocaleDateString(
+                    "en-GB",
+                  )
+                : new Date().toLocaleDateString("en-GB"),
+            }
           : p,
       ),
     }));
@@ -469,7 +459,7 @@ const FactoryPanel = ({
         (s, p) =>
           s +
           (Number(p.receivedBorka || 0) + Number(p.receivedHijab || 0)) *
-          Number(p.rate || 0),
+            Number(p.rate || 0),
         0,
       );
     const paid = (masterData.workerPayments || [])
@@ -480,103 +470,136 @@ const FactoryPanel = ({
 
   if (printSlip) {
     const SlipHalf = ({ copyTitle }) => (
-      <ConfigProvider theme={QR_Slip_Theme}>
-        <div style={{ minHeight: "140mm" }} className="w-full flex-1 border-[2px] border-black bg-white relative overflow-hidden flex text-black">
-          <div className="w-20 bg-white border-r-[2px] border-black flex flex-col items-center justify-between py-8 shrink-0">
-            <img src={logoBlack} alt="NRZO0NE" className="w-12 h-12 object-contain" />
-            <div className="rotate-[-90deg] whitespace-nowrap">
-              <p className="text-[10px] font-black uppercase tracking-[0.5em] text-black">NRZO0NE FACTORY SYSTEM</p>
-            </div>
-            <div className="w-8 h-8 border border-black rounded-full flex items-center justify-center">
-              <div className="w-2 h-2 rounded-full bg-transparent border border-black"></div>
-            </div>
+      <div
+        className="w-full h-full flex-1 border-[6px] border-black bg-white relative overflow-hidden flex text-black"
+        style={{ minHeight: "140mm" }}
+      >
+        <div className="w-20 bg-black flex flex-col items-center justify-between py-8 shrink-0">
+          <img
+            src={logoWhite}
+            alt="NRZO0NE"
+            className="w-12 h-12 object-contain"
+          />
+          <div className="rotate-[-90deg] whitespace-nowrap">
+            <p className="text-[10px] font-black uppercase tracking-[0.5em] text-white/40">
+              NRZO0NE FACTORY SYSTEM
+            </p>
           </div>
-          <div className="flex-1 p-6 relative flex flex-col items-center justify-center bg-white">
-
-            <Card
-              style={{ width: '100%', height: '100%', border: '2px solid #000', borderRadius: '12px', display: 'flex', flexDirection: 'column', zIndex: 10, position: 'relative' }}
-              bodyStyle={{ padding: '16px', flex: 1, display: 'flex', flexDirection: 'column' }}
-              hoverable={false}
-            >
-              <Row justify="space-between" align="middle">
-                <Col>
-                  <Title level={4} style={{ margin: 0, letterSpacing: '1px', fontStyle: 'italic', fontWeight: '900' }}>NRZO0NE</Title>
-                  <Text type="secondary" style={{ fontSize: '10px', letterSpacing: '2px', textTransform: 'uppercase' }}>{type} PRODUCTION UNIT</Text>
-                </Col>
-                <Col style={{ textAlign: 'right' }}>
-                  <Tag color="black" style={{ margin: 0, fontWeight: 'bold' }}>{copyTitle}</Tag>
-                  <br />
-                  <Text strong style={{ fontSize: '12px', display: 'inline-block', marginTop: '4px' }}>{printSlip.date || '25/03/2026'}</Text>
-                </Col>
-              </Row>
-
-              <Divider style={{ margin: '14px 0', borderBlockStart: '2px solid #000' }} />
-
-              <Row gutter={12}>
-                <Col span={8}>
-                  <div style={{ background: '#fff', padding: '10px', borderRadius: '4px', textAlign: 'center', border: '1px solid #000' }}>
-                    <Text type="secondary" style={{ fontSize: '9px', fontWeight: 'bold', letterSpacing: '1px', color: '#000' }}>WORKER / কারিগর</Text>
-                    <Title level={5} style={{ margin: '4px 0 0 0', fontStyle: 'italic', textTransform: 'uppercase' }}>{printSlip.worker || 'JIHAN'}</Title>
-                  </div>
-                </Col>
-                <Col span={8}>
-                  <div style={{ background: '#fff', padding: '10px', borderRadius: '4px', textAlign: 'center', border: '1px solid #000' }}>
-                    <Text type="secondary" style={{ fontSize: '9px', fontWeight: 'bold', letterSpacing: '1px', color: '#000' }}>DESIGN / ডিজাইন</Text>
-                    <Title level={5} style={{ margin: '4px 0 0 0', fontStyle: 'italic' }}>{printSlip.design || 'পাতা'}</Title>
-                  </div>
-                </Col>
-                <Col span={8}>
-                  <div style={{ background: '#fff', padding: '10px', borderRadius: '4px', textAlign: 'center', border: '1px solid #000' }}>
-                    <Text style={{ fontSize: '9px', color: '#000', letterSpacing: '1px', fontWeight: 'bold' }}>LOT NO / লট নং</Text>
-                    <Title level={5} style={{ margin: '4px 0 0 0', color: '#000', fontStyle: 'italic', fontWeight: '900' }}>#{printSlip.lotNo || 'ADMIN'}</Title>
-                  </div>
-                </Col>
-              </Row>
-
-              <Row gutter={12} style={{ marginTop: '16px', flex: 1 }}>
-                <Col span={6}>
-                  <Card size="small" style={{ textAlign: 'center', border: '1px solid #000', background: '#fff', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }} bodyStyle={{ padding: '10px' }}>
-                    <Text style={{ fontSize: '9px', color: '#000', fontWeight: 'bold' }}>ISSUE BORKA</Text>
-                    <Title level={4} style={{ margin: '4px 0 0 0', fontStyle: 'italic', color: '#000' }}>{printSlip.issueBorka || 0}</Title>
-                  </Card>
-                </Col>
-                <Col span={6}>
-                  <Card size="small" style={{ textAlign: 'center', border: '1px solid #000', background: '#fff', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }} bodyStyle={{ padding: '10px' }}>
-                    <Text style={{ fontSize: '9px', color: '#000', fontWeight: 'bold' }}>ISSUE HIJAB</Text>
-                    <Title level={4} style={{ margin: '4px 0 0 0', fontStyle: 'italic', color: '#000' }}>{printSlip.issueHijab || 0}</Title>
-                  </Card>
-                </Col>
-                <Col span={6}>
-                  <Card size="small" style={{ textAlign: 'center', background: '#fff', border: '1px solid #000', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }} bodyStyle={{ padding: '10px' }}>
-                    <Text style={{ fontSize: '9px', fontWeight: 'bold', color: '#000' }}>RECEIVED QTY</Text>
-                    <Title level={4} style={{ margin: '4px 0 0 0', color: '#000', fontStyle: 'italic' }}></Title>
-                  </Card>
-                </Col>
-                <Col span={6}>
-                  <Card size="small" style={{ textAlign: 'center', background: '#fff', border: '1px dashed #000', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }} bodyStyle={{ padding: '10px' }}>
-                    <Text style={{ fontSize: '9px', color: '#000', fontWeight: 'bold' }}>SIZE</Text>
-                    <Title level={4} style={{ margin: '4px 0 0 0', color: '#000', fontStyle: 'italic', fontWeight: '900' }}>{printSlip.size || 44}</Title>
-                  </Card>
-                </Col>
-              </Row>
-
-              <Divider dashed style={{ margin: '16px 0 12px 0' }} />
-              <Row align="middle" justify="space-between">
-                <Col>
-                  {typeof window !== 'undefined' && (
-                    <QRCode value={`${window.location.origin}?track=${printSlip.id}`} size={110} bordered={false} style={{ margin: '-4px' }} color="#000" />
-                  )}
-                </Col>
-                <Col style={{ textAlign: 'right' }}>
-                  <Text style={{ fontSize: '11px', fontWeight: 'bold', letterSpacing: '1px' }}>NRZO0NE SMART TRACK™</Text>
-                  <br />
-                  <Text type="secondary" style={{ fontSize: '9px' }}>Generated by NRZO0NE Factory System • ID: {printSlip.id}</Text>
-                </Col>
-              </Row>
-            </Card>
+          <div className="w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center animate-pulse shadow-2xl"></div>
+        </div>
+        <div className="flex-1 p-10 flex flex-col relative">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-[0.03] -rotate-12">
+            <img src={logoBlack} alt="" className="w-80 h-80 object-contain" />
+          </div>
+          <div className="relative z-10 h-full flex flex-col gap-6">
+            <div className="flex items-center justify-between border-b-4 border-black pb-6">
+              <div>
+                <h1 className="text-3xl font-black italic tracking-tighter leading-none mb-1">
+                  NRZO0NE
+                </h1>
+                <p className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-500">
+                  {type.toUpperCase()} PRODUCTION UNIT
+                </p>
+              </div>
+              <div className="text-right">
+                <span className="inline-block bg-black text-white text-[9px] font-black uppercase tracking-widest px-4 py-1.5 rounded-full mb-3">
+                  {copyTitle}
+                </span>
+                <p className="text-2xl font-black italic text-black leading-none">
+                  {printSlip.date}
+                </p>
+              </div>
+            </div>
+            <div className="grid grid-cols-3 gap-6">
+              <div className="bg-slate-50 p-6 rounded-3xl border-2 border-slate-100">
+                <p className="text-[9px] font-black uppercase text-slate-400 mb-2">
+                  Worker / কারিগর
+                </p>
+                <p className="text-2xl font-black italic uppercase leading-tight">
+                  {printSlip.worker}
+                </p>
+              </div>
+              <div className="bg-slate-50 p-6 rounded-3xl border-2 border-slate-100">
+                <p className="text-[9px] font-black uppercase text-slate-400 mb-2">
+                  Design / ডিজাইন
+                </p>
+                <p className="text-2xl font-black italic leading-tight">
+                  {printSlip.design}
+                </p>
+              </div>
+              <div className="bg-black text-white p-6 rounded-3xl shadow-2xl">
+                <p className="text-[9px] font-black uppercase text-white/40 mb-2">
+                  Lot No / লট নং
+                </p>
+                <p className="text-3xl font-black italic leading-tight">
+                  #{printSlip.lotNo}
+                </p>
+              </div>
+            </div>
+            <div className="grid grid-cols-4 gap-6 flex-1 mt-4">
+              <div className="bg-rose-50 border-2 border-rose-100 rounded-2xl flex flex-col items-center justify-center p-6 shadow-sm">
+                <p className="text-[10px] font-black text-rose-400 uppercase mb-3 italic">
+                  Issue Borka
+                </p>
+                <p className="text-3xl font-black italic text-rose-600 leading-none">
+                  {printSlip.issueBorka || 0}
+                </p>
+              </div>
+              <div className="bg-blue-50 border-2 border-blue-100 rounded-2xl flex flex-col items-center justify-center p-6 shadow-sm">
+                <p className="text-[10px] font-black text-blue-400 uppercase mb-3 italic">
+                  Issue Hijab
+                </p>
+                <p className="text-3xl font-black italic text-blue-600 leading-none">
+                  {printSlip.issueHijab || 0}
+                </p>
+              </div>
+              <div className="bg-slate-50 border-2 border-slate-200 rounded-2xl flex flex-col items-center justify-center p-6 shadow-sm">
+                <p className="text-[10px] font-black text-slate-400 uppercase mb-3 italic text-center">
+                  Received Quantity
+                </p>
+                <p className="text-3xl font-black italic text-slate-300 leading-none">
+                  0
+                </p>
+              </div>
+              <div className="bg-slate-900 border-2 border-black rounded-2xl flex flex-col items-center justify-center p-6 shadow-2xl">
+                <p className="text-[10px] font-black text-white/40 uppercase mb-3 italic">
+                  Size
+                </p>
+                <p className="text-3xl font-black italic text-white leading-none">
+                  {printSlip.size}
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center justify-between border-t-2 border-slate-100 pt-8">
+              <div className="flex items-center gap-6">
+                <img
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(`https://nrzo0ne.vercel.app?track=${printSlip.id}`)}`}
+                  alt="QR"
+                  className="w-12 h-12 rounded-2xl border-2 border-slate-50 shadow-md"
+                />
+                <div>
+                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">
+                    NRZO0NE Tracking ID
+                  </p>
+                  <p className="text-[9px] font-black text-slate-300 uppercase italic">
+                    {printSlip.id}
+                  </p>
+                </div>
+              </div>
+              <div className="text-right">
+                <p className="text-[10px] font-black text-slate-300 uppercase tracking-[0.2em] italic mb-3">
+                  FACTORY SYSTEM NOMINAL
+                </p>
+                <div className="flex gap-1 h-1 justify-end">
+                  {Array.from({ length: 15 }).map((_, i) => (
+                    <div key={i} className="w-1.5 h-full bg-slate-100"></div>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-      </ConfigProvider>
+      </div>
     );
 
     return (
@@ -596,9 +619,9 @@ const FactoryPanel = ({
             <Printer size={20} /> PRINT BUNDLE
           </button>
         </div>
-        <div className="w-[210mm] h-[297mm] mx-auto bg-white shadow-3xl flex flex-col print:w-full print:shadow-none print:m-0 border border-slate-200 print:border-none">
+        <div className="w-[210mm] h-[297mm] mx-auto bg-white shadow-3xl flex flex-col print:w-full print:shadow-none">
           <SlipHalf copyTitle="WORKER COPY" />
-          <div className="w-full border-t-[2px] border-dashed border-black relative flex justify-center py-0 shrink-0 select-none items-center h-16">
+          <div className="w-full border-t-[6px] border-dashed border-slate-200 relative flex justify-center py-0 shrink-0 select-none items-center h-16">
             <span className="relative z-10 bg-white px-8 py-2 text-[10px] font-black uppercase tracking-[0.5em] text-slate-400 border-2 border-slate-100 rounded-full shadow-md italic">
               ✂ এখান থেকে কাটুন
             </span>
@@ -621,10 +644,10 @@ const FactoryPanel = ({
           </button>
           <div>
             <h1 className="section-header">
-              {type === "sewing" ? "Sewing" : "Stone"} <span className="text-slate-400">Unit</span>
+                {type === "sewing" ? "Sewing" : "Stone"} <span className="text-slate-400">Unit</span>
             </h1>
             <p className="text-[11px] font-black text-slate-400 uppercase tracking-[0.4em] mt-2 italic">
-              Production Division {type.toUpperCase()}
+               Production Division {type.toUpperCase()}
             </p>
           </div>
         </div>
@@ -632,7 +655,7 @@ const FactoryPanel = ({
           <div className="bg-white px-6 py-3 rounded-2xl border border-slate-100 shadow-sm hidden md:block">
             <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">Active Pipeline</p>
             <p className="text-2xl font-black italic text-black leading-none uppercase">
-              {activeProductions.length} <span className="text-[10px] text-slate-300 ml-1">Lots</span>
+                {activeProductions.length} <span className="text-[10px] text-slate-300 ml-1">Lots</span>
             </p>
           </div>
           {(isAdmin || isManager) && (
@@ -662,8 +685,8 @@ const FactoryPanel = ({
         <div className="space-y-4">
           <div className="relative group mb-8">
             <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-black transition-colors" size={20} />
-            <input
-              type="text"
+            <input 
+              type="text" 
               placeholder="সার্চ লট নম্বর, কারিগর বা ডিজাইন..."
               className="form-input pl-16 py-5 text-base border-slate-200"
               value={lotSearch}
@@ -673,8 +696,8 @@ const FactoryPanel = ({
 
           {activeProductions.length === 0 ? (
             <div className="h-64 flex flex-col items-center justify-center bg-white rounded-3xl border-2 border-dashed border-slate-100 opacity-40">
-              <Box size={48} strokeWidth={1} />
-              <p className="text-[10px] font-black uppercase tracking-[0.4em] mt-6">Zero Active Nodes</p>
+                <Box size={48} strokeWidth={1} />
+                <p className="text-[10px] font-black uppercase tracking-[0.4em] mt-6">Zero Active Nodes</p>
             </div>
           ) : (
             activeProductions.map((p, idx) => (
@@ -683,61 +706,49 @@ const FactoryPanel = ({
                 className="item-card flex flex-col md:flex-row justify-between items-center gap-8 group"
               >
                 <div className="flex items-center gap-8 flex-1 w-full md:w-auto">
-                  <div className="w-14 h-14 bg-slate-50 flex items-center justify-center text-3xl font-black italic rounded-xl border border-slate-100 shadow-inner group-hover:bg-black group-hover:text-white transition-all transform group-hover:rotate-6">
-                    {p.size}
-                  </div>
-                  <div className="space-y-2 flex-1">
-                    <div className="flex items-center gap-4">
-                      <h4 className="text-xl md:text-2xl font-black italic uppercase leading-none tracking-tighter">
-                        • {p.pataType ? `পাতা ${p.pataType.toUpperCase()} ` : ""}{p.type.toUpperCase()} # {p.worker}
-                      </h4>
-                      <span className="badge-standard">#{p.lotNo}</span>
+                    <div className="w-14 h-14 bg-slate-50 flex items-center justify-center text-3xl font-black italic rounded-xl border border-slate-100 shadow-inner group-hover:bg-black group-hover:text-white transition-all transform group-hover:rotate-6">
+                        {p.size}
                     </div>
-                    <div className="flex items-center gap-4 text-slate-400 text-[11px] font-black uppercase italic tracking-widest">
-                      <span>• {p.design}</span>
-                      <span>• {p.date}</span>
-                      {p.pataQty > 0 && <span className="text-black">PATA: {p.pataQty}</span>}
+                    <div className="space-y-2 flex-1">
+                        <div className="flex items-center gap-4">
+                            <h4 className="text-xl md:text-2xl font-black italic uppercase leading-none tracking-tighter">
+                                • {p.pataType ? `পাতা ${p.pataType.toUpperCase()} ` : ""}{p.type.toUpperCase()} # {p.worker}
+                            </h4>
+                            <span className="badge-standard">#{p.lotNo}</span>
+                        </div>
+                        <div className="flex items-center gap-4 text-slate-400 text-[11px] font-black uppercase italic tracking-widest">
+                            <span>• {p.design}</span>
+                            <span>• {p.date}</span>
+                            {p.pataQty > 0 && <span className="text-black">PATA: {p.pataQty}</span>}
+                        </div>
                     </div>
-                  </div>
                 </div>
 
                 <div className="flex items-center gap-12 w-full md:w-auto justify-between border-t md:border-t-0 pt-6 md:pt-0">
-                  <div className="flex gap-12">
-                    <div className="text-center">
-                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">Borka</p>
-                      <p className="text-4xl font-black italic tracking-tighter leading-none">{p.issueBorka}</p>
+                    <div className="flex gap-12">
+                        <div className="text-center">
+                            <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">Borka</p>
+                            <p className="text-4xl font-black italic tracking-tighter leading-none">{p.issueBorka}</p>
+                        </div>
+                        <div className="text-center">
+                            <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">Hijab</p>
+                            <p className="text-4xl font-black italic tracking-tighter leading-none">{p.issueHijab}</p>
+                        </div>
                     </div>
-                    <div className="text-center">
-                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">Hijab</p>
-                      <p className="text-4xl font-black italic tracking-tighter leading-none">{p.issueHijab}</p>
+                    <div className="flex gap-3">
+                        <button
+                           onClick={() => setReceiveModal(p)}
+                           className="black-button"
+                        >
+                           জমা নিন (REC)
+                        </button>
+                        <button
+                          onClick={() => setPrintSlip(p)}
+                          className="w-12 h-12 flex items-center justify-center rounded-full bg-slate-50 text-slate-400 hover:bg-black hover:text-white transition-all"
+                        >
+                          <Printer size={18} />
+                        </button>
                     </div>
-                  </div>
-                  <div className="flex gap-3">
-                    <button
-                      onClick={() => setReceiveModal(p)}
-                      className="black-button"
-                    >
-                      জমা নিন (REC)
-                    </button>
-                    <button
-                      onClick={() => setPrintSlip(p)}
-                      className="w-12 h-12 flex items-center justify-center rounded-full bg-slate-50 text-slate-400 hover:bg-black hover:text-white transition-all"
-                    >
-                      <Printer size={18} />
-                    </button>
-                    {isAdmin && (
-                      <button
-                        onClick={() => {
-                          if (window.confirm("আপনি কি নিশ্চিত যে এটি ডিলিট করতে চান?")) {
-                            setMasterData(prev => ({ ...prev, productions: (prev.productions || []).filter(prod => prod.id !== p.id) }));
-                          }
-                        }}
-                        className="w-12 h-12 flex items-center justify-center rounded-full bg-rose-50 text-rose-500 hover:bg-rose-500 hover:text-white transition-all shadow-sm"
-                      >
-                        <Trash2 size={18} />
-                      </button>
-                    )}
-                  </div>
                 </div>
               </div>
             ))
@@ -758,64 +769,64 @@ const FactoryPanel = ({
                 className="item-card flex flex-col md:flex-row justify-between items-center gap-8 group"
               >
                 <div className="flex items-center gap-8 flex-1 w-full md:w-auto">
-                  <div className="w-14 h-14 bg-black text-white flex items-center justify-center text-3xl font-black italic rounded-xl shadow-xl transform group-hover:rotate-6 transition-all">
-                    {p.size}
-                  </div>
-                  <div className="space-y-2 flex-1">
-                    <div className="flex items-center gap-4">
-                      <h4 className="text-xl md:text-2xl font-black italic uppercase leading-none tracking-tighter">
-                        • {p.design} # {p.worker}
-                      </h4>
-                      <span className="badge-standard">#{p.lotNo}</span>
+                    <div className="w-14 h-14 bg-black text-white flex items-center justify-center text-3xl font-black italic rounded-xl shadow-xl transform group-hover:rotate-6 transition-all">
+                        {p.size}
                     </div>
-                    <div className="flex items-center gap-4 text-slate-400 text-[11px] font-black uppercase italic tracking-widest">
-                      <span>• {p.date}</span>
-                      <span className="text-emerald-500 font-black">• DONE {p.receiveDate}</span>
-                      {(p.wasteBorka > 0 || p.wasteHijab > 0) && (
-                        <span className="text-rose-500 font-black tracking-widest border-l border-slate-100 pl-4 ml-2">
-                          {(p.wasteBorka || 0) + (p.wasteHijab || 0)} WASTED
-                        </span>
-                      )}
+                    <div className="space-y-2 flex-1">
+                        <div className="flex items-center gap-4">
+                            <h4 className="text-xl md:text-2xl font-black italic uppercase leading-none tracking-tighter">
+                                • {p.design} # {p.worker}
+                            </h4>
+                            <span className="badge-standard">#{p.lotNo}</span>
+                        </div>
+                        <div className="flex items-center gap-4 text-slate-400 text-[11px] font-black uppercase italic tracking-widest">
+                            <span>• {p.date}</span>
+                            <span className="text-emerald-500 font-black">• DONE {p.receiveDate}</span>
+                            {(p.wasteBorka > 0 || p.wasteHijab > 0) && (
+                                <span className="text-rose-500 font-black tracking-widest border-l border-slate-100 pl-4 ml-2">
+                                    {(p.wasteBorka || 0) + (p.wasteHijab || 0)} WASTED
+                                </span>
+                            )}
+                        </div>
                     </div>
-                  </div>
                 </div>
 
                 <div className="flex gap-12 text-center w-full md:w-auto justify-between border-t md:border-t-0 pt-6 md:pt-0">
                   <div className="flex gap-12">
-                    <div>
-                      <p className="text-[9px] font-black text-slate-400 mb-1 uppercase tracking-widest">Borka</p>
-                      <p className="text-4xl font-black italic tracking-tighter leading-none">{p.receivedBorka || 0}</p>
-                    </div>
-                    <div>
-                      <p className="text-[9px] font-black text-slate-400 mb-1 uppercase tracking-widest">Hijab</p>
-                      <p className="text-4xl font-black italic tracking-tighter leading-none">{p.receivedHijab || 0}</p>
-                    </div>
+                     <div>
+                        <p className="text-[9px] font-black text-slate-400 mb-1 uppercase tracking-widest">Borka</p>
+                        <p className="text-4xl font-black italic tracking-tighter leading-none">{p.receivedBorka || 0}</p>
+                      </div>
+                      <div>
+                        <p className="text-[9px] font-black text-slate-400 mb-1 uppercase tracking-widest">Hijab</p>
+                        <p className="text-4xl font-black italic tracking-tighter leading-none">{p.receivedHijab || 0}</p>
+                      </div>
                   </div>
                   <div className="flex items-center gap-4 ml-6">
                     <div className="text-right">
-                      <p className="text-[9px] font-black text-slate-400 mb-1 uppercase tracking-widest">Wage</p>
-                      <p className="text-3xl font-black text-emerald-500 italic">৳{p.rate}</p>
+                        <p className="text-[9px] font-black text-slate-400 mb-1 uppercase tracking-widest">Wage</p>
+                        <p className="text-3xl font-black text-emerald-500 italic">৳{p.rate}</p>
                     </div>
                     <button
-                      onClick={() => setPrintSlip(p)}
-                      className="w-12 h-12 flex items-center justify-center rounded-full bg-slate-50 text-slate-400 hover:bg-black hover:text-white transition-all shadow-sm"
+                        onClick={() => setPrintSlip(p)}
+                        className="w-12 h-12 flex items-center justify-center rounded-full bg-slate-50 text-slate-400 hover:bg-black hover:text-white transition-all shadow-sm"
                     >
-                      <Printer size={18} />
+                        <Printer size={18} />
                     </button>
                     {isAdmin && (
-                      <button
-                        onClick={() => {
-                          if (confirm('মুছে ফেলবেন?')) {
-                            setMasterData(prev => ({
-                              ...prev,
-                              productions: (prev.productions || []).filter(x => x.id !== p.id)
-                            }));
-                          }
-                        }}
-                        className="w-12 h-12 flex items-center justify-center rounded-full bg-rose-50 text-rose-500 hover:bg-rose-500 hover:text-white transition-all shadow-sm"
-                      >
-                        <Trash2 size={18} />
-                      </button>
+                        <button
+                          onClick={() => {
+                              if(confirm('মুছে ফেলবেন?')) {
+                                  setMasterData(prev => ({
+                                      ...prev,
+                                      productions: prev.productions.filter(x => x.id !== p.id)
+                                  }));
+                              }
+                          }}
+                          className="w-12 h-12 flex items-center justify-center rounded-full bg-rose-50 text-rose-500 hover:bg-rose-500 hover:text-white transition-all shadow-sm"
+                        >
+                          <Trash2 size={18} />
+                        </button>
                     )}
                   </div>
                 </div>
@@ -838,7 +849,7 @@ const FactoryPanel = ({
               return (
                 <div
                   key={w}
-                  className="item-card flex flex-col md:flex-row justify-between items-center gap-10 group"
+                  className="bg-white p-5 md:p-6 rounded-3xl border-2 border-slate-50 shadow-2xl flex flex-col md:flex-row justify-between items-center gap-10 group hover:border-black transition-all"
                 >
                   <div className="flex items-center gap-8 flex-1">
                     <div className="w-12 h-12 md:w-16 md:h-16 bg-black text-white rounded-full flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform">
@@ -894,229 +905,159 @@ const FactoryPanel = ({
               <X size={24} />
             </button>
             <div className="text-center space-y-4">
-              <div className="mx-auto w-14 h-14 bg-black text-white rounded-full flex items-center justify-center shadow-2xl">
-                <Plus size={32} strokeWidth={3} />
+              <div className="mx-auto w-16 h-16 bg-black text-white rounded-2xl flex items-center justify-center shadow-2xl rotate-3">
+                <Plus size={40} strokeWidth={3} />
               </div>
-              <h3 className="text-3xl md:text-4xl font-black italic tracking-tighter uppercase leading-none">
-                <span className="text-black">Job</span> <span className="text-transparent" style={{ WebkitTextStroke: "1px #cbd5e1" }}>Assignment</span>
+              <h3 className="text-xl md:text-2xl font-black italic tracking-tighter uppercase leading-none">
+                Job <span className="text-slate-400">Assignment</span>
               </h3>
-              <p className="inline-block px-4 py-1.5 bg-slate-100 text-slate-600 rounded-full text-[10px] font-black uppercase tracking-widest italic">
-                {type.toUpperCase()} UNIT MODE
-              </p>
             </div>
-
-            <div className="flex items-center justify-center gap-4">
-              <span className={`text-[10px] font-black uppercase tracking-widest italic transition-colors ${!showAllLots ? "text-black" : "text-slate-400"}`}>Normal Pipeline</span>
-              <button
-                type="button"
-                onClick={() => setShowAllLots(!showAllLots)}
-                className={`relative w-14 h-8 rounded-full transition-colors duration-300 ${showAllLots ? "bg-rose-500" : "bg-emerald-500"}`}
-              >
-                <div className={`absolute top-1 left-1 bg-white w-6 h-6 rounded-full shadow-md transition-transform duration-300 ${showAllLots ? "translate-x-6" : ""}`}></div>
-              </button>
-              <span className={`text-[10px] font-black uppercase tracking-widest italic transition-colors ${showAllLots ? "text-rose-500" : "text-slate-400"}`}>Admin Power</span>
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12">
-              <div className="lg:col-span-6 space-y-8">
-                
-                {/* Lot Selection Box */}
-                <div className="bg-slate-50 p-6 md:p-8 rounded-[2rem] border border-slate-100 relative group transition-all hover:border-black">
-                  <div className="flex items-center gap-3 mb-4">
-                    <Search size={18} className="text-slate-400" />
-                    <label className="text-xs font-black text-black uppercase tracking-widest">
-                      Select Available Lot <span className="text-slate-400 text-[10px] ml-1">(লট পছন্দ করুন)</span>
-                    </label>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+              <div className="space-y-6">
+                <div className="bg-slate-50/50 p-8 rounded-2xl border border-slate-50 space-y-6">
+                  <div className="flex gap-4">
+                    <div className="flex-1">
+                      <label className="text-[10px] font-black text-slate-400 uppercase ml-4 mb-2 block tracking-widest">
+                        Worker / কারিগর
+                      </label>
+                      <select
+                        className="w-full bg-white px-4 py-3 border-2 border-slate-100 rounded-3xl font-black text-xs uppercase outline-none focus:border-black transition-all appearance-none italic"
+                        value={selection.worker}
+                        onChange={(e) => handleLotSelect(selectedLot)}
+                      >
+                        <option value="">Select Worker</option>
+                        {workers.map((w) => (
+                          <option key={w} value={w}>
+                            {w}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="w-1/3">
+                      <label className="text-[10px] font-black text-slate-400 uppercase ml-4 mb-2 block tracking-widest">
+                        Rate / মজুরি
+                      </label>
+                      <input
+                        className="w-full bg-black text-white px-4 py-3 border-none rounded-3xl font-black text-xs text-center outline-none focus:ring-2 focus:ring-emerald-500/20 italic"
+                        value={selection.rate}
+                        onChange={(e) =>
+                          setSelection((p) => ({ ...p, rate: e.target.value }))
+                        }
+                      />
+                    </div>
                   </div>
-                  <div className="relative">
+                  <div className="relative group">
+                    <label className="text-[10px] font-black text-slate-400 uppercase ml-4 mb-2 block tracking-widest">
+                      Select Lot / লট পছন্দ করুন
+                    </label>
                     <select
-                      className="w-full bg-white px-6 py-4 border-2 border-slate-200 rounded-2xl font-black text-sm uppercase outline-none focus:border-black transition-all appearance-none cursor-pointer"
+                      className="w-full bg-white px-4 py-3 border-4 border-slate-50 rounded-xl font-black text-sm uppercase outline-none focus:border-black transition-all appearance-none italic pr-12"
                       value={selectedLot}
                       onChange={(e) => handleLotSelect(e.target.value)}
                     >
-                      <option value="">-- LOT NO / DESIGN... --</option>
+                      <option value="">-- Choose Active Lot --</option>
                       {availableLots.map((l) => (
                         <option
                           key={`${l.design}|${l.color}|${l.lotNo}`}
                           value={`${l.design}|${l.color}|${l.lotNo}`}
                         >
-                          {l.design} | {l.color} | #{l.lotNo} ({l.totalAvailable} Pcs)
+                          {l.design} | {l.color} | #{l.lotNo} (
+                          {l.totalAvailable} Pcs)
                         </option>
                       ))}
                     </select>
-                    <ChevronRight size={20} className="absolute right-6 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                    <ChevronRight
+                      size={20}
+                      className="absolute right-6 top-[55%] text-slate-300 group-hover:text-black transition-colors pointer-events-none"
+                    />
                   </div>
-                  {availableLots.length === 0 && (
-                    <div className="mt-4 p-4 bg-white border-2 border-dashed border-slate-200 rounded-xl flex items-center justify-center gap-2 text-slate-400">
-                       <Box size={16} /> <span className="text-[10px] font-black tracking-widest uppercase">No Matching Lots Found</span>
-                    </div>
-                  )}
                 </div>
-
-                <div className="bg-white space-y-6">
-                  <div>
-                    <label className="flex items-center gap-2 text-xs font-black text-black uppercase tracking-widest mb-3">
-                      <User size={16} className="text-slate-400" /> Select Worker <span className="text-slate-400 text-[10px]">(কারিগর নির্বাচন করুন)</span>
+                <div className="p-4 flex gap-4 items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <label className="text-[10px] font-black uppercase text-slate-400">
+                      Force View All Designs
                     </label>
-                    <div className="relative">
-                      <select
-                        className="w-full bg-black text-white px-6 py-4 rounded-2xl font-black text-sm uppercase outline-none appearance-none cursor-pointer"
-                        value={selection.worker}
-                        onChange={(e) => {
-                          const w = e.target.value;
-                          setSelection((p) => ({
-                            ...p,
-                            worker: w,
-                            rate: (masterData.workerWages || {})[type]?.[w] || p.rate
-                          }));
-                        }}
-                      >
-                        <option value="">কারিগর সিলেক্ট করুন (Select Worker)</option>
-                        {workers.map((w) => (
-                          <option key={w} value={w}>{w}</option>
-                        ))}
-                      </select>
-                      <ChevronRight size={20} className="absolute right-6 top-1/2 -translate-y-1/2 text-white/50 pointer-events-none" />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-slate-50 p-4 shrink-0 rounded-2xl border border-slate-100 flex flex-col justify-center">
-                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Rate (রেট)</p>
-                      <div className="flex items-center gap-1 font-black text-emerald-600 text-2xl">
-                         ৳
-                         <input
-                           type="number"
-                           className="w-full bg-transparent outline-none p-0"
-                           value={selection.rate}
-                           placeholder="0"
-                           onChange={(e) => setSelection(p => ({ ...p, rate: e.target.value }))}
-                         />
-                      </div>
-                    </div>
-                    <div className="bg-slate-50 p-4 shrink-0 rounded-2xl border border-slate-100 flex flex-col justify-center">
-                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Date (তারিখ)</p>
-                      <input 
-                        type="date"
-                        className="w-full bg-transparent text-sm font-black text-black outline-none p-0"
-                        value={selection.date}
-                        onChange={(e) => setSelection(p => ({ ...p, date: e.target.value }))}
-                      />
-                    </div>
-                    <div className="bg-slate-50 p-4 shrink-0 rounded-2xl border border-slate-100 flex flex-col justify-center">
-                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Design</p>
-                      <p className="text-sm font-black truncate">{selection.design || "---"}</p>
-                    </div>
-                    <div className="bg-slate-50 p-4 shrink-0 rounded-2xl border border-slate-100 flex flex-col justify-center">
-                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Color</p>
-                      <p className="text-sm font-black truncate">{selection.color || "---"}</p>
-                    </div>
-                  </div>
-
-                  <div>
-                     <label className="text-[10px] font-black text-slate-400 uppercase block mb-2 tracking-widest">Optional Note (ঐচ্ছিক)</label>
-                     <input
-                       type="text"
-                       className="w-full bg-slate-50 border border-slate-100 px-5 py-4 rounded-xl font-bold text-sm italic outline-none focus:border-black transition-all placeholder:text-slate-300"
-                       placeholder="Type Remarks..."
-                       value={selection.note || ""}
-                       onChange={(e) => setSelection(p => ({ ...p, note: e.target.value }))}
-                     />
+                    <button
+                      onClick={() => setShowAllLots(!showAllLots)}
+                      className={`w-14 h-8 rounded-full border-2 transition-all p-1 ${showAllLots ? "bg-black border-black" : "bg-slate-50 border-slate-100"}`}
+                    >
+                      <div
+                        className={`w-5 h-5 rounded-full shadow-md transition-all ${showAllLots ? "bg-white translate-x-6" : "bg-slate-300 translate-x-0"}`}
+                      ></div>
+                    </button>
                   </div>
                 </div>
-
               </div>
-
-              <div className="lg:col-span-6">
-                <div className="bg-slate-50 p-6 md:p-8 rounded-[2rem] border border-slate-100 h-full flex flex-col">
-                  <div className="flex items-center gap-3 mb-6">
-                    <Layers size={18} className="text-slate-400" />
-                    <label className="text-xs font-black text-black uppercase tracking-widest">
-                       Select Size & Quantity
-                    </label>
+              <div className="bg-slate-50/50 p-8 rounded-2xl border border-slate-50 space-y-6 max-h-[400px] overflow-y-auto">
+                <label className="text-[10px] font-black text-slate-600 uppercase tracking-[0.4em] ml-2 block mb-6">
+                  Quantity Breakout
+                </label>
+                {issueSizes.length === 0 ? (
+                  <div className="h-64 flex items-center justify-center text-slate-200 uppercase font-black italic tracking-widest text-[10px]">
+                    Select Lot to Populate
                   </div>
-
-                  <div className="flex-1 space-y-4 max-h-[400px] overflow-y-auto pr-2">
-                    {issueSizes.length === 0 ? (
-                      <div className="h-40 flex items-center justify-center text-slate-400 uppercase font-black italic tracking-widest text-[10px]">
-                        Select Lot to Populate
+                ) : (
+                  issueSizes.map((row, idx) => (
+                    <div
+                      key={idx}
+                      className="bg-white p-6 rounded-[1.8rem] border border-slate-50 shadow-sm flex items-center justify-between group hover:border-black transition-all italic"
+                    >
+                      <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center text-xl font-black group-hover:bg-black group-hover:text-white transition-all shadow-inner">
+                        {row.size}
                       </div>
-                    ) : (
-                      issueSizes.map((row, idx) => {
-                           const lotDetails = availableLots.find(l => l.lotNo === selection.lotNo && l.design === selection.design && l.color === selection.color);
-                           const maxBorka = lotDetails?.sizes?.[row.size]?.remB || 0;
-                           const maxHijab = lotDetails?.sizes?.[row.size]?.remH || 0;
-                           return (
-                             <div key={idx} className="bg-white p-4 md:p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col gap-4 group hover:border-black transition-all">
-                               <div className="flex items-center justify-between">
-                                  <div className="px-4 py-2 bg-black text-white rounded-lg text-sm font-black">{row.size || "--"}</div>
-                               </div>
-                               <div className="flex gap-4 items-center">
-                                  <div className="flex-1 bg-slate-50 p-3 rounded-xl border border-slate-100">
-                                      <div className="flex justify-between items-center mb-1">
-                                         <p className="text-[9px] font-black uppercase text-slate-400">Borka Qty</p>
-                                         <span className="text-[8px] font-bold text-slate-400">Max: {maxBorka}</span>
-                                      </div>
-                                      <input
-                                        type="number"
-                                        className="w-full bg-transparent text-xl font-black text-black outline-none p-0"
-                                        placeholder="0"
-                                        value={row.borka}
-                                        onChange={(e) => {
-                                          const n = [...issueSizes];
-                                          n[idx].borka = e.target.value;
-                                          setIssueSizes(n);
-                                        }}
-                                      />
-                                  </div>
-                                  <div className="flex-1 bg-slate-50 p-3 rounded-xl border border-slate-100">
-                                      <div className="flex justify-between items-center mb-1">
-                                         <p className="text-[9px] font-black uppercase text-slate-400">Hijab Qty</p>
-                                         <span className="text-[8px] font-bold text-slate-400">Max: {maxHijab}</span>
-                                      </div>
-                                      <input
-                                        type="number"
-                                        className="w-full bg-transparent text-xl font-black text-slate-500 outline-none p-0"
-                                        placeholder="0"
-                                        value={row.hijab}
-                                        onChange={(e) => {
-                                          const n = [...issueSizes];
-                                          n[idx].hijab = e.target.value;
-                                          setIssueSizes(n);
-                                        }}
-                                      />
-                                  </div>
-                               </div>
-                             </div>
-                           )
-                      })
-                    )}
-                  </div>
-                </div>
+                      <div className="flex gap-4">
+                        <div className="text-center w-16 px-1">
+                          <p className="text-[7px] font-black uppercase text-slate-400 mb-1">
+                            Borka
+                          </p>
+                          <input
+                            type="number"
+                            className="w-full text-center font-black text-xl bg-transparent border-none outline-none"
+                            placeholder="0"
+                            value={row.borka}
+                            onChange={(e) => {
+                              const n = [...issueSizes];
+                              n[idx].borka = e.target.value;
+                              setIssueSizes(n);
+                            }}
+                          />
+                        </div>
+                        <div className="text-center w-16 px-1">
+                          <p className="text-[7px] font-black uppercase text-slate-400 mb-1">
+                            Hijab
+                          </p>
+                          <input
+                            type="number"
+                            className="w-full text-center font-black text-xl bg-transparent border-none outline-none"
+                            placeholder="0"
+                            value={row.hijab}
+                            onChange={(e) => {
+                              const n = [...issueSizes];
+                              n[idx].hijab = e.target.value;
+                              setIssueSizes(n);
+                            }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                )}
               </div>
             </div>
-            <div className="flex flex-col md:flex-row gap-4 pt-8 border-t border-slate-100">
-              <button
-                type="button"
-                onClick={() => setShowIssueModal(false)}
-                className="py-4 md:py-6 px-8 rounded-full bg-slate-50 border-2 border-slate-200 text-slate-500 font-black uppercase text-xs tracking-widest hover:bg-slate-200 transition-all font-outfit"
-              >
-                Cancel
-              </button>
+            <div className="flex flex-col md:flex-row gap-4 pt-10 border-t-2 border-slate-50">
               <button
                 type="submit"
+                onClick={handleIssue}
+                className="flex-[2] py-8 rounded-full bg-black text-white font-black uppercase text-sm tracking-[0.3em] shadow-3xl hover:scale-[1.02] active:scale-95 transition-all"
+              >
+                ASSIGMENT PROTOCOL START
+              </button>
+              <button
                 name="print"
                 onClick={handleIssue}
-                className="py-4 md:py-6 px-10 rounded-full bg-slate-900 text-white font-black uppercase text-xs tracking-[0.2em] shadow-xl hover:bg-black transition-all flex items-center justify-center gap-3 font-outfit"
+                className="flex-1 py-8 rounded-full bg-indigo-600 text-white font-black uppercase text-sm tracking-widest shadow-2xl flex items-center justify-center gap-4 hover:bg-black transition-all"
               >
-                <Printer size={18} /> Print Note
-              </button>
-              <button
-                type="submit"
-                onClick={handleIssue}
-                className="flex-[2] py-4 md:py-6 rounded-full bg-emerald-600 text-white font-black uppercase text-sm tracking-[0.2em] shadow-emerald-600/30 shadow-2xl hover:scale-[1.02] active:scale-95 transition-all text-center flex items-center justify-center gap-3 font-outfit"
-              >
-                ASSIGN WORK <span className="text-[10px] hidden md:inline">(নিশ্চিত করুন)</span> <CheckCircle size={18} />
+                <Printer size={20} /> & PRINT
               </button>
             </div>
           </div>

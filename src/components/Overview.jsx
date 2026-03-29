@@ -1,46 +1,41 @@
 import React, { useMemo } from 'react';
-import { Activity, Scissors, Layers, Hammer, Package, Truck, Users, Database, DollarSign, FileText, TrendingUp, AlertCircle, MessageSquare, LayoutGrid, Plus } from 'lucide-react';
-import logoWhite from '../assets/logo_white.png';
-import logoBlack from '../assets/logo_black.png';
-
-const mockStats = {
-    lowStock: [
-        { name: 'HYDRAULIC PUMP', qty: 2 },
-        { name: 'THERMAL SHIELD', qty: 5 },
-        { name: 'CORE SENSOR', qty: 1 },
-        { name: 'VALVE GASKET', qty: 3 },
-        { name: 'POWER RELAY', qty: 4 }
-    ]
-};
+import { Activity, Scissors, Layers, Hammer, Package, Truck, LayoutGrid, Plus, Bell, MoreHorizontal, ArrowUpRight, PlusCircle } from 'lucide-react';
 
 const ProductionTrend = ({ data }) => {
     const safeData = (data && data.length > 0) ? data : [0];
     const maxVal = Math.max(...safeData, 1);
     const points = safeData.map((d, i) => `${(i * 100) / (safeData.length > 1 ? safeData.length - 1 : 1)},${100 - (d / maxVal) * 100}`).join(' ');
     return (
-        <div className="h-24 w-full mt-4 group">
-            <svg viewBox="0 0 100 100" className="w-full h-full preserve-colors" preserveAspectRatio="none">
+        <div className="h-28 w-full mt-4">
+            <svg viewBox="0 0 100 100" className="w-full h-full" preserveAspectRatio="none">
                 <defs>
-                    <linearGradient id="chartGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                        <stop offset="0%" stopColor="rgba(0,0,0,0.1)" />
+                    <linearGradient id="chartGradientO" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stopColor="rgba(0,0,0,0.05)" />
                         <stop offset="100%" stopColor="transparent" />
                     </linearGradient>
                 </defs>
-                <path d={`M 0 100 L 0 ${100 - (safeData[0] / maxVal) * 100} L ${points} L 100 100 Z`} fill="url(#chartGradient)" />
+                <path d={`M 0 100 L 0 ${100 - (safeData[0] / maxVal) * 100} L ${points} L 100 100 Z`} fill="url(#chartGradientO)" />
                 <polyline
                     fill="none"
-                    stroke="black"
-                    strokeWidth="2"
+                    stroke="#1a1a1a"
+                    strokeWidth="1.5"
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     points={points}
-                    className="transition-all duration-1000"
-                    style={{ strokeDasharray: 1000, strokeDashoffset: 0 }}
                 />
             </svg>
+            <div className="flex justify-between text-[9px] font-bold text-slate-400 uppercase mt-2">
+                <span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span>
+            </div>
         </div>
     );
 };
+
+const DashboardCard = ({ children, isDark = false, className = '' }) => (
+    <div className={`${isDark ? 'bg-[#1a1a1a] text-white' : 'bg-white text-slate-900'} rounded-[32px] p-6 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-white/60 relative overflow-hidden ${className}`}>
+        {children}
+    </div>
+);
 
 const Overview = ({ masterData, setMasterData, setActivePanel, user, t }) => {
     const stats = useMemo(() => {
@@ -52,258 +47,239 @@ const Overview = ({ masterData, setMasterData, setActivePanel, user, t }) => {
         }).reverse();
 
         const trendData = last7Days.map(date => (masterData.productions || []).filter(p => p.date === date).length);
-        
-        const productionToday = (masterData.productions || []).filter(p => p.date === today.toLocaleDateString('en-GB')).length;
         const totalProduction = (masterData.productions || []).length;
-
-        const activeCutting = (masterData.cuttingStock || []).filter(c => !c.isDistributed).length;
-        const pendingPata = (masterData.pataEntries || []).filter(p => p.status !== 'Received').length;
+        const totalPata = (masterData.pataEntries || []).length;
 
         const pendingSewing = (masterData.productions || []).filter(p => p.type === 'sewing' && p.status !== 'Received').length;
         const pendingStone = (masterData.productions || []).filter(p => p.type === 'stone' && p.status !== 'Received').length;
         const pendingOutside = (masterData.outsideWorkEntries || []).filter(p => p.status !== 'Received').length;
+        
+        const completions = (masterData.productions || []).filter(p => p.status === 'Received').length + (masterData.pataEntries || []).filter(p => p.status === 'Received').length;
 
-        const inventory = {};
-        (masterData.rawInventory || []).forEach(log => {
-            const key = log.color ? `${log.item} (${log.color})` : log.item;
-            if (!inventory[key]) inventory[key] = { name: log.item, color: log.color, qty: 0 };
-            if (log.type === 'in') inventory[key].qty += Number(log.qty);
-            else if (log.type === 'out') inventory[key].qty -= Number(log.qty);
-        });
-        const lowStock = Object.values(inventory).filter(i => i.qty <= 5);
-
-        const recentActivity = [
-            ...(masterData.productions || []).filter(p => p.type === 'sewing').map(p => ({ ...p, activityType: 'Sewing', icon: Layers, color: 'text-indigo-500', bg: 'bg-indigo-50' })),
-            ...(masterData.productions || []).filter(p => p.type === 'stone').map(p => ({ ...p, activityType: 'Stone', icon: Hammer, color: 'text-amber-500', bg: 'bg-amber-50' })),
-            ...(masterData.cuttingStock || []).map(c => ({ ...c, activityType: 'Cutting', icon: Scissors, color: 'text-black', bg: 'bg-slate-100' })),
-            ...(masterData.pataEntries || []).map(p => ({ ...p, activityType: 'Pata', icon: Package, color: 'text-orange-500', bg: 'bg-orange-50' })),
-            ...(masterData.outsideWorkEntries || []).map(p => ({ ...p, activityType: 'Outside', icon: Truck, color: 'text-rose-500', bg: 'bg-rose-50' }))
+        const activeJobs = [
+            ...(masterData.productions || []).filter(p => p.status === 'Pending').map(p => ({ ...p, activityType: p.type === 'sewing' ? 'Sewing' : 'Stone' })),
+            ...(masterData.pataEntries || []).filter(p => p.status === 'Pending').map(p => ({ ...p, activityType: 'Pata' }))
         ].sort((a, b) => (b.id || 0) - (a.id || 0));
 
-        return { productionToday, totalProduction, activeCutting, pendingPata, pendingSewing, pendingStone, pendingOutside, lowStock, recentActivity, trendData };
+        return { totalProduction, totalPata, pendingSewing, pendingStone, pendingOutside, completions, trendData, activeJobs };
     }, [masterData]);
 
-    const isAdmin = user?.role === 'admin';
-    const isManager = user?.role === 'manager';
-
-    const [note, setNote] = React.useState('');
-    const handleSendNote = () => {
-        if (!note) return;
-        const newNote = { id: Date.now(), from: user.name, text: note, date: new Date().toLocaleString() };
-        setMasterData(prev => ({
-            ...prev,
-            adminNotes: [...(prev.adminNotes || []), newNote]
-        }));
-        setNote('');
-    };
-
-    const [categoryFilter, setCategoryFilter] = React.useState('All');
-    const filteredFeed = categoryFilter === 'All'
-        ? stats.recentActivity.slice(0, 15)
-        : stats.recentActivity.filter(a => a.activityType === categoryFilter).slice(0, 15);
-    const feedCategories = ['All', 'Cutting', 'Sewing', 'Stone', 'Pata', 'Outside'];
+    const userName = user?.name || "Dilan";
 
     return (
-        <div className="space-y-6 md:space-y-12 pb-24 animate-fade-up px-2 italic text-black font-outfit">
+        <div className="font-outfit pb-24 animate-fade-up max-w-[1400px] mx-auto min-h-screen">
+            {/* Header Section */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 mt-4">
+                <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-[#1a1a1a]">
+                    Hi, {userName}!
+                </h1>
+                <div className="flex items-center gap-3">
+                    <button onClick={() => setActivePanel('Swing')} className="bg-[#1a1a1a] text-white px-5 py-2.5 rounded-full font-bold text-sm tracking-wide flex items-center gap-2 hover:bg-black transition-all">
+                        <Plus size={16} /> Create
+                    </button>
+                </div>
+            </div>
 
-            {/* Hero Banner */}
-            <div className="bg-white rounded-[2rem] md:rounded-[3rem] border-2 border-slate-100 shadow-xl p-5 md:p-8 flex flex-col gap-5">
-
-                {/* Top row: Logo + Title + Quick Actions */}
-                <div className="flex items-center justify-between gap-4">
-                    <div className="flex items-center gap-4 min-w-0">
-                        <div className="bg-black rounded-2xl p-3 shadow-xl shrink-0">
-                            <img src={logoWhite} alt="NRZO0NE" className="w-10 h-10 md:w-14 md:h-14 object-contain" />
+            {/* Top Grid - Matches iDraft top section */}
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-6 mb-8">
+                
+                {/* Overall Information - Dark Card */}
+                <DashboardCard isDark className="md:col-span-12 lg:col-span-5 flex flex-col justify-between">
+                    <div className="flex justify-between items-start mb-6">
+                        <h3 className="font-semibold text-lg">Overall Information</h3>
+                        <button className="text-white/60 hover:text-white transition-colors"><MoreHorizontal size={20} /></button>
+                    </div>
+                    <div className="flex items-baseline gap-12 mb-10">
+                        <div>
+                            <p className="text-5xl font-bold tracking-tighter">{stats.totalProduction}</p>
+                            <p className="text-[10px] text-white/50 uppercase font-semibold tracking-wider mt-1">Total Jobs<br/>for all time</p>
                         </div>
-                        <div className="min-w-0">
-                            <h1 className="text-xl md:text-3xl font-black uppercase tracking-tighter leading-none text-black italic whitespace-nowrap">
-                                NRZO0NE <span className="text-slate-400">FACTORY</span>
-                            </h1>
-                            <p className="text-[9px] font-black uppercase tracking-widest text-slate-400 mt-1 italic">
-                                {t('systemsStable')} • Manufacturing Terminal
-                            </p>
+                        <div>
+                            <p className="text-5xl font-bold tracking-tighter text-white/90">{stats.completions}</p>
+                            <p className="text-[10px] text-white/50 uppercase font-semibold tracking-wider mt-1">Projects<br/>Completed</p>
                         </div>
                     </div>
-                    <div className="flex gap-2 shrink-0">
-                        <button onClick={() => setActivePanel('Menu')} className="flex items-center gap-2 bg-black text-white px-4 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest shadow-md hover:scale-105 transition-all">
-                            <LayoutGrid size={14} /> {t('mainMenu')}
+                    
+                    <div className="grid grid-cols-3 gap-3">
+                        <div className="bg-white/10 rounded-2xl p-4 flex flex-col items-center justify-center pt-5">
+                            <Layers size={18} className="text-white/80 mb-2" />
+                            <p className="text-2xl font-bold">{stats.pendingSewing}</p>
+                            <span className="text-[9px] text-white/60 font-semibold tracking-wider uppercase mt-1">Sewing</span>
+                        </div>
+                        <div className="bg-white/10 rounded-2xl p-4 flex flex-col items-center justify-center pt-5">
+                            <Hammer size={18} className="text-white/80 mb-2" />
+                            <p className="text-2xl font-bold">{stats.pendingStone}</p>
+                            <span className="text-[9px] text-white/60 font-semibold tracking-wider uppercase mt-1">Stone</span>
+                        </div>
+                        <div className="bg-white/10 rounded-2xl p-4 flex flex-col items-center justify-center pt-5">
+                            <Truck size={18} className="text-white/80 mb-2" />
+                            <p className="text-2xl font-bold">{stats.pendingOutside}</p>
+                            <span className="text-[9px] text-white/60 font-semibold tracking-wider uppercase mt-1">Outside</span>
+                        </div>
+                    </div>
+                </DashboardCard>
+
+                {/* Weekly progress - Vector Chart */}
+                <DashboardCard className="md:col-span-6 lg:col-span-4">
+                    <div className="flex justify-between items-start mb-4">
+                        <h3 className="font-semibold text-lg">Weekly progress</h3>
+                        <ArrowUpRight size={18} className="text-slate-400" />
+                    </div>
+                    <div className="flex items-center gap-4 text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-6">
+                        <span className="flex items-center gap-1.5"><div className="w-1.5 h-1.5 rounded-full bg-black"></div> Factory</span>
+                        <span className="flex items-center gap-1.5"><div className="w-1.5 h-1.5 rounded-full bg-slate-300"></div> Logistics</span>
+                    </div>
+                    
+                    <ProductionTrend data={stats.trendData} />
+                </DashboardCard>
+
+                {/* Month progress - Donut Chart Representation & Download */}
+                <DashboardCard className="md:col-span-6 lg:col-span-3 flex flex-col justify-between items-center text-center">
+                    <div className="w-full text-left">
+                        <h3 className="font-semibold text-lg flex items-center justify-between">Month progress <LayoutGrid size={18} className="text-slate-400"/></h3>
+                        <p className="text-[10px] font-bold text-emerald-600 tracking-wider mt-1">+20% compared to last month</p>
+                    </div>
+                    
+                    <div className="relative w-32 h-32 flex items-center justify-center mt-6 mb-4">
+                        <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                            <circle cx="50" cy="50" r="40" stroke="#f1f5f9" strokeWidth="8" fill="none" />
+                            <circle cx="50" cy="50" r="40" stroke="#1a1a1a" strokeWidth="8" fill="none" strokeDasharray="251" strokeDashoffset="50" className="transition-all duration-1000" />
+                            <circle cx="50" cy="50" r="28" stroke="#1a1a1a" strokeWidth="1" fill="none" />
+                        </svg>
+                        <div className="absolute inset-0 flex items-center justify-center flex-col">
+                            <span className="text-2xl font-bold tracking-tight">80%</span>
+                        </div>
+                    </div>
+
+                    <div className="w-full mt-auto flex gap-2">
+                        <button className="bg-[#1a1a1a] text-white p-3 rounded-full hover:bg-black transition-colors">
+                            <Activity size={16} />
                         </button>
-                        <button onClick={() => setActivePanel('Swing')} className="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest shadow-md hover:scale-105 transition-all">
-                            <Plus size={14} /> {t('issueWork')}
+                        <button onClick={()=>window.print()} className="flex-1 bg-white border-2 border-slate-100 rounded-full text-xs font-bold px-4 hover:border-black transition-colors">
+                            Download Report
                         </button>
                     </div>
-                </div>
+                </DashboardCard>
+            </div>
 
-                {/* Stat Grid */}
-                <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
-                    <div className="glass-card p-4 rounded-2xl border border-white/40 shadow-sm">
-                        <p className="text-[9px] font-black uppercase tracking-widest text-slate-500 mb-1 leading-tight">{t('outputToday')}</p>
-                        <p className="text-2xl md:text-3xl font-black tracking-tight text-slate-800 leading-none">+{stats.productionToday}</p>
-                        <p className="text-[8px] font-bold text-slate-400 uppercase mt-1">{t('pcs')}</p>
-                        <ProductionTrend data={stats.trendData} />
+            {/* Bottom Grid - Mixed Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
+                
+                {/* Check Goals */}
+                <DashboardCard className="md:col-span-6 lg:col-span-4 min-h-[220px]">
+                    <div className="flex justify-between items-start mb-6">
+                        <h3 className="font-semibold text-base">Current Goals:</h3>
+                        <div className="flex gap-2 text-slate-400">
+                            <Activity size={16} /><Scissors size={16} />
+                        </div>
                     </div>
-                    <div className="glass-card p-4 rounded-2xl border border-white/40 shadow-sm">
-                        <p className="text-[9px] font-black uppercase tracking-widest text-slate-500 mb-1 leading-tight">{t('cuttingQueue')}</p>
-                        <p className="text-2xl md:text-3xl font-black tracking-tight text-slate-800 leading-none">{stats.activeCutting}</p>
-                        <p className="text-[8px] font-bold text-slate-400 uppercase mt-1">{t('lots')}</p>
+                    <div className="space-y-3">
+                        <div className="flex items-center gap-3">
+                            <div className="w-4 h-4 rounded bg-black flex items-center justify-center"><div className="w-2 h-2 rounded-sm bg-white"></div></div>
+                            <span className="text-sm font-semibold tracking-wide">Finish Pata Backlog</span>
+                        </div>
+                        <div className="flex items-center gap-3 opacity-40">
+                            <div className="w-4 h-4 rounded border-2 border-slate-300"></div>
+                            <span className="text-sm font-semibold tracking-wide">Clear Cutting Room</span>
+                        </div>
+                        <div className="flex items-center gap-3 opacity-40">
+                            <div className="w-4 h-4 rounded border-2 border-slate-300"></div>
+                            <span className="text-sm font-semibold tracking-wide">Update Attendance Log</span>
+                        </div>
                     </div>
-                    <div className="glass-card bg-indigo-50/30 p-4 rounded-2xl border border-indigo-100/50 shadow-sm">
-                        <p className="text-[9px] font-black uppercase tracking-widest text-indigo-500 mb-1 leading-tight">{t('sewingLine')}</p>
-                        <p className="text-2xl md:text-3xl font-black tracking-tight text-indigo-700 leading-none">{stats.pendingSewing}</p>
-                        <p className="text-[8px] font-bold text-indigo-400 uppercase mt-1">{t('active')}</p>
+                </DashboardCard>
+
+                {/* Tasks in Process Area */}
+                <div className="md:col-span-6 lg:col-span-8">
+                    <div className="flex justify-between items-end mb-4 px-2">
+                        <h3 className="font-semibold text-base text-slate-800 tracking-wide">Task in process ({stats.activeJobs.length})</h3>
+                        <button className="text-[10px] font-bold text-slate-400 uppercase tracking-widest hover:text-black transition-colors">Open archive {'>'}</button>
                     </div>
-                    <div className="glass-card bg-amber-50/30 p-4 rounded-2xl border border-amber-100/50 shadow-sm">
-                        <p className="text-[9px] font-black uppercase tracking-widest text-amber-600 mb-1 leading-tight">{t('stoneHub')}</p>
-                        <p className="text-2xl md:text-3xl font-black tracking-tight text-amber-700 leading-none">{stats.pendingStone}</p>
-                        <p className="text-[8px] font-bold text-amber-400 uppercase mt-1">{t('active')}</p>
-                    </div>
-                    <div className="glass-card bg-rose-50/30 p-4 rounded-2xl border border-rose-100/50 shadow-sm">
-                        <p className="text-[9px] font-black uppercase tracking-widest text-rose-500 mb-1 leading-tight">{t('outsideLine')}</p>
-                        <p className="text-2xl md:text-3xl font-black tracking-tight text-rose-700 leading-none">{stats.pendingOutside}</p>
-                        <p className="text-[8px] font-bold text-rose-400 uppercase mt-1">{t('jobs')}</p>
-                    </div>
-                    <div className="glass-card bg-orange-50/30 p-4 rounded-2xl border border-orange-100/50 shadow-sm">
-                        <p className="text-[9px] font-black uppercase tracking-widest text-orange-500 mb-1 leading-tight">{t('pataLine')}</p>
-                        <p className="text-2xl md:text-3xl font-black tracking-tight text-orange-700 leading-none">{stats.pendingPata}</p>
-                        <p className="text-[8px] font-bold text-orange-400 uppercase mt-1">{t('active')}</p>
+                    
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {stats.activeJobs.slice(0, 2).map((job, idx) => (
+                            <DashboardCard key={idx} className="!p-5 !rounded-3xl flex flex-col justify-between min-h-[200px] border border-slate-100 shadow-[0_10px_30px_rgba(0,0,0,0.03)] hover:shadow-[0_15px_40px_rgba(0,0,0,0.06)] transition-all">
+                                <div className="flex justify-between">
+                                    <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center">
+                                        {job.activityType === 'Sewing' ? <Layers size={18} className="text-slate-600" /> : <Hammer size={18} className="text-slate-600" />}
+                                    </div>
+                                    <button className="text-slate-300 hover:text-black"><MoreHorizontal size={18} /></button>
+                                </div>
+                                <div className="mt-4 mb-6">
+                                    <h4 className="font-bold text-base leading-snug">{job.design || `Lot #${job.lotNo}`}</h4>
+                                    <p className="text-xs font-semibold text-slate-400 mt-1">{job.worker}</p>
+                                </div>
+                                <div className="flex justify-between items-end mt-auto">
+                                    <span className="text-[10px] font-bold text-slate-400">{job.date}</span>
+                                    <div className="w-8 h-8 rounded-full bg-[#1a1a1a] text-white flex items-center justify-center"><Bell size={12}/></div>
+                                </div>
+                            </DashboardCard>
+                        ))}
+
+                        {/* Add Task Button Card */}
+                        <div className="border border-dashed border-slate-300 rounded-3xl flex items-center justify-center min-h-[200px] text-slate-400 hover:text-black hover:border-black hover:bg-white transition-all cursor-pointer group">
+                            <div className="flex flex-col items-center gap-2 group-hover:scale-110 transition-transform">
+                                <PlusCircle size={24} strokeWidth={1.5} />
+                                <span className="text-xs font-bold tracking-widest uppercase mt-2">Add task</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Bottom Row - Last Projects */}
+            <div className="mt-8 mb-4 px-2 flex items-center justify-between">
+                <h3 className="font-bold text-base text-slate-800 tracking-wide">Last Projects</h3>
+                <div className="flex items-center gap-2 text-slate-400">
+                    <span className="text-[10px] font-bold uppercase tracking-widest">Sort by</span>
+                    <LayoutGrid size={14} />
+                </div>
+            </div>
 
-                {/* Left: Active Monitor List */}
-                <div className="lg:col-span-2 space-y-8">
-                    <div className="glass-card p-8 rounded-3xl border border-white/40 shadow-xl overflow-hidden min-h-[500px]">
-                        <div className="flex justify-between items-center mb-6 pb-6 border-b border-black/5">
-                            <h3 className="text-2xl font-black uppercase tracking-tight flex items-center gap-4 text-slate-800">
-                                <span className="relative flex h-4 w-4">
-                                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                                  <span className="relative inline-flex rounded-full h-4 w-4 bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]"></span>
-                                </span>
-                                {t('liveProductionStream')}
-                            </h3>
-                            <button onClick={() => window.location.reload()} className="p-3 bg-white/50 text-slate-600 rounded-xl hover:bg-white hover:text-black transition-all border border-white/50 shadow-sm"><TrendingUp size={18} /></button>
-                        </div>
-
-                        <div className="flex gap-2 overflow-x-auto pb-6 no-scrollbar mb-4">
-                            {feedCategories.map(cat => (
-                                <button
-                                    key={cat}
-                                    onClick={() => setCategoryFilter(cat)}
-                                    className={`px-6 py-3 rounded-full font-black uppercase text-[10px] tracking-widest transition-all whitespace-nowrap ${categoryFilter === cat ? 'bg-black/90 backdrop-blur-md text-white shadow-xl' : 'bg-white/50 text-slate-600 hover:bg-white/80 border border-white/40'}`}
-                                >
-                                    {t(cat.toLowerCase()) || cat}
-                                </button>
-                            ))}
-                        </div>
-
-                        <div className="space-y-4">
-                            {filteredFeed.map((act, i) => (
-                                <div key={act.id || i} className="group bg-white/60 hover:bg-white/90 backdrop-blur-sm p-5 rounded-2xl border border-white/50 hover:border-white shadow-sm hover:shadow-md transition-all duration-300 flex items-center justify-between gap-4">
-                                    <div className="flex items-center gap-4">
-                                        <div className={`w-12 h-12 md:w-14 md:h-14 rounded-xl flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform ${act.bg.replace('bg-', 'bg-').replace('-50', '-100/50')}`}>
-                                            <act.icon size={20} className={act.color} />
-                                        </div>
-                                        <div>
-                                            <div className="flex items-center gap-2 mb-1">
-                                                <span className={`px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-widest text-white ${act.activityType === 'Cutting' ? 'bg-black' : act.activityType === 'Sewing' ? 'bg-indigo-600' : act.activityType === 'Stone' ? 'bg-amber-600' : act.activityType === 'Pata' ? 'bg-orange-600' : 'bg-rose-600'}`}>
-                                                    {act.activityType}
-                                                </span>
-                                                <p className="text-[10px] font-black text-slate-400 tracking-wider mix-blend-multiply italic">{act.date}</p>
-                                            </div>
-                                            <h4 className="text-base md:text-lg font-black tracking-tight text-slate-800 uppercase italic leading-tight">
-                                                {act.activityType === 'Sewing' || act.activityType === 'Stone' ? `${act.worker} - ${act.design}` : act.activityType === 'Cutting' ? `Cutting: ${act.design}` : act.activityType === 'Outside' ? `${act.worker} - ${act.task}` : `${act.worker} - ${act.pataType}`}
-                                            </h4>
-                                            <p className="text-[11px] font-black text-slate-500 truncate max-w-[200px] md:max-w-md mix-blend-multiply uppercase tracking-wide mt-1 italic opacity-60">{act.color || act.pataStoneColors || act.note}</p>
-                                        </div>
-                                    </div>
-                                    <div className="text-right">
-                                        <p className="text-2xl md:text-3xl font-black tracking-tight text-slate-900">
-                                            +{act.issueBorka || act.issueHijab || act.borka || act.pataQty || act.borkaQty || 0}
-                                        </p>
-                                        <p className="text-[9px] font-bold text-slate-500 tracking-widest uppercase mt-0.5 mix-blend-multiply">Asset</p>
-                                    </div>
-                                </div>
-                            ))}
-                            {filteredFeed.length === 0 && (
-                                <div className="text-center py-12">
-                                    <p className="text-slate-600 font-black italic tracking-widest uppercase">{t('noRecentActivity')} in {categoryFilter}</p>
-                                </div>
-                            )}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <DashboardCard isDark className="!p-5 !rounded-[24px]">
+                    <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center"><Activity size={14} className="text-white"/></div>
+                        <div>
+                            <h4 className="font-bold text-sm">New Schedule</h4>
+                            <p className="text-[9px] text-white/50 tracking-wider font-semibold">In progress</p>
                         </div>
                     </div>
-                </div>
-
-                {/* Right: Insights & Alerts */}
-                <div className="space-y-6">
-                    {isAdmin && (masterData.adminNotes || []).length > 0 && (
-                        <div className="bg-slate-900 text-white p-8 rounded-3xl shadow-xl space-y-6 relative overflow-hidden group">
-                            <div className="absolute top-0 right-0 p-8 opacity-10 scale-125 rotate-12 group-hover:rotate-0 transition-transform duration-700">
-                                <MessageSquare size={80} />
-                            </div>
-                            <h3 className="text-lg font-black uppercase flex items-center gap-3 relative z-10">{t('managerNotes')}</h3>
-                            <div className="space-y-4 relative z-10 max-h-[300px] overflow-y-auto no-scrollbar">
-                                {(masterData.adminNotes || []).slice().reverse().map(n => (
-                                    <div key={n.id} className="bg-white/10 p-5 rounded-2xl border border-white/10 backdrop-blur-md">
-                                        <p className="text-sm font-semibold leading-snug">{n.text}</p>
-                                        <div className="mt-3 flex justify-between items-center opacity-70">
-                                            <p className="text-[10px] font-bold uppercase text-amber-400">{n.from}</p>
-                                            <p className="text-[10px] font-bold">{n.date.split(',')[0]}</p>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
+                </DashboardCard>
+                
+                <DashboardCard isDark className="!p-5 !rounded-[24px]">
+                    <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full bg-white text-black flex items-center justify-center"><Hammer size={14}/></div>
+                        <div>
+                            <h4 className="font-bold text-sm">Stone Production</h4>
+                            <p className="text-[9px] text-white/50 tracking-wider font-semibold">Completed</p>
                         </div>
-                    )}
-
-                    {isManager && (
-                        <div className="glass-card p-8 rounded-3xl border border-white/50 shadow-xl space-y-6">
-                            <label className="bg-slate-800/80 backdrop-blur-md text-white px-3 py-1 rounded text-[10px] font-bold uppercase tracking-widest inline-block">{t('newNote')}</label>
-                            <textarea
-                                className="w-full h-32 bg-white/50 text-base font-semibold p-5 rounded-2xl border border-white outline-none placeholder:text-slate-400 text-slate-800 resize-none focus:bg-white/80 transition-colors shadow-inner"
-                                placeholder={t('typeSomething')}
-                                value={note}
-                                onChange={(e) => setNote(e.target.value)}
-                            />
-                            <button onClick={handleSendNote} className="w-full py-4 bg-black/90 backdrop-blur-sm text-white rounded-xl font-bold uppercase tracking-widest hover:bg-black transition-colors shadow-md text-xs">
-                                {t('postNote')}
-                            </button>
+                    </div>
+                </DashboardCard>
+                
+                <DashboardCard isDark className="!p-5 !rounded-[24px]">
+                    <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center"><Package size={14} className="text-white"/></div>
+                        <div>
+                            <h4 className="font-bold text-sm">Pata Setup</h4>
+                            <p className="text-[9px] text-white/50 tracking-wider font-semibold">In progress</p>
                         </div>
-                    )}
+                    </div>
+                </DashboardCard>
 
-                    {stats.lowStock.length > 0 && (
-                        <div className="bg-rose-50 border border-rose-100 rounded-3xl p-8 space-y-6 shadow-md border-b-4">
-                            <div className="flex items-center gap-4">
-                                <div className="p-3 bg-rose-500 text-white rounded-xl shadow-sm rotate-6 group-hover:rotate-0 transition-transform">
-                                    <AlertCircle size={24} />
-                                </div>
-                                <h3 className="text-xl font-black uppercase text-slate-800 leading-none tracking-tight">{t('inventoryWarnings')}</h3>
-                            </div>
-                            <div className="space-y-3">
-                                {stats.lowStock.slice(0, 5).map((item, idx) => (
-                                    <div key={idx} className="bg-white p-4 rounded-xl border border-rose-100/50 flex items-center justify-between shadow-sm">
-                                        <span className="text-xs font-bold text-slate-700 uppercase">{item.name}</span>
-                                        <span className="bg-rose-100 text-rose-600 px-3 py-1 rounded pl text-[10px] font-bold shadow-sm">{t('only')} {item.qty}</span>
-                                    </div>
-                                ))}
-                            </div>
-                            <button onClick={() => setActivePanel('Stock')} className="w-full py-4 mt-2 bg-white text-rose-600 border border-rose-200 rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-rose-500 hover:text-white hover:border-transparent transition-all">{t('resolveStock')}</button>
+                <DashboardCard isDark className="!p-5 !rounded-[24px]">
+                    <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center"><Scissors size={14} className="text-white"/></div>
+                        <div>
+                            <h4 className="font-bold text-sm">Cutting Phase 2</h4>
+                            <p className="text-[9px] text-white/50 tracking-wider font-semibold">Pending Review</p>
                         </div>
-                    )}
-                </div>
+                    </div>
+                </DashboardCard>
             </div>
 
-            <div className="pt-20 border-t border-slate-50 flex justify-between items-center opacity-40">
-                <div className="flex items-center gap-4">
-                    <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
-                    <p className="text-[10px] font-black uppercase tracking-widest">Master Node Link Established</p>
-                </div>
-                <p className="text-[10px] font-black uppercase tracking-widest">NRZO0NE INDUSTRIAL © 2026</p>
-            </div>
         </div>
     );
-
 };
 
 export default Overview;

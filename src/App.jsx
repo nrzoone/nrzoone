@@ -59,15 +59,15 @@ const GlobalStyles = () => (
 
         :root {
             --font-outfit: 'Outfit', 'Inter', -apple-system, sans-serif;
-            --bg-main: #f8f9fa;
+            --bg-main: #e2e4e9;
             --bg-card: #ffffff;
             --primary: #000000;
             --text-main: #1a1a1a;
             --text-muted: #64748b;
             --accent: #1e293b;
             --control-height: clamp(44px, 6vw, 52px);
-            --radius-main: clamp(10px, 2vw, 16px);
-            --radius-btn: clamp(8px, 1.5vw, 12px);
+            --radius-main: clamp(16px, 3vw, 32px);
+            --radius-btn: clamp(12px, 2vw, 16px);
         }
 
         body {
@@ -109,9 +109,9 @@ const GlobalStyles = () => (
         .premium-card {
             background: #ffffff;
             border-radius: var(--radius-main);
-            padding: 24px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-            border: 1px solid rgba(0,0,0,0.05);
+            padding: clamp(20px, 4vw, 32px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.5);
         }
 
         .black-button {
@@ -662,11 +662,14 @@ const Sidebar = ({ activePanel, setActivePanel, user, setUser, isOpen, t }) => {
 
     return (
       <button
-        onClick={() => setActivePanel(item.id)}
-        className={`w-full flex items-center gap-4 p-4 rounded-2xl transition-all duration-300 group relative ${isActive ? "bg-black text-white shadow-xl" : "hover:bg-slate-100"}`}
+        onClick={() => {
+          setActivePanel(item.id);
+          if (window.innerWidth < 768) setIsSidebarOpen(false); // Auto-close on mobile
+        }}
+        className={`w-full flex items-center gap-4 p-4 rounded-[20px] transition-all duration-300 group relative ${isActive ? "bg-[#1a1a1a] text-white shadow-xl translate-x-2 border border-white/10" : "hover:bg-slate-100/80 hover:translate-x-1"}`}
       >
         <div
-          className={`w-10 h-10 flex items-center justify-center rounded-xl transition-all duration-300 ${isActive ? "bg-white/10" : "bg-slate-100 group-hover:bg-white"}`}
+          className={`w-10 h-10 flex items-center justify-center rounded-xl transition-all duration-300 ${isActive ? "bg-white/10 shadow-inner" : "bg-slate-100 group-hover:bg-white shadow-sm"}`}
         >
           <Icon
             size={18}
@@ -688,7 +691,7 @@ const Sidebar = ({ activePanel, setActivePanel, user, setUser, isOpen, t }) => {
 
   return (
     <div
-      className={`no-print fixed left-0 top-0 h-full bg-white border-r border-slate-100 z-[100] flex flex-col pt-8 pb-10 transition-all duration-500 ease-in-out sidebar overflow-hidden ${isOpen ? "translate-x-0 w-20 md:w-72" : "-translate-x-full w-0"}`}
+      className={`no-print fixed md:left-4 md:top-4 md:h-[calc(100vh-32px)] left-0 top-0 h-full bg-white/95 backdrop-blur-3xl md:border border-r border-slate-100/50 z-[100] flex flex-col pt-8 pb-10 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] sidebar overflow-hidden shadow-[0_8px_30px_rgba(0,0,0,0.04)] ${isOpen ? "translate-x-0 w-[280px] md:w-[300px] md:rounded-[32px] 2xl:w-[320px]" : "-translate-x-full w-0"}`}
     >
       <div className="px-5 md:px-8 mb-10 flex flex-col items-center md:items-start">
         <div className="bg-black rounded-2xl p-4 shadow-xl mb-4 group shrink-0 w-16 h-16 flex items-center justify-center">
@@ -1202,7 +1205,7 @@ const AppContent = () => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 flex selection:bg-black selection:text-white font-outfit text-black italic overflow-x-hidden">
+    <div className="min-h-screen flex selection:bg-black selection:text-white font-outfit text-black italic overflow-x-hidden relative z-0">
       <GlobalStyles />
 
       {/* Sidebar */}
@@ -1217,9 +1220,13 @@ const AppContent = () => {
 
       {/* Main Content Area */}
       <div
-        className={`flex-1 transition-all duration-500 ease-in-out min-w-0 print:!m-0 print:!p-0 ${isSidebarOpen ? "ml-20 md:ml-72" : "ml-0"}`}
+        className={`flex-1 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] min-w-0 print:!m-0 print:!p-0 z-10 ${isSidebarOpen ? "md:ml-[320px] 2xl:ml-[340px]" : "ml-0"}`}
       >
-        <div className="p-4 sm:p-5 md:p-6 lg:p-12 max-w-[1920px] mx-auto w-full">
+        {/* Mobile overlay */}
+        {isSidebarOpen && (
+          <div className="md:hidden fixed inset-0 bg-black/20 backdrop-blur-sm z-[90] animate-fade" onClick={() => setIsSidebarOpen(false)}></div>
+        )}
+        <div className="p-4 sm:p-5 md:p-6 lg:p-8 xl:p-12 max-w-[1920px] mx-auto w-full">
           {/* Responsive Header */}
           <header className="no-print flex flex-col gap-6 mb-8 lg:mb-12">
             <div className="flex items-center justify-between w-full gap-4">

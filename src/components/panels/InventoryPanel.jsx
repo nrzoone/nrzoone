@@ -15,7 +15,7 @@ import {
   ArrowLeft,
 } from "lucide-react";
 import { syncToSheet } from "../../utils/syncUtils";
-import { getFinishedStock } from "../../utils/calculations";
+import { getFinishedStock, getSewingStock, getFinishingStock } from "../../utils/calculations";
 
 const InventoryPanel = ({
   masterData,
@@ -43,6 +43,37 @@ const InventoryPanel = ({
               borka: res.borka,
               hijab: res.hijab,
             });
+          }
+        });
+      });
+    });
+    return items;
+  }, [masterData]);
+
+  const sewingSummary = useMemo(() => {
+    const items = [];
+    masterData.designs.forEach((d) => {
+      masterData.colors.forEach((c) => {
+        masterData.sizes.forEach((s) => {
+          const res = getSewingStock(masterData, d.name, c, s);
+          if (res && (res.borka > 0 || res.hijab > 0)) {
+            items.push({ design: d.name, color: c, size: s, borka: res.borka, hijab: res.hijab });
+          }
+        });
+      });
+    });
+    return items;
+  }, [masterData]);
+
+  const stoneSummary = useMemo(() => {
+    const items = [];
+    masterData.designs.forEach((d) => {
+      if (Number(d.stoneRate || 0) === 0) return;
+      masterData.colors.forEach((c) => {
+        masterData.sizes.forEach((s) => {
+          const res = getFinishingStock(masterData, d.name, c, s);
+          if (res && (res.borka > 0 || res.hijab > 0)) {
+            items.push({ design: d.name, color: c, size: s, borka: res.borka, hijab: res.hijab });
           }
         });
       });
@@ -135,7 +166,7 @@ const InventoryPanel = ({
           <div className="bg-white px-6 py-3 rounded-2xl border border-slate-100 shadow-sm hidden md:block">
             <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">Finished Assets</p>
             <p className="text-2xl font-black italic text-black leading-none uppercase">
-                {masterData.productions?.filter((p) => p.status === "Received").length.toLocaleString()}{" "}
+                {(masterData.productions || []).filter((p) => p.status === "Received").length.toLocaleString()}{" "}
                 <span className="text-[10px] text-slate-300 ml-1">BATCHES</span>
             </p>
           </div>
@@ -157,13 +188,13 @@ const InventoryPanel = ({
       </div>
 
       <div className="flex bg-white p-2 rounded-2xl border border-slate-100 shadow-sm overflow-x-auto mb-10">
-        {["overview", "raw", "add"].map((v) => (
+        {["overview", "sewing", "stone", "raw", "add"].map((v) => (
           <button
             key={v}
             onClick={() => setView(v)}
-            className={`pill-tab flex-1 ${view === v ? "pill-tab-active" : "pill-tab-inactive hover:text-black"}`}
+            className={`pill-tab flex-1 whitespace-nowrap px-4 ${view === v ? "pill-tab-active" : "pill-tab-inactive hover:text-black"}`}
           >
-            {v === "overview" ? "তৈরি পোশাক" : v === "raw" ? "কাঁচামাল" : "নতুন স্টক"}
+            {v === "overview" ? "তৈরি পোশাক" : v === "sewing" ? "সুইং স্টক" : v === "stone" ? "স্টোন স্টক" : v === "raw" ? "কাঁচামাল" : "নতুন স্টক"}
           </button>
         ))}
       </div>
@@ -197,7 +228,125 @@ const InventoryPanel = ({
 
                   <div className="flex items-center gap-8 flex-1 relative z-10">
                     <div className="w-14 h-14 bg-slate-50 flex items-center justify-center text-3xl font-black italic rounded-xl border border-slate-100 shadow-inner group-hover:bg-black group-hover:text-white transition-all transform group-hover:rotate-6">
-                      {item.size[0]}
+                      {String(item.size)[0]}
+                    </div>
+                    <div className="space-y-2">
+                       <div className="flex items-center gap-3">
+                        <h4 className="text-xl md:text-2xl font-black italic uppercase leading-none tracking-tighter">
+                          {item.design}
+                        </h4>
+                        <span className="badge-standard">{item.size}</span>
+                      </div>
+                      <p className="text-slate-400 text-[11px] font-black uppercase italic tracking-widest leading-none">• {item.color}</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-8 border-l border-slate-50 pl-8 relative z-10">
+                    <div className="text-center">
+                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">Borka</p>
+                      <p className="text-2xl font-black italic tracking-tighter leading-none">{item.borka}</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">Hijab</p>
+                      <p className="text-2xl font-black italic tracking-tighter leading-none">{item.hijab}</p>
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      )}
+
+      {view === "sewing" && (
+        <div className="space-y-8">
+          <div className="flex items-center justify-between px-6">
+            <h3 className="text-2xl font-black uppercase italic tracking-tighter text-black">
+              Sewing <span className="text-slate-300">Stock</span>
+            </h3>
+            <div className="px-5 py-2 bg-slate-50 border border-slate-100 rounded-full text-[9px] font-black uppercase tracking-widest italic text-slate-500">
+              {sewingSummary.length} Items
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+            {sewingSummary.length === 0 ? (
+              <div className="md:col-span-2 h-64 flex flex-col items-center justify-center bg-white rounded-3xl border-2 border-dashed border-slate-100 opacity-40">
+                <Box size={48} strokeWidth={1} />
+                <p className="text-[10px] font-black uppercase tracking-[0.4em] mt-6">Zero Assets Detected</p>
+              </div>
+            ) : (
+              sewingSummary.map((item, idx) => (
+                <div
+                  key={idx}
+                  className="item-card flex justify-between items-center gap-8 group relative overflow-hidden"
+                >
+                  <div className="absolute top-0 right-0 p-8 opacity-[0.02] group-hover:opacity-[0.05] transition-opacity">
+                    <Package size={120} className="text-black" />
+                  </div>
+
+                  <div className="flex items-center gap-8 flex-1 relative z-10">
+                    <div className="w-14 h-14 bg-slate-50 flex items-center justify-center text-3xl font-black italic rounded-xl border border-slate-100 shadow-inner group-hover:bg-black group-hover:text-white transition-all transform group-hover:rotate-6">
+                      {String(item.size)[0]}
+                    </div>
+                    <div className="space-y-2">
+                       <div className="flex items-center gap-3">
+                        <h4 className="text-xl md:text-2xl font-black italic uppercase leading-none tracking-tighter">
+                          {item.design}
+                        </h4>
+                        <span className="badge-standard">{item.size}</span>
+                      </div>
+                      <p className="text-slate-400 text-[11px] font-black uppercase italic tracking-widest leading-none">• {item.color}</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-8 border-l border-slate-50 pl-8 relative z-10">
+                    <div className="text-center">
+                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">Borka</p>
+                      <p className="text-2xl font-black italic tracking-tighter leading-none">{item.borka}</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">Hijab</p>
+                      <p className="text-2xl font-black italic tracking-tighter leading-none">{item.hijab}</p>
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      )}
+
+      {view === "stone" && (
+        <div className="space-y-8">
+          <div className="flex items-center justify-between px-6">
+            <h3 className="text-2xl font-black uppercase italic tracking-tighter text-black">
+              Stone <span className="text-slate-300">Stock</span>
+            </h3>
+            <div className="px-5 py-2 bg-slate-50 border border-slate-100 rounded-full text-[9px] font-black uppercase tracking-widest italic text-slate-500">
+              {stoneSummary.length} Items
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+            {stoneSummary.length === 0 ? (
+              <div className="md:col-span-2 h-64 flex flex-col items-center justify-center bg-white rounded-3xl border-2 border-dashed border-slate-100 opacity-40">
+                <Box size={48} strokeWidth={1} />
+                <p className="text-[10px] font-black uppercase tracking-[0.4em] mt-6">Zero Assets Detected</p>
+              </div>
+            ) : (
+              stoneSummary.map((item, idx) => (
+                <div
+                  key={idx}
+                  className="item-card flex justify-between items-center gap-8 group relative overflow-hidden"
+                >
+                  <div className="absolute top-0 right-0 p-8 opacity-[0.02] group-hover:opacity-[0.05] transition-opacity">
+                    <Package size={120} className="text-black" />
+                  </div>
+
+                  <div className="flex items-center gap-8 flex-1 relative z-10">
+                    <div className="w-14 h-14 bg-slate-50 flex items-center justify-center text-3xl font-black italic rounded-xl border border-slate-100 shadow-inner group-hover:bg-black group-hover:text-white transition-all transform group-hover:rotate-6">
+                      {String(item.size)[0]}
                     </div>
                     <div className="space-y-2">
                        <div className="flex items-center gap-3">

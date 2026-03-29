@@ -332,21 +332,18 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
 
         const SlipHalf = ({ copyTitle }) => (
             <ConfigProvider theme={QR_Slip_Theme}>
-                <div style={{ minHeight: '140mm' }} className="w-full flex-1 border-[6px] border-black bg-white relative overflow-hidden flex text-black">
-                    <div className="w-20 bg-white border-r-[3px] border-black flex flex-col items-center justify-between py-8 shrink-0">
+                <div style={{ minHeight: '140mm' }} className="w-full flex-1 border-[2px] border-black bg-white relative overflow-hidden flex text-black">
+                    <div className="w-20 bg-white border-r-[2px] border-black flex flex-col items-center justify-between py-8 shrink-0">
                         <img src={logoBlack} alt="NRZO0NE" className="w-12 h-12 object-contain" />
                         <div className="rotate-[-90deg] whitespace-nowrap">
                             <p className="text-[10px] font-black uppercase tracking-[0.5em] text-black">NRZO0NE PATA HUB</p>
                         </div>
-                        <div className="w-10 h-10 border-2 border-black rounded-full flex items-center justify-center">
-                            <div className="w-4 h-4 rounded-full bg-black animate-pulse"></div>
+                        <div className="w-8 h-8 border border-black rounded-full flex items-center justify-center">
+                            <div className="w-2 h-2 rounded-full border border-black"></div>
                         </div>
                     </div>
 
                     <div className="flex-1 p-6 relative flex flex-col items-center justify-center bg-white">
-                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-[0.03] -rotate-12 pointer-events-none">
-                            <img src={logoBlack} alt="" className="w-80 h-80 object-contain" />
-                        </div>
                         
                         <Card 
                             style={{ width: '100%', height: '100%', border: '2px solid #000', borderRadius: '12px', display: 'flex', flexDirection: 'column', zIndex: 10, position: 'relative' }}
@@ -369,19 +366,19 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
 
                             <Row gutter={12}>
                                 <Col span={8}>
-                                    <div style={{ background: '#f8f9fa', padding: '10px', borderRadius: '8px', textAlign: 'center', border: '1px solid #f0f0f0' }}>
-                                        <Text type="secondary" style={{ fontSize: '9px', fontWeight: 'bold', letterSpacing: '1px' }}>WORKER / কারিগর</Text>
+                                    <div style={{ background: '#fff', padding: '10px', borderRadius: '4px', textAlign: 'center', border: '1px solid #000' }}>
+                                        <Text type="secondary" style={{ fontSize: '9px', fontWeight: 'bold', letterSpacing: '1px', color: '#000' }}>WORKER / কারিগর</Text>
                                         <Title level={5} style={{ margin: '4px 0 0 0', fontStyle: 'italic', textTransform: 'uppercase' }}>{printSlip.worker}</Title>
                                     </div>
                                 </Col>
                                 <Col span={8}>
-                                    <div style={{ background: '#f8f9fa', padding: '10px', borderRadius: '8px', textAlign: 'center', border: '1px solid #f0f0f0' }}>
-                                        <Text type="secondary" style={{ fontSize: '9px', fontWeight: 'bold', letterSpacing: '1px' }}>DESIGN / ডিজাইন</Text>
+                                    <div style={{ background: '#fff', padding: '10px', borderRadius: '4px', textAlign: 'center', border: '1px solid #000' }}>
+                                        <Text type="secondary" style={{ fontSize: '9px', fontWeight: 'bold', letterSpacing: '1px', color: '#000' }}>DESIGN / ডিজাইন</Text>
                                         <Title level={5} style={{ margin: '4px 0 0 0', fontStyle: 'italic' }}>{printSlip.design}</Title>
                                     </div>
                                 </Col>
                                 <Col span={8}>
-                                    <div style={{ background: '#fff', padding: '10px', borderRadius: '8px', textAlign: 'center', border: '2px solid #000' }}>
+                                    <div style={{ background: '#fff', padding: '10px', borderRadius: '4px', textAlign: 'center', border: '1px solid #000' }}>
                                         <Text style={{ fontSize: '9px', color: '#000', letterSpacing: '1px', fontWeight: 'bold' }}>LOT NO / লট নং</Text>
                                         <Title level={5} style={{ margin: '4px 0 0 0', color: '#000', fontStyle: 'italic', fontWeight: '900' }}>#{printSlip.lotNo}</Title>
                                     </div>
@@ -390,41 +387,41 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
 
                             <Row gutter={12} style={{ marginTop: '16px' }}>
                                 <Col span={6}>
-                                    <div style={{ background: '#fafafa', padding: '8px', borderRadius: '8px', textAlign: 'center', border: '1px solid #e8e8e8' }}>
-                                        <Text style={{ fontSize: '9px', fontWeight: 'bold', color: '#8c8c8c' }}>COLOR</Text>
-                                        <Title level={5} style={{ margin: 0 }}>{printSlip.color || '-'}</Title>
+                                    <div style={{ background: '#fff', padding: '8px', borderRadius: '4px', textAlign: 'center', border: '1px solid #000' }}>
+                                        <Text style={{ fontSize: '9px', fontWeight: 'bold', color: '#000' }}>COLOR</Text>
+                                        <Title level={5} style={{ margin: 0, color: '#000' }}>{printSlip.color || '-'}</Title>
                                     </div>
                                 </Col>
                                 <Col span={6}>
-                                    <div style={{ background: '#fafafa', padding: '8px', borderRadius: '8px', textAlign: 'center', border: '1px solid #e8e8e8' }}>
-                                        <Text style={{ fontSize: '9px', fontWeight: 'bold', color: '#8c8c8c' }}>TYPE</Text>
-                                        <Title level={5} style={{ margin: 0 }}>{printSlip.pataType || '-'}</Title>
+                                    <div style={{ background: '#fff', padding: '8px', borderRadius: '4px', textAlign: 'center', border: '1px solid #000' }}>
+                                        <Text style={{ fontSize: '9px', fontWeight: 'bold', color: '#000' }}>TYPE</Text>
+                                        <Title level={5} style={{ margin: 0, color: '#000' }}>{printSlip.pataType || '-'}</Title>
                                     </div>
                                 </Col>
                                 <Col span={6}>
-                                    <div style={{ background: '#fffbe6', padding: '8px', borderRadius: '8px', textAlign: 'center', border: '1px solid #ffe58f' }}>
-                                        <Text style={{ fontSize: '9px', fontWeight: 'bold', color: '#faad14' }}>RATE</Text>
-                                        <Title level={5} style={{ margin: 0, color: '#d48806' }}>৳{rate}</Title>
+                                    <div style={{ background: '#fff', padding: '8px', borderRadius: '4px', textAlign: 'center', border: '1px solid #000' }}>
+                                        <Text style={{ fontSize: '9px', fontWeight: 'bold', color: '#000' }}>RATE</Text>
+                                        <Title level={5} style={{ margin: 0, color: '#000' }}>৳{rate}</Title>
                                     </div>
                                 </Col>
                                 <Col span={6}>
-                                    <div style={{ background: isReceived ? '#f6ffed' : '#fffbe6', padding: '8px', borderRadius: '8px', textAlign: 'center', border: '1px solid ' + (isReceived ? '#b7eb8f' : '#ffe58f') }}>
-                                        <Text style={{ fontSize: '9px', fontWeight: 'bold', color: '#8c8c8c' }}>STATUS</Text>
-                                        <Title level={5} style={{ margin: 0, color: isReceived ? '#52c41a' : '#faad14' }}>{printSlip.status}</Title>
+                                    <div style={{ background: '#fff', padding: '8px', borderRadius: '4px', textAlign: 'center', border: '1px solid #000' }}>
+                                        <Text style={{ fontSize: '9px', fontWeight: 'bold', color: '#000' }}>STATUS</Text>
+                                        <Title level={5} style={{ margin: 0, color: '#000' }}>{printSlip.status}</Title>
                                     </div>
                                 </Col>
                             </Row>
 
                             <Row style={{ marginTop: '16px', flex: 1 }}>
                                 <Col span={24}>
-                                    <Card size="small" style={{ background: '#fff', border: '2px dashed #000', textAlign: 'center', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }} bodyStyle={{ padding: '16px' }}>
+                                    <Card size="small" style={{ background: '#fff', border: '1px dashed #000', textAlign: 'center', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }} bodyStyle={{ padding: '16px' }}>
                                         <Text style={{ fontSize: '9px', color: '#000', letterSpacing: '4px', fontWeight: 'bold' }}>TOTAL QUANTITY</Text>
                                         <div style={{ marginTop: '8px', display: 'flex', justifyContent: 'center', alignItems: 'baseline', gap: '16px' }}>
-                                            <Title level={1} style={{ margin: 0, color: '#818cf8', fontSize: '48px', fontStyle: 'italic', fontWeight: '900' }}>{printSlip.pataQty}</Title>
+                                            <Title level={1} style={{ margin: 0, color: '#000', fontSize: '48px', fontStyle: 'italic', fontWeight: '900' }}>{printSlip.pataQty}</Title>
                                             {isReceived && (
                                                 <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                                                     <span style={{ color: '#000', fontSize: '24px' }}>→</span>
-                                                    <Title level={2} style={{ margin: 0, color: '#52c41a', fontStyle: 'italic' }}>{printSlip.receivedQty}</Title>
+                                                    <Title level={2} style={{ margin: 0, color: '#000', fontStyle: 'italic' }}>{printSlip.receivedQty}</Title>
                                                 </div>
                                             )}
                                             <Text style={{ color: '#000', fontSize: '16px', fontStyle: 'italic', fontWeight: 'bold' }}>Pcs</Text>
@@ -477,7 +474,7 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                     <SlipHalf copyTitle="WORKER COPY — কর্মীর কপি" />
 
                     {/* Cut line */}
-                    <div className="w-full border-t-[6px] border-dashed border-slate-200 relative flex justify-center py-0 shrink-0 select-none items-center h-12">
+                    <div className="w-full border-t-[2px] border-dashed border-black relative flex justify-center py-0 shrink-0 select-none items-center h-12">
                         <div className="absolute inset-0 bg-slate-50/50"></div>
                         <span className="relative z-10 bg-white px-8 py-3 text-[10px] font-black uppercase tracking-[0.5em] text-slate-400 border-2 border-slate-100 rounded-full shadow-sm flex items-center gap-3">
                             <Scissors size={14} className="text-slate-300" /> Cut Here • এখান থেকে কাটুন
