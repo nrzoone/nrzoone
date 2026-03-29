@@ -22,6 +22,7 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
     const [paymentAmount, setPaymentAmount] = useState('');
     const [paymentDate, setPaymentDate] = useState(new Date().toISOString().split('T')[0]);
     const [printSlip, setPrintSlip] = useState(null);
+    const [editModal, setEditModal] = useState(null);
 
     const isAdmin = user?.role === 'admin';
     const isWorker = user?.role !== 'admin' && user?.role !== 'manager';
@@ -132,6 +133,28 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
         }));
         setNoteModal(null);
         showNotify('নোট যুক্ত করা হয়েছে!');
+    };
+
+    const handleEditSave = (e) => {
+        e.preventDefault();
+        const f = e.target;
+        const updated = {
+            ...editModal,
+            worker: f.worker.value,
+            task: f.task.value,
+            borkaQty: Number(f.borka.value),
+            hijabQty: Number(f.hijab.value),
+            rate: Number(f.rate.value),
+            note: f.note.value,
+            status: f.status.value,
+            date: f.date.value
+        };
+        setMasterData(prev => ({
+            ...prev,
+            outsideWorkEntries: (prev.outsideWorkEntries || []).map(p => p.id === updated.id ? updated : p)
+        }));
+        setEditModal(null);
+        showNotify('কাজ তথ্য আপডেট করা হয়েছে!');
     };
 
     const handlePayment = () => {
@@ -415,7 +438,7 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
                                         <button onClick={() => handleReceive(item)} className="black-button px-6">জমা নিন (REC)</button>
                                         {isAdmin && (
                                             <div className="flex gap-2">
-                                                <button onClick={() => setNoteModal({ ...item, note: item.note || '' })} className="w-12 h-12 flex items-center justify-center rounded-full bg-slate-50 text-amber-500 hover:bg-amber-500 hover:text-white transition-all shadow-sm">
+                                                <button onClick={() => setEditModal(item)} className="w-12 h-12 flex items-center justify-center rounded-full bg-slate-50 text-amber-500 hover:bg-amber-500 hover:text-white transition-all shadow-sm">
                                                     <Settings size={18} />
                                                 </button>
                                                 <button onClick={() => handleDelete(item.id)} className="w-12 h-12 flex items-center justify-center rounded-full bg-rose-50 text-rose-500 hover:bg-rose-500 hover:text-white transition-all shadow-sm">
@@ -434,7 +457,7 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
                                         </button>
                                         {isAdmin && (
                                             <div className="flex gap-2">
-                                                <button onClick={() => setNoteModal({ ...item, note: item.note || '' })} className="w-12 h-12 flex items-center justify-center rounded-full bg-slate-50 text-amber-500 hover:bg-amber-500 hover:text-white transition-all shadow-sm">
+                                                <button onClick={() => setEditModal(item)} className="w-12 h-12 flex items-center justify-center rounded-full bg-slate-50 text-amber-500 hover:bg-amber-500 hover:text-white transition-all shadow-sm">
                                                     <Settings size={18} />
                                                 </button>
                                                 <button onClick={() => handleDelete(item.id)} className="w-12 h-12 flex items-center justify-center rounded-full bg-rose-50 text-rose-500 hover:bg-rose-500 hover:text-white transition-all shadow-sm">
@@ -583,25 +606,56 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
             }
 
             {
-                noteModal && (
-                    <div className="fixed inset-0 bg-black/40 backdrop-blur-3xl z-[300] flex items-center justify-center p-3 md:p-4 italic text-black">
-                        <div className="bg-white rounded-[2.5rem] md:rounded-[3rem] w-full max-w-xl border-4 border-amber-500 shadow-3xl p-6 md:p-10 animate-fade-up">
+                editModal && (
+                    <div className="fixed inset-0 bg-black/40 backdrop-blur-3xl z-[300] flex items-start md:items-center justify-center p-3 md:p-4 text-black italic">
+                        <div className="bg-white rounded-[2.5rem] md:rounded-[3rem] w-full max-w-2xl border-4 border-amber-500 shadow-3xl p-6 md:p-10 animate-fade-up max-h-[96vh] overflow-y-auto">
                             <div className="flex justify-between items-center mb-8">
                                 <div className="flex items-center gap-4">
                                     <div className="p-4 bg-amber-500 text-white rounded-2xl shadow-xl rotate-3">
-                                        <MessageSquare size={24} />
+                                        <Settings size={28} />
                                     </div>
-                                    <div>
-                                        <h3 className="text-3xl font-black uppercase tracking-tighter text-black leading-none">Emergency Note</h3>
-                                        <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest mt-1">For task/worker info</p>
-                                    </div>
+                                    <h3 className="text-3xl font-black uppercase tracking-tighter text-black">Outside Override</h3>
                                 </div>
-                                <button onClick={() => setNoteModal(null)} className="p-3 bg-slate-50 rounded-full hover:bg-black hover:text-white transition-all"><X size={20} /></button>
+                                <button onClick={() => setEditModal(null)} className="p-3 bg-slate-50 rounded-full hover:bg-black hover:text-white transition-all"><X size={20} /></button>
                             </div>
-                            <div className="space-y-6">
-                                <textarea className="w-full p-6 text-xl font-black bg-slate-50 border-2 border-slate-100 rounded-[2rem] h-40 outline-none focus:border-amber-500 text-black placeholder:text-slate-500" placeholder="Write urgency or issue..." value={noteModal.note} onChange={(e) => setNoteModal({ ...noteModal, note: e.target.value })} autoFocus></textarea>
-                                <button onClick={handleSaveNote} className="w-full py-6 bg-amber-500 text-white rounded-full font-black text-xl uppercase tracking-widest shadow-2xl hover:scale-[1.02] border-b-[8px] border-amber-900 transition-all">SAVE NOTE</button>
-                            </div>
+                            <form onSubmit={handleEditSave} className="grid grid-cols-1 md:grid-cols-2 gap-6 font-black uppercase italic">
+                                <div className="space-y-1">
+                                    <label className="text-[10px] text-slate-400 ml-4 mb-2 block tracking-widest">Worker (কারিগর)</label>
+                                    <input name="worker" defaultValue={editModal.worker} className="form-input italic" required />
+                                </div>
+                                <div className="space-y-1">
+                                    <label className="text-[10px] text-slate-400 ml-4 mb-2 block tracking-widest">Task (কাজের ধরন)</label>
+                                    <input name="task" defaultValue={editModal.task} className="form-input italic" required />
+                                </div>
+                                <div className="space-y-1">
+                                    <label className="text-[10px] text-slate-400 ml-4 mb-2 block tracking-widest">Borka Qty</label>
+                                    <input name="borka" type="number" defaultValue={editModal.borkaQty} className="form-input italic" />
+                                </div>
+                                <div className="space-y-1">
+                                    <label className="text-[10px] text-slate-400 ml-4 mb-2 block tracking-widest">Hijab Qty</label>
+                                    <input name="hijab" type="number" defaultValue={editModal.hijabQty} className="form-input italic" />
+                                </div>
+                                <div className="space-y-1">
+                                    <label className="text-[10px] text-slate-400 ml-4 mb-2 block tracking-widest">Rate (মজুরি)</label>
+                                    <input name="rate" type="number" defaultValue={editModal.rate} className="form-input italic" />
+                                </div>
+                                <div className="space-y-1">
+                                    <label className="text-[10px] text-slate-400 ml-4 mb-2 block tracking-widest">Date (তারিখ)</label>
+                                    <input name="date" type="date" defaultValue={editModal.date ? (editModal.date.includes('/') ? editModal.date.split('/').reverse().join('-') : editModal.date) : ''} className="form-input italic" />
+                                </div>
+                                <div className="space-y-1 md:col-span-2">
+                                    <label className="text-[10px] text-slate-400 ml-4 mb-2 block tracking-widest">Status</label>
+                                    <select name="status" defaultValue={editModal.status} className="form-input bg-black text-white italic">
+                                        <option value="Pending">PENDING</option>
+                                        <option value="Received">RECEIVED</option>
+                                    </select>
+                                </div>
+                                <div className="md:col-span-2">
+                                    <label className="text-[10px] text-slate-400 ml-4 mb-2 block tracking-widest">Note</label>
+                                    <textarea name="note" defaultValue={editModal.note} className="form-input h-24 italic py-4" />
+                                </div>
+                                <button type="submit" className="md:col-span-2 py-6 bg-amber-500 text-white rounded-full font-black text-xl uppercase tracking-widest shadow-2xl border-b-[8px] border-amber-900 active:scale-95 transition-all">SAVE MODIFICATIONS</button>
+                            </form>
                         </div>
                     </div>
                 )

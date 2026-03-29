@@ -460,6 +460,33 @@ const FactoryPanel = ({
     showNotify("পেমেন্ট সফল হয়েছে!");
   };
 
+  const handleEditSave = (e) => {
+    e.preventDefault();
+    const f = e.target;
+    const updated = {
+      ...editModal,
+      worker: f.worker.value,
+      design: f.design.value,
+      color: f.color.value,
+      lotNo: f.lotNo.value,
+      status: f.status.value,
+      date: f.date.value,
+      issueBorka: Number(f.iBorka.value),
+      issueHijab: Number(f.iHijab.value),
+      receivedBorka: Number(f.rBorka.value),
+      receivedHijab: Number(f.rHijab.value),
+      rate: Number(f.rate.value),
+      note: f.note.value,
+    };
+    
+    setMasterData(prev => ({
+      ...prev,
+      productions: (prev.productions || []).map(p => p.id === updated.id ? updated : p)
+    }));
+    setEditModal(null);
+    showNotify("উৎপাদন তথ্য আপডেট করা হয়েছে!");
+  };
+
   const getWorkerDue = (name) => {
     const earnings = (masterData.productions || [])
       .filter(
@@ -1189,6 +1216,100 @@ const FactoryPanel = ({
                   CONFIRM RECEIPT
                 </button>
               </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {editModal && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-3xl z-[300] flex items-start md:items-center justify-center p-2 md:p-4 text-black italic">
+          <div className="bg-white rounded-[2rem] md:rounded-[3rem] w-full max-w-2xl border-2 border-amber-500 shadow-3xl p-6 md:p-10 space-y-8 animate-fade-up max-h-[96vh] overflow-y-auto italic font-outfit my-auto">
+            <div className="flex justify-between items-center">
+              <div className="flex items-center gap-4">
+                <div className="p-4 bg-amber-500 text-white rounded-[1.2rem] shadow-xl rotate-3">
+                  <Settings size={28} strokeWidth={2.5} />
+                </div>
+                <div>
+                  <h3 className="text-3xl font-black uppercase tracking-tighter leading-none">{type} <span className="text-amber-500">Override</span></h3>
+                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Industrial Data Correction</p>
+                </div>
+              </div>
+              <button onClick={() => setEditModal(null)} className="p-4 bg-slate-50 rounded-full hover:bg-black hover:text-white transition-all"><X size={24} /></button>
+            </div>
+
+            <form onSubmit={handleEditSave} className="grid grid-cols-1 md:grid-cols-2 gap-6 font-black uppercase italic">
+              <div className="space-y-1">
+                <label className="text-[10px] text-slate-400 ml-4 mb-2 block tracking-widest">Worker (কারিগর)</label>
+                <select name="worker" defaultValue={editModal.worker} className="form-input italic" required>
+                  {workers.map(w => <option key={w} value={w}>{w}</option>)}
+                </select>
+              </div>
+              <div className="space-y-1">
+                <label className="text-[10px] text-slate-400 ml-4 mb-2 block tracking-widest">Design (ডিজাইন)</label>
+                <select name="design" defaultValue={editModal.design} className="form-input italic" required>
+                  {(masterData.designs || []).map(d => <option key={d.name} value={d.name}>{d.name}</option>)}
+                </select>
+              </div>
+              <div className="space-y-1">
+                <label className="text-[10px] text-slate-400 ml-4 mb-2 block tracking-widest">Color & Lot</label>
+                <div className="grid grid-cols-2 gap-4">
+                  <select name="color" defaultValue={editModal.color} className="form-input italic" required>
+                    {(masterData.colors || []).map(c => <option key={c} value={c}>{c}</option>)}
+                  </select>
+                  <input name="lotNo" defaultValue={editModal.lotNo} className="form-input italic" placeholder="LOT..." required />
+                </div>
+              </div>
+              <div className="space-y-1">
+                <label className="text-[10px] text-slate-400 ml-4 mb-2 block tracking-widest">Status & Date</label>
+                <div className="grid grid-cols-2 gap-4">
+                  <select name="status" defaultValue={editModal.status} className="form-input bg-black text-white italic" required>
+                    <option value="Pending">PENDING</option>
+                    <option value="Received">RECEIVED</option>
+                  </select>
+                  <input name="date" type="date" defaultValue={editModal.date} className="form-input italic" required />
+                </div>
+              </div>
+
+              <div className="md:col-span-2 bg-slate-50 p-6 rounded-[2rem] border border-slate-100 grid grid-cols-2 gap-8">
+                <div className="space-y-4">
+                   <p className="text-[10px] font-black text-slate-400 text-center uppercase tracking-widest">Issue (দেওয়া কাজ)</p>
+                   <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-[8px] text-slate-400 text-center block mb-1">Borka</label>
+                        <input name="iBorka" type="number" defaultValue={editModal.issueBorka} className="w-full text-center text-3xl bg-white border border-slate-100 rounded-xl py-3 outline-none font-black italic focus:border-black transition-all" />
+                      </div>
+                      <div>
+                        <label className="text-[8px] text-slate-400 text-center block mb-1">Hijab</label>
+                        <input name="iHijab" type="number" defaultValue={editModal.issueHijab} className="w-full text-center text-3xl bg-white border border-slate-100 rounded-xl py-3 outline-none font-black italic focus:border-black transition-all" />
+                      </div>
+                   </div>
+                </div>
+                <div className="space-y-4 border-l border-slate-200 pl-8">
+                   <p className="text-[10px] font-black text-emerald-500 text-center uppercase tracking-widest">Received (জমা কাজ)</p>
+                   <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-[8px] text-emerald-400 text-center block mb-1">Borka</label>
+                        <input name="rBorka" type="number" defaultValue={editModal.receivedBorka} className="w-full text-center text-3xl bg-emerald-50/50 border border-emerald-100 rounded-xl py-3 outline-none font-black italic focus:border-emerald-500 transition-all" />
+                      </div>
+                      <div>
+                        <label className="text-[8px] text-emerald-400 text-center block mb-1">Hijab</label>
+                        <input name="rHijab" type="number" defaultValue={editModal.receivedHijab} className="w-full text-center text-3xl bg-emerald-50/50 border border-emerald-100 rounded-xl py-3 outline-none font-black italic focus:border-emerald-500 transition-all" />
+                      </div>
+                   </div>
+                </div>
+              </div>
+
+              <div className="space-y-1 md:col-span-1">
+                <label className="text-[10px] text-slate-400 ml-4 mb-2 block tracking-widest">Wage Rate (মজুরি)</label>
+                <input name="rate" type="number" defaultValue={editModal.rate} className="form-input text-2xl font-black text-rose-600 italic" required />
+              </div>
+
+              <div className="md:col-span-2">
+                <label className="text-[10px] text-slate-400 ml-4 mb-2 block tracking-widest">Worker Note (বিশেষ দ্রষ্টব্য)</label>
+                <textarea name="note" defaultValue={editModal.note} className="form-input h-24 italic py-4" placeholder="ADD NOTES..." />
+              </div>
+
+              <button type="submit" className="md:col-span-2 py-6 bg-amber-500 text-white rounded-full font-black text-xl uppercase tracking-[0.2em] shadow-2xl border-b-[10px] border-amber-900 active:translate-y-2 transition-all mt-4">UPDATE PRODUCTION DATA</button>
             </form>
           </div>
         </div>

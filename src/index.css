@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer utilities {
+  .shadow-3xl {
+    box-shadow: 0 35px 60px -12px rgba(0, 0, 0, 0.18), 0 15px 30px -8px rgba(0, 0, 0, 0.12);
+  }
+}
+
 @layer base {
   * {
     box-sizing: border-box;
@@ -269,10 +275,6 @@
     border-color: black !important;
   }
 
-  .font-black {
-    font-weight: 900;
-  }
-
   table, th, td {
     border-collapse: collapse;
     border: 1px solid black;
@@ -289,16 +291,71 @@
     color: black !important;
     border: 2px solid black !important;
   }
+}
+
+/* ===== GLOBAL UI CLASSES ===== */
+.section-header {
+  @apply text-3xl md:text-5xl font-black uppercase italic tracking-tighter leading-none text-black;
+}
+
+.sub-header {
+  @apply text-[10px] md:text-xs font-black text-slate-400 uppercase tracking-[0.4em] mt-2 italic;
+}
+
+.pill-tab {
+  @apply h-12 flex items-center justify-center px-8 rounded-full font-black uppercase text-[10px] md:text-xs tracking-widest transition-all italic;
+  min-width: 140px;
+}
+
+.pill-tab-active {
+  @apply bg-black text-white shadow-xl italic scale-[1.02];
+}
+
+.pill-tab-inactive {
+  @apply text-slate-400 hover:text-black hover:bg-slate-50 bg-white/50 border border-slate-100/50;
+}
+
+.font-black {
+  font-weight: 950;
+}
+
+.badge-standard {
+  @apply bg-slate-50 px-3 py-1 rounded-full text-[9px] font-black text-slate-400 tracking-widest border border-slate-100 shadow-sm uppercase italic;
+}
+
+.item-card {
+  @apply bg-white border border-slate-100 rounded-2xl transition-all;
+  padding: clamp(14px, 2.5vw, 24px);
+}
+
+.item-card:hover {
+  @apply shadow-lg border-black/10;
+  transform: translateY(-2px);
+}
+
+.black-button {
+  @apply bg-black text-white rounded-full font-black uppercase tracking-widest flex items-center justify-center gap-2 transition-all hover:scale-105 active:scale-95 cursor-pointer;
+  font-size: clamp(10px, 1.3vw, 13px);
+  padding: 0 clamp(16px, 3vw, 28px);
+  height: clamp(44px, 5.5vw, 52px);
+  min-height: 44px;
+}
+
+/* ===== RESPONSIVE MOBILE HELPERS ===== */
+@media (max-width: 640px) {
+  .section-header {
+    font-size: clamp(1.5rem, 7vw, 2.2rem) !important;
+    line-height: 1 !important;
+  }
+
   .pill-tab {
-    @apply h-12 flex items-center justify-center px-6 rounded-xl font-black uppercase text-[11px] tracking-widest transition-all italic;
-    min-width: 120px;
+    min-width: 90px;
+    padding: 0 14px;
+    font-size: 9px;
   }
 
-  .pill-tab-active {
-    @apply bg-black text-white shadow-lg;
-  }
-
-  .pill-tab-inactive {
-    @apply text-slate-400 hover:text-black hover:bg-slate-50;
+  .item-card {
+    padding: 14px 16px;
+    border-radius: 16px;
   }
 }
