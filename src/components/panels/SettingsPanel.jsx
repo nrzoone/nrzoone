@@ -759,7 +759,7 @@ const SettingsPanel = ({
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-50">
-                  {masterData.designs.map((design, idx) => (
+                  {(masterData.designs || []).map((design, idx) => (
                     <tr
                       key={idx}
                       className="hover:bg-slate-50 transition-all group"

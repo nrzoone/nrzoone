@@ -751,7 +751,7 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                                             <label className="text-[10px] text-slate-600 ml-4 font-black">Design (ডিজাইন)</label>
                                             <select className="w-full h-12 md:h-16 bg-slate-50 rounded-[1.2rem] md:rounded-[2rem] px-4 md:px-6 border border-slate-100 italic focus:border-black outline-none text-xs md:text-sm" value={entryData.design} onChange={(e) => setEntryData(p => ({ ...p, design: e.target.value }))}>
                                                 <option value="">Select Design</option>
-                                                {masterData.designs.map(d => <option key={d.name} value={d.name}>{d.name}</option>)}
+                                                {(masterData.designs || []).map(d => <option key={d.name} value={d.name}>{d.name}</option>)}
                                             </select>
                                         </div>
                                         <div className="space-y-2">
@@ -772,7 +772,7 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                                             <div className="grid grid-cols-2 gap-4">
                                                 <select className="h-12 md:h-16 bg-slate-50 rounded-[1.2rem] md:rounded-[2rem] px-4 border border-slate-100 italic focus:border-black outline-none text-xs md:text-sm" value={entryData.color} onChange={(e) => setEntryData(p => ({ ...p, color: e.target.value }))}>
                                                     <option value="">Select Color</option>
-                                                    {masterData.colors.map(c => <option key={c} value={c}>{c}</option>)}
+                                                    {(masterData.colors || []).map(c => <option key={c} value={c}>{c}</option>)}
                                                 </select>
                                                 <input list="pata-lots" className="h-12 md:h-16 bg-slate-50 rounded-[1.2rem] md:rounded-[2rem] px-4 border border-slate-100 italic focus:border-black outline-none text-xs md:text-sm" placeholder="Lot No..." value={entryData.lotNo} onChange={(e) => setEntryData(p => ({ ...p, lotNo: e.target.value }))} />
                                                 <datalist id="pata-lots">
@@ -895,14 +895,14 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                                         <label className="text-[8px] font-black text-slate-600 ml-2">DESIGN (ডিজাইন)</label>
                                         <select className="w-full h-12 bg-slate-50 border border-slate-100 rounded-[1rem] px-4 font-black text-xs uppercase" value={manualForm.design} onChange={e => setManualForm(p => ({ ...p, design: e.target.value }))}>
                                             <option value="">SELECT DESIGN</option>
-                                            {masterData.designs.map(d => <option key={d.name} value={d.name}>{d.name}</option>)}
+                                            {(masterData.designs || []).map(d => <option key={d.name} value={d.name}>{d.name}</option>)}
                                         </select>
                                     </div>
                                     <div className="space-y-1">
                                         <label className="text-[8px] font-black text-slate-600 ml-2">COLOR (কালার)</label>
                                         <select className="w-full h-12 bg-slate-50 border border-slate-100 rounded-[1rem] px-4 font-black text-xs uppercase" value={manualForm.color} onChange={e => setManualForm(p => ({ ...p, color: e.target.value }))}>
                                             <option value="">SELECT COLOR</option>
-                                            {masterData.colors.map(c => <option key={c} value={c}>{c}</option>)}
+                                            {(masterData.colors || []).map(c => <option key={c} value={c}>{c}</option>)}
                                         </select>
                                     </div>
                                     <div className="space-y-1">
@@ -950,14 +950,14 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                                 <div className="space-y-2">
                                     <label className="text-[8px] md:text-[10px] text-slate-600 ml-2">Design (ডিজাইন)</label>
                                     <select name="design" defaultValue={editPataModal.design} className="w-full h-12 bg-slate-50 rounded-[1rem] px-4 border border-slate-100 italic focus:border-amber-500 outline-none text-xs md:text-sm">
-                                        {masterData.designs.map(d => <option key={d.name} value={d.name}>{d.name}</option>)}
+                                        {(masterData.designs || []).map(d => <option key={d.name} value={d.name}>{d.name}</option>)}
                                     </select>
                                 </div>
                                 <div className="space-y-2">
                                     <label className="text-[8px] md:text-[10px] text-slate-600 ml-2">Color & Lot</label>
                                     <div className="grid grid-cols-2 gap-3">
                                         <select name="color" defaultValue={editPataModal.color} className="h-12 bg-slate-50 rounded-[1rem] px-3 border border-slate-100 italic focus:border-amber-500 outline-none text-xs">
-                                            {masterData.colors.map(c => <option key={c} value={c}>{c}</option>)}
+                                            {(masterData.colors || []).map(c => <option key={c} value={c}>{c}</option>)}
                                         </select>
                                         <input name="lotNo" defaultValue={editPataModal.lotNo} list="pata-lots" className="h-12 bg-slate-50 rounded-[1rem] px-3 border border-slate-100 italic focus:border-amber-500 outline-none text-xs" />
                                     </div>

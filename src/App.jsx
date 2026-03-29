@@ -276,9 +276,14 @@ class ErrorBoundary extends React.Component {
           <h1 className="text-2xl font-black uppercase tracking-tighter mb-4 italic">
             Core Failure
           </h1>
+          {this.state.error && (
+            <p className="text-rose-400 text-xs font-mono mb-4 max-w-md text-center opacity-70 break-all">
+              {this.state.error.toString()}
+            </p>
+          )}
           <button
             onClick={() => window.location.reload()}
-            className="mt-12 bg-white text-black px-12 py-5 rounded-full font-black uppercase text-[10px] tracking-[0.4em] italic hover:scale-105 transition-transform"
+            className="mt-8 bg-white text-black px-12 py-5 rounded-full font-black uppercase text-[10px] tracking-[0.4em] italic hover:scale-105 transition-transform"
           >
             Restart System
           </button>
