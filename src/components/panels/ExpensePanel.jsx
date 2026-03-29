@@ -233,22 +233,16 @@ const ExpensePanel = ({
         </div>
       </div>
 
-      <div className="flex bg-white p-3 rounded-3xl border border-slate-50 shadow-inner overflow-x-auto mb-10">
-        {["daily", "cashIn", "worker", "invoice", "report"].map((v) => (
+      <div className="flex bg-white p-3 rounded-2xl border border-slate-100 shadow-sm overflow-x-auto mb-10 gap-2">
+        {["new", "daily", isAdmin && "cashIn", "worker", "invoice", isAdmin && "report"].filter(Boolean).map((v) => (
           <button
             key={v}
-            onClick={() => setActiveTab(v)}
-            className={`flex-1 py-6 md:py-10 px-8 rounded-2xl md:rounded-[4.5rem] font-black uppercase text-[10px] md:text-sm tracking-widest transition-all ${activeTab === v ? "bg-black text-white shadow-3xl italic scale-[1.02]" : "text-slate-300 hover:text-black"}`}
+            onClick={() => {
+                 setActiveTab(v);
+            }}
+            className={`flex-1 py-8 px-8 rounded-full font-black uppercase text-[10px] md:text-xs tracking-widest transition-all whitespace-nowrap min-w-[120px] ${activeTab === v ? "bg-black text-white shadow-3xl italic scale-[1.02]" : "text-slate-400 hover:text-black hover:bg-slate-50"}`}
           >
-            {v === "daily"
-              ? "ডেইলি খরচ"
-              : v === "cashIn"
-                ? "ক্যাশ-ইন"
-                : v === "worker"
-                  ? "কর্মী সামারি"
-                  : v === "invoice"
-                    ? "ইনভয়েস"
-                    : "হিসাব বহি"}
+            {v === "new" ? "নতুন এন্ট্রি" : v === "daily" ? "ডেইলি খরচ" : v === "cashIn" ? "ক্যাশ-ইন" : v === "worker" ? "শিল্পী বিবরণ" : v === "invoice" ? "ইনভয়েস" : "হিসাব বহি"}
           </button>
         ))}
       </div>

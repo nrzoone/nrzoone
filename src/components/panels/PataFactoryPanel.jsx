@@ -490,6 +490,7 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
 
     return (
     <div className="space-y-4 pb-24 animate-fade-up px-1 md:px-2 italic text-black font-outfit uppercase">
+      {/* Header section with stats and actions */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
         <div className="flex items-center gap-6">
           <button
@@ -500,15 +501,16 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
           </button>
           <div>
             <h1 className="section-header">
-                Pata <span className="text-slate-400">Hub</span>
+                Pata Hub <span className="text-slate-400">Division</span>
             </h1>
             <p className="text-[11px] font-black text-slate-400 uppercase tracking-[0.4em] mt-2 italic">
-               Advanced Production Division
+               Advanced Production Logistics
             </p>
           </div>
         </div>
+        
         <div className="flex items-center gap-6 w-full md:w-auto">
-          <div className="bg-white px-6 py-3 rounded-2xl border border-slate-100 shadow-sm hidden md:block">
+          <div className="bg-white px-6 py-3 rounded-2xl border border-slate-100 shadow-sm hidden md:block text-right">
             <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">Pending Pata</p>
             <p className="text-2xl font-black italic text-black leading-none uppercase">
                 {activeEntries.reduce((sum, item) => sum + Number(item.pataQty || 0), 0)} <span className="text-[10px] text-slate-300 ml-1">Pcs</span>
@@ -518,12 +520,15 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
             <button
                 onClick={() => setShowManualModal(true)}
                 className="w-12 h-12 flex items-center justify-center bg-amber-500 text-white rounded-full shadow-lg hover:scale-110 transition-all border-b-4 border-amber-800"
+                title="Direct Stock In"
             >
                 <Box size={20} />
             </button>
+          </div>
         </div>
       </div>
 
+      {/* Navigation Tabs */}
       <div className="flex bg-white p-2 rounded-2xl border border-slate-100 shadow-sm overflow-x-auto mb-10">
         {['new', 'active', 'history', (isAdmin || isManager) && 'payments'].filter(Boolean).map(v => (
           <button
@@ -532,7 +537,7 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                 if (v === 'new') setShowModal(true);
                 else setView(v);
             }}
-            className={`pill-tab flex-1 whitespace-nowrap min-w-[100px] ${view === v ? "pill-tab-active" : "pill-tab-inactive hover:text-black"}`}
+            className={`pill-tab flex-1 whitespace-nowrap min-w-[120px] ${view === v ? "pill-tab-active" : "pill-tab-inactive hover:text-black"}`}
           >
             {v === 'new' ? 'নতুন কাজ' : v === 'active' ? 'চলমান' : v === 'history' ? 'পুরাতন' : 'লেজার ও পেমেন্ট'}
           </button>

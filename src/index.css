@@ -66,12 +66,12 @@
 @layer utilities {
   /* ===== FORM INPUT ===== */
   .form-input {
-    @apply w-full bg-white border border-gray-200 text-[#1a1a1a] outline-none transition-all duration-300;
-    border-radius: clamp(10px, 1.5vw, 16px);
-    font-size: clamp(13px, 2vw, 15px);
-    height: clamp(44px, 6vw, 52px);
-    padding: 0 clamp(12px, 3vw, 20px);
-    min-height: 44px;
+    @apply w-full bg-white border border-slate-200 text-[#1a1a1a] outline-none transition-all duration-300;
+    border-radius: 12px;
+    font-size: 14px;
+    height: 48px;
+    padding: 0 16px;
+    min-height: 48px;
   }
 
   .form-input:focus {
@@ -157,14 +157,14 @@
 
   /* ===== BUTTON ===== */
   .issue-work-btn {
-    @apply bg-black text-white font-semibold cursor-pointer text-center flex items-center justify-center;
-    height: clamp(44px, 6vw, 52px);
-    border-radius: clamp(12px, 2vw, 16px);
-    padding: 0 clamp(20px, 4vw, 32px);
-    font-size: clamp(13px, 2vw, 15px);
+    @apply bg-black text-white font-bold cursor-pointer text-center flex items-center justify-center;
+    height: 48px;
+    border-radius: 12px;
+    padding: 0 24px;
+    font-size: 14px;
     width: 100%;
     max-width: 400px;
-    margin-bottom: clamp(16px, 3vw, 24px);
+    margin-bottom: 20px;
     transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
@@ -288,5 +288,17 @@
     background: white !important;
     color: black !important;
     border: 2px solid black !important;
+  }
+  .pill-tab {
+    @apply h-12 flex items-center justify-center px-6 rounded-xl font-black uppercase text-[11px] tracking-widest transition-all italic;
+    min-width: 120px;
+  }
+
+  .pill-tab-active {
+    @apply bg-black text-white shadow-lg;
+  }
+
+  .pill-tab-inactive {
+    @apply text-slate-400 hover:text-black hover:bg-slate-50;
   }
 }
