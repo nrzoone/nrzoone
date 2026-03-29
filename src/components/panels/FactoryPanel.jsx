@@ -635,28 +635,20 @@ const FactoryPanel = ({
               {activeProductions.length} <span className="text-[10px] text-slate-300 ml-1">Lots</span>
             </p>
           </div>
-          {(isAdmin || isManager) && (
-            <button
-              onClick={() => setShowIssueModal(true)}
-              className="black-button px-8 py-4 text-[11px] flex-1 md:flex-none justify-center"
-            >
-              <Plus size={16} strokeWidth={4} /> নতুন কাজ
-            </button>
-          )}
         </div>
       </div>
 
       <div className="flex bg-white p-2 rounded-2xl border border-slate-100 shadow-sm overflow-x-auto mb-10">
-        {["new", "active", "history", "payments"].map((v) => (
+        {["new", "active", "history", (isAdmin || isManager) && "payments"].filter(Boolean).map((v) => (
           <button
             key={v}
             onClick={() => {
               if (v === "new") setShowIssueModal(true);
               else setView(v);
             }}
-            className={`pill-tab flex-1 ${view === v ? "pill-tab-active" : "pill-tab-inactive hover:text-black"}`}
+            className={`pill-tab flex-1 whitespace-nowrap min-w-[100px] ${view === v ? "pill-tab-active" : "pill-tab-inactive hover:text-black"}`}
           >
-            {v === "new" ? "নতুন কাজ" : v === "active" ? "চলমান" : v === "history" ? "পুরাতন" : "লেজার ও বেতন"}
+            {v === "new" ? "নতুন কাজ" : v === "active" ? "চলমান" : v === "history" ? "পুরাতন" : "লেজার ও পেমেন্ট"}
           </button>
         ))}
       </div>
