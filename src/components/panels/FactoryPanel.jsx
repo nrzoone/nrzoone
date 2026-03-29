@@ -647,13 +647,16 @@ const FactoryPanel = ({
       </div>
 
       <div className="flex bg-white p-2 rounded-2xl border border-slate-100 shadow-sm overflow-x-auto mb-10">
-        {["active", "history", "payments"].map((v) => (
+        {["new", "active", "history", "payments"].map((v) => (
           <button
             key={v}
-            onClick={() => setView(v)}
+            onClick={() => {
+              if (v === "new") setShowIssueModal(true);
+              else setView(v);
+            }}
             className={`pill-tab flex-1 ${view === v ? "pill-tab-active" : "pill-tab-inactive hover:text-black"}`}
           >
-            {v === "active" ? "চলমান" : v === "history" ? "পুরাতন" : "লেজার ও বেতন"}
+            {v === "new" ? "নতুন কাজ" : v === "active" ? "চলমান" : v === "history" ? "পুরাতন" : "লেজার ও বেতন"}
           </button>
         ))}
       </div>

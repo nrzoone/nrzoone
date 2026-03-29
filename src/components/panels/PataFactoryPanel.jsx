@@ -532,13 +532,16 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
       </div>
 
       <div className="flex bg-white p-2 rounded-2xl border border-slate-100 shadow-sm overflow-x-auto mb-10">
-        {['active', 'history', isAdmin && 'payments'].filter(Boolean).map(v => (
+        {['new', 'active', 'history', isAdmin && 'payments'].filter(Boolean).map(v => (
           <button
             key={v}
-            onClick={() => setView(v)}
+            onClick={() => {
+                if (v === 'new') setShowModal(true);
+                else setView(v);
+            }}
             className={`pill-tab flex-1 ${view === v ? "pill-tab-active" : "pill-tab-inactive hover:text-black"}`}
           >
-            {v === 'active' ? 'চলমান' : v === 'history' ? 'পুরাতন' : 'লেজার ও পেমেন্ট'}
+            {v === 'new' ? 'নতুন কাজ' : v === 'active' ? 'চলমান' : v === 'history' ? 'পুরাতন' : 'লেজার ও পেমেন্ট'}
           </button>
         ))}
       </div>
