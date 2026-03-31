@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Activity, Scissors, Layers, Hammer, Package, Truck, LayoutGrid, Plus, Bell, MoreHorizontal, ArrowUpRight, PlusCircle, TrendingUp, TrendingDown, Clock, MousePointer2, ChevronRight, UserCheck, Share2 } from 'lucide-react';
+import { Activity, Scissors, Layers, Hammer, Package, Truck, LayoutGrid, Plus, Bell, MoreHorizontal, ArrowUpRight, PlusCircle, TrendingUp, TrendingDown, Clock, MousePointer2, ChevronRight, UserCheck, Share2, AlertTriangle } from 'lucide-react';
 import { 
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, 
   BarChart, Bar, Cell, PieChart, Pie
@@ -203,10 +203,14 @@ const Overview = ({ masterData, setMasterData, setActivePanel, user, t }) => {
             {/* Strategic Fiscal Hub */}
             <div className="mb-16 grid grid-cols-1 md:grid-cols-4 gap-8">
                 <div className="md:col-span-3 bg-black text-white p-12 rounded-[4rem] relative overflow-hidden group shadow-3xl italic">
-                    <div className="flex justify-between items-center relative z-10">
+                    <div className="flex flex-col md:flex-row justify-between items-center relative z-10 gap-8">
                         <div className="space-y-4">
                             <h3 className="text-4xl font-black italic tracking-tighter uppercase leading-none">Net Strategic Worth</h3>
                             <p className="text-[10px] font-black uppercase text-white/40 tracking-[0.4em]">Real-time Factory Liquidity & Margin Analysis</p>
+                            <div className="flex gap-4 pt-4">
+                               <button onClick={() => setActivePanel('Expense')} className="px-6 py-3 bg-white/10 hover:bg-white/20 rounded-full text-[9px] font-black uppercase tracking-widest border border-white/10 transition-all">Logging Expense</button>
+                               <button onClick={() => setActivePanel('Inventory')} className="px-6 py-3 bg-white/10 hover:bg-white/20 rounded-full text-[9px] font-black uppercase tracking-widest border border-white/10 transition-all">Audit Stock</button>
+                            </div>
                         </div>
                         <div className="text-right">
                              <p className="text-6xl font-black italic tracking-tighter leading-none mb-3 text-emerald-500">৳{stats.financialIntel.netProfit.toLocaleString()}</p>
@@ -224,8 +228,11 @@ const Overview = ({ masterData, setMasterData, setActivePanel, user, t }) => {
                 </div>
                 <div className="bg-white p-10 rounded-[4rem] border-4 border-slate-50 flex flex-col justify-between italic shadow-2xl group hover:border-black transition-all">
                     <div>
-                        <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-2">Total Fiscal Exposure</p>
-                        <h4 className="text-3xl font-black italic tracking-tighter">৳{stats.financialIntel.totalCosts.toLocaleString()}</h4>
+                        <div className="flex justify-between items-start mb-2">
+                           <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Total Fiscal Exposure</p>
+                           <TrendingDown size={16} className="text-rose-500" />
+                        </div>
+                        <h4 className="text-3xl font-black italic tracking-tighter text-black">৳{stats.financialIntel.totalCosts.toLocaleString()}</h4>
                     </div>
                     <div className="space-y-3">
                          <div className="flex justify-between items-center text-[8px] font-black uppercase tracking-widest text-slate-400">
@@ -237,6 +244,28 @@ const Overview = ({ masterData, setMasterData, setActivePanel, user, t }) => {
                          </div>
                     </div>
                 </div>
+            </div>
+
+            {/* Rapid Command Center */}
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-6 mb-16">
+                 {[
+                    { label: 'Issue cutting', panel: 'Cutting', icon: <Scissors size={20} />, color: 'bg-black text-white' },
+                    { label: 'Sewing Node', panel: 'Sewing', icon: <Layers size={20} />, color: 'bg-slate-50' },
+                    { label: 'Stone Production', panel: 'Stone', icon: <Hammer size={20} />, color: 'bg-slate-50' },
+                    { label: 'Pata Workshop', panel: 'Pata', icon: <Activity size={20} />, color: 'bg-slate-50' },
+                    { label: 'Outside Ops', panel: 'OutsideWork', icon: <Truck size={20} />, color: 'bg-slate-50' }
+                 ].map((cmd, idx) => (
+                    <button 
+                        key={idx}
+                        onClick={() => setActivePanel(cmd.panel)}
+                        className={`p-8 rounded-[2.5rem] ${cmd.color} border-4 border-slate-50 hover:border-black transition-all shadow-xl group text-left`}
+                    >
+                        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-6 shadow-lg transition-transform group-hover:scale-110 ${cmd.color === 'bg-black text-white' ? 'bg-zinc-800' : 'bg-white'}`}>
+                            {cmd.icon}
+                        </div>
+                        <p className="text-[9px] font-black uppercase tracking-widest leading-tight italic">{cmd.label}</p>
+                    </button>
+                 ))}
             </div>
 
             {/* Content Grid */}
@@ -335,19 +364,30 @@ const Overview = ({ masterData, setMasterData, setActivePanel, user, t }) => {
                     <div className="grid grid-cols-3 gap-6 mt-16">
                          <div className="bg-gray-50/80 p-6 rounded-[32px] border border-white hover:border-black/5 transition-all shadow-sm">
                               <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-md mb-6"><Layers size={20} className="text-rose-500" /></div>
-                              <p className="text-3xl font-black italic mb-1">{stats.pendingSewing}</p>
+                              <p className="text-3xl font-black italic mb-1 text-black">{stats.pendingSewing}</p>
                               <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest italic">Sewing Ops</p>
                          </div>
                          <div className="bg-gray-50/80 p-6 rounded-[32px] border border-white hover:border-black/5 transition-all shadow-sm">
                               <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-md mb-6"><Hammer size={20} className="text-rose-500" /></div>
-                              <p className="text-3xl font-black italic mb-1">{stats.pendingStone}</p>
+                              <p className="text-3xl font-black italic mb-1 text-black">{stats.pendingStone}</p>
                               <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest italic">Stone Ops</p>
                          </div>
-                         <div className="bg-zinc-900 p-6 rounded-[32px] text-white shadow-2xl group cursor-pointer hover:bg-rose-600 transition-all">
-                              <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-white group-hover:text-rose-600 transition-all"><Package size={20} /></div>
+                         <div className="bg-emerald-500 p-6 rounded-[32px] text-white shadow-2xl group cursor-pointer hover:bg-black transition-all">
+                              <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-white group-hover:text-black transition-all"><Package size={20} /></div>
                               <p className="text-3xl font-black italic mb-1">{stats.totalStock}</p>
-                              <p className="text-[8px] font-black text-white/40 uppercase tracking-widest italic uppercase">Sync Stock</p>
+                              <p className="text-[8px] font-black text-white/60 uppercase tracking-widest italic uppercase">Sync Stock</p>
                          </div>
+                    </div>
+
+                    <div className="mt-12 bg-slate-50 p-10 rounded-[3rem] border border-white flex justify-between items-center group cursor-pointer hover:border-rose-500 transition-all italic">
+                         <div className="flex items-center gap-6">
+                             <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-sm text-rose-500"><AlertTriangle size={24} /></div>
+                             <div>
+                                 <h4 className="text-xl font-black uppercase italic leading-none text-black">Material Alert</h4>
+                                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-2">Critical low stock detected in unit B</p>
+                             </div>
+                         </div>
+                         <ChevronRight size={24} className="text-slate-200 group-hover:text-rose-500 transition-all translate-x-0 group-hover:translate-x-2" />
                     </div>
                 </div>
 
