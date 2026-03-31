@@ -72,7 +72,7 @@ const WorkerSummary = ({ masterData }) => {
             <div className="flex flex-col md:flex-row items-center justify-between gap-6">
                 <div className="flex items-center gap-6">
                     <div className="bg-black rounded-3xl p-4 shadow-2xl rotate-3">
-                        <img src={logoWhite} alt="NRZO0NE" className="w-12 h-12 object-contain" />
+                        <NRZLogo size="sm" white />
                     </div>
                     <div>
                         <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.6em] mb-1">Performance Intelligence</p>

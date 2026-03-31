@@ -243,11 +243,7 @@ const AttendancePanel = ({
         <div className="w-[210mm] min-h-[297mm] mx-auto border-[12px] border-slate-50 p-10 md:p-14 rounded-3xl shadow-3xl relative overflow-hidden bg-white print:w-full print:min-h-[100vh] print:shadow-none print:border-none">
           {/* Watermark Logo */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-[0.03] -rotate-12 pointer-events-none">
-            <img
-              src={logoBlack}
-              alt=""
-              className="w-[500px] h-[500px] object-contain"
-            />
+            <NRZLogo size="xl" white={false} />
           </div>
 
           <div className="text-center mb-10 flex flex-col items-center relative z-10">
@@ -352,20 +348,12 @@ const AttendancePanel = ({
           <div className="border-[4px] border-black bg-white p-6 md:p-6 rounded-3xl relative overflow-hidden italic shadow-2xl min-h-[297mm] print:min-h-[100vh] print:shadow-none box-border">
             {/* Watermark */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-[0.03] -rotate-12 pointer-events-none">
-              <img
-                src={logoBlack}
-                alt=""
-                className="w-[500px] h-[500px] object-contain"
-              />
+              <NRZLogo size="xl" white={false} />
             </div>
 
             <div className="flex justify-between items-start border-b-[2px] border-black pb-8 mb-8 relative z-10">
               <div className="flex items-center gap-4">
-                <img
-                  src={logoBlack}
-                  alt="NRZO0NE"
-                  className="w-16 h-16 object-contain mix-blend-multiply"
-                />
+              <NRZLogo size="sm" white={false} />
                 <div>
                   <h1 className="text-3xl font-black italic tracking-tighter leading-none mb-1 uppercase">
                     NRZO0NE <span className="text-slate-300">PRO</span>

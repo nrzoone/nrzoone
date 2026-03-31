@@ -208,8 +208,9 @@ const TrackingView = ({ trackId, masterData, onClose }) => {
                     <button onClick={onClose} className="p-4 bg-slate-100 rounded-full hover:bg-black hover:text-white transition-all"><X size={20} /></button>
                 </div>
                 
-                <div className="bg-black text-white p-12 rounded-[5rem] shadow-3xl text-center">
-                    <p className="text-[10px] font-black uppercase tracking-[0.6em] text-slate-500 mb-6">Status</p>
+                <div className="bg-black text-white p-12 rounded-[5rem] shadow-3xl text-center flex flex-col items-center">
+                    <NRZLogo size="md" white />
+                    <p className="text-[10px] font-black uppercase tracking-[0.6em] text-slate-500 mt-6 mb-6">Status</p>
                     <h2 className="text-4xl md:text-7xl font-black uppercase italic tracking-tighter">{item.status === 'Pending' ? 'In Production' : 'Completed'}</h2>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-12 border-t border-white/10 pt-12">
                         <div><p className="text-[8px] text-slate-500 uppercase tracking-widest mb-1 font-black underline">Lot</p><p className="font-black">#{item.lotNo}</p></div>

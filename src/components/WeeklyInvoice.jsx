@@ -120,7 +120,7 @@ const WeeklyInvoice = ({ masterData }) => {
                     </button>
                     <div className="flex items-center gap-6 md:gap-10">
                         <div className="bg-black rounded-[2.5rem] p-6 shadow-2xl border border-white/10 transition-transform hover:scale-110 active:scale-95 overflow-hidden group">
-                           <img src={logoWhite} alt="NRZO0NE" className="w-24 h-24 md:w-32 md:h-32 object-contain group-hover:rotate-6 transition-transform duration-500" />
+                           <NRZLogo size="md" white />
                         </div>
                         <div>
                             <p className="text-xs md:text-sm font-black text-slate-500 uppercase tracking-[0.4em] mb-3 italic">WEEKLY MATRIX</p>

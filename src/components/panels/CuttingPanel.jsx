@@ -280,7 +280,7 @@ const CuttingPanel = ({
              <div className="mt-8 pt-8 flex justify-between items-center border-t-2 border-dashed border-slate-200">
                   <div className="flex items-center gap-4">
                       <div className="w-10 h-10 bg-black rounded flex items-center justify-center p-2">
-                        <img src={logoWhite} className="w-full h-full object-contain" alt="NR" />
+                        <NRZLogo size="sm" white={false} />
                       </div>
                       <div className="text-right flex items-center gap-6">
                            <div className="flex gap-10">
