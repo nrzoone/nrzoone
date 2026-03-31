@@ -69,13 +69,17 @@ class ErrorBoundary extends React.Component {
   }
 
   componentDidMount() {
-    window.addEventListener('unhandledrejection', (event) => {
-        const errStr = String(event.reason?.message || event.reason || '');
+    const suppress = (event) => {
+        const errStr = String(event.reason?.message || event.reason || event.message || '');
         if (/abort|cancelled|user aborted|timeout|quota/i.test(errStr)) {
-            event.preventDefault();
-            console.warn("Silencing benign network rejection:", errStr);
+            if (event.preventDefault) event.preventDefault();
+            if (event.stopPropagation) event.stopPropagation();
+            console.warn("Global Suppression of Abort-Related Error:", errStr);
+            return true;
         }
-    });
+    };
+    window.addEventListener('unhandledrejection', suppress, true);
+    window.addEventListener('error', suppress, true);
   }
 
   render() {

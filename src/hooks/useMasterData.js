@@ -156,17 +156,27 @@ export const useMasterData = () => {
             // Robust check for various abort error formats across browsers
             const errStr = String(err.message || err.code || err);
             if (/abort|cancelled|user aborted/i.test(errStr)) {
-                console.warn("Firestore listener aborted (benign).");
+                console.warn("Firestore listener aborted (benign). Moving to local mode.");
+                if (isSubscribed) setIsLoading(false);
                 return;
             }
             
             console.error("Firestore access error:", err);
             setSyncStatus('error');
-            setIsLoading(false);
+            if (isSubscribed) setIsLoading(false);
         });
+
+        // Fail-safe timeout to unmask UI if Firestore is too slow or aborted
+        const failSafe = setTimeout(() => {
+            if (isSubscribed) {
+                console.warn("Firestore taking too long. Unmasking UI with local data.");
+                setIsLoading(false);
+            }
+        }, 3000);
 
         return () => {
             isSubscribed = false;
+            clearTimeout(failSafe);
             if (unsub) unsub();
         };
     }, []);

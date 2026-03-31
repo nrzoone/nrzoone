@@ -2,10 +2,10 @@ import React from 'react';
 
 const NRZLogo = ({ size = "md", white = true }) => {
   const sizes = {
-    sm: { w: 100, h: 50, icon: 40, text: "text-xl", sub: "text-[6px]" },
-    md: { w: 220, h: 120, icon: 80, text: "text-4xl", sub: "text-[10px]" },
-    lg: { w: 350, h: 200, icon: 140, text: "text-6xl", sub: "text-[14px]" },
-    xl: { w: 500, h: 280, icon: 200, text: "text-8xl", sub: "text-[18px]" },
+    sm: { w: 100, h: 50, icon: 45, text: "text-xl", sub: "text-[5px]" },
+    md: { w: 220, h: 120, icon: 90, text: "text-4xl", sub: "text-[9px]" },
+    lg: { w: 350, h: 180, icon: 140, text: "text-6xl", sub: "text-[12px]" },
+    xl: { w: 500, h: 260, icon: 200, text: "text-8xl", sub: "text-[16px]" },
   };
 
   const s = sizes[size] || sizes.md;
@@ -13,33 +13,36 @@ const NRZLogo = ({ size = "md", white = true }) => {
 
   return (
     <div className={`flex flex-col items-center justify-center font-serif ${white ? "text-white" : "text-black"}`} style={{ width: s.w }}>
-      {/* Hand-drawn High-Fidelity Sewing Machine SVG */}
+      {/* High-Fidelity Branded Sewing Machine SVG */}
       <svg 
         width={s.icon} 
-        height={s.icon * 0.8} 
-        viewBox="0 0 100 80" 
+        height={s.icon * 0.7} 
+        viewBox="0 0 120 80" 
         fill="none" 
-        style={{ filter: `drop-shadow(0 0 10px ${white ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)'})` }}
+        style={{ filter: `drop-shadow(0 0 8px ${white ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.05)'})` }}
       >
+        {/* Main Machine Body - stylized smooth curves */}
         <path 
-          d="M15 65 L85 65 M25 65 C25 25, 70 25, 70 65 M65 40 L80 40 C85 40, 85 50, 80 50 L65 50 M30 45 L30 68 M28 72 L32 72" 
-          stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" 
+            d="M20 60 C20 60, 100 60, 100 60 M30 60 C30 20, 90 20, 90 55 L85 55 M80 35 L100 35 C105 35, 105 45, 100 45 L80 45 M35 45 L35 65 M32 68 L38 68" 
+            stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" 
         />
+        {/* Stylized nervous thread lines */}
         <path 
-          d="M45 25 Q35 35 30 50 M55 25 Q70 35 75 50" 
-          stroke={color} strokeWidth="0.5" opacity="0.3" 
+            d="M50 20 Q40 30 35 45 M60 20 Q75 30 85 45 M35 45 Q55 35 75 45" 
+            stroke={color} strokeWidth="0.8" opacity="0.4" strokeDasharray="2 2"
         />
-        <circle cx="80" cy="45" r="4" stroke={color} strokeWidth="1" />
-        <path d="M40 25 L60 25" stroke={color} strokeWidth="1" />
-        <rect x="42" y="15" width="16" height="10" rx="1" fill={color} opacity="0.4" />
+        {/* Detail icons */}
+        <circle cx="100" cy="40" r="4.5" stroke={color} strokeWidth="1.2" />
+        <path d="M50 22 L70 22" stroke={color} strokeWidth="1.2" />
+        <rect x="52" y="14" width="16" height="8" rx="1.5" fill={color} opacity="0.3" />
       </svg>
       
-      <div className="text-center relative mt-2">
-        <h1 className={`font-black uppercase italic tracking-[-0.08em] leading-none ${s.text}`} style={{ fontFamily: "'Times New Roman', serif" }}>
+      <div className="text-center relative mt-4">
+        <h1 className={`font-black uppercase italic tracking-[-0.06em] leading-none ${s.text}`} style={{ fontFamily: "serif" }}>
           NRZO<span className="opacity-70 mx-[-0.05em]">O</span>NE
         </h1>
-        <div className={`bg-current opacity-20 my-1 mx-auto`} style={{ height: '1px', width: '80%' }}></div>
-        <p className={`font-black uppercase tracking-[0.5em] opacity-40 italic ${s.sub}`} style={{ fontFamily: "Arial, sans-serif" }}>
+        <div className="h-[1.5px] w-full bg-current mt-2 mb-2 opacity-20"></div>
+        <p className={`font-black uppercase tracking-[0.45em] opacity-50 italic ${s.sub}`}>
           WOMEN'S CLOTHING
         </p>
       </div>
