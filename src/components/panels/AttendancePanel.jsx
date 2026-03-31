@@ -475,10 +475,10 @@ const AttendancePanel = ({
           </button>
           <div>
             <h2 className="section-header">
-              হাজিরা <span className="text-slate-400">ও বেতন</span>
+              {t('attendance')} <span className="text-slate-400">{t('and')} {t('payments')}</span>
             </h2>
             <p className="text-[11px] font-black text-slate-400 uppercase tracking-[0.4em] mt-2 italic">
-               Workforce Attendance Hub
+               {t('operationalTerminal')}
             </p>
           </div>
         </div>
@@ -489,13 +489,13 @@ const AttendancePanel = ({
               onClick={() => setViewMode("attendance")}
               className={`pill-tab ${viewMode === "attendance" ? "pill-tab-active" : "pill-tab-inactive hover:text-black"}`}
             >
-              হাজিরা
+              {t('attendance')}
             </button>
             <button
               onClick={() => setViewMode("duty")}
               className={`pill-tab ${viewMode === "duty" ? "pill-tab-active" : "pill-tab-inactive hover:text-black"}`}
             >
-              Duty Logs
+              {t('liveMonitor')}
             </button>
           </div>
           <div className="bg-white px-6 py-3 rounded-2xl border border-slate-100 shadow-sm text-right hidden md:block">
@@ -533,10 +533,10 @@ const AttendancePanel = ({
             onChange={(e) => setSelectedDepartment(e.target.value)}
             className="w-full text-2xl md:text-3xl font-black italic border-none outline-none bg-transparent uppercase text-black"
           >
-            <option value="sewing">সুইং সেকশন</option>
-            <option value="stone">স্টোন সেকশন</option>
-            <option value="pata">পাতা সেকশন</option>
-            <option value="monthly">মাসিক স্টাফ</option>
+            <option value="sewing">{t('sewing')} {t('productionUnit')}</option>
+            <option value="stone">{t('stone')} {t('productionUnit')}</option>
+            <option value="pata">{t('pataHub')}</option>
+            <option value="monthly">{t('monthlyStaff')}</option>
           </select>
         </div>
       </div>
@@ -545,14 +545,14 @@ const AttendancePanel = ({
         <div className="space-y-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
-              <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1 italic">মোট কর্মী (Total)</p>
+              <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1 italic">{t('worker')} (Total)</p>
               <p className="text-3xl font-black tracking-tighter text-black leading-none italic">{workers.length}</p>
-              <p className="text-[8px] font-black text-slate-400 uppercase mt-2 italic tracking-widest">Active Staff</p>
+              <p className="text-[8px] font-black text-slate-400 uppercase mt-2 italic tracking-widest">{t('active')}</p>
             </div>
             <div className="bg-emerald-50 p-6 rounded-2xl border border-emerald-100 shadow-sm">
-              <p className="text-[9px] font-black text-emerald-600 uppercase tracking-widest mb-1 italic">উপস্থিত (Present)</p>
+              <p className="text-[9px] font-black text-emerald-600 uppercase tracking-widest mb-1 italic">{t('present')}</p>
               <p className="text-3xl font-black tracking-tighter text-emerald-600 leading-none italic">{stats.present}</p>
-              <p className="text-[8px] font-black text-emerald-400 uppercase mt-2 italic tracking-widest">{stats.halfDay} Half-Day</p>
+              <p className="text-[8px] font-black text-emerald-400 uppercase mt-2 italic tracking-widest">{stats.halfDay} {t('halfDay')}</p>
             </div>
             <button
               onClick={() => setShowInvoice(true)}
@@ -619,7 +619,7 @@ const AttendancePanel = ({
                                 : "text-slate-400 hover:text-black hover:bg-white"
                             }`}
                           >
-                            {s === "present" ? "✓ আসছে" : s === "half-day" ? "½ হাফ" : "✗ নাই"}
+                            {s === "present" ? `✓ ${t('present')}` : s === "half-day" ? `½ ${t('halfDay')}` : `✗ ${t('absent')}`}
                           </button>
                         ))}
                       </div>

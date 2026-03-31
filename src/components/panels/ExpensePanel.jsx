@@ -309,7 +309,7 @@ const ExpensePanel = ({
                     <div className="space-y-1">
                         <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-4 italic">Expense Category</label>
                         <select name="category" className="form-input italic" required>
-                             {["Tea/Snacks", "Transport", "Material", "Utilities", "Salary", "Bonus", "Others"].map(c => <option key={c} value={c}>{c}</option>)}
+                             {["teaSnacks", "transport", "material", "utilities", "salary", "bonus", "others"].map(c => <option key={c} value={c}>{t(c)}</option>)}
                         </select>
                     </div>
                     <div className="space-y-1">

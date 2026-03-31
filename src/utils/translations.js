@@ -112,7 +112,9 @@ export const translations = {
         dailyAttendance: "Attendance",
         halfDay: "Half Day",
         category: "Category",
-        amount: "Amount"
+        amount: "Amount",
+        and: "and",
+        monthlyStaff: "Monthly Staff"
     },
     BN: {
         mainMenu: "প্রধান মেনু",
@@ -228,7 +230,9 @@ export const translations = {
         dailyAttendance: "হাজিরা",
         halfDay: "অর্ধ দিবস",
         category: "বিভাগ",
-        amount: "টাকার পরিমাণ"
+        amount: "টাকার পরিমাণ",
+        and: "ও",
+        monthlyStaff: "মাসিক স্টাফ"
     }
 };
 
