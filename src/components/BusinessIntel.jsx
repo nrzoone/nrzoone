@@ -1,8 +1,7 @@
 import React, { useMemo } from 'react';
 import { TrendingUp, AlertTriangle, Star, CheckCircle, ArrowUpRight, ArrowDownRight, Activity, Grid, Database, ArrowLeft } from 'lucide-react';
 import { getPataStockSummary } from '../utils/calculations';
-import logoWhite from '../assets/logo_white.png';
-import logoBlack from '../assets/logo_black.png';
+import NRZLogo from "./NRZLogo";
 
 const BusinessIntel = ({ masterData }) => {
     const stats = useMemo(() => {

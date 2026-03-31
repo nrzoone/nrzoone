@@ -168,10 +168,10 @@ const InventoryPanel = ({
           </button>
           <div>
             <h2 className="section-header">
-              Stock <span className="text-slate-400">Matrix</span>
+              {t('stockMatrix')} <span className="text-slate-400">Matrix</span>
             </h2>
             <p className="text-[11px] font-black text-slate-400 uppercase tracking-[0.4em] mt-2 italic">
-               Inventory Management Hub
+               {t('inventoryHub')}
             </p>
           </div>
         </div>
@@ -196,13 +196,13 @@ const InventoryPanel = ({
               onClick={() => { setTransactionType("out"); setShowModal(true); }}
               className="px-6 py-4 bg-rose-50 text-rose-600 rounded-full font-black uppercase text-[10px] tracking-widest hover:bg-rose-600 hover:text-white transition-all shadow-sm flex items-center justify-center flex-1 md:flex-none"
             >
-              <Minus size={14} strokeWidth={3} className="mr-2" /> Deduct
+              <Minus size={14} strokeWidth={3} className="mr-2" /> {t('deduct')}
             </button>
             <button
               onClick={() => { setTransactionType("in"); setShowModal(true); }}
               className="black-button px-8 py-4 text-[11px] flex-1 md:flex-none justify-center"
             >
-              <Plus size={16} strokeWidth={4} className="mr-2" /> Add Stock
+              <Plus size={16} strokeWidth={4} className="mr-2" /> {t('addStock')}
             </button>
           </div>
         </div>
@@ -253,7 +253,7 @@ const InventoryPanel = ({
             onClick={() => setView(v)}
             className={`pill-tab flex-1 whitespace-nowrap px-4 ${view === v ? "pill-tab-active" : "pill-tab-inactive hover:text-black"}`}
           >
-            {v === "overview" ? "তৈরি পোশাক" : v === "sewing" ? "সুইং স্টক" : v === "stone" ? "স্টোন স্টক" : v === "raw" ? "কাঁচামাল" : "নতুন স্টক"}
+            {v === "overview" ? t('finishedGoods') : v === "sewing" ? t('sewingStock') : v === "stone" ? t('stoneStock') : v === "raw" ? t('rawMaterials') : t('addStock')}
           </button>
         ))}
       </div>
@@ -444,7 +444,7 @@ const InventoryPanel = ({
                             <Search size={16} />
                         </div>
                         <input
-                            placeholder="সার্চ ডিজাইন, কালার বা সাইজ..."
+                            placeholder={t('searchPlaceholder')}
                             className="w-full bg-slate-50 dark:bg-black/20 h-14 rounded-2xl pl-16 pr-8 text-xs font-black uppercase tracking-widest italic outline-none border border-transparent focus:border-black/10 dark:focus:border-white/10 transition-all text-black dark:text-white"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
@@ -590,7 +590,7 @@ const InventoryPanel = ({
                   type="submit"
                   className="black-button py-5 md:py-6 text-sm flex-[2] order-1 md:order-2 justify-center"
                 >
-                   Update Protocol
+                   {t('updateProtocol')}
                 </button>
               </div>
             </form>
@@ -616,7 +616,7 @@ const InventoryPanel = ({
           <div className="p-3 bg-black text-white rounded-2xl group-hover:rotate-[-12deg] transition-transform">
             <ArrowLeft size={20} strokeWidth={3} />
           </div>
-          <span className="text-lg font-black uppercase italic tracking-widest text-black">ড্যাশবোর্ডে ফিরে যান</span>
+          <span className="text-lg font-black uppercase italic tracking-widest text-black">{t('backToDashboard')}</span>
           <div className="absolute -inset-1 bg-black/5 blur-2xl rounded-full -z-10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
         </button>
       </div>

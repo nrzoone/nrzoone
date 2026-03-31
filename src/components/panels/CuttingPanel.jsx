@@ -16,8 +16,7 @@ import {
 } from "lucide-react";
 import { getStock, getSewingStock } from "../../utils/calculations";
 import { syncToSheet } from "../../utils/syncUtils";
-import logoWhite from "../../assets/logo_white.png";
-import logoBlack from "../../assets/logo_black.png";
+import NRZLogo from "../NRZLogo";
 
 const CuttingPanel = ({
   masterData,

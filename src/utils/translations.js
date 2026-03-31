@@ -73,9 +73,28 @@ export const translations = {
         color: "COLOR",
         lotNo: "LOT NO",
         qty: "QTY",
+        received: "RECEIVED",
         workerName: "WORKER",
         date: "DATE",
-        note: "NOTE"
+        note: "NOTE",
+        history: "History",
+        payments: "Ledger",
+        searchPlaceholder: "Search design or worker...",
+        backToDashboard: "BACK TO DASHBOARD",
+        quickJob: "Issue Work",
+        stockAlert: "Material Alert",
+        lowStockDesc: "Critical low stock detected",
+        personnel: "Personnel",
+        database: "Database",
+        audit: "Audit Archive",
+        productionMatrix: "Production Matrix",
+        systemDiagnostic: "Diagnostic Node",
+        addUser: "NEW USER PROFILE",
+        addWorker: "NEW WORKER PROFILE",
+        addDesign: "NEW DESIGN PROFILE",
+        systemSecurity: "System Security & Logic",
+        authProtocol: "Authentication Protocol",
+        productionUnit: "Production Unit"
     },
     BN: {
         mainMenu: "প্রধান মেনু",
@@ -151,12 +170,32 @@ export const translations = {
         color: "রঙ",
         lotNo: "লট নম্বর",
         qty: "পরিমাণ (পিস)",
+        received: "গৃহীত",
         workerName: "কারিগর",
         date: "তারিখ",
-        note: "নোট"
+        note: "নোট",
+        history: "পুরাতন",
+        payments: "লেজার ও পেমেন্ট",
+        ledger: "লেজার",
+        searchPlaceholder: "ডিজাইন, কারিগর বা লট খুঁজুন...",
+        backToDashboard: "ড্যাশবোর্ডে ফিরে যান",
+        quickJob: "কাজ ইস্যু করুন",
+        stockAlert: "মজুদ সতর্কতা",
+        lowStockDesc: "স্টকে মালামাল কম আছে",
+        personnel: "কর্মী ব্যবস্থাপনা",
+        database: "ডাটাবেস",
+        audit: "অডিট আর্কাইভ",
+        productionMatrix: "উৎপাদন ম্যাট্রিক্স",
+        systemDiagnostic: "সিস্টেম ডায়াগনস্টিক",
+        addUser: "নতুন ইউজার প্রোফাইল",
+        addWorker: "নতুন কর্মীর তথ্য",
+        addDesign: "নতুন ডিজাইন সেটআপ",
+        systemSecurity: "সিস্টেম সিকিউরিটি",
+        authProtocol: "অথেন্টিকেশন প্রোটোকল",
+        productionUnit: "প্রোডাকশন ইউনিট"
     }
 };
 
 export const useTranslation = (lang) => {
-    return (key) => translations[lang]?.[key] || translations['EN'][key] || key;
+    return (key) => translations[lang]?.[key] || translations['EN']?.[key] || key;
 };

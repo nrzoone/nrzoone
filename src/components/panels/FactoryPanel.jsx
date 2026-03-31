@@ -38,9 +38,7 @@ import {
   getFinishingStock,
   getPataStockItem,
 } from "../../utils/calculations";
-import { syncToSheet } from "../../utils/syncUtils";
-import logoWhite from "../../assets/logo_white.png";
-import logoBlack from "../../assets/logo_black.png";
+import NRZLogo from "../NRZLogo";
 
 const FactoryPanel = ({
   type: initialType,
@@ -545,7 +543,7 @@ const FactoryPanel = ({
                    <p className="text-xs font-black uppercase tracking-[0.6em] text-slate-400 mt-2">FACTORY LOGISTICS • SECURE NODE</p>
                 </div>
                 <div className="text-right">
-                   <p className="text-2xl font-black uppercase tracking-widest italic decoration-double">LOT #{data.lotNo}</p>
+                   <p className="text-2xl font-black uppercase tracking-widest italic decoration-double">লট নং #{data.lotNo}</p>
                    <p className="text-lg font-black text-slate-400 mt-1">{data.date}</p>
                 </div>
              </div>
@@ -553,11 +551,11 @@ const FactoryPanel = ({
              <div className="flex-1 flex flex-col justify-center gap-12">
                   <div className="grid grid-cols-2 gap-12">
                       <div className="border-4 border-black p-6 bg-slate-50 rounded-3xl">
-                          <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">DESIGN SPECIFICATION</p>
+                          <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">ডিজাইন স্পেক (Design)</p>
                           <p className="text-4xl font-black uppercase truncate">{data.design}</p>
                       </div>
                       <div className="border-4 border-black p-6 bg-slate-50 rounded-3xl">
-                          <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">ASSIGNED OPERATIVE</p>
+                          <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">নিযুক্ত কারিগর (Worker)</p>
                           <p className="text-4xl font-black uppercase truncate">{data.worker}</p>
                       </div>
                   </div>
@@ -565,15 +563,15 @@ const FactoryPanel = ({
                   <div className="grid grid-cols-12 gap-8 items-center border-y-4 border-black py-10">
                       <div className="col-span-8 grid grid-cols-3 gap-4">
                           <div className="text-center group">
-                              <p className="text-[11px] font-black uppercase text-slate-400 mb-2">Size</p>
+                              <p className="text-[11px] font-black uppercase text-slate-400 mb-2">সাইজ (Size)</p>
                               <p className="text-6xl font-black italic leading-none">{data.size}</p>
                           </div>
                           <div className="text-center">
-                              <p className="text-[11px] font-black uppercase text-slate-400 mb-2">Borka</p>
+                              <p className="text-[11px] font-black uppercase text-slate-400 mb-2">বোরকা (Borka)</p>
                               <p className="text-6xl font-black italic leading-none">{data.issueBorka}</p>
                           </div>
                           <div className="text-center">
-                              <p className="text-[11px] font-black uppercase text-slate-400 mb-2">Hijab</p>
+                              <p className="text-[11px] font-black uppercase text-slate-400 mb-2">হিজাব (Hijab)</p>
                               <p className="text-6xl font-black italic leading-none">{data.issueHijab}</p>
                           </div>
                       </div>
@@ -589,17 +587,15 @@ const FactoryPanel = ({
 
              <div className="mt-8 pt-8 flex justify-between items-center border-t-2 border-dashed border-slate-200">
                   <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 bg-black rounded flex items-center justify-center p-2">
-                        <img src={logoWhite} className="w-full h-full object-contain" alt="NR" />
-                      </div>
+                      <NRZLogo size="sm" white={false} />
                       <div>
                         <p className="text-[8px] font-black uppercase text-slate-400">System v2.10</p>
                         <p className="text-[10px] font-black tracking-tighter italic">SMART TRACK™ PRODUCTION NODE</p>
                       </div>
                   </div>
-                  <div className="px-12 py-4 bg-black text-white rounded-[2rem] font-black uppercase tracking-[0.4em] italic text-xl shadow-2xl">
-                      {copyTitle}
-                  </div>
+                   <div className="px-12 py-4 bg-black text-white rounded-[2rem] font-black uppercase tracking-[0.4em] italic text-xl shadow-2xl">
+                      {copyTitle === "WORKER COPY" ? "কারিগর কপি" : "ফ্যাক্টরি কপি"}
+                   </div>
              </div>
         </div>
       </ConfigProvider>
@@ -657,10 +653,10 @@ const FactoryPanel = ({
           </button>
           <div>
             <h1 className="section-header">
-              {type === "sewing" ? "Sewing" : "Stone"} <span className="text-slate-400">Unit</span>
+              {type === "sewing" ? t('sewing') : t('stone')} <span className="text-slate-400">{t('productionUnit') || "Unit"}</span>
             </h1>
             <p className="text-[11px] font-black text-slate-400 uppercase tracking-[0.4em] mt-2 italic">
-              Production Division {type.toUpperCase()}
+              {t('fullSystemHub') || "Production Division"} {type.toUpperCase()}
             </p>
           </div>
         </div>
@@ -675,7 +671,7 @@ const FactoryPanel = ({
                       onClick={() => setView(v)}
                       className={`px-10 py-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${view === v ? 'bg-black text-white dark:bg-white dark:text-black shadow-lg italic' : 'text-slate-400 hover:text-black dark:hover:text-white'}`}
                     >
-                      {v === "active" ? "চলমান" : v === "history" ? "পুরাতন" : "লেজার ও পেমেন্ট"}
+                      {t(v)}
                     </button>
                   ))}
               </div>
@@ -685,7 +681,7 @@ const FactoryPanel = ({
                       <Search size={16} />
                   </div>
                   <input
-                      placeholder="সার্চ লট নম্বর, কারিগর বা ডিজাইন..."
+                      placeholder={t('searchPlaceholder')}
                       className="w-full bg-slate-50 dark:bg-black/20 h-16 rounded-2xl pl-16 pr-8 text-xs font-black uppercase tracking-widest italic outline-none border border-transparent focus:border-black/10 dark:focus:border-white/10 transition-all text-black dark:text-white"
                       value={lotSearch}
                       onChange={(e) => setLotSearch(e.target.value)}
@@ -751,7 +747,7 @@ const FactoryPanel = ({
                       onClick={() => setReceiveModal(p)}
                       className="black-button"
                     >
-                      জমা নিন (REC)
+                      {t('received')} (REC)
                     </button>
                     <button
                       onClick={() => setPrintSlip(p)}

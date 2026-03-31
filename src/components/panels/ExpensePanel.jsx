@@ -22,8 +22,7 @@ import {
 } from "lucide-react";
 import WorkerSummary from "../WorkerSummary";
 import { syncToSheet } from "../../utils/syncUtils";
-import logoWhite from "../../assets/logo_white.png";
-import logoBlack from "../../assets/logo_black.png";
+import NRZLogo from "../NRZLogo";
 
 const ExpensePanel = ({
   masterData,

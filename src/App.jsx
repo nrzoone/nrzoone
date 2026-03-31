@@ -50,9 +50,8 @@ import OutsideWorkPanel from "./components/panels/OutsideWorkPanel";
 import { useMasterData } from "./hooks/useMasterData";
 import { Toast } from "./components/UIComponents";
 import { useTranslation } from "./utils/translations";
-import logoWhite from "./assets/logo_white.png";
-import logoBlack from "./assets/logo_black.png";
 import QRScanner from "./components/QRScanner";
+import NRZLogo from "./components/NRZLogo";
 
 const GlobalStyles = () => null;
 
@@ -120,16 +119,8 @@ const playSound = (type = 'click') => {
     }
 };
 
-const Logo = ({ size = "md", white = false }) => (
-  <div className={`flex items-center gap-3 ${size === "lg" ? "scale-125" : ""}`}>
-    <div className={`rounded-xl flex items-center justify-center overflow-hidden transition-all shadow-xl ${white ? "bg-white/10" : "bg-black"} ${size === "sm" ? "w-10 h-10" : size === "lg" ? "w-20 h-20" : "w-14 h-14"}`}>
-        <img src={white ? logoWhite : logoBlack} className="w-full h-full object-contain p-2" alt="NR" />
-    </div>
-    <div className="text-left">
-        <h1 className={`font-black tracking-tighter uppercase italic leading-none ${white ? "text-white" : "text-black"} ${size === "lg" ? "text-4xl" : "text-xl"}`}>NRZO0NE</h1>
-        <p className={`font-black uppercase tracking-[0.3em] mt-1 ${white ? "text-white/40" : "text-slate-400"} ${size === "lg" ? "text-xs" : "text-[8px]"}`}>Factory</p>
-    </div>
-  </div>
+const Logo = ({ size = "md", white = false, showText = true }) => (
+  <NRZLogo size={size} white={white} />
 );
 
 const LoginView = ({ onLogin, masterData }) => {
@@ -263,7 +254,7 @@ const Sidebar = ({ activePanel, setActivePanel, user, setUser, isOpen, setIsSide
             </div>
             <div className="px-4 mt-8 pt-8 border-t border-slate-100">
                 <button onClick={() => setUser(null)} className="w-full flex items-center gap-4 p-4 rounded-xl text-slate-400 hover:text-rose-500 transition-colors">
-                    <LogOut size={16} /><span className="text-[9px] font-black uppercase tracking-[0.3em] italic">Logout</span>
+                    <LogOut size={16} /><span className="text-[9px] font-black uppercase tracking-[0.3em] italic">{t('logout') || 'Logout'}</span>
                 </button>
             </div>
         </div>
@@ -285,7 +276,16 @@ const MenuPanel = ({ setActivePanel, user, t }) => {
                         </div>
                         <div className="text-center">
                             <h3 className="text-xl font-black uppercase tracking-tight text-slate-800">{t(item.id.toLowerCase()) || item.label}</h3>
-                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2">{item.sub}</p>
+                            <div className="mt-8 pt-8 flex justify-between items-center border-t-2 border-dashed border-slate-200">
+                                <div className="flex items-center gap-4">
+                                    <NRZLogo size="sm" white={false} />
+                                    <div>
+                                        <p className="text-[8px] font-black uppercase text-slate-400">System v2.10</p>
+                                        <p className="text-[10px] font-black tracking-tighter italic">SMART TRACK™ PRODUCTION NODE</p>
+                                    </div>
+                                </div>
+                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2">{item.sub}</p>
+                            </div>
                         </div>
                     </button>
                 );
@@ -329,9 +329,19 @@ const AppContent = () => {
     };
 
     if (isLoading || !masterData) return (
-        <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center gap-6 animate-pulse">
-            <div className="w-16 h-16 border-4 border-white/20 border-t-white rounded-full animate-spin" />
-            <p className="italic tracking-[0.5em] uppercase text-[10px] font-black">Connecting NRZONE Neural Link...</p>
+        <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center p-20 animate-fade-in transition-all duration-1000">
+            <div className="mb-12 animate-pulse scale-110">
+                <Logo size="lg" white showText={false} />
+            </div>
+            <div className="relative group">
+                <p className="italic tracking-[0.8em] uppercase text-[10px] font-black text-white opacity-40 animate-pulse">
+                    Connecting NRZONE Neural Link...
+                </p>
+                <div className="absolute -bottom-4 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+            </div>
+            <div className="mt-20 flex gap-1">
+                {[1,2,3].map(i => <div key={i} className={`w-1 h-1 rounded-full bg-white opacity-10 animate-ping`} style={{ animationDelay: `${i*300}ms` }}></div>)}
+            </div>
         </div>
     );
 
@@ -381,7 +391,7 @@ const AppContent = () => {
                             {activePanel === "Stock" && <InventoryPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} setActivePanel={setActivePanel} t={t} />}
                             {activePanel === "Accounts" && <ExpensePanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} setActivePanel={setActivePanel} t={t} />}
                             {activePanel === "Reports" && <ReportsPanel masterData={masterData} user={user} setActivePanel={setActivePanel} t={t} />}
-                            {activePanel === "Settings" && <SettingsPanel masterData={masterData} setMasterData={setMasterData} user={user} showNotify={showNotify} setActivePanel={setActivePanel} />}
+                            {activePanel === "Settings" && <SettingsPanel masterData={masterData} setMasterData={setMasterData} user={user} showNotify={showNotify} setActivePanel={setActivePanel} t={t} />}
                         </div>
                     </main>
                     {activePanel !== "Menu" && (

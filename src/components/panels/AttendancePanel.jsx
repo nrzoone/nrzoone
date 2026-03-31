@@ -18,7 +18,7 @@ import {
   Camera,
 } from "lucide-react";
 import { syncToSheet } from "../../utils/syncUtils";
-import logoBlack from "../../assets/logo_black.png";
+import NRZLogo from "../NRZLogo";
 import QRScanner from "../QRScanner";
 
 const AttendancePanel = ({

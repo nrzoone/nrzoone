@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Printer, Calendar, Search, CreditCard, FileText, ChevronRight, ArrowLeft } from 'lucide-react';
-import logoWhite from '../assets/logo_white.png';
-import logoBlack from '../assets/logo_black.png';
+import NRZLogo from "./NRZLogo";
 
 const WeeklyInvoice = ({ masterData }) => {
     const [selectedDept, setSelectedDept] = useState('sewing');

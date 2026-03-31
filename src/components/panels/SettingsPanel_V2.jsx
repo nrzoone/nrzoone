@@ -36,8 +36,7 @@ import {
 import { storage } from "../../firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { generateWorkerPaySlip } from "../../services/pdfService";
-import logoWhite from "../../assets/logo_white.png";
-import logoBlack from "../../assets/logo_black.png";
+import NRZLogo from "../NRZLogo";
 
 const SettingsPanel = ({
   masterData,
@@ -45,6 +44,7 @@ const SettingsPanel = ({
   user: currentUser,
   showNotify,
   setActivePanel,
+  t,
 }) => {
   const [activeTab, setActiveTab] = useState("users");
   const [editingItem, setEditingItem] = useState(null);
@@ -398,7 +398,7 @@ const SettingsPanel = ({
                     }
                     className="w-full bg-black text-white py-4 rounded-full font-black uppercase text-[10px] tracking-widest shadow-2xl mt-auto"
                   >
-                    SAVE
+                    {t("save") || "SAVE"}
                   </button>
                 </div>
               ) : (
@@ -490,17 +490,17 @@ const SettingsPanel = ({
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {[
-          { label: "Colors", cat: "colors", items: masterData.colors, icon: LayoutGrid },
-          { label: "Sizes", cat: "sizes", items: masterData.sizes, icon: Package },
-          { label: "Masters", cat: "cutters", items: masterData.cutters, icon: Scissors },
-          { label: "Pata Taxonomy", cat: "pataTypes", items: masterData.pataTypes, icon: LayoutGrid }
+          { label: t("colors") || "Colors", cat: "colors", items: masterData.colors, icon: LayoutGrid },
+          { label: t("sizes") || "Sizes", cat: "sizes", items: masterData.sizes, icon: Package },
+          { label: t("masters") || "Masters", cat: "cutters", items: masterData.cutters, icon: Scissors },
+          { label: t("pataTaxonomy") || "Pata Taxonomy", cat: "pataTypes", items: masterData.pataTypes, icon: LayoutGrid }
         ].map((sec) => (
           <button key={sec.label} onClick={() => setActiveTab(sec.cat)} className="flex items-center justify-between p-8 bg-slate-50 dark:bg-black/20 rounded-3xl border border-slate-100 dark:border-zinc-800 hover:border-black dark:hover:border-white transition-all group text-left">
             <div className="flex items-center gap-6">
               <div className="p-4 bg-white dark:bg-zinc-900 rounded-2xl group-hover:rotate-6 transition-transform"><sec.icon size={20} /></div>
               <div>
                  <h4 className="text-lg font-black uppercase italic leading-none">{sec.label}</h4>
-                 <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mt-1">{sec.items?.length || 0} NODES</p>
+                 <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mt-1">{sec.items?.length || 0} {t("nodes") || "NODES"}</p>
               </div>
             </div>
             <ChevronRight size={16} className="text-slate-300" />
@@ -543,11 +543,19 @@ const SettingsPanel = ({
 
   const renderPersonnelContent = () => (
     <div className="space-y-8">
+      <div className="flex bg-slate-100 p-1.5 rounded-2xl flex-wrap">
+        <TabButton id="staff" label={t('coreStaff') || "Core Staff"} active={personnelTab} onClick={setPersonnelTab} />
+        <TabButton id="cutting" label={t('cutting') || "Cutting"} active={personnelTab} onClick={setPersonnelTab} />
+        <TabButton id="sewing" label={t('sewing') || "Sewing"} active={personnelTab} onClick={setPersonnelTab} />
+        <TabButton id="stone" label={t('stone') || "Stone"} active={personnelTab} onClick={setPersonnelTab} />
+        <TabButton id="pata" label={t('pataUnit') || "Pata Unit"} active={personnelTab} onClick={setPersonnelTab} />
+        <TabButton id="outside" label={t('outsideWork') || "Outside"} active={personnelTab} onClick={setPersonnelTab} />
+      </div>
       {['sewing', 'stone', 'pata'].map(dept => (
         <div key={dept} className="bg-slate-50 dark:bg-black/20 p-8 rounded-[3rem] border border-slate-100 dark:border-zinc-800">
           <div className="flex justify-between items-center mb-8 px-4">
-             <h4 className="text-xl font-black uppercase italic tracking-tighter">{dept} Operatives</h4>
-             <span className="text-[10px] font-black uppercase text-slate-400 tracking-widest">{getUnifiedWorkers(dept).length} Staff</span>
+             <h4 className="text-xl font-black uppercase italic tracking-tighter">{dept} {t("operatives") || "Operatives"}</h4>
+             <span className="text-[10px] font-black uppercase text-slate-400 tracking-widest">{getUnifiedWorkers(dept).length} {t("staff") || "Staff"}</span>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {getUnifiedWorkers(dept).map((w, idx) => (
@@ -563,8 +571,8 @@ const SettingsPanel = ({
                 </div>
                 <h5 className="text-lg font-black uppercase italic truncate">{w.name}</h5>
                 <div className="flex justify-between items-end mt-4">
-                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest italic font-mono">WAGE: ৳{w.wage}</p>
-                   <button onClick={() => sendWhatsApp(w.phone, "NRZOONE Salary Update: আপনার বর্তমান মজুরি আপডেট করা হয়েছে।")} className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-500 flex items-center justify-center hover:bg-emerald-500 hover:text-white transition-all shadow-sm">
+                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest italic font-mono">{t("wage") || "WAGE"}: ৳{w.wage}</p>
+                   <button onClick={() => sendWhatsApp(w.phone, t("salaryUpdateMsg") || "NRZOONE Salary Update: আপনার বর্তমান মজুরি আপডেট করা হয়েছে।")} className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-500 flex items-center justify-center hover:bg-emerald-500 hover:text-white transition-all shadow-sm">
                       <MessageCircle size={14} strokeWidth={3} />
                    </button>
                 </div>
@@ -582,10 +590,10 @@ const SettingsPanel = ({
         <table className="w-full text-left italic">
           <thead className="bg-slate-50 dark:bg-black/20 text-slate-400 font-black text-[11px] uppercase tracking-[0.2em]">
             <tr>
-              <th className="px-8 py-6">Timestamp</th>
-              <th className="px-6 py-6">Node Creator</th>
-              <th className="px-6 py-6">Operation</th>
-              <th className="px-6 py-6">Detail Metadata</th>
+              <th className="px-8 py-6">{t("timestamp") || "Timestamp"}</th>
+              <th className="px-6 py-6">{t("nodeCreator") || "Node Creator"}</th>
+              <th className="px-6 py-6">{t("operation") || "Operation"}</th>
+              <th className="px-6 py-6">{t("detailMetadata") || "Detail Metadata"}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100 dark:divide-zinc-800">
@@ -613,14 +621,14 @@ const SettingsPanel = ({
     <div className="space-y-8 p-4">
       <div className="bg-black text-white rounded-[3rem] p-12 text-center relative overflow-hidden group border-8 border-white/5">
          <div className="relative z-10">
-            <h4 className="text-4xl font-black italic uppercase tracking-tighter mb-4">Master Archives</h4>
-            <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest max-w-md mx-auto mb-10 italic">Secure production backups with instant node restoration capabilities.</p>
+            <h4 className="text-4xl font-black italic uppercase tracking-tighter mb-4">{t("masterArchives") || "Master Archives"}</h4>
+            <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest max-w-md mx-auto mb-10 italic">{t("backupDesc") || "Secure production backups with instant node restoration capabilities."}</p>
             <div className="flex flex-col md:flex-row justify-center gap-4 px-10">
                <button onClick={handleBackup} className="bg-white text-black px-10 py-6 rounded-2xl font-black uppercase text-[10px] tracking-widest hover:scale-105 transition-all shadow-xl flex items-center justify-center gap-3 italic">
-                  <Download size={18} /> Download JSON
+                  <Download size={18} /> {t("downloadJson") || "Download JSON"}
                </button>
                <label className="bg-zinc-800 text-white px-10 py-6 rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-zinc-700 transition-all cursor-pointer flex items-center justify-center gap-3 italic border border-zinc-700">
-                  <Upload size={18} /> Restore Archive
+                  <Upload size={18} /> {t("restoreArchive") || "Restore Archive"}
                   <input type="file" accept=".json" onChange={handleRestore} className="hidden" />
                </label>
             </div>
@@ -633,7 +641,7 @@ const SettingsPanel = ({
                   <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">{key.toUpperCase()}</p>
                   <p className="text-2xl font-black italic tracking-tighter">{masterData[key]?.length || 0}</p>
                </div>
-               <button onClick={() => { if(confirm(`Wipe all ${key}?`)) setMasterData(prev => ({...prev, [key]: []})); }} className="w-10 h-10 rounded-xl bg-white dark:bg-zinc-800 text-rose-500 flex items-center justify-center hover:bg-rose-500 hover:text-white transition-all shadow-sm opacity-20 group-hover:opacity-100">
+               <button onClick={() => { if(confirm(t("confirmWipe", { key }) || `Wipe all ${key}?`)) setMasterData(prev => ({...prev, [key]: []})); }} className="w-10 h-10 rounded-xl bg-white dark:bg-zinc-800 text-rose-500 flex items-center justify-center hover:bg-rose-500 hover:text-white transition-all shadow-sm opacity-20 group-hover:opacity-100">
                   <Trash2 size={16} />
                </button>
             </div>
@@ -656,33 +664,33 @@ const SettingsPanel = ({
               </button>
               <div>
                 <h1 className="section-header">
-                   Strategic <span className="text-slate-400">Hub</span>
+                   {t("strategicHub") || "Strategic"} <span className="text-slate-400">{t("hub") || "Hub"}</span>
                 </h1>
                 <p className="text-[11px] font-black text-slate-400 uppercase tracking-[0.4em] mt-2 italic">
-                   System Control Node v2.1
+                   {t("systemVersion") || "System Control Node v2.1"}
                 </p>
               </div>
             </div>
           </div>
 
           <div className="space-y-4">
-            <AccordionItem id="users" label="System Access" icon={ShieldCheck} description="Manage administrative credentials and roles">
+            <AccordionItem id="users" label={t('systemSecurity') || "System Access"} icon={ShieldCheck} description={t('authProtocol') || "Manage administrative credentials and roles"}>
               {renderUsersContent()}
             </AccordionItem>
 
-            <AccordionItem id="personnel" label="Personnel Matrix" icon={Users} description="Consolidated staff and production operative directory">
+            <AccordionItem id="personnel" label={t('personnel') || "Personnel Matrix"} icon={Users} description={t('staff') || "Consolidated staff and production operative directory"}>
               {renderPersonnelContent()}
             </AccordionItem>
 
-            <AccordionItem id="product" label="Production Matrix" icon={LayoutGrid} description="Master taxonomy for sizes, colors, and design specs">
+            <AccordionItem id="product" label={t('productionMatrix') || "Production Matrix"} icon={LayoutGrid} description={t('config') || "Master taxonomy for sizes, colors, and design specs"}>
               {renderProductContent()}
             </AccordionItem>
             
-            <AccordionItem id="logs" label="Audit Archives" icon={Clock} description="Real-time chronological footprint of all system operations">
+            <AccordionItem id="logs" label={t('audit') || "Audit Archives"} icon={Clock} description={t('liveMonitor') || "Real-time chronological footprint of all system operations"}>
                {renderAuditContent()}
             </AccordionItem>
 
-            <AccordionItem id="database" label="Strategic Maintenance" icon={Database} description="Legacy backup restoration and node sanitation">
+            <AccordionItem id="database" label={t('database') || "Strategic Maintenance"} icon={Database} description={t('raw') || "Legacy backup restoration and node sanitation"}>
                {renderDatabaseContent()}
             </AccordionItem>
           </div>
@@ -691,25 +699,25 @@ const SettingsPanel = ({
         <div className="hidden md:block space-y-8">
           <div className="bg-white dark:bg-zinc-900 p-8 rounded-[3.5rem] border-2 border-slate-50 dark:border-zinc-800 shadow-2xl relative overflow-hidden italic">
             <div className="relative z-10">
-              <h3 className="text-2xl font-black uppercase mb-8 italic tracking-tighter">Diagnostic Node</h3>
+              <h3 className="text-2xl font-black uppercase mb-8 italic tracking-tighter">{t('systemDiagnostic') || "Diagnostic Node"}</h3>
               <div className="space-y-8">
                 <div>
-                   <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Node Sync Status</p>
+                   <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">{t("nodeSyncStatus") || "Node Sync Status"}</p>
                    <div className="flex items-center gap-2">
                       <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></div>
-                      <p className="text-xs font-black uppercase italic">Primary Cloud Online</p>
+                      <p className="text-xs font-black uppercase italic">{t("primaryCloudOnline") || "Primary Cloud Online"}</p>
                    </div>
                 </div>
                 <div>
-                   <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Database Latency</p>
+                   <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">{t("dbLatency") || "Database Latency"}</p>
                    <p className="text-4xl font-black italic tracking-tighter">14<span className="text-xs ml-1 opacity-40">ms</span></p>
                 </div>
                 <div className="pt-6 border-t border-slate-50 dark:border-zinc-800">
-                   <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-3">System Capacity</p>
+                   <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-3">{t("systemCapacity") || "System Capacity"}</p>
                    <div className="w-full h-1 bg-slate-50 dark:bg-black/50 rounded-full overflow-hidden">
                       <div className="w-[84%] h-full bg-black dark:bg-white"></div>
                    </div>
-                   <p className="text-[10px] font-black uppercase mt-3 italic text-right opacity-30">8.4GB / 10GB Allocated</p>
+                   <p className="text-[10px] font-black uppercase mt-3 italic text-right opacity-30">{t("storageAllocated") || "8.4GB / 10GB Allocated"}</p>
                 </div>
               </div>
             </div>
@@ -734,7 +742,7 @@ const SettingsPanel = ({
           <div className="bg-white w-full max-w-lg rounded-[2.5rem] md:rounded-[5rem] border-4 border-slate-50 shadow-2xl overflow-y-auto max-h-[96vh] p-8 md:p-16 space-y-8 md:space-y-12">
             <div className="text-center">
               <h3 className="text-4xl font-black uppercase italic mb-2">
-                নতুন ইউজার
+                {t('addUser') || "নতুন ইউজার"}
               </h3>
               <p className="text-xl font-black tracking-widest text-slate-200 italic">
                 Identity Provisioning

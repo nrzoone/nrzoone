@@ -27,8 +27,7 @@ const QR_Slip_Theme = {
 };
 
 import { syncToSheet } from '../../utils/syncUtils';
-import logoWhite from '../../assets/logo_white.png';
-import logoBlack from '../../assets/logo_black.png';
+import NRZLogo from '../NRZLogo';
 
 const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActivePanel, t }) => {
     const isAdmin = user?.role === 'admin';
@@ -354,7 +353,7 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                          <p className="text-[10px] font-black uppercase tracking-[0.6em] text-slate-400 mt-2">PATA PRODUCTION • LOGISTICS</p>
                       </div>
                       <div className="text-right">
-                         <p className="text-xl font-black uppercase tracking-widest italic decoration-double">LOT #{printSlip.lotNo}</p>
+                         <p className="text-xl font-black uppercase tracking-widest italic decoration-double">লট নং #{printSlip.lotNo}</p>
                          <p className="text-sm font-black text-slate-400 mt-1">{printSlip.date}</p>
                       </div>
                    </div>
@@ -362,11 +361,11 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                    <div className="flex-1 flex flex-col justify-center gap-12">
                         <div className="grid grid-cols-2 gap-12">
                             <div className="border-4 border-black p-8 bg-slate-50 rounded-[2.5rem]">
-                                <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">DESIGN / PATTERN</p>
+                                <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">ডিজাইন / প্যাটার্ন (Design)</p>
                                 <p className="text-4xl font-black uppercase truncate">{printSlip.design}</p>
                             </div>
                             <div className="border-4 border-black p-8 bg-slate-50 rounded-[2.5rem]">
-                                <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">OPERATIVE WORKER</p>
+                                <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">নিযুক্ত কারিগর (Worker)</p>
                                 <p className="text-4xl font-black uppercase truncate">{printSlip.worker}</p>
                             </div>
                         </div>
@@ -374,11 +373,11 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                         <div className="grid grid-cols-12 gap-8 items-center border-y-4 border-black py-12">
                             <div className="col-span-8 flex gap-12">
                                 <div className="text-center group">
-                                    <p className="text-[11px] font-black uppercase text-slate-400 mb-2">Pata Qty</p>
+                                    <p className="text-[11px] font-black uppercase text-slate-400 mb-2">পাতার পরিমাণ (Qty)</p>
                                     <p className="text-8xl font-black italic">{printSlip.pataQty}</p>
                                 </div>
                                 <div className="text-center border-l-4 border-black pl-12">
-                                    <p className="text-[11px] font-black uppercase text-slate-400 mb-2">Type</p>
+                                    <p className="text-[11px] font-black uppercase text-slate-400 mb-2">টাইপ (Type)</p>
                                     <p className="text-4xl font-black uppercase italic">{printSlip.pataType}</p>
                                 </div>
                             </div>
@@ -402,7 +401,7 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                             </div>
                         </div>
                         <div className="px-12 py-4 bg-black text-white rounded-[2rem] font-black uppercase tracking-[0.4em] italic text-xl shadow-2xl">
-                            {copyTitle}
+                            {copyTitle === "RECIPIENT COPY" ? "কারিগর কপি" : "অফিস কপি"}
                         </div>
                    </div>
               </div>
@@ -456,10 +455,10 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
           </button>
           <div>
             <h1 className="section-header">
-                Pata Hub <span className="text-slate-400">Division</span>
+                {t('pataHub')} <span className="text-slate-400">{t('productionUnit') || "Division"}</span>
             </h1>
             <p className="text-[11px] font-black text-slate-400 uppercase tracking-[0.4em] mt-2 italic">
-               Advanced Production Logistics
+               {t('fullSystemHub') || "Advanced Production Logistics"}
             </p>
         </div>
       </div>
@@ -475,7 +474,7 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                       onClick={() => setView(v)}
                       className={`px-10 py-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${view === v ? 'bg-black text-white dark:bg-white dark:text-black shadow-lg italic' : 'text-slate-400 hover:text-black dark:hover:text-white'}`}
                     >
-                      {v === "active" ? "চলমান" : v === "history" ? "পুরাতন" : v === "payments" ? "পেমেন্ট" : "লেজার"}
+                      {t(v)}
                     </button>
                   ))}
               </div>
@@ -485,7 +484,7 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                       <Search size={16} />
                   </div>
                   <input
-                    placeholder="সার্চ কারিগর, ডিজাইন বা লট নম্বর..."
+                    placeholder={t('searchPlaceholder')}
                     className="w-full bg-slate-50 dark:bg-black/20 h-16 rounded-2xl pl-16 pr-8 text-xs font-black uppercase tracking-widest italic outline-none border border-transparent focus:border-black/10 dark:focus:border-white/10 transition-all text-black dark:text-white"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}

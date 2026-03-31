@@ -22,8 +22,7 @@ import {
   Box
 } from "lucide-react";
 import { syncToSheet } from '../../utils/syncUtils';
-import logoWhite from '../../assets/logo_white.png';
-import logoBlack from '../../assets/logo_black.png';
+import NRZLogo from "../NRZLogo";
 import QRScanner from '../QRScanner';
 
 const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActivePanel, t }) => {

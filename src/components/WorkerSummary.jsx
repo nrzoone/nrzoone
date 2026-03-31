@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { UserCheck, Search, Download, TrendingUp, X, FileText, ArrowUpRight, History } from 'lucide-react';
-import logoWhite from '../assets/logo_white.png';
-import logoBlack from '../assets/logo_black.png';
+import NRZLogo from "./NRZLogo";
 
 const WorkerSummary = ({ masterData }) => {
     const [searchTerm, setSearchTerm] = useState('');
