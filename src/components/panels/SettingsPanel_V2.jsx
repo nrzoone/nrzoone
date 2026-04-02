@@ -94,6 +94,26 @@ const SettingsPanel = ({
     }
   };
 
+  const handleLogoUpload = async (file) => {
+    if (!file) return;
+    setUploading(true);
+    try {
+      const storageRef = ref(storage, `branding/logo_${Date.now()}`);
+      await uploadBytes(storageRef, file);
+      const url = await getDownloadURL(storageRef);
+      setMasterData((prev) => ({
+        ...prev,
+        settings: { ...(prev.settings || {}), logo: url },
+      }));
+      showNotify("Company Logo Updated!");
+    } catch (error) {
+      console.error("Logo upload failed", error);
+      showNotify("Logo upload failed", "error");
+    } finally {
+      setUploading(false);
+    }
+  };
+
   const handleImageUpload = async (file) => {
     if (!file) return null;
     setUploading(true);
@@ -640,6 +660,47 @@ const SettingsPanel = ({
     </div>
   );
 
+  const renderBrandingContent = () => (
+    <div className="space-y-10 p-4 animate-fade-up">
+       <div className="bg-slate-50 dark:bg-black/20 p-12 rounded-[4rem] border-2 border-slate-100 dark:border-zinc-800 flex flex-col md:flex-row items-center gap-12 group transition-all hover:border-black dark:hover:border-white">
+          <div className="w-48 h-48 bg-white dark:bg-zinc-900 rounded-[3rem] shadow-2xl flex items-center justify-center overflow-hidden border-4 border-slate-50 dark:border-zinc-800 relative group-hover:rotate-3 transition-transform">
+             {masterData.settings?.logo ? (
+                <img src={masterData.settings.logo} className="w-full h-full object-contain p-4" alt="Company Logo" />
+             ) : (
+                <div className="flex flex-col items-center gap-4 text-slate-300">
+                   <ImageIcon size={48} />
+                   <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">No Custom Logo</p>
+                </div>
+             )}
+             {uploading && (
+                <div className="absolute inset-0 bg-black/60 flex items-center justify-center backdrop-blur-sm">
+                   <div className="w-8 h-8 border-4 border-white/20 border-t-white rounded-full animate-spin"></div>
+                </div>
+             )}
+          </div>
+          <div className="flex-1 text-center md:text-left">
+             <h4 className="text-3xl font-black uppercase italic tracking-tighter mb-4">Enterprise Branding</h4>
+             <p className="text-slate-500 text-xs font-black uppercase tracking-widest leading-relaxed mb-10 italic">
+                Upload your factory logo to personalize the ERP dashboard and print slips. High-resolution PNG/SVG recommended.
+             </p>
+             <label className="inline-flex items-center gap-4 bg-black dark:bg-white text-white dark:text-black px-12 py-6 rounded-2xl font-black uppercase text-[10px] tracking-[0.2em] hover:scale-105 transition-all shadow-3xl cursor-pointer italic">
+                <Upload size={18} />
+                {uploading ? "Uploading Neural Link..." : "Upload New Logo"}
+                <input type="file" accept="image/*" onChange={(e) => handleLogoUpload(e.target.files[0])} className="hidden" />
+             </label>
+             {masterData.settings?.logo && (
+                <button 
+                   onClick={() => setMasterData(prev => ({...prev, settings: {...prev.settings, logo: ""}}))}
+                   className="ml-0 md:ml-6 mt-4 md:mt-0 text-[10px] font-black uppercase text-rose-500 tracking-widest hover:underline italic"
+                >
+                   Reset to Defaults
+                </button>
+             )}
+          </div>
+       </div>
+    </div>
+  );
+
   const renderDatabaseContent = () => (
     <div className="space-y-8 p-4">
       <div className="bg-black text-white rounded-[3rem] p-12 text-center relative overflow-hidden group border-8 border-white/5">
@@ -697,6 +758,10 @@ const SettingsPanel = ({
           </div>
 
           <div className="space-y-4">
+            <AccordionItem id="branding" label="System Branding" icon={ImageIcon} description="Personalize dashboard and print slip logo">
+               {renderBrandingContent()}
+            </AccordionItem>
+
             <AccordionItem id="users" label={t('systemSecurity') || "System Access"} icon={ShieldCheck} description={t('authProtocol') || "Manage administrative credentials and roles"}>
               {renderUsersContent()}
             </AccordionItem>

@@ -10,7 +10,7 @@ const QR_Slip_Theme = {
     },
 };
 
-const UniversalSlip = ({ data, type, copyTitle }) => {
+const UniversalSlip = ({ data, type, copyTitle, logoUrl = null }) => {
     // Standardize data mapping
     const date = data.date || data.receiveDate || new Date().toLocaleDateString('en-GB');
     const displayId = data.id || 'N/A';
@@ -34,7 +34,7 @@ const UniversalSlip = ({ data, type, copyTitle }) => {
                 {/* 1. Header (Shipping Label Style) */}
                 <div className="flex border-b-[6px] border-black h-28 overflow-hidden">
                     <div className="w-32 border-r-[6px] border-black flex items-center justify-center bg-black">
-                        <NRZLogo size="sm" white={true} />
+                        <NRZLogo size="sm" white={true} customUrl={logoUrl} />
                     </div>
                     <div className="flex-1 p-4 flex flex-col justify-between">
                          <div className="flex justify-between items-start">
@@ -129,20 +129,26 @@ const UniversalSlip = ({ data, type, copyTitle }) => {
                 </div>
 
                 {/* 4. Footer Barcode Area */}
-                <div className="h-32 p-4 flex items-center gap-8">
+                <div className="h-44 p-4 flex items-center gap-8 bg-white">
                     <div className="flex-1 flex flex-col justify-center">
-                        <p className="text-[8px] font-black tracking-[0.5em] mb-1">SCAN FOR NODE AUTHENTICATION / ট্র্যাকিং নম্বর</p>
-                        <div className="h-16 bg-white border-2 border-black flex items-center justify-center relative overflow-hidden">
+                        <p className="text-[10px] font-black tracking-[0.5em] mb-2">SCAN FOR NODE AUTHENTICATION / ট্র্যাকিং নম্বর</p>
+                        <div className="h-20 bg-white border-[4px] border-black flex items-center justify-center relative overflow-hidden">
                              <div className="absolute inset-0 flex opacity-10">
-                                 {Array.from({length: 100}).map((_, i) => (
-                                     <div key={i} className="h-full bg-black" style={{ width: Math.random() * 4 + 'px', marginLeft: Math.random() * 2 + 'px' }} />
+                                 {Array.from({length: 120}).map((_, i) => (
+                                     <div key={i} className="h-full bg-black" style={{ width: Math.random() * 5 + 'px', marginLeft: Math.random() * 3 + 'px' }} />
                                  ))}
                              </div>
-                             <p className="text-4xl font-black tracking-[0.4em] relative z-10 antialiased">{displayId}</p>
+                             <p className="text-4xl md:text-5xl font-black tracking-[0.4em] relative z-10 antialiased">{displayId}</p>
                         </div>
                     </div>
-                    <div className="flex-none">
-                         <QRCode value={`${window.location.origin}/track?id=${displayId}`} size={80} bordered={false} style={{ padding: 0 }} />
+                    <div className="flex-none p-2 border-[4px] border-black bg-white shadow-lg">
+                         <QRCode 
+                            value={`${window.location.origin}/track?id=${displayId}`} 
+                            size={120} 
+                            bordered={false} 
+                            errorLevel="H"
+                            style={{ padding: 0 }}
+                         />
                     </div>
                 </div>
 

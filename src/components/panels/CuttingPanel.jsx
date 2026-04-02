@@ -255,9 +255,9 @@ const CuttingPanel = ({
         </div>
         
         <div className="w-[210mm] min-h-[297mm] mx-auto bg-white border border-gray-100 overflow-hidden relative">
-          <UniversalSlip data={printSlip} type="CUTTING" copyTitle="MASTER COPY" />
+          <UniversalSlip data={printSlip} type="CUTTING" copyTitle="MASTER COPY" logoUrl={masterData.settings?.logo} />
           <div className="h-4 w-full border-t-2 border-dashed border-slate-300"></div>
-          <UniversalSlip data={printSlip} type="CUTTING" copyTitle="RECIPIENT COPY" />
+          <UniversalSlip data={printSlip} type="CUTTING" copyTitle="RECIPIENT COPY" logoUrl={masterData.settings?.logo} />
         </div>
       </div>
     );

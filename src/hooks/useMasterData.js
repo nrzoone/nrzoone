@@ -1,9 +1,6 @@
 import { useState, useEffect } from 'react';
 import { db } from '../firebase';
 import { doc, setDoc, onSnapshot } from 'firebase/firestore';
-import { syncToSheet } from '../utils/syncUtils';
-
-
 
 const initialData = {
     workerCategories: {
@@ -58,25 +55,25 @@ const initialData = {
     cutters: ["MEHEDI", "SABBIR", "HASAN"],
     notifications: [],
     workerDocs: [],
+    settings: { logo: "" },
     whatsappRequests: [],
     expenses: [],
     cashEntries: [],
     workerPayments: [],
-    auditLogs: [], // Feature 4: Audit Trail
+    auditLogs: [], 
     systemSettings: {
         offlineMode: true,
         whatsappEnabled: true,
         barcodeEnabled: true,
         currency: "৳"
     },
-    rolePermissions: { // Feature 7: Role Based Access Control
+    rolePermissions: {
         admin: ["*"],
         manager: ["overview", "productions", "inventory", "attendance", "outside", "reports"],
         accountant: ["overview", "expenses", "payments", "reports"],
         worker: ["overview", "productions"]
     }
 };
-
 
 const COLLECTION_NAME = "nrzone_pro";
 const DOC_ID = "factory_data_v1";
@@ -95,8 +92,7 @@ export const useMasterData = () => {
         return initialData;
     });
 
-    // Cloud sync status
-    const [syncStatus, setSyncStatus] = useState('syncing'); // 'synced', 'syncing', 'error'
+    const [syncStatus, setSyncStatus] = useState('syncing'); 
     const [isOnline, setIsOnline] = useState(window.navigator.onLine);
 
     useEffect(() => {
@@ -110,29 +106,10 @@ export const useMasterData = () => {
         };
     }, []);
 
-    // Immediate sync on online status change
-    useEffect(() => {
-        if (isOnline && db && masterData && !isLoading) {
-            const sync = async () => {
-                try {
-                    setSyncStatus('syncing');
-                    await setDoc(doc(db, COLLECTION_NAME, DOC_ID), { content: masterData }, { merge: true });
-                    localStorage.setItem('nrzone_data', JSON.stringify(masterData));
-                    setSyncStatus('synced');
-                } catch (e) {
-                    console.error("Online recovery sync failed:", e);
-                }
-            };
-            sync();
-        }
-    }, [isOnline]);
-
-    // First load from Firestore
+    // Initial Load & Auth Sync
     useEffect(() => {
         if (!db) {
-            console.error("Firestore database is unavailable.");
             setIsLoading(false);
-            setSyncStatus('error');
             return;
         }
 
@@ -141,99 +118,61 @@ export const useMasterData = () => {
             if (!isSubscribed) return;
             try {
                 if (snap.exists()) {
-                    const cloudData = snap.data();
-                    const cloud = cloudData?.content;
-                    if (!cloud) {
-                        setSyncStatus('synced');
-                        setIsLoading(false);
-                        return;
-                    }
-
-                    setMasterData((prev) => {
-                        const merged = { ...initialData, ...cloud };
-                        const mergedStr = JSON.stringify(merged);
-                        const prevStr = JSON.stringify(prev);
-                        if (mergedStr !== prevStr) {
-                            try {
-                                localStorage.setItem('nrzone_data', mergedStr);
-                            } catch (lsErr) {
-                                console.warn("Local storage update failed (likely quota):", lsErr);
+                    const cloud = snap.data()?.content;
+                    if (cloud) {
+                        setMasterData(prev => {
+                            const merged = { ...initialData, ...cloud };
+                            if (JSON.stringify(merged) !== JSON.stringify(prev)) {
+                                localStorage.setItem('nrzone_data', JSON.stringify(merged));
+                                return merged;
                             }
-                            return merged;
-                        }
-                        return prev;
-                    });
-                    setSyncStatus('synced');
-                } else {
-                  // Ensure setDoc is handled to avoid unhandled promise rejection
-                  (async () => {
-                    try {
-                      await setDoc(doc(db, COLLECTION_NAME, DOC_ID), { content: initialData });
-                    } catch (e) {
-                      console.error("Internal initialization failed:", e);
+                            return prev;
+                        });
                     }
-                  })();
+                } else {
+                    setDoc(doc(db, COLLECTION_NAME, DOC_ID), { content: initialData }).catch(console.error);
                 }
+                setSyncStatus('synced');
             } catch (err) {
-                console.error("Data processing error:", err);
-                setSyncStatus('error');
+                console.error("Snapshot error:", err);
             } finally {
-                // Ensure loading is always cleared on the first response
-                if (isSubscribed) setIsLoading(false);
+                setIsLoading(false);
             }
         }, (err) => {
             if (!isSubscribed) return;
-            
-            // Robust check for various abort error formats across browsers
-            const errStr = String(err.message || err.code || err);
-            if (/abort|cancelled|user aborted/i.test(errStr)) {
-                console.warn("Firestore listener aborted (benign). Moving to local mode.");
-                if (isSubscribed) setIsLoading(false);
-                return;
-            }
-            
-            console.error("Firestore access error:", err);
+            console.warn("Firestore status:", err.message);
+            setIsLoading(false);
             setSyncStatus('error');
-            if (isSubscribed) setIsLoading(false);
         });
 
-        // Fail-safe timeout to unmask UI if Firestore is too slow or aborted
         const failSafe = setTimeout(() => {
-            if (isSubscribed) {
-                console.warn("Firestore taking too long. Unmasking UI with local data.");
-                setIsLoading(false);
-            }
-        }, 3000);
+            if (isSubscribed) setIsLoading(false);
+        }, 1500);
 
         return () => {
             isSubscribed = false;
             clearTimeout(failSafe);
-            if (unsub) unsub();
+            if (typeof unsub === 'function') unsub();
         };
     }, []);
 
-    // Save logic - Debounced Cloud Save Only
+    // Save Logic
     useEffect(() => {
         if (!db || !masterData || isLoading) return;
 
         const timer = setTimeout(async () => {
             try {
-                // Check if current state matches what's in local storage to avoid redundant cloudsync
                 const saved = localStorage.getItem('nrzone_data');
-                if (JSON.stringify(masterData) === saved) {
-                    setSyncStatus('synced');
-                    return;
-                }
+                if (JSON.stringify(masterData) === saved) return;
 
                 setSyncStatus('syncing');
                 await setDoc(doc(db, COLLECTION_NAME, DOC_ID), { content: masterData }, { merge: true });
                 localStorage.setItem('nrzone_data', JSON.stringify(masterData));
                 setSyncStatus('synced');
             } catch (e) {
-                console.error("Cloud Save Failed:", e);
                 setSyncStatus('error');
             }
-        }, 5000); // 5 seconds debounce for cloud to reduce hit count
+        }, 5000);
 
         return () => clearTimeout(timer);
     }, [masterData, isLoading]);
@@ -249,7 +188,7 @@ export const useMasterData = () => {
                     action,
                     details
                 },
-                ...(prev.auditLogs || []).slice(0, 999) // Limit to 1000 logs
+                ...(prev.auditLogs || []).slice(0, 999)
             ]
         }));
     };

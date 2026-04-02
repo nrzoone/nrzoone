@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const NRZLogo = ({ size = "md", white = true }) => {
+const NRZLogo = ({ size = "md", white = true, customUrl = null }) => {
   const [imgError, setImgError] = useState(false);
   
   const sizes = {
@@ -11,7 +11,7 @@ const NRZLogo = ({ size = "md", white = true }) => {
   };
 
   const s = sizes[size] || sizes.md;
-  const logoPath = white ? "/logo_white.png" : "/logo_black.png";
+  const logoPath = customUrl || (white ? "/logo_white.png" : "/logo_black.png");
 
   return (
     <div className={`flex flex-col items-center justify-center ${white ? "text-white" : "text-black"}`} style={{ width: s.w }}>
@@ -50,7 +50,7 @@ const NRZLogo = ({ size = "md", white = true }) => {
       )}
       
       {/* If using Image, we might hide the text if the image already contains "NRZOONE" */}
-      {!imgError && size !== "sm" ? null : (
+      {(!imgError && size !== "sm" && !customUrl) ? null : (
         <div className="text-center relative mt-4">
           <h1 className={`font-black uppercase italic tracking-[-0.06em] leading-none ${s.text}`} style={{ fontFamily: "serif" }}>
             NRZO<span className="opacity-70 mx-[-0.05em]">O</span>NE

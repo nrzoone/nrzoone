@@ -1,43 +1,43 @@
 import React, { useState, useEffect } from "react";
 import {
-  LogOut,
-  ArrowLeft,
-  Settings,
-  User,
-  Lock,
-  AlertCircle,
-  Activity,
-  Scissors,
-  Layers,
-  Hammer,
-  Package,
-  Truck,
-  Users,
-  Database,
-  DollarSign,
-  FileText,
-  LayoutGrid,
-  Menu,
-  Sun,
-  Moon,
-  Globe,
-// Production Build Hook v2.11 - Final Branding Sync
-  X,
-  Send,
-  Archive,
-  CheckCircle,
-  Search,
-  Bell,
-  MessageSquare,
-  MessageCircle,
-  AlertTriangle,
-  Eye,
-  EyeOff,
-  Printer,
-  Plus,
-  ShieldCheck,
-  ShieldAlert,
-  Trash2,
+    LogOut,
+    ArrowLeft,
+    Settings,
+    User,
+    Lock,
+    AlertCircle,
+    Activity,
+    Scissors,
+    Layers,
+    Hammer,
+    Package,
+    Truck,
+    Users,
+    Database,
+    DollarSign,
+    FileText,
+    LayoutGrid,
+    Menu,
+    Sun,
+    Moon,
+    Globe,
+    // Production Build Hook v2.11 - Final Branding Sync
+    X,
+    Send,
+    Archive,
+    CheckCircle,
+    Search,
+    Bell,
+    MessageSquare,
+    MessageCircle,
+    AlertTriangle,
+    Eye,
+    EyeOff,
+    Printer,
+    Plus,
+    ShieldCheck,
+    ShieldAlert,
+    Trash2,
 } from "lucide-react";
 import Overview from "./components/Overview";
 import CuttingPanel from "./components/panels/CuttingPanel";
@@ -108,14 +108,14 @@ class ErrorBoundary extends React.Component {
                         <p className="text-rose-500 text-[10px] font-mono leading-relaxed line-clamp-4">{this.state.error?.toString()}</p>
                     </div>
                     <div className="flex gap-4">
-                        <button 
-                            onClick={() => window.location.reload()} 
+                        <button
+                            onClick={() => window.location.reload()}
                             className="bg-white text-black px-12 py-5 rounded-full font-black uppercase text-xs tracking-widest hover:scale-105 active:scale-95 transition-all"
                         >
                             Emergency Reboot
                         </button>
-                        <button 
-                            onClick={this.handleRecover} 
+                        <button
+                            onClick={this.handleRecover}
                             className="bg-zinc-800 text-white px-12 py-5 rounded-full font-black uppercase text-xs tracking-widest hover:bg-rose-600 transition-all"
                         >
                             Full System Purge
@@ -154,8 +154,8 @@ const playSound = (type = 'click') => {
     }
 };
 
-const Logo = ({ size = "md", white = false, showText = true }) => (
-  <NRZLogo size={size} white={white} />
+const Logo = ({ size = "md", white = false, customUrl = null }) => (
+    <NRZLogo size={size} white={white} customUrl={customUrl} />
 );
 
 const LoginView = ({ onLogin, masterData }) => {
@@ -167,12 +167,12 @@ const LoginView = ({ onLogin, masterData }) => {
         <div className="min-h-screen flex flex-col md:flex-row bg-[var(--bg-primary)] animate-fade-up transition-colors duration-500">
             <div className="w-full md:w-1/2 bg-black flex flex-col items-center justify-center p-12 relative overflow-hidden">
                 <div className="absolute inset-0 bg-[radial-gradient(#ffffff05_1px,transparent_1px)] bg-[size:40px_40px] opacity-20"></div>
-                <Logo size="lg" white />
+                <Logo size="lg" white={true} customUrl={masterData.settings?.logo} />
                 <div className="mt-12 text-center hidden md:block">
                     <p className="text-white/50 text-[10px] font-black uppercase tracking-[0.8em] italic">Industrial Strategic Nexus</p>
                 </div>
             </div>
-            
+
             <div className="flex-1 flex flex-col items-center justify-center p-8 md:p-20">
                 <div className="w-full max-w-md space-y-12">
                     <div className="text-center md:text-left">
@@ -234,12 +234,12 @@ const TrackingView = ({ trackId, masterData, onClose, isDarkMode }) => {
         <div className="min-h-screen bg-white p-8 md:p-20 font-outfit italic animate-fade-up">
             <div className="max-w-4xl mx-auto space-y-12">
                 <div className="flex justify-between items-center">
-                    <Logo size="sm" white={false} />
+                    <Logo size="sm" white={false} customUrl={masterData.settings?.logo} />
                     <button onClick={onClose} className="p-4 bg-slate-100 rounded-full hover:bg-black hover:text-white transition-all"><X size={20} /></button>
                 </div>
-                
+
                 <div className="bg-black text-white p-12 rounded-[5rem] shadow-3xl text-center flex flex-col items-center">
-                    <NRZLogo size="md" white={true} />
+                    <Logo size="md" white={true} customUrl={masterData.settings?.logo} />
                     <p className="text-[10px] font-black uppercase tracking-[0.6em] text-slate-500 mt-6 mb-6">Status</p>
                     <h2 className="text-4xl md:text-7xl font-black uppercase italic tracking-tighter">{item.status === 'Pending' ? 'In Production' : 'Completed'}</h2>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-12 border-t border-white/10 pt-12">
@@ -251,20 +251,20 @@ const TrackingView = ({ trackId, masterData, onClose, isDarkMode }) => {
                 </div>
 
                 <div className="flex justify-center pt-8">
-                     <button 
+                    <button
                         onClick={() => {
                             const msg = `NRZO0NE FACTORY TRACKING:\n\n` +
-                                        `Worker: ${item.worker}\n` +
-                                        `Design: ${item.design}\n` +
-                                        `Lot: #${item.lotNo}\n` +
-                                        `Status: ${item.status}\n` +
-                                        `Verify Link: ${window.location.href}`;
+                                `Worker: ${item.worker}\n` +
+                                `Design: ${item.design}\n` +
+                                `Lot: #${item.lotNo}\n` +
+                                `Status: ${item.status}\n` +
+                                `Verify Link: ${window.location.href}`;
                             window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
                         }}
                         className="px-10 py-6 bg-emerald-600 text-white rounded-full font-black uppercase text-xs tracking-widest shadow-2xl flex items-center gap-4 hover:scale-105 active:scale-95 transition-all"
-                     >
-                         <MessageCircle size={20} /> Share to WhatsApp
-                     </button>
+                    >
+                        <MessageCircle size={20} /> Share to WhatsApp
+                    </button>
                 </div>
             </div>
         </div>
@@ -272,31 +272,31 @@ const TrackingView = ({ trackId, masterData, onClose, isDarkMode }) => {
 };
 
 const MENU_ITEMS = [
-  { id: "Menu", label: "Main Menu", icon: LayoutGrid, sub: "All Depts" },
-  { id: "Overview", label: "Dashboard", icon: Activity, sub: "Live Monitor" },
-  { id: "Cutting", label: "Cutting", icon: Scissors, sub: "Raw" },
-  { id: "Swing", label: "Sewing", icon: Layers, sub: "Factory" },
-  { id: "Stone", label: "Stone", icon: Hammer, sub: "Factory" },
-  { id: "Pata", label: "Pata Hub", icon: Package, sub: "Logistics" },
-  { id: "Outside", label: "Outside Work", icon: Truck, sub: "External" },
-  { id: "Attendance", label: "Attendance", icon: Users, sub: "Staff" },
-  { id: "Stock", label: "Inventory", icon: Database, sub: "Vault" },
-  { id: "Accounts", label: "Accounts", icon: DollarSign, sub: "Financial" },
-  { id: "Reports", label: "Reports", icon: FileText, sub: "Analytics" },
-  { id: "Settings", label: "Settings", icon: Settings, sub: "System" },
-  { id: "Security", label: "Security", icon: Lock, sub: "Audit Log" },
+    { id: "Menu", label: "Main Menu", icon: LayoutGrid, sub: "All Depts" },
+    { id: "Overview", label: "Dashboard", icon: Activity, sub: "Live Monitor" },
+    { id: "Cutting", label: "Cutting", icon: Scissors, sub: "Raw" },
+    { id: "Swing", label: "Sewing", icon: Layers, sub: "Factory" },
+    { id: "Stone", label: "Stone", icon: Hammer, sub: "Factory" },
+    { id: "Pata", label: "Pata Hub", icon: Package, sub: "Logistics" },
+    { id: "Outside", label: "Outside Work", icon: Truck, sub: "External" },
+    { id: "Attendance", label: "Attendance", icon: Users, sub: "Staff" },
+    { id: "Stock", label: "Inventory", icon: Database, sub: "Vault" },
+    { id: "Accounts", label: "Accounts", icon: DollarSign, sub: "Financial" },
+    { id: "Reports", label: "Reports", icon: FileText, sub: "Analytics" },
+    { id: "Settings", label: "Settings", icon: Settings, sub: "System" },
+    { id: "Security", label: "Security", icon: Lock, sub: "Audit Log" },
 ];
 
-const Sidebar = ({ activePanel, setActivePanel, user, setUser, isOpen, setIsSidebarOpen, t, isDarkMode }) => {
+const Sidebar = ({ activePanel, setActivePanel, user, setUser, isOpen, setIsSidebarOpen, t, isDarkMode, masterData }) => {
     return (
         <div className={`md:left-6 md:top-6 md:h-[calc(100vh-48px)] fixed left-0 top-0 h-full bg-[var(--bg-secondary)] backdrop-blur-3xl border border-[var(--border)] z-[100] flex flex-col py-10 transition-all duration-500 sidebar ${isOpen ? "w-[280px] md:rounded-[40px] shadow-2xl" : "w-0 -translate-x-full"}`}>
-            <div className="px-8 mb-16"><Logo size="sm" white={isDarkMode} /></div>
+            <div className="px-8 mb-16"><Logo size="sm" white={isDarkMode} customUrl={masterData.settings?.logo} /></div>
             <div className="flex-1 overflow-y-auto px-4 space-y-2 no-scrollbar">
                 {MENU_ITEMS.map(item => {
                     const Icon = item.icon;
                     const active = activePanel === item.id;
                     return (
-                        <button 
+                        <button
                             key={item.id} onClick={() => { setActivePanel(item.id); if (window.innerWidth < 768) setIsSidebarOpen(false); }}
                             className={`w-full flex items-center gap-4 p-4 rounded-[24px] transition-all group ${active ? "bg-black text-white dark:bg-white dark:text-black shadow-xl translate-x-1" : "text-slate-500 hover:bg-[var(--bg-primary)] hover:text-[var(--text-primary)] hover:shadow-lg"}`}
                         >
@@ -330,8 +330,8 @@ const SecurityPanel = ({ masterData, t, user }) => {
                     <Lock size={40} strokeWidth={3} />
                 </div>
                 <div>
-                   <h2 className="text-5xl font-black uppercase tracking-tighter italic">{t('security')} <span className="text-rose-500">{t('nexus')}</span></h2>
-                   <p className="text-xs font-black uppercase tracking-[0.5em] text-slate-500 mt-2 italic opacity-60">ADMIN AUDIT & SYSTEM INTEGRITY MONITOR</p>
+                    <h2 className="text-5xl font-black uppercase tracking-tighter italic">{t('security')} <span className="text-rose-500">{t('nexus')}</span></h2>
+                    <p className="text-xs font-black uppercase tracking-[0.5em] text-slate-500 mt-2 italic opacity-60">ADMIN AUDIT & SYSTEM INTEGRITY MONITOR</p>
                 </div>
             </div>
 
@@ -341,9 +341,9 @@ const SecurityPanel = ({ masterData, t, user }) => {
                     <p className="text-8xl font-black italic tracking-tighter">{masterData.auditLogs?.length || 0}</p>
                 </div>
                 <div className="col-span-2 bg-black text-rose-500 p-12 rounded-[4rem] shadow-3xl text-center flex flex-col items-center">
-                   <p className="text-[10px] font-black uppercase tracking-[0.5em] text-rose-500/50 mb-6 underline">{t('securityFlags')}</p>
-                   <p className="text-8xl font-black italic tracking-tighter underline">{alerts.length}</p>
-                   <p className="text-[10px] font-black uppercase tracking-[0.2em] mt-8 text-white/70 italic">Unauthorized access attempts: 0 (Stable)</p>
+                    <p className="text-[10px] font-black uppercase tracking-[0.5em] text-rose-500/50 mb-6 underline">{t('securityFlags')}</p>
+                    <p className="text-8xl font-black italic tracking-tighter underline">{alerts.length}</p>
+                    <p className="text-[10px] font-black uppercase tracking-[0.2em] mt-8 text-white/70 italic">Unauthorized access attempts: 0 (Stable)</p>
                 </div>
             </div>
 
@@ -353,20 +353,20 @@ const SecurityPanel = ({ masterData, t, user }) => {
                 ) : (
                     alerts.map((log, i) => (
                         <div key={i} className="flex flex-col md:flex-row justify-between items-center bg-slate-50 p-10 rounded-[2.5rem] border border-slate-100 gap-8 group hover:border-rose-500 transition-all">
-                           <div className="flex items-center gap-8 flex-1">
-                               <div className={`p-6 rounded-3xl ${log.action?.includes('DELETE') ? 'bg-rose-500 text-white' : 'bg-amber-500 text-white shadow-xl'}`}>
-                                  {log.action?.includes('DELETE') ? <Trash2 size={30} /> : <AlertTriangle size={30} />}
-                               </div>
-                               <div>
-                                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2 italic">{log.timestamp}</p>
-                                  <h4 className="text-2xl font-black uppercase italic tracking-tighter leading-none mb-1 text-black">{log.action}</h4>
-                                  <p className="text-sm font-bold text-slate-600 line-clamp-2 italic">{log.details}</p>
-                               </div>
-                           </div>
-                           <div className="text-center md:text-right">
-                              <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">{t('initiatedBy')}</p>
-                              <div className="px-6 py-2 bg-black text-white rounded-full text-xs font-black italic">{log.user} ({log.role})</div>
-                           </div>
+                            <div className="flex items-center gap-8 flex-1">
+                                <div className={`p-6 rounded-3xl ${log.action?.includes('DELETE') ? 'bg-rose-500 text-white' : 'bg-amber-500 text-white shadow-xl'}`}>
+                                    {log.action?.includes('DELETE') ? <Trash2 size={30} /> : <AlertTriangle size={30} />}
+                                </div>
+                                <div>
+                                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2 italic">{log.timestamp}</p>
+                                    <h4 className="text-2xl font-black uppercase italic tracking-tighter leading-none mb-1 text-black">{log.action}</h4>
+                                    <p className="text-sm font-bold text-slate-600 line-clamp-2 italic">{log.details}</p>
+                                </div>
+                            </div>
+                            <div className="text-center md:text-right">
+                                <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">{t('initiatedBy')}</p>
+                                <div className="px-6 py-2 bg-black text-white rounded-full text-xs font-black italic">{log.user} ({log.role})</div>
+                            </div>
                         </div>
                     ))
                 )}
@@ -381,7 +381,7 @@ const MenuPanel = ({ setActivePanel, user, t }) => {
             {MENU_ITEMS.map((item) => {
                 const Icon = item.icon;
                 return (
-                    <button 
+                    <button
                         key={item.id} onClick={() => setActivePanel(item.id)}
                         className="neu-card p-10 flex flex-col items-center gap-6 group hover:scale-[1.05] transition-all italic"
                     >
@@ -462,7 +462,7 @@ const AppContent = () => {
     if (isLoading || !masterData) return (
         <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center p-20 animate-fade-in transition-all duration-1000">
             <div className="mb-12 animate-pulse scale-110">
-                <Logo size="lg" white showText={false} />
+                <Logo size="lg" white customUrl={masterData?.settings?.logo} />
             </div>
             <div className="relative group">
                 <p className="italic tracking-[0.8em] uppercase text-[10px] font-black text-white opacity-70 animate-pulse">
@@ -471,7 +471,7 @@ const AppContent = () => {
                 <div className="absolute -bottom-4 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
             </div>
             <div className="mt-20 flex gap-1">
-                {[1,2,3].map(i => <div key={i} className={`w-1 h-1 rounded-full bg-white opacity-10 animate-ping`} style={{ animationDelay: `${i*300}ms` }}></div>)}
+                {[1, 2, 3].map(i => <div key={i} className={`w-1 h-1 rounded-full bg-white opacity-10 animate-ping`} style={{ animationDelay: `${i * 300}ms` }}></div>)}
             </div>
         </div>
     );
@@ -482,7 +482,7 @@ const AppContent = () => {
                 <LoginView onLogin={handleLogin} masterData={masterData} />
             ) : (
                 <div className="flex min-h-screen">
-                    <Sidebar activePanel={activePanel} setActivePanel={setActivePanel} user={user} setUser={setUser} isOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} t={t} isDarkMode={isDarkMode} />
+                    <Sidebar activePanel={activePanel} setActivePanel={setActivePanel} user={user} setUser={setUser} isOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} t={t} isDarkMode={isDarkMode} masterData={masterData} />
                     <main className={`flex-1 p-4 md:p-20 transition-all ${isSidebarOpen ? "md:ml-[300px]" : "ml-0"}`}>
                         <header className="flex justify-between items-center mb-16 no-print">
                             <div className="flex items-center gap-6">

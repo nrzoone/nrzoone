@@ -10,31 +10,26 @@
     <title>NRZO0NE - Factory Management System</title>
     <!-- On-screen error reporter to debug white screen -->
     <script>
-      // Global Error Tracking to catch startup crashes
-      window.addEventListener('error', function(e) {
-        // Ignore benign errors and AbortErrors
-        const msg = e.message || '';
-        if (
-          msg.includes('ResizeObserver') || 
-          msg.includes('Script error') ||
-          /abort|cancelled|user aborted/i.test(msg)
-        ) return;
+      // Global Emergency Shield v3.0 - Silencing AbortErrors and Benign Noise
+      const silenceBenign = (event) => {
+        const error = event.error || event.reason || event;
+        const msg = String(error?.message || error?.code || error || "").toLowerCase();
         
-        console.error("FATAL ERROR CAUGHT:", e);
-      });
-
-      window.addEventListener('unhandledrejection', function(event) {
-        const reason = event.reason;
-        const reasonStr = reason ? (reason.message || reason.toString() || String(reason)) : 'Unknown reason';
+        const isBenign = /abort|cancelled|user aborted|timeout|fetching|resizeobserver|script error/i.test(msg);
         
-        // IMPORTANT: Ignore AbortErrors rigorously
-        if (/abort|cancelled|user aborted|timeout|fetching/i.test(reasonStr)) {
-          return;
+        if (isBenign) {
+          if (event.preventDefault) event.preventDefault();
+          if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+          return true;
         }
+      };
 
-        // Only show fatal errors that stop the app
-        console.error('Promise Rejection:', reasonStr);
-      });
+      window.addEventListener('error', silenceBenign, true);
+      window.addEventListener('unhandledrejection', silenceBenign, true);
+      
+      // Fallback for older browsers or specific promise implementations
+      window.onerror = (m) => /abort|cancelled|user aborted/i.test(String(m));
+      window.onunhandledrejection = (e) => /abort|cancelled|user aborted/i.test(String(e.reason));
     </script>
     <!-- Meta Pixel Code -->
     <script>
