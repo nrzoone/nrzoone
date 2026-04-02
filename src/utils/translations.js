@@ -141,7 +141,13 @@ export const translations = {
         systemSecure: "System Secure",
         initiatedBy: "Initiated By",
         available: "Available",
-        pataHub: "Pata hub"
+        pataHub: "Pata hub",
+        menu: "কন্ট্রোল সেন্টার",
+        attendanceHub: "হাজিরা কেন্দ্র",
+        enrollBiometric: "আঙ্গুলের ছাপ দিন",
+        verifyIdentity: "পরিচয় নিশ্চিত করুন",
+        biometricSuccess: "পরিচয় নিশ্চিত হয়েছে",
+        biometricFail: "পরিচয় মিলেনি"
     },
     BN: {
         mainMenu: "প্রধান মেনু",
@@ -286,7 +292,13 @@ export const translations = {
         systemSecure: "সিস্টেম সুরক্ষিত",
         initiatedBy: "শুরু করেছেন",
         available: "উপলব্ধ",
-        pataHub: "পাতা হাব"
+        pataHub: "পাতা হাব",
+        menu: "কন্ট্রোল সেন্টার",
+        attendanceHub: "হাজিরা কেন্দ্র",
+        enrollBiometric: "আঙ্গুলের ছাপ দিন",
+        verifyIdentity: "পরিচয় নিশ্চিত করুন",
+        biometricSuccess: "পরিচয় নিশ্চিত হয়েছে",
+        biometricFail: "পরিচয় মিলেনি"
     }
 };
 

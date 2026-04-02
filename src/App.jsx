@@ -449,9 +449,26 @@ const AppContent = () => {
                                 </div>
                             </div>
                             <div className="flex items-center gap-6 no-print">
-                                <button onClick={() => setIsDarkMode(!isDarkMode)} className="neu-button w-14 h-14 dark:bg-zinc-900 dark:border-zinc-800 transition-all duration-500">
-                                    {isDarkMode ? <Sun size={20} className="text-amber-500" /> : <Moon size={20} className="text-indigo-600" />}
-                                </button>
+                                <div className="flex items-center gap-3 bg-white dark:bg-zinc-900 p-1 rounded-2xl border border-[var(--border)] shadow-sm">
+                                    <button 
+                                        onClick={() => setLanguage(language === 'BN' ? 'EN' : 'BN')} 
+                                        className="w-14 h-14 neu-button border-none !bg-transparent group hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-all"
+                                        title="Switch Language"
+                                    >
+                                        <div className="flex flex-col items-center">
+                                            <Globe size={18} className="mb-0.5 group-hover:rotate-12 transition-transform" />
+                                            <span className="text-[7px] font-black">{language}</span>
+                                        </div>
+                                    </button>
+                                    <div className="w-[1px] h-8 bg-slate-100 dark:bg-zinc-800" />
+                                    <button 
+                                        onClick={() => setIsDarkMode(!isDarkMode)} 
+                                        className="w-14 h-14 neu-button border-none !bg-transparent transition-all duration-500"
+                                        title="Toggle Theme"
+                                    >
+                                        {isDarkMode ? <Sun size={18} className="text-amber-500" /> : <Moon size={18} className="text-indigo-600" />}
+                                    </button>
+                                </div>
                                 <div className="flex items-center gap-4 neu-card-flat px-6 h-14 min-w-[200px] dark:bg-zinc-900 dark:border-zinc-800">
                                     <div className="w-8 h-8 bg-black dark:bg-white rounded-full flex items-center justify-center text-white dark:text-black transition-all duration-500"><User size={14} /></div>
                                     <div className="text-left"><p className="text-xs font-black uppercase italic leading-none dark:text-white">{user.name}</p><p className="text-[7px] font-black text-slate-500 uppercase tracking-widest mt-1">{user.role}</p></div>
@@ -504,5 +521,10 @@ const AppContent = () => {
     );
 };
 
-const App = () => (<AppContent />);
+const App = () => (
+    <ErrorBoundary>
+        <AppContent />
+    </ErrorBoundary>
+);
+
 export default App;
