@@ -20,19 +20,18 @@ const MenuPanel = ({ setActivePanel, user, t }) => {
             ]
         },
         {
-            title: "Operations & HR",
+            title: "HR & WORKFORCE (কারিগর ও হাজিরা)",
             items: [
-                { id: 'Attendance', icon: <UserCheck size={28} />, color: 'bg-cyan-500', desc: 'Daily Workforce' },
-                { id: 'Stock', icon: <Package size={28} />, color: 'bg-fuchsia-500', desc: 'Sync Inventory' },
-                { id: 'Accounts', icon: <DollarSign size={28} />, color: 'bg-emerald-600', desc: 'Fiscal & Expenses' },
-                { id: 'Reports', icon: <BarChart2 size={28} />, color: 'bg-violet-600', desc: 'Data Analytics' }
+                { id: 'Attendance', icon: <UserCheck size={28} />, color: 'bg-cyan-500', desc: 'Daily Attendance' },
+                { id: 'Accounts', icon: <DollarSign size={28} />, color: 'bg-emerald-600', desc: 'Ledger & Dadon' },
+                { id: 'Reports', icon: <BarChart2 size={28} />, color: 'bg-violet-600', desc: 'Performance Logs' }
             ]
         },
         {
-            title: "System Control",
+            title: "SYSTEM AUDIT (সিস্টেম সেটআপ)",
             items: [
-                { id: 'Settings', icon: <Settings size={28} />, color: 'bg-slate-600', desc: 'System Config' },
-                { id: 'Security', icon: <Shield size={28} />, color: 'bg-black', desc: 'Security Audit' }
+                { id: 'Settings', icon: <Settings size={28} />, color: 'bg-slate-600', desc: 'Worker Profiles & Info' },
+                { id: 'Security', icon: <Shield size={28} />, color: 'bg-black', desc: 'Admin & Biometrics' }
             ]
         }
     ];

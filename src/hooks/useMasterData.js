@@ -55,6 +55,7 @@ const initialData = {
     cutters: ["MEHEDI", "SABBIR", "HASAN"],
     notifications: [],
     workerDocs: [],
+    workerAdvances: [],
     settings: { logo: "" },
     whatsappRequests: [],
     expenses: [],

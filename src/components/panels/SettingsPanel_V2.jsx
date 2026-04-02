@@ -1684,6 +1684,17 @@ const SettingsPanel = ({
                   placeholder="NID No."
                 />
               </div>
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-2 block">
+                  Password (Login Access)
+                </label>
+                <input
+                  id="wdoc-pass"
+                  className="form-input py-4 font-black tracking-widest bg-emerald-50 border-emerald-100 text-emerald-600"
+                  defaultValue={workerDocModal?.password || ""}
+                  placeholder="অ্যাক্সেস পাসওয়ার্ড (Default: 1234)"
+                />
+              </div>
               <div className="space-y-2 md:col-span-2">
                 <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-2 block">
                   স্থায়ী ঠিকানা

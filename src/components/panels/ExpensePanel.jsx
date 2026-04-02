@@ -420,7 +420,7 @@ const ExpensePanel = ({
       )}
 
       {/* Other tabs would follow similar card patterns if expanded */}
-      {activeTab === "worker" && <WorkerSummary masterData={masterData} />}
+      {activeTab === "worker" && <WorkerSummary masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} />}
 
       <div className="pt-24 pb-16 flex justify-center">
         <button
