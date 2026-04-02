@@ -48,9 +48,11 @@ import WeeklyInvoice from "./components/WeeklyInvoice";
 import ReportsPanel from "./components/panels/ReportsPanel";
 import AttendancePanel from "./components/panels/AttendancePanel";
 import SettingsPanel from "./components/panels/SettingsPanel_V2";
-import ExpensePanel from "./components/panels/ExpensePanel";
 import InventoryPanel from "./components/panels/InventoryPanel";
+import ExpensePanel from "./components/panels/ExpensePanel";
 import OutsideWorkPanel from "./components/panels/OutsideWorkPanel";
+import SecurityPanel from "./components/panels/SecurityPanel";
+import MenuPanel from "./components/panels/MenuPanel";
 import { useMasterData } from "./hooks/useMasterData";
 import { Toast } from "./components/UIComponents";
 import { useTranslation } from "./utils/translations";
@@ -130,25 +132,34 @@ class ErrorBoundary extends React.Component {
 
 const playSound = (type = 'click') => {
     try {
-        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        const ctx = new AudioCtx();
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
         osc.connect(gain);
         gain.connect(ctx.destination);
+        
         if (type === 'success') {
-            osc.frequency.setValueAtTime(880, ctx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(440, ctx.currentTime + 0.1);
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(523.25, ctx.currentTime); // C5
+            osc.frequency.exponentialRampToValueAtTime(1046.50, ctx.currentTime + 0.1); // C6
             gain.gain.setValueAtTime(0.1, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
         } else if (type === 'error') {
+            osc.type = 'square';
             osc.frequency.setValueAtTime(220, ctx.currentTime);
             osc.frequency.exponentialRampToValueAtTime(110, ctx.currentTime + 0.2);
-            gain.gain.setValueAtTime(0.1, ctx.currentTime);
-        } else {
-            osc.frequency.setValueAtTime(440, ctx.currentTime);
             gain.gain.setValueAtTime(0.05, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+        } else {
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(880, ctx.currentTime);
+            gain.gain.setValueAtTime(0.02, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
         }
         osc.start();
-        osc.stop(ctx.currentTime + 0.2);
+        osc.stop(ctx.currentTime + 0.3);
     } catch (e) {
         console.warn("Audio Context blocked or failed:", e);
     }
@@ -459,6 +470,38 @@ const AppContent = () => {
         else showNotify("ভুল আইডি বা পাসওয়ার্ড!", "error");
     };
 
+    const [isListening, setIsListening] = useState(false);
+
+    // Voice Command Hub
+    useEffect(() => {
+        const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!Speech || !user) return;
+
+        const recognition = new Speech();
+        recognition.lang = 'bn-BD';
+        recognition.continuous = true;
+        recognition.interimResults = false;
+
+        recognition.onresult = (event) => {
+            const command = event.results[event.results.length - 1][0].transcript.toLowerCase();
+            console.log("Voice Command:", command);
+            
+            if (command.includes('ড্যাশবোর্ড') || command.includes('মুখ্য')) setActivePanel('Overview');
+            if (command.includes('কাটিং')) setActivePanel('Cutting');
+            if (command.includes('সেলাই')) setActivePanel('Swing');
+            if (command.includes('স্টোন') || command.includes('পাথর')) setActivePanel('Stone');
+            if (command.includes('ইনভেন্টরি') || command.includes('মজুদ')) setActivePanel('Stock');
+            if (command.includes('অ্যাটেন্ডেন্স') || command.includes('হাজিরা')) setActivePanel('Attendance');
+            if (command.includes('সেটিংস') || command.includes('সিস্টেম')) setActivePanel('Settings');
+            if (command.includes('লগআউট') || command.includes('বন্ধ করুন')) setUser(null);
+            
+            playSound('success');
+        };
+
+        if (isListening) recognition.start();
+        return () => recognition.abort();
+    }, [isListening, user]);
+
     if (isLoading || !masterData) return (
         <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center p-20 animate-fade-in transition-all duration-1000">
             <div className="mb-12 animate-pulse scale-110">
@@ -508,7 +551,7 @@ const AppContent = () => {
                             </div>
                         </header>
                         <div className="max-w-7xl mx-auto">
-                            {activePanel === "Menu" && <MenuPanel setActivePanel={setActivePanel} user={user} t={t} />}
+                            {activePanel === "Menu" && <MenuPanel masterData={masterData} setActivePanel={setActivePanel} user={user} t={t} />}
                             {activePanel === "Overview" && <Overview masterData={masterData} setMasterData={setMasterData} user={user} setActivePanel={setActivePanel} t={t} logAction={logAction} />}
                             {activePanel === "Cutting" && <CuttingPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} setActivePanel={setActivePanel} t={t} logAction={logAction} />}
                             {activePanel === "Swing" && <FactoryPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} setActivePanel={setActivePanel} type="sewing" t={t} logAction={logAction} />}
@@ -520,7 +563,7 @@ const AppContent = () => {
                             {activePanel === "Accounts" && <ExpensePanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} setActivePanel={setActivePanel} t={t} logAction={logAction} />}
                             {activePanel === "Reports" && <ReportsPanel masterData={masterData} user={user} setActivePanel={setActivePanel} t={t} logAction={logAction} />}
                             {activePanel === "Settings" && <SettingsPanel masterData={masterData} setMasterData={setMasterData} user={user} showNotify={showNotify} setActivePanel={setActivePanel} t={t} logAction={logAction} />}
-                            {activePanel === "Security" && <SecurityPanel masterData={masterData} user={user} t={t} logAction={logAction} />}
+                            {activePanel === "Security" && <SecurityPanel masterData={masterData} user={user} setActivePanel={setActivePanel} t={t} logAction={logAction} />}
                         </div>
                     </main>
                     {activePanel !== "Menu" && (
@@ -531,6 +574,24 @@ const AppContent = () => {
             {trackingId && <div className="fixed inset-0 z-[1000]"><TrackingView trackId={trackingId} masterData={masterData} onClose={() => setTrackingId(null)} isDarkMode={isDarkMode} /></div>}
             {showQR && <QRScanner onScanSuccess={(data) => setTrackingId(data)} onClose={() => setShowQR(false)} />}
             {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
+            
+            {/* Multi-Utility Floating Hub */}
+            <div className="fixed bottom-12 left-12 z-[200] flex flex-col gap-6 no-print">
+                <button 
+                   onClick={() => window.open('https://wa.me/8801700000000', '_blank')}
+                   className="w-16 h-16 bg-emerald-500 text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all border-4 border-white"
+                   title="WhatsApp Support"
+                >
+                    <MessageCircle size={28} />
+                </button>
+                <button 
+                   onClick={() => { setIsListening(!isListening); playSound(); }}
+                   className={`w-16 h-16 rounded-full shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all border-4 border-white ${isListening ? 'bg-rose-500 animate-pulse text-white' : 'bg-white text-slate-500'}`}
+                   title="Voice Command"
+                >
+                    <Activity size={28} />
+                </button>
+            </div>
         </div>
     );
 };

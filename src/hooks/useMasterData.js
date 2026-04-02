@@ -60,6 +60,7 @@ const initialData = {
     expenses: [],
     cashEntries: [],
     workerPayments: [],
+    workerBiometrics: {},
     auditLogs: [], 
     systemSettings: {
         offlineMode: true,
