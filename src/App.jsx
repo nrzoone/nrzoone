@@ -249,6 +249,23 @@ const TrackingView = ({ trackId, masterData, onClose, isDarkMode }) => {
                         <div><p className="text-[8px] text-slate-500 uppercase tracking-widest mb-1 font-black underline">Qty</p><p className="font-black">{(item.issueBorka || item.pataQty || 0)} Pcs</p></div>
                     </div>
                 </div>
+
+                <div className="flex justify-center pt-8">
+                     <button 
+                        onClick={() => {
+                            const msg = `NRZO0NE FACTORY TRACKING:\n\n` +
+                                        `Worker: ${item.worker}\n` +
+                                        `Design: ${item.design}\n` +
+                                        `Lot: #${item.lotNo}\n` +
+                                        `Status: ${item.status}\n` +
+                                        `Verify Link: ${window.location.href}`;
+                            window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+                        }}
+                        className="px-10 py-6 bg-emerald-600 text-white rounded-full font-black uppercase text-xs tracking-widest shadow-2xl flex items-center gap-4 hover:scale-105 active:scale-95 transition-all"
+                     >
+                         <MessageCircle size={20} /> Share to WhatsApp
+                     </button>
+                </div>
             </div>
         </div>
     );

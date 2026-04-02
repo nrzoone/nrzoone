@@ -33,6 +33,8 @@ import {
 } from "lucide-react";
 import QRScanner from "../QRScanner";
 import UniversalSlip from "../UniversalSlip";
+import { syncToSheet } from "../../utils/syncUtils";
+import { sendProductionAlert } from "../../utils/whatsappUtils";
 import {
   getStock,
   getSewingStock,
@@ -460,6 +462,27 @@ const FactoryPanel = ({
 
     setReceiveModal(null);
     showNotify("হিসাব জমা নেওয়া হয়েছে!");
+
+    // Automated Production Alert
+    const designData = masterData.designs?.find(d => d.name === receiveModal.design);
+    const workerDoc = masterData.workerDocs?.find(d => d.name.toUpperCase() === receiveModal.worker.toUpperCase() && d.dept === type);
+    const phone = workerDoc?.phone;
+    
+    if (phone) {
+      let totalBill = 0;
+      if (receiveModal.type === 'sewing') {
+          const bRate = designData?.sewingRate || 0;
+          const hRate = designData?.hijabRate || bRate;
+          totalBill = (rBorka * bRate) + (rHijab * hRate);
+      } else {
+          const rate = designData?.stoneRate || 0;
+          totalBill = (rBorka + rHijab) * rate;
+      }
+      
+      if (totalBill > 0 && window.confirm("গাড়ি চালকের (কারিগর) হোয়াটসঅ্যাপে পেমেন্ট কনফার্মেশন পাঠাবেন?")) {
+        sendProductionAlert(receiveModal.worker, rBorka + rHijab, totalBill, phone);
+      }
+    }
   };
 
   const handleConfirmPayment = (e) => {
@@ -490,6 +513,14 @@ const FactoryPanel = ({
     }));
     setPayModal(null);
     showNotify("পেমেন্ট সফল হয়েছে!");
+
+    // Automated Payment Receipt (Interaction)
+    const workerDoc = masterData.workerDocs?.find(d => d.name.toUpperCase() === payModal.toUpperCase() && d.dept === type);
+    if (workerDoc?.phone && window.confirm("হোয়াটসঅ্যাপে পেমেন্ট রিসিপ্ট পাঠাতে চান?")) {
+        import('../../utils/whatsappUtils').then(wa => {
+            wa.sendInteractionReceipt(payModal, "পেমেন্ট/ভাতা", amount, workerDoc.phone);
+        });
+    }
   };
 
   const handleEditSave = (e) => {

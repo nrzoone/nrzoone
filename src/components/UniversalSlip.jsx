@@ -142,7 +142,7 @@ const UniversalSlip = ({ data, type, copyTitle }) => {
                         </div>
                     </div>
                     <div className="flex-none">
-                         <QRCode value={String(displayId)} size={80} bordered={false} style={{ padding: 0 }} />
+                         <QRCode value={`${window.location.origin}/track?id=${displayId}`} size={80} bordered={false} style={{ padding: 0 }} />
                     </div>
                 </div>
 

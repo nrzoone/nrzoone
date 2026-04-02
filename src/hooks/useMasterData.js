@@ -58,6 +58,7 @@ const initialData = {
     cutters: ["MEHEDI", "SABBIR", "HASAN"],
     notifications: [],
     workerDocs: [],
+    whatsappRequests: [],
     expenses: [],
     cashEntries: [],
     workerPayments: [],

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { UserCheck, Search, Download, TrendingUp, X, FileText, ArrowUpRight, History } from 'lucide-react';
+import { UserCheck, Search, Download, TrendingUp, X, FileText, ArrowUpRight, History, MessageCircle } from 'lucide-react';
+import { sendWeeklySummary } from '../utils/whatsappUtils';
 import NRZLogo from "./NRZLogo";
 
 const WorkerSummary = ({ masterData }) => {
@@ -139,7 +140,24 @@ const WorkerSummary = ({ masterData }) => {
                             </div>
                             <div className="pt-4 flex items-center justify-between text-slate-500 group-hover:text-black transition-colors">
                                 <span className="text-[9px] font-black uppercase tracking-[0.3em] italic">Open Ledger History</span>
-                                <ArrowUpRight size={16} />
+                                <div className="flex gap-4">
+                                     <button 
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            const doc = masterData.workerDocs?.find(d => d.name.toUpperCase() === w.name.toUpperCase() && d.dept === w.dept);
+                                            if (doc?.phone) {
+                                                sendWeeklySummary(w.name, { totalQty: w.qty, totalBill: w.bill, paid: w.paid, balance: w.balance }, doc.phone);
+                                            } else {
+                                                alert("এই কর্মীর ফোন নম্বর সংরক্ষণ নেই!");
+                                            }
+                                        }}
+                                        className="p-3 bg-emerald-50 text-emerald-500 rounded-xl hover:bg-emerald-500 hover:text-white transition-all shadow-sm"
+                                        title="Send Weekly Summary via WhatsApp"
+                                     >
+                                         <MessageCircle size={16} />
+                                     </button>
+                                     <ArrowUpRight size={16} />
+                                </div>
                             </div>
                         </div>
                     </button>

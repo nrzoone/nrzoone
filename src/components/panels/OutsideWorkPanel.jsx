@@ -2,11 +2,6 @@ import React, { useState } from 'react';
 import { Card, Row, Col, Typography, Divider, QRCode, Tag, ConfigProvider } from 'antd';
 const { Title, Text } = Typography;
 
-const QR_Slip_Theme = {
-  token: { fontFamily: 'Inter, sans-serif', borderRadius: 8, fontSize: 12, colorTextBase: '#000000' },
-  components: { Card: { paddingLG: 16 }, Typography: { fontSizeHeading4: 18, fontSizeHeading5: 14 } }
-};
-
 import {
   Plus,
   Trash2,

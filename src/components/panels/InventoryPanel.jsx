@@ -16,6 +16,9 @@ import {
   Box,
   Camera,
   X,
+  MessageSquare,
+  Clock,
+  CheckCircle as ConfirmIcon
 } from "lucide-react";
 import { syncToSheet } from "../../utils/syncUtils";
 import { getFinishedStock, getSewingStock, getFinishingStock } from "../../utils/calculations";
@@ -247,16 +250,86 @@ const InventoryPanel = ({
       )}
 
       <div className="flex bg-white p-2 rounded-2xl border border-slate-100 shadow-sm overflow-x-auto mb-10">
-        {["overview", "sewing", "stone", "raw", "add"].map((v) => (
+        {["overview", "sewing", "stone", "raw", "requisitions", "add"].map((v) => (
           <button
             key={v}
             onClick={() => setView(v)}
             className={`pill-tab flex-1 whitespace-nowrap px-4 ${view === v ? "pill-tab-active" : "pill-tab-inactive hover:text-black"}`}
           >
-            {v === "overview" ? t('finishedGoods') : v === "sewing" ? t('sewingStock') : v === "stone" ? t('stoneStock') : v === "raw" ? t('rawMaterials') : t('addStock')}
+            {v === "overview" ? t('finishedGoods') : v === "sewing" ? t('sewingStock') : v === "stone" ? t('stoneStock') : v === "raw" ? t('rawMaterials') : v === "requisitions" ? "Requisitions" : t('addStock')}
           </button>
         ))}
       </div>
+
+      {view === "requisitions" && (
+        <div className="space-y-10">
+             <div className="flex justify-between items-center px-6">
+                <h3 className="text-2xl font-black uppercase italic tracking-tighter text-black">
+                    Incoming <span className="text-slate-500">Requisitions</span>
+                </h3>
+                <button 
+                   onClick={() => {
+                       const mock = { id: Date.now(), worker: "SABBIR", item: "Stone Packet", qty: "5", date: new Date().toLocaleTimeString(), status: "Incoming" };
+                       setMasterData(prev => ({ ...prev, whatsappRequests: [mock, ...(prev.whatsappRequests || [])] }));
+                       showNotify("MOCK WhatsApp Request Received!");
+                   }}
+                   className="px-4 py-2 bg-black text-white text-[9px] font-black uppercase tracking-widest rounded-full opacity-50 hover:opacity-100 transition-all border-none italic"
+                >
+                    Simulate WhatsApp Request (#StoneRequest 5pkt)
+                </button>
+             </div>
+
+             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {(masterData.whatsappRequests || []).length === 0 ? (
+                    <div className="lg:col-span-3 h-64 flex flex-col items-center justify-center bg-white rounded-3xl border-2 border-dashed border-slate-100 opacity-70">
+                        <MessageSquare size={48} strokeWidth={1} />
+                        <p className="text-[10px] font-black uppercase tracking-[0.4em] mt-6">Zero Active Requests Detected</p>
+                    </div>
+                ) : (
+                    masterData.whatsappRequests.map((req, idx) => (
+                        <div key={idx} className="bg-white p-10 rounded-[3rem] border-4 border-slate-50 shadow-2xl relative overflow-hidden group hover:border-indigo-600 transition-all italic">
+                            <div className="flex justify-between items-start mb-8 relative z-10">
+                                <div>
+                                    <p className="text-[8px] font-black text-slate-500 uppercase tracking-widest mb-1 italic">Source Identity</p>
+                                    <h4 className="text-xl font-black italic uppercase leading-none">{req.worker}</h4>
+                                </div>
+                                <div className="p-3 bg-indigo-50 text-indigo-600 rounded-xl group-hover:scale-110 transition-transform"><MessageSquare size={16} /></div>
+                            </div>
+                            
+                            <div className="space-y-6 relative z-10">
+                                <div className="bg-slate-50 p-6 rounded-[2rem] border border-white shadow-inner">
+                                    <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-2 italic">Requested Resource</p>
+                                    <p className="text-xl font-black italic">{req.item} <span className="text-sm opacity-50 ml-2">x {req.qty}</span></p>
+                                </div>
+                                
+                                <div className="flex items-center justify-between pt-4 border-t border-slate-100">
+                                    <div className="flex items-center gap-2 text-slate-500">
+                                        <Clock size={12} />
+                                        <span className="text-[9px] font-black uppercase tracking-widest leading-none">{req.date}</span>
+                                    </div>
+                                    <button 
+                                        onClick={() => {
+                                            if (confirm("Confirm dispatch for this requisition?")) {
+                                                setMasterData(prev => ({ 
+                                                    ...prev, 
+                                                    whatsappRequests: prev.whatsappRequests.filter(r => r.id !== req.id),
+                                                    rawInventory: [{ id: Date.now(), item: req.item, qty: Number(req.qty), type: 'out', date: new Date().toLocaleDateString(), note: `WA DISPATCH: ${req.worker}` }, ...(prev.rawInventory || [])]
+                                                }));
+                                                showNotify("Material Dispatched & Stock Updated!");
+                                            }
+                                        }}
+                                        className="h-10 px-6 bg-black text-white rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-indigo-600 transition-all flex items-center gap-2 italic"
+                                    >
+                                        <ConfirmIcon size={12} strokeWidth={3} /> Dispatch
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    ))
+                )}
+             </div>
+        </div>
+      )}
 
       {view === "overview" && (
         <div className="space-y-8">
