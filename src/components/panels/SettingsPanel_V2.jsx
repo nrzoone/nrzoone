@@ -60,6 +60,7 @@ const SettingsPanel = ({
   const [uploadingWorkerPhoto, setUploadingWorkerPhoto] = useState(false);
   const [tempWorkerPhoto, setTempWorkerPhoto] = useState(null);
   const [tempNidPhoto, setTempNidPhoto] = useState(null);
+  const [personnelTab, setPersonnelTab] = useState("staff");
 
   // ===== WhatsApp Message Sender =====
   const sendWhatsApp = (phone, message) => {
@@ -340,6 +341,18 @@ const SettingsPanel = ({
     };
     reader.readAsText(file);
   };
+
+  const TabButton = ({ id, label, active, onClick }) => (
+    <button
+      onClick={() => onClick(id)}
+      className={`px-8 py-4 rounded-xl font-black uppercase text-[10px] tracking-widest transition-all italic ${
+        active === id ? "bg-black text-white shadow-xl rotate-3" : "text-slate-400 hover:bg-slate-50"
+      }`}
+    >
+      {label}
+    </button>
+  );
+
   const ListSection = ({ category, title, items, icon }) => (
     <div className="space-y-10 animate-fade-up text-black">
       <div className="bg-white p-12 rounded-[4rem] border-4 border-slate-50 shadow-2xl flex justify-between items-center italic relative overflow-hidden group">
@@ -550,6 +563,16 @@ const SettingsPanel = ({
         <TabButton id="stone" label={t('stone') || "Stone"} active={personnelTab} onClick={setPersonnelTab} />
         <TabButton id="pata" label={t('pataUnit') || "Pata Unit"} active={personnelTab} onClick={setPersonnelTab} />
         <TabButton id="outside" label={t('outsideWork') || "Outside"} active={personnelTab} onClick={setPersonnelTab} />
+      </div>
+
+      <div className="flex justify-start">
+        <button
+          onClick={() => setWorkerDocModal("add")}
+          className="px-10 py-5 bg-black text-white rounded-2xl font-black uppercase text-xs tracking-widest shadow-2xl flex items-center gap-3 hover:scale-105 active:scale-95 transition-all italic border-b-[6px] border-zinc-900"
+        >
+          <Plus size={20} strokeWidth={3} />
+          কর্মী নিবন্ধন (Add Worker)
+        </button>
       </div>
       {['sewing', 'stone', 'pata'].map(dept => (
         <div key={dept} className="bg-slate-50 dark:bg-black/20 p-8 rounded-[3rem] border border-slate-100 dark:border-zinc-800">
@@ -1612,11 +1635,7 @@ const SettingsPanel = ({
               {/* Header */}
               <div className="flex justify-between items-start border-b-2 border-black pb-5 mb-6">
                 <div className="flex items-center gap-4">
-                  <img
-                    src={logoBlack}
-                    alt="NRZO0NE"
-                    className="w-16 h-16 object-contain mix-blend-multiply"
-                  />
+                  <NRZLogo size="sm" white={false} />
                   <div>
                     <h1 className="text-3xl font-black italic tracking-tighter leading-none">
                       NRZO0NE

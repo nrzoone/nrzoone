@@ -406,6 +406,8 @@ const FactoryPanel = ({
     e.preventDefault();
     const rBorka = Number(e.target.rBorka.value || 0);
     const rHijab = Number(e.target.rHijab.value || 0);
+    const wasteMaterial = Number(e.target.wasteMaterial?.value || 0);
+    
     if (rBorka > receiveModal.issueBorka || rHijab > receiveModal.issueHijab)
       return showNotify("ইস্যুর চেয়ে বেশি জমা সম্ভব নয়!", "error");
 
@@ -428,6 +430,7 @@ const FactoryPanel = ({
             status: "Received",
             receivedBorka: rBorka,
             receivedHijab: rHijab,
+            wasteMaterial: wasteMaterial, // New Field
             wasteBorka: Math.max(0, p.issueBorka - rBorka),
             wasteHijab: Math.max(0, p.issueHijab - rHijab),
             receiveDate: e.target.receiveDate?.value
@@ -656,9 +659,18 @@ const FactoryPanel = ({
               {type === "sewing" ? t('sewing') : t('stone')} <span className="text-slate-400">{t('productionUnit') || "Unit"}</span>
             </h1>
             <p className="text-[11px] font-black text-slate-400 uppercase tracking-[0.4em] mt-2 italic">
-              {t('fullSystemHub') || "Production Division"} {type.toUpperCase()}
+               {t('fullSystemHub') || "Production Division"} {type.toUpperCase()}
             </p>
           </div>
+        </div>
+        <div className="flex items-center gap-6 w-full md:w-auto">
+          <button
+            onClick={() => setShowIssueModal(true)}
+            className="px-10 py-5 bg-black text-white rounded-2xl font-black uppercase text-xs tracking-widest shadow-2xl flex items-center gap-3 hover:scale-105 active:scale-95 transition-all italic border-b-[6px] border-zinc-900"
+          >
+            <Plus size={20} strokeWidth={3} />
+            নতুন কাজ (ISSUE)
+          </button>
         </div>
       </div>
       {/* Unified Floating Filter Bar */}
@@ -1117,9 +1129,29 @@ const FactoryPanel = ({
                            const maxHijab = lotDetails?.sizes?.[row.size]?.remH || 0;
                            return (
                              <div key={idx} className="bg-white p-4 md:p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col gap-4 group hover:border-black transition-all">
-                               <div className="flex items-center justify-between">
-                                  <div className="px-4 py-2 bg-black text-white rounded-lg text-sm font-black">{row.size || "--"}</div>
-                               </div>
+                               <div className="flex items-center gap-2">
+                                   <select
+                                     className="px-4 py-2 bg-black text-white rounded-lg text-sm font-black outline-none appearance-none"
+                                     value={row.size}
+                                     onChange={(e) => {
+                                       const n = [...issueSizes];
+                                       n[idx].size = e.target.value;
+                                       setIssueSizes(n);
+                                     }}
+                                   >
+                                     <option value="">SIZE</option>
+                                     {(masterData.sizes || []).map(s => <option key={s} value={s}>{s}</option>)}
+                                   </select>
+                                   {issueSizes.length > 1 && (
+                                     <button
+                                       type="button"
+                                       onClick={() => setIssueSizes(issueSizes.filter((_, i) => i !== idx))}
+                                       className="p-2 text-rose-500 hover:bg-rose-50 rounded-lg transition-all"
+                                     >
+                                       <Trash2 size={14} />
+                                     </button>
+                                   )}
+                                </div>
                                <div className="grid grid-cols-2 md:grid-cols-3 gap-4 items-center">
                                   <div className="bg-slate-50 p-3 rounded-xl border border-slate-100">
                                       <div className="flex justify-between items-center mb-1">
@@ -1188,10 +1220,33 @@ const FactoryPanel = ({
                                   )}
                                </div>
                              </div>
-                           )
-                      })
-                    )}
+                           );
+                      }))}
+                     <button
+                       type="button"
+                       onClick={() => setIssueSizes([...issueSizes, { size: "", borka: "", hijab: "", pataQty: "" }])}
+                       className="w-full py-4 border-2 border-dashed border-slate-200 rounded-2xl flex items-center justify-center gap-2 text-slate-400 hover:border-black hover:text-black transition-all text-[10px] font-black uppercase tracking-widest mt-4"
+                     >
+                       <Plus size={14} /> Add Another Size
+                     </button>
                   </div>
+                  
+                  {/* Selection Summary Counter */}
+                  {issueSizes.some(s => Number(s.borka || 0) > 0 || Number(s.hijab || 0) > 0) && (
+                    <div className="mt-4 pt-4 border-t border-slate-100 flex justify-between items-center px-4">
+                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest italic leading-none">Selected Volume</p>
+                        <div className="flex gap-6 items-baseline text-black">
+                           <div className="flex items-baseline gap-1">
+                               <span className="text-[10px] text-slate-400">BORKA:</span>
+                               <span className="text-xl font-black italic">{issueSizes.reduce((s, r) => s + Number(r.borka || 0), 0)}</span>
+                           </div>
+                           <div className="flex items-baseline gap-1">
+                               <span className="text-[10px] text-slate-400">HIJAB:</span>
+                               <span className="text-xl font-black italic">{issueSizes.reduce((s, r) => s + Number(r.hijab || 0), 0)}</span>
+                           </div>
+                        </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -1262,6 +1317,15 @@ const FactoryPanel = ({
                     className="w-full text-center text-2xl font-black bg-transparent border-none outline-none leading-none h-16"
                   />
                 </div>
+              </div>
+              <div className="bg-rose-50 p-6 rounded-2xl border border-rose-100">
+                <label className="text-[9px] font-black text-rose-400 uppercase mb-2 block tracking-widest text-center">Batch Waste (কাপড়/পাথর অপচয়)</label>
+                <input
+                  name="wasteMaterial"
+                  type="number"
+                  placeholder="Material Waste Pcs/Grams..."
+                  className="w-full text-center text-xl font-black bg-transparent outline-none border-b-2 border-rose-100 focus:border-rose-300 transition-all uppercase italic"
+                />
               </div>
               <div className="flex flex-col gap-4">
                 <button
@@ -1417,9 +1481,20 @@ const FactoryPanel = ({
                 </button>
                 <button
                   type="submit"
-                  className="flex-[2] py-8 rounded-full font-black text-sm uppercase bg-emerald-600 text-white shadow-2xl border-b-[12px] border-emerald-900 hover:scale-105 active:scale-95 transition-all"
+                  className="flex-[2] py-8 rounded-full font-black text-sm uppercase bg-emerald-600 text-white shadow-2xl border-b-[12px] border-emerald-900 hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-3"
                 >
-                  FINALIZE PAYMENT
+                  <CheckCircle size={20} /> SYNC PAYMENT
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const amount = document.querySelector('input[name="amount"]')?.value || 0;
+                    const msg = `*NRZO0NE PAYMENT CONFIRMATION*\n--------------------------\nWorker: ${payModal}\nAmount: ৳${amount}\nDate: ${new Date().toLocaleDateString('en-GB')}\nStatus: DISBURSED\n--------------------------\nIndustrial Grade Management`;
+                    window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+                  }}
+                  className="p-8 rounded-full bg-[#25D366] text-white shadow-xl hover:scale-110 active:scale-95 transition-all flex items-center justify-center"
+                >
+                  <MessageCircle size={32} />
                 </button>
               </div>
             </form>
@@ -1440,15 +1515,6 @@ const FactoryPanel = ({
           </span>
         </button>
       </div>
-      {/* High-Fi Floating Action Button for Job Assignment */}
-      <button 
-        onClick={() => setShowIssueModal(true)}
-        className="fixed bottom-12 right-12 md:right-16 w-24 h-24 bg-black text-white rounded-full shadow-[0_35px_60px_-15px_rgba(0,0,0,0.4)] flex flex-col items-center justify-center hover:scale-110 active:scale-95 transition-all z-[250] border-8 border-white ring-4 ring-black/5 group"
-      >
-        <Plus size={36} strokeWidth={4} className="group-hover:rotate-180 transition-transform duration-700" />
-        <span className="text-[10px] font-black uppercase tracking-[0.2em] mt-2 italic">Add Job</span>
-        <div className="absolute inset-0 rounded-full border-2 border-white/20 animate-pulse scale-90"></div>
-      </button>
     </div>
   );
 };

@@ -17,7 +17,9 @@ import {
   Layers,
   Box,
   History,
-  TrendingDown
+  TrendingDown,
+  MessageCircle,
+  MessageSquare,
 } from "lucide-react";
 const { Title, Text } = Typography;
 
@@ -29,7 +31,7 @@ const QR_Slip_Theme = {
 import { syncToSheet } from '../../utils/syncUtils';
 import NRZLogo from '../NRZLogo';
 
-const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActivePanel, t }) => {
+const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActivePanel, t, logAction }) => {
     const isAdmin = user?.role === 'admin';
     const isManager = user?.role === 'manager';
 
@@ -212,6 +214,7 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
         });
 
         setShowModal(false);
+        logAction(user, 'PATA_ISSUE', `${newEntry.worker} - ${newEntry.design}(${newEntry.pataType}): ${newEntry.pataQty} Pcs. Lot #${newEntry.lotNo}`);
         if (shouldPrint) {
             setPrintSlip(newEntry);
         }
@@ -261,6 +264,7 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
         });
 
         setReceiveModal(null);
+        logAction(user, 'PATA_RECEIVE', `Received from ${item.worker}: ${receivedQty} of ${item.pataQty} Pcs. (Waste: ${item.pataQty - receivedQty})`);
         showNotify('পাতা কাজ সফলভাবে জমা নেওয়া হয়েছে!');
 
         if (e.nativeEvent.submitter?.name === 'print') {
@@ -292,6 +296,7 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
         }));
 
         setEditPataModal(null);
+        logAction(user, 'PATA_OVERRIDE', `Admin override on Pata record ID: ${updated.id} for ${updated.worker}`);
         showNotify('হিসাব আপডেট করা হয়েছে (Admin Power)!');
     };
 
@@ -458,10 +463,16 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                 {t('pataHub')} <span className="text-slate-400">{t('productionUnit') || "Division"}</span>
             </h1>
             <p className="text-[11px] font-black text-slate-400 uppercase tracking-[0.4em] mt-2 italic">
-               {t('fullSystemHub') || "Advanced Production Logistics"}
             </p>
         </div>
       </div>
+      <button
+        onClick={() => setShowModal(true)}
+        className="px-10 py-5 bg-black text-white rounded-2xl font-black uppercase text-xs tracking-widest shadow-2xl flex items-center gap-3 hover:scale-105 active:scale-95 transition-all italic border-b-[6px] border-zinc-900 mb-6"
+      >
+        <Plus size={20} strokeWidth={3} />
+        নতুন পাতা এন্ট্রি
+      </button>
     </div>
       
       {/* Unified Floating Filter Bar */}
@@ -936,6 +947,17 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                                 <div className="flex gap-3">
                                     <button type="button" onClick={() => setPayModal(null)} className="flex-1 py-4 rounded-full font-black text-[10px] uppercase bg-slate-50 text-slate-600 border border-slate-100 hover:text-black transition-all">বাতিল</button>
                                     <button type="submit" className="flex-[2] py-4 rounded-full font-black text-[10px] uppercase bg-black text-white shadow-xl border-b-[4px] border-zinc-900 hover:scale-105 transition-all">পেমেন্ট নিশ্চিত করুন</button>
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        const amount = document.querySelector('input[name="amount"]')?.value || 0;
+                                        const msg = `*NRZO0NE PATA SETTLEMENT*\n--------------------------\nWorker: ${payModal}\nAmount: ৳${amount}\nDate: ${new Date().toLocaleDateString('en-GB')}\nSystem: Industrial Pata Node\n--------------------------\nStatus: DISBURSED`;
+                                        window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+                                      }}
+                                      className="p-5 rounded-full bg-[#25D366] text-white shadow-lg hover:scale-110 active:scale-95 transition-all flex items-center justify-center"
+                                    >
+                                      <MessageCircle size={20} />
+                                    </button>
                                 </div>
                             </form>
                         </div>

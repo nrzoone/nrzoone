@@ -96,6 +96,35 @@ export const useMasterData = () => {
 
     // Cloud sync status
     const [syncStatus, setSyncStatus] = useState('syncing'); // 'synced', 'syncing', 'error'
+    const [isOnline, setIsOnline] = useState(window.navigator.onLine);
+
+    useEffect(() => {
+        const handleOnline = () => setIsOnline(true);
+        const handleOffline = () => setIsOnline(false);
+        window.addEventListener('online', handleOnline);
+        window.addEventListener('offline', handleOffline);
+        return () => {
+            window.removeEventListener('online', handleOnline);
+            window.removeEventListener('offline', handleOffline);
+        };
+    }, []);
+
+    // Immediate sync on online status change
+    useEffect(() => {
+        if (isOnline && db && masterData && !isLoading) {
+            const sync = async () => {
+                try {
+                    setSyncStatus('syncing');
+                    await setDoc(doc(db, COLLECTION_NAME, DOC_ID), { content: masterData }, { merge: true });
+                    localStorage.setItem('nrzone_data', JSON.stringify(masterData));
+                    setSyncStatus('synced');
+                } catch (e) {
+                    console.error("Online recovery sync failed:", e);
+                }
+            };
+            sync();
+        }
+    }, [isOnline]);
 
     // First load from Firestore
     useEffect(() => {

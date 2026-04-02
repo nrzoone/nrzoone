@@ -357,6 +357,13 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
                 {activeEntries.length} <span className="text-[10px] text-slate-300 ml-1">Live</span>
             </p>
           </div>
+          <button
+            onClick={() => setShowModal(true)}
+            className="px-10 py-5 bg-black text-white rounded-2xl font-black uppercase text-xs tracking-widest shadow-2xl flex items-center gap-3 hover:scale-105 active:scale-95 transition-all italic border-b-[6px] border-zinc-900"
+          >
+            <Plus size={20} strokeWidth={3} />
+            নতুন কাজ (OUTSIDE)
+          </button>
         </div>
       </div>
 
@@ -695,15 +702,6 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
                     </div>
                 )
             }
-            {/* High-Fi Floating Action Button for Job Assignment */}
-            <button 
-                onClick={() => setShowModal(true)}
-                className="fixed bottom-12 right-12 md:right-16 w-24 h-24 bg-black text-white rounded-full shadow-[0_35px_60px_-15px_rgba(0,0,0,0.4)] flex flex-col items-center justify-center hover:scale-110 active:scale-95 transition-all z-[250] border-8 border-white ring-4 ring-black/5 group"
-            >
-                <Plus size={36} strokeWidth={4} className="group-hover:rotate-180 transition-transform duration-700" />
-                <span className="text-[10px] font-black uppercase tracking-[0.2em] mt-2 italic">Add Task</span>
-                <div className="absolute inset-0 rounded-full border-2 border-white/20 animate-pulse scale-90"></div>
-            </button>
         </div >
     );
 };

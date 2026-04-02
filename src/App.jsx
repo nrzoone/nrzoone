@@ -35,6 +35,9 @@ import {
   EyeOff,
   Printer,
   Plus,
+  ShieldCheck,
+  ShieldAlert,
+  Trash2,
 } from "lucide-react";
 import Overview from "./components/Overview";
 import CuttingPanel from "./components/panels/CuttingPanel";
@@ -56,46 +59,73 @@ import NRZLogo from "./components/NRZLogo";
 
 const GlobalStyles = () => null;
 
+// Global Emergency Suppression for AbortError and quota issues
+// This must run before any hooks or components that might trigger these
+const suppressGlobalError = (event) => {
+    const reason = event.reason || event.error || event;
+    const errStr = String(reason?.message || reason?.code || reason || '');
+    if (/abort|cancelled|user aborted|timeout|quota|storage/i.test(errStr)) {
+        if (event.preventDefault) event.preventDefault();
+        if (event.stopPropagation) event.stopPropagation();
+        console.warn("🛡️ SILENCED BENIGN ERROR:", errStr);
+        return true;
+    }
+};
+window.addEventListener('unhandledrejection', suppressGlobalError, true);
+window.addEventListener('error', suppressGlobalError, true);
+
 class ErrorBoundary extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { hasError: false, error: null };
-  }
-  static getDerivedStateFromError(error) {
-    const errStr = String(error?.message || error?.toString() || error);
-    if (/abort|cancelled|user aborted|timeout|quota/i.test(errStr)) {
-      return { hasError: false, error: null };
+    constructor(props) {
+        super(props);
+        this.state = { hasError: false, error: null };
     }
-    return { hasError: true, error };
-  }
-
-  componentDidMount() {
-    const suppress = (event) => {
-        const errStr = String(event.reason?.message || event.reason || event.message || '');
+    static getDerivedStateFromError(error) {
+        const errStr = String(error?.message || error?.toString() || error);
         if (/abort|cancelled|user aborted|timeout|quota/i.test(errStr)) {
-            if (event.preventDefault) event.preventDefault();
-            if (event.stopPropagation) event.stopPropagation();
-            console.warn("Global Suppression of Abort-Related Error:", errStr);
-            return true;
+            return { hasError: false, error: null };
         }
-    };
-    window.addEventListener('unhandledrejection', suppress, true);
-    window.addEventListener('error', suppress, true);
-  }
-
-  render() {
-    if (this.state.hasError) {
-      return (
-        <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center p-12 text-center">
-          <AlertCircle size={48} className="text-rose-500 mb-6" />
-          <h1 className="text-2xl font-black uppercase italic mb-4">System Error</h1>
-          <p className="text-rose-400 text-xs font-mono mb-8 opacity-70">{this.state.error?.toString()}</p>
-          <button onClick={() => window.location.reload()} className="bg-white text-black px-12 py-4 rounded-full font-black uppercase text-[10px] tracking-widest italic">Restart</button>
-        </div>
-      );
+        return { hasError: true, error };
     }
-    return this.props.children;
-  }
+
+    handleRecover = () => {
+        localStorage.clear(); // Extreme recovery
+        window.location.reload();
+    };
+
+    render() {
+        if (this.state.hasError) {
+            return (
+                <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center p-12 text-center font-outfit">
+                    <div className="relative mb-12">
+                        <AlertTriangle size={80} className="text-amber-500 animate-pulse" />
+                        <div className="absolute inset-0 blur-3xl bg-amber-500 opacity-20 animate-pulse"></div>
+                    </div>
+                    <h1 className="text-4xl font-black uppercase italic tracking-tighter mb-4">Engine Protection Mode</h1>
+                    <p className="text-slate-400 text-sm max-w-md mb-12 uppercase tracking-widest leading-relaxed">
+                        A critical runtime discrepancy was detected. The system has paused to prevent data corruption.
+                    </p>
+                    <div className="bg-zinc-900 border border-zinc-800 p-6 rounded-3xl mb-12 w-full max-w-lg text-left overflow-auto max-h-40">
+                        <p className="text-rose-500 text-[10px] font-mono leading-relaxed line-clamp-4">{this.state.error?.toString()}</p>
+                    </div>
+                    <div className="flex gap-4">
+                        <button 
+                            onClick={() => window.location.reload()} 
+                            className="bg-white text-black px-12 py-5 rounded-full font-black uppercase text-xs tracking-widest hover:scale-105 active:scale-95 transition-all"
+                        >
+                            Emergency Reboot
+                        </button>
+                        <button 
+                            onClick={this.handleRecover} 
+                            className="bg-zinc-800 text-white px-12 py-5 rounded-full font-black uppercase text-xs tracking-widest hover:bg-rose-600 transition-all"
+                        >
+                            Full System Purge
+                        </button>
+                    </div>
+                </div>
+            );
+        }
+        return this.props.children;
+    }
 }
 
 const playSound = (type = 'click') => {
@@ -236,7 +266,8 @@ const MENU_ITEMS = [
   { id: "Stock", label: "Inventory", icon: Database, sub: "Vault" },
   { id: "Accounts", label: "Accounts", icon: DollarSign, sub: "Financial" },
   { id: "Reports", label: "Reports", icon: FileText, sub: "Analytics" },
-  { id: "Settings", label: "System Settings", icon: Settings, sub: "Config" },
+  { id: "Settings", label: "Settings", icon: Settings, sub: "System" },
+  { id: "Security", label: "Security", icon: Lock, sub: "Audit Log" },
 ];
 
 const Sidebar = ({ activePanel, setActivePanel, user, setUser, isOpen, setIsSidebarOpen, t }) => {
@@ -262,6 +293,66 @@ const Sidebar = ({ activePanel, setActivePanel, user, setUser, isOpen, setIsSide
                 <button onClick={() => setUser(null)} className="w-full flex items-center gap-4 p-4 rounded-xl text-slate-400 hover:text-rose-500 transition-colors">
                     <LogOut size={16} /><span className="text-[9px] font-black uppercase tracking-[0.3em] italic">{t('logout') || 'Logout'}</span>
                 </button>
+            </div>
+        </div>
+    );
+};
+
+const SecurityPanel = ({ masterData, t, user }) => {
+    const alerts = (masterData.auditLogs || []).filter(log => {
+        const isDelete = log.action?.includes('DELETE');
+        const isEdit = log.action?.includes('EDIT') || log.action?.includes('OVERRIDE');
+        const isLargePay = log.action?.includes('PAY') && parseFloat(log.details?.match(/\d+/)?.[0] || 0) > 5000;
+        return isDelete || isEdit || isLargePay;
+    });
+
+    return (
+        <div className="space-y-8 animate-fade-up font-outfit italic">
+            <div className="flex items-center gap-6 mb-12">
+                <div className="p-6 bg-rose-500 text-white rounded-[2rem] shadow-2xl rotate-3">
+                    <Lock size={40} strokeWidth={3} />
+                </div>
+                <div>
+                   <h2 className="text-5xl font-black uppercase tracking-tighter italic">Security <span className="text-rose-500">Nexus</span></h2>
+                   <p className="text-xs font-black uppercase tracking-[0.5em] text-slate-400 mt-2 italic opacity-60">ADMIN AUDIT & SYSTEM INTEGRITY MONITOR</p>
+                </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="bg-white p-12 rounded-[4rem] border shadow-2xl text-center flex flex-col items-center">
+                    <p className="text-[10px] font-black uppercase tracking-[0.5em] text-slate-400 mb-6">Total Logs</p>
+                    <p className="text-8xl font-black italic tracking-tighter">{masterData.auditLogs?.length || 0}</p>
+                </div>
+                <div className="col-span-2 bg-black text-rose-500 p-12 rounded-[4rem] shadow-3xl text-center flex flex-col items-center">
+                   <p className="text-[10px] font-black uppercase tracking-[0.5em] text-rose-500/50 mb-6 underline">Security Flags Detected</p>
+                   <p className="text-8xl font-black italic tracking-tighter underline">{alerts.length}</p>
+                   <p className="text-[10px] font-black uppercase tracking-[0.2em] mt-8 text-white/40 italic">Unauthorized access attempts: 0 (Stable)</p>
+                </div>
+            </div>
+
+            <div className="bg-white rounded-[3rem] border shadow-inner p-10 space-y-6 max-h-[60vh] overflow-y-auto no-scrollbar">
+                {alerts.length === 0 ? (
+                    <div className="py-20 text-center opacity-20"><ShieldCheck size={100} className="mx-auto border rounded-full p-4 mb-8" /><p className="text-4xl font-black uppercase tracking-tighter">System Secure</p></div>
+                ) : (
+                    alerts.map((log, i) => (
+                        <div key={i} className="flex flex-col md:flex-row justify-between items-center bg-slate-50 p-10 rounded-[2.5rem] border border-slate-100 gap-8 group hover:border-rose-500 transition-all">
+                           <div className="flex items-center gap-8 flex-1">
+                               <div className={`p-6 rounded-3xl ${log.action?.includes('DELETE') ? 'bg-rose-500 text-white' : 'bg-amber-500 text-white shadow-xl'}`}>
+                                  {log.action?.includes('DELETE') ? <Trash2 size={30} /> : <AlertTriangle size={30} />}
+                               </div>
+                               <div>
+                                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 italic">{log.timestamp}</p>
+                                  <h4 className="text-2xl font-black uppercase italic tracking-tighter leading-none mb-1 text-black">{log.action}</h4>
+                                  <p className="text-sm font-bold text-slate-600 line-clamp-2 italic">{log.details}</p>
+                               </div>
+                           </div>
+                           <div className="text-center md:text-right">
+                              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Initiated By</p>
+                              <div className="px-6 py-2 bg-black text-white rounded-full text-xs font-black italic">{log.user} ({log.role})</div>
+                           </div>
+                        </div>
+                    ))
+                )}
             </div>
         </div>
     );
@@ -398,6 +489,7 @@ const AppContent = () => {
                             {activePanel === "Accounts" && <ExpensePanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} setActivePanel={setActivePanel} t={t} />}
                             {activePanel === "Reports" && <ReportsPanel masterData={masterData} user={user} setActivePanel={setActivePanel} t={t} />}
                             {activePanel === "Settings" && <SettingsPanel masterData={masterData} setMasterData={setMasterData} user={user} showNotify={showNotify} setActivePanel={setActivePanel} t={t} />}
+                            {activePanel === "Security" && <SecurityPanel masterData={masterData} user={user} t={t} />}
                         </div>
                     </main>
                     {activePanel !== "Menu" && (

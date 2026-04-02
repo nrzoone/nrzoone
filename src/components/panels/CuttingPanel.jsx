@@ -24,7 +24,7 @@ const CuttingPanel = ({
   showNotify,
   user,
   setActivePanel,
-  t,
+  logAction,
 }) => {
   const isAdmin = user?.role === "admin";
   const [showModal, setShowModal] = useState(false);
@@ -213,6 +213,8 @@ const CuttingPanel = ({
       sizes: [{ size: "", borka: "", hijab: "" }],
     });
     showNotify(`${finalDesign} (${finalColor}) সফলভাবে স্টক এ যোগ হয়েছে!`);
+    
+    logAction(user, 'CUTTING_ENTRY', `${finalDesign} (${finalColor}) Lot #${entryData.lotNo} added. Total items: ${newEntries.length}`);
 
     if (shouldPrint && newEntries.length > 0) {
       setPrintSlip(newEntries[0]);
@@ -225,6 +227,7 @@ const CuttingPanel = ({
       ...prev,
       cuttingStock: (prev.cuttingStock || []).filter((item) => item.id !== id),
     }));
+    logAction(user, 'CUTTING_DELETE', `Deleted cutting record ID: ${id}`);
     showNotify("কাটিং রেকর্ড মুছে ফেলা হয়েছে!", "info");
   };
 
@@ -355,6 +358,13 @@ const CuttingPanel = ({
                 {uniqueLots.length} <span className="text-[10px] text-slate-300 ml-1">Lots</span>
             </p>
           </div>
+          <button
+            onClick={() => setShowModal(true)}
+            className="px-10 py-5 bg-black text-white rounded-2xl font-black uppercase text-xs tracking-widest shadow-2xl flex items-center gap-3 hover:scale-105 active:scale-95 transition-all italic border-b-[6px] border-zinc-900"
+          >
+            <Plus size={20} strokeWidth={3} />
+            নতুন কাটিং
+          </button>
         </div>
       </div>
 
