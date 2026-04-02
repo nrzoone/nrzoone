@@ -7,7 +7,7 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 
 const ProductionTrend = ({ data }) => {
-    const chartData = data.map((val, i) => ({
+    const chartData = (data || []).map((val, i) => ({
       name: ['M', 'T', 'W', 'T', 'F', 'S', 'S'][i] || i,
       value: val
     }));
@@ -56,87 +56,94 @@ const DashboardCard = ({ children, isDark = false, className = '' }) => (
 
 const Overview = ({ masterData, setMasterData, setActivePanel, user, t }) => {
     const stats = useMemo(() => {
-        const today = new Date();
-        const last7Days = Array.from({ length: 7 }, (_, i) => {
-            const d = new Date();
-            d.setDate(today.getDate() - i);
-            return d.toLocaleDateString('en-GB');
-        }).reverse();
+        try {
+            const today = new Date();
+            const last7Days = Array.from({ length: 7 }, (_, i) => {
+                const d = new Date();
+                d.setDate(today.getDate() - i);
+                return d.toLocaleDateString('en-GB');
+            }).reverse();
 
-        const trendData = last7Days.map(date => (masterData.productions || []).filter(p => p.date === date).length);
-        const totalProduction = (masterData.productions || []).length;
-        const totalPata = (masterData.pataEntries || []).length;
+            const trendData = last7Days.map(date => (masterData?.productions || []).filter(p => p.date === date).length);
+            const totalProduction = (masterData?.productions || []).length;
+            const totalPata = (masterData?.pataEntries || []).length;
 
-        const pendingSewing = (masterData.productions || []).filter(p => p.type === 'sewing' && p.status !== 'Received').length;
-        const pendingStone = (masterData.productions || []).filter(p => p.type === 'stone' && p.status !== 'Received').length;
-        const pendingOutside = (masterData.outsideWorkEntries || []).filter(p => p.status !== 'Received').length;
-        
-        const completions = (masterData.productions || []).filter(p => p.status === 'Received').length;
-        
-        const totalStock = (masterData.inventory || []).reduce((sum, item) => {
-            const sizes = item.sizes || {};
-            const itemTotal = Object.values(sizes).reduce((s, qty) => s + (Number(qty) || 0), 0);
-            return sum + itemTotal;
-        }, 0);
-
-        // Attendance stats for selectedDate (today)
-        const todayDate = new Date().toISOString().split('T')[0];
-        const todayAttendance = (masterData.attendance || []).filter(a => a.date === todayDate);
-        const presentCount = todayAttendance.filter(a => a.status === 'present').length;
-        const absentCount = todayAttendance.filter(a => a.status === 'absent').length;
-        const halfDayCount = todayAttendance.filter(a => a.status === 'half-day').length;
-
-        const totalPayable = (masterData.workerCategories?.sewing || []).reduce((sum, w) => {
-            const entries = (masterData.productions || []).filter(p => p.worker === w && p.status === 'Received');
-            return sum + entries.reduce((acc, b) => {
-                const design = masterData.designs.find(d => d.name === b.design);
-                return acc + (Number(b.receivedBorka || 0) * (design?.sewingRate || 0));
-            }, 0);
-        }, 0) + (masterData.pataEntries || []).filter(e => e.status === 'Received').reduce((s, e) => s + Number(e.amount || 0), 0);
-
-        // HYPER-ADVANCED FINANCIAL INTELLIGENCE
-        const financialIntel = (() => {
-            const revenue = (masterData.deliveries || []).reduce((acc, d) => {
-                const design = masterData.designs.find(ds => ds.name === d.design);
-                const price = Number(design?.sellingPrice || 0);
-                return acc + (Number(d.borka || 0) * price) + (Number(d.hijab || 0) * price);
-            }, 0);
-
-            const productionCosts = (masterData.productions || []).filter(p => p.status === 'Received').reduce((acc, p) => {
-                const design = masterData.designs.find(ds => ds.name === p.design);
-                const multiplier = masterData.multipliers?.[p.type] || 1.0;
-                let rate = 0;
-                if (p.type === 'sewing') rate = (design?.sewingRate || 0) * multiplier;
-                else if (p.type === 'stone') rate = (design?.stoneRate || 0) * multiplier;
-                return acc + ((Number(p.receivedBorka || 0) + Number(p.receivedHijab || 0)) * rate);
-            }, 0);
-
-            const materialCosts = (masterData.productions || []).reduce((acc, p) => {
-                const design = masterData.designs.find(ds => ds.name === p.design);
-                const cost = Number(design?.materialCost || 0);
-                return acc + ((Number(p.issueBorka || 0) + Number(p.issueHijab || 0)) * cost);
-            }, 0);
-
-            const miscellaneousExpenses = (masterData.expenses || []).reduce((acc, e) => acc + Number(e.amount || 0), 0);
+            const pendingSewing = (masterData?.productions || []).filter(p => p.type === 'sewing' && p.status !== 'Received').length;
+            const pendingStone = (masterData?.productions || []).filter(p => p.type === 'stone' && p.status !== 'Received').length;
+            const pendingOutside = (masterData?.outsideWorkEntries || []).filter(p => p.status !== 'Received').length;
             
-            const totalCosts = productionCosts + materialCosts + miscellaneousExpenses;
-            const netProfit = revenue - totalCosts;
-            const margin = revenue > 0 ? (netProfit / revenue) * 100 : 0;
+            const completions = (masterData?.productions || []).filter(p => p.status === 'Received').length;
+            
+            const totalStock = (masterData?.inventory || []).reduce((sum, item) => {
+                const sizes = item.sizes || {};
+                const itemTotal = Object.values(sizes).reduce((s, qty) => s + (Number(qty) || 0), 0);
+                return sum + itemTotal;
+            }, 0);
 
-            return { revenue, productionCosts, materialCosts, totalCosts, netProfit, margin };
-        })();
+            const todayDate = new Date().toISOString().split('T')[0];
+            const todayAttendance = (masterData?.attendance || []).filter(a => a.date === todayDate);
+            const presentCount = todayAttendance.filter(a => a.status === 'present' || a.status === 'present').length;
+            const absentCount = todayAttendance.filter(a => a.status === 'absent').length;
+            const halfDayCount = todayAttendance.filter(a => a.status === 'half-day').length;
 
-        const activeJobs = [
-            ...(masterData.productions || []).filter(p => p.status === 'Pending').map(p => ({ ...p, activityType: p.type === 'sewing' ? 'Sewing' : 'Stone' })),
-            ...(masterData.pataEntries || []).filter(p => p.status === 'Pending').map(p => ({ ...p, activityType: 'Pata' }))
-        ].sort((a, b) => (b.id || 0) - (a.id || 0));
+            const totalPayable = (masterData?.workerCategories?.sewing || []).reduce((sum, w) => {
+                const entries = (masterData?.productions || []).filter(p => p.worker === w && p.status === 'Received');
+                return sum + entries.reduce((acc, b) => {
+                    const design = masterData?.designs?.find(d => d.name === b.design);
+                    return acc + (Number(b.receivedBorka || 0) * (design?.sewingRate || 0));
+                }, 0);
+            }, 0) + (masterData?.pataEntries || []).filter(e => e.status === 'Received').reduce((s, e) => s + Number(e.amount || 0), 0);
 
-        return { totalProduction, totalPata, pendingSewing, pendingStone, pendingOutside, completions, totalStock, trendData, activeJobs, presentCount, absentCount, halfDayCount, totalPayable, financialIntel };
+            const financialIntel = (() => {
+                const revenue = (masterData?.deliveries || []).reduce((acc, d) => {
+                    const design = masterData?.designs?.find(ds => ds.name === d.design);
+                    const price = Number(design?.sellingPrice || 0);
+                    return acc + (Number(d.borka || 0) * price) + (Number(d.hijab || 0) * price);
+                }, 0);
+
+                const productionCosts = (masterData?.productions || []).filter(p => p.status === 'Received').reduce((acc, p) => {
+                    const design = masterData?.designs?.find(ds => ds.name === p.design);
+                    const multiplier = masterData?.multipliers?.[p.type] || 1.0;
+                    let rate = 0;
+                    if (p.type === 'sewing') rate = (design?.sewingRate || 0) * multiplier;
+                    else if (p.type === 'stone') rate = (design?.stoneRate || 0) * multiplier;
+                    return acc + ((Number(p.receivedBorka || 0) + Number(p.receivedHijab || 0)) * rate);
+                }, 0);
+
+                const materialCosts = (masterData?.productions || []).reduce((acc, p) => {
+                    const design = masterData?.designs?.find(ds => ds.name === p.design);
+                    const cost = Number(design?.materialCost || 0);
+                    return acc + ((Number(p.issueBorka || 0) + Number(p.issueHijab || 0)) * cost);
+                }, 0);
+
+                const miscellaneousExpenses = (masterData?.expenses || []).reduce((acc, e) => acc + Number(e.amount || 0), 0);
+                
+                const totalCosts = productionCosts + materialCosts + miscellaneousExpenses;
+                const netProfit = revenue - totalCosts;
+                const margin = revenue > 0 ? (netProfit / revenue) * 100 : 0;
+
+                return { revenue, productionCosts, materialCosts, totalCosts, netProfit, margin };
+            })();
+
+            const activeJobs = [
+                ...(masterData?.productions || []).filter(p => p.status === 'Pending').map(p => ({ ...p, activityType: p.type === 'sewing' ? 'Sewing' : 'Stone' })),
+                ...(masterData?.pataEntries || []).filter(p => p.status === 'Pending').map(p => ({ ...p, activityType: 'Pata' }))
+            ].sort((a, b) => (b.id || 0) - (a.id || 0));
+
+            return { totalProduction, totalPata, pendingSewing, pendingStone, pendingOutside, completions, totalStock, trendData, activeJobs, presentCount, absentCount, halfDayCount, totalPayable, financialIntel };
+        } catch (err) {
+            console.error("Stats calculation error:", err);
+            return { 
+                totalProduction: 0, totalPata: 0, pendingSewing: 0, pendingStone: 0, pendingOutside: 0, completions: 0, 
+                totalStock: 0, trendData: [], activeJobs: [], presentCount: 0, absentCount: 0, halfDayCount: 0, 
+                totalPayable: 0, financialIntel: { revenue: 0, totalCosts: 0, netProfit: 0, margin: 0 } 
+            };
+        }
     }, [masterData]);
 
     const shareEOD = () => {
         const today = new Date().toLocaleDateString('en-GB');
-        const prods = (masterData.productions || []).filter(p => p.date === today);
+        const prods = (masterData?.productions || []).filter(p => p.date === today);
         const received = prods.filter(p => p.status === 'Received');
         const pending = prods.filter(p => p.status === 'Pending');
         
@@ -208,7 +215,7 @@ const Overview = ({ masterData, setMasterData, setActivePanel, user, t }) => {
                             <h3 className="text-4xl font-black italic tracking-tighter uppercase leading-none">Net Strategic Worth</h3>
                             <p className="text-[10px] font-black uppercase text-white/70 tracking-[0.4em]">Real-time Factory Liquidity & Margin Analysis</p>
                             <div className="flex gap-4 pt-4">
-                               <button onClick={() => setActivePanel('Expense')} className="px-6 py-3 bg-white/10 hover:bg-white/20 rounded-full text-[9px] font-black uppercase tracking-widest border border-white/10 transition-all">Logging Expense</button>
+                               <button onClick={() => setActivePanel('Accounts')} className="px-6 py-3 bg-white/10 hover:bg-white/20 rounded-full text-[9px] font-black uppercase tracking-widest border border-white/10 transition-all">Logging Expense</button>
                                <button onClick={() => setActivePanel('Inventory')} className="px-6 py-3 bg-white/10 hover:bg-white/20 rounded-full text-[9px] font-black uppercase tracking-widest border border-white/10 transition-all">Audit Stock</button>
                             </div>
                         </div>
@@ -240,7 +247,7 @@ const Overview = ({ masterData, setMasterData, setActivePanel, user, t }) => {
                              <span className="text-black">৳{stats.financialIntel.productionCosts.toLocaleString()}</span>
                          </div>
                          <div className="w-full h-1 bg-slate-100 rounded-full overflow-hidden">
-                             <div className="h-full bg-rose-500" style={{ width: `${(stats.financialIntel.productionCosts / stats.financialIntel.totalCosts) * 100}%` }}></div>
+                             <div className="h-full bg-rose-500" style={{ width: `${(stats.financialIntel.productionCosts / Math.max(1, stats.financialIntel.totalCosts)) * 100}%` }}></div>
                          </div>
                     </div>
                 </div>
@@ -250,10 +257,10 @@ const Overview = ({ masterData, setMasterData, setActivePanel, user, t }) => {
             <div className="grid grid-cols-2 md:grid-cols-5 gap-6 mb-16">
                  {[
                     { label: 'Issue cutting', panel: 'Cutting', icon: <Scissors size={20} />, color: 'bg-black text-white' },
-                    { label: 'Sewing Node', panel: 'Sewing', icon: <Layers size={20} />, color: 'bg-slate-50' },
+                    { label: 'Sewing Node', panel: 'Swing', icon: <Layers size={20} />, color: 'bg-slate-50' },
                     { label: 'Stone Production', panel: 'Stone', icon: <Hammer size={20} />, color: 'bg-slate-50' },
                     { label: 'Pata Workshop', panel: 'Pata', icon: <Activity size={20} />, color: 'bg-slate-50' },
-                    { label: 'Outside Ops', panel: 'OutsideWork', icon: <Truck size={20} />, color: 'bg-slate-50' }
+                    { label: 'Outside Ops', panel: 'Outside', icon: <Truck size={20} />, color: 'bg-slate-50' }
                  ].map((cmd, idx) => (
                     <button 
                         key={idx}
@@ -292,10 +299,6 @@ const Overview = ({ masterData, setMasterData, setActivePanel, user, t }) => {
                               <p className="text-sm font-black italic">Strategic Unit Ops</p>
                          </div>
                     </div>
-                    
-                    <button className="mt-8 w-full py-4 bg-gray-100 rounded-full text-[10px] font-black uppercase tracking-[0.4em] hover:bg-black hover:text-white transition-all">
-                        View Dossier
-                    </button>
                 </div>
 
                 {/* Gauge Performance Widget */}
@@ -338,7 +341,7 @@ const Overview = ({ masterData, setMasterData, setActivePanel, user, t }) => {
 
                     <div className="w-full mt-6 bg-zinc-900 text-white p-10 rounded-[50px] text-left relative overflow-hidden group hover:bg-black transition-all">
                          <div className="relative z-10">
-                            <h4 className="text-4xl font-black tracking-tighter mb-2 italic italic">YOUR REPORT</h4>
+                            <h4 className="text-4xl font-black tracking-tighter mb-2 italic">YOUR REPORT</h4>
                             <p className="text-white/30 text-[10px] font-black uppercase tracking-[0.4em]">85% More efficient than goal</p>
                          </div>
                          <div className="absolute top-10 right-10 w-16 h-16 bg-white/10 rounded-full flex items-center justify-center group-hover:bg-rose-500 group-hover:scale-110 transition-all cursor-pointer shadow-2xl">
@@ -375,7 +378,7 @@ const Overview = ({ masterData, setMasterData, setActivePanel, user, t }) => {
                          <div className="bg-emerald-500 p-6 rounded-[32px] text-white shadow-2xl group cursor-pointer hover:bg-black transition-all">
                               <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-white group-hover:text-black transition-all"><Package size={20} /></div>
                               <p className="text-3xl font-black italic mb-1">{stats.totalStock}</p>
-                              <p className="text-[8px] font-black text-white/60 uppercase tracking-widest italic uppercase">Sync Stock</p>
+                              <p className="text-[8px] font-black text-white/60 uppercase tracking-widest italic">Sync Stock</p>
                          </div>
                     </div>
 
@@ -384,7 +387,7 @@ const Overview = ({ masterData, setMasterData, setActivePanel, user, t }) => {
                              <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-sm text-rose-500"><AlertTriangle size={24} /></div>
                              <div>
                                  <h4 className="text-xl font-black uppercase italic leading-none text-black">Material Alert</h4>
-                                 <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mt-2">Critical low stock detected in unit B</p>
+                                 <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mt-2">Critical low stock detected</p>
                              </div>
                          </div>
                          <ChevronRight size={24} className="text-slate-500 group-hover:text-rose-500 transition-all translate-x-0 group-hover:translate-x-2" />

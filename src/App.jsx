@@ -596,5 +596,5 @@ const AppContent = () => {
     );
 };
 
-const App = () => (<ErrorBoundary><AppContent /></ErrorBoundary>);
+const App = () => (<AppContent />);
 export default App;
