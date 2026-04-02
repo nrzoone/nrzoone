@@ -231,6 +231,17 @@ const LoginView = ({ onLogin, masterData }) => {
 
                         <button className="w-full py-6 text-xl italic mt-12 bg-black dark:bg-white text-white dark:text-black rounded-3xl font-black uppercase tracking-widest shadow-2xl hover:scale-105 active:scale-95 transition-all">Sign In Now</button>
                     </form>
+
+                    {masterData.settings?.adminBiometricRegistered && (
+                        <div className="pt-8 border-t border-slate-100 dark:border-zinc-800">
+                             <button 
+                                onClick={() => onLogin('BIOMETRIC')}
+                                className="w-full py-6 flex items-center justify-center gap-4 bg-emerald-50 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 rounded-3xl font-black uppercase text-xs tracking-[0.3em] hover:scale-105 transition-all border-2 border-emerald-100 dark:border-emerald-900 shadow-xl italic"
+                             >
+                                <ShieldCheck size={24} /> Login with Finger/Face ID
+                             </button>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
@@ -372,9 +383,57 @@ const AppContent = () => {
         }));
     };
 
-    const handleLogin = (id, pass) => {
-        const u = (masterData.users || []).find(x => x.id === id.toUpperCase() && x.password === pass);
-        if (u) { setUser(u); showNotify(`স্বাগতম, ${u.name}!`); }
+    const handleLogin = async (id, pass) => {
+        if (id === 'BIOMETRIC') {
+            try {
+                const challenge = crypto.getRandomValues(new Uint8Array(32));
+                const credential = await navigator.credentials.get({
+                    publicKey: {
+                        challenge,
+                        timeout: 60000,
+                        userVerification: "required"
+                    }
+                });
+
+                if (credential) {
+                    const rawId = btoa(String.fromCharCode(...new Uint8Array(credential.rawId)));
+                    const adminUser = (masterData.users || []).find(u => u.role === 'admin' && u.biometricId === rawId);
+                    
+                    if (adminUser) {
+                        setUser(adminUser);
+                        showNotify(`Biometric Auth: স্বাগতম, ${adminUser.name}!`);
+                        return;
+                    } else {
+                        showNotify("এটি অজানা বায়োমেট্রিক আইডি!", "error");
+                        return;
+                    }
+                }
+            } catch (err) {
+                console.error("Biometric login failed:", err);
+                showNotify("বায়োমেট্রিক লগইন বাতিল বা ত্রুটিপূর্ণ!", "error");
+                return;
+            }
+        }
+
+        let u = (masterData.users || []).find(x => 
+            (x.id === id.toUpperCase() || (x.id === "NRZO0NE" && id.toUpperCase() === "NRZONE")) && 
+            x.password === pass
+        );
+
+        if (!u) {
+            u = (masterData.workerDocs || []).find(w => 
+                w.name.toUpperCase() === id.toUpperCase() && w.password === pass
+            );
+            if (u) {
+                u = { ...u, role: 'worker', id: u.name.toUpperCase() };
+            }
+        }
+
+        if (u) { 
+            setUser(u); 
+            showNotify(`স্বাগতম, ${u.name}!`); 
+            logAction(u, 'LOGIN', 'User logged in successfully');
+        }
         else showNotify("ভুল আইডি বা পাসওয়ার্ড!", "error");
     };
 

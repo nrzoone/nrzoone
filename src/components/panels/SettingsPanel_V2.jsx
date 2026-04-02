@@ -61,6 +61,18 @@ const SettingsPanel = ({
   const [tempWorkerPhoto, setTempWorkerPhoto] = useState(null);
   const [tempNidPhoto, setTempNidPhoto] = useState(null);
   const [personnelTab, setPersonnelTab] = useState("staff");
+  const [workerSearch, setWorkerSearch] = useState("");
+
+  // Sync photos when modal opens
+  React.useEffect(() => {
+    if (workerDocModal && workerDocModal !== "add") {
+      setTempWorkerPhoto(workerDocModal.photo || null);
+      setTempNidPhoto(workerDocModal.nidPhoto || null);
+    } else if (workerDocModal === "add") {
+      setTempWorkerPhoto(null);
+      setTempNidPhoto(null);
+    }
+  }, [workerDocModal]);
 
   // ===== WhatsApp Message Sender =====
   const sendWhatsApp = (phone, message) => {
@@ -112,6 +124,51 @@ const SettingsPanel = ({
     } finally {
       setUploading(false);
     }
+  };
+
+  const registerAdminBiometric = async () => {
+    try {
+        const challenge = crypto.getRandomValues(new Uint8Array(32));
+        const userId = crypto.getRandomValues(new Uint8Array(16));
+        
+        const credential = await navigator.credentials.create({
+            publicKey: {
+                challenge,
+                rp: { name: "NRZOONE ERP" },
+                user: {
+                    id: userId,
+                    name: currentUser.name,
+                    displayName: currentUser.name
+                },
+                pubKeyCredParams: [{ alg: -7, type: "public-key" }],
+                authenticatorSelection: { authenticatorAttachment: "platform" },
+                timeout: 60000
+            }
+        });
+
+        if (credential) {
+            const biometricId = btoa(String.fromCharCode(...new Uint8Array(credential.rawId)));
+            setMasterData(prev => ({
+                ...prev,
+                users: prev.users.map(u => u.id === currentUser.id ? { ...u, biometricId } : u),
+                settings: { ...prev.settings, adminBiometricRegistered: true }
+            }));
+            showNotify(`Finger/Face ID successfully registered for ${currentUser.name}!`, 'success');
+        }
+    } catch (err) {
+        console.error("Admin biometric registration failed:", err);
+        showNotify("বায়োমেট্রিক রেজিস্ট্রেশন বাতিল হয়েছে!", 'error');
+    }
+  };
+
+  const handleUpdateCurrentPassword = (newPass) => {
+    if (!newPass.trim()) return;
+    setMasterData(prev => ({
+        ...prev,
+        users: prev.users.map(u => u.id === currentUser.id ? { ...u, password: newPass } : u)
+    }));
+    showNotify("Password updated successfully!");
+    setShowProfilePass(false);
   };
 
   const handleImageUpload = async (file) => {
@@ -585,7 +642,7 @@ const SettingsPanel = ({
         <TabButton id="outside" label={t('outsideWork') || "Outside"} active={personnelTab} onClick={setPersonnelTab} />
       </div>
 
-      <div className="flex justify-start">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <button
           onClick={() => setWorkerDocModal("add")}
           className="px-10 py-5 bg-black text-white rounded-2xl font-black uppercase text-xs tracking-widest shadow-2xl flex items-center gap-3 hover:scale-105 active:scale-95 transition-all italic border-b-[6px] border-zinc-900"
@@ -593,6 +650,16 @@ const SettingsPanel = ({
           <Plus size={20} strokeWidth={3} />
           কর্মী নিবন্ধন (Add Worker)
         </button>
+        <div className="relative w-full md:w-80">
+           <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+           <input 
+              type="text" 
+              placeholder="SEARCH WORKERS..." 
+              value={workerSearch}
+              onChange={(e) => setWorkerSearch(e.target.value)}
+              className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl pl-16 pr-8 py-5 text-[10px] font-black uppercase tracking-widest outline-none focus:border-black transition-all italic shadow-inner"
+           />
+        </div>
       </div>
       {['sewing', 'stone', 'pata'].map(dept => (
         <div key={dept} className="bg-slate-50 dark:bg-black/20 p-8 rounded-[3rem] border border-slate-100 dark:border-zinc-800">
@@ -601,23 +668,33 @@ const SettingsPanel = ({
              <span className="text-[10px] font-black uppercase text-slate-500 tracking-widest">{getUnifiedWorkers(dept).length} {t("staff") || "Staff"}</span>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {getUnifiedWorkers(dept).map((w, idx) => (
-              <div key={idx} className="bg-white dark:bg-zinc-900/50 p-6 rounded-3xl border border-slate-50 dark:border-zinc-800 hover:border-black dark:hover:border-white transition-all group relative overflow-hidden">
-                <div className="flex justify-between items-start mb-4">
-                  <div className="w-10 h-10 bg-slate-50 dark:bg-white/5 rounded-xl flex items-center justify-center text-slate-500 group-hover:scale-110 transition-transform">
-                     <User size={18} />
+            {getUnifiedWorkers(dept)
+              .filter(w => !workerSearch || w.name.toUpperCase().includes(workerSearch.toUpperCase()))
+              .map((w, idx) => (
+              <div key={idx} className="bg-white dark:bg-zinc-900/50 p-8 rounded-[2.5rem] border-2 border-slate-50 dark:border-zinc-800 hover:border-black dark:hover:border-white transition-all group relative overflow-hidden shadow-sm">
+                <div className="flex justify-between items-start mb-6">
+                  <div className="w-16 h-16 bg-slate-50 dark:bg-white/5 rounded-[1.5rem] border-2 border-slate-100 flex items-center justify-center text-slate-400 group-hover:scale-110 group-hover:rotate-6 transition-all overflow-hidden shadow-inner">
+                     {w.photo ? <img src={w.photo} className="w-full h-full object-cover" /> : <User size={24} />}
                   </div>
                   <div className="flex gap-2">
-                    <button onClick={() => setWorkerDocModal(w)} className="p-2 text-slate-500 hover:text-black dark:hover:text-white"><Edit2 size={14} /></button>
-                    {!w.isLegacy && <button onClick={() => handleDeleteUnifiedWorker(w.id, w.name, w.dept)} className="p-2 text-rose-300 hover:text-rose-500"><Trash2 size={14} /></button>}
+                    <button onClick={() => setWorkerDocModal(w)} className="p-3 bg-slate-50 dark:bg-zinc-800 rounded-xl text-slate-500 hover:text-black dark:hover:text-white transition-all shadow-sm"><Edit2 size={16} /></button>
+                    {!w.isLegacy && <button onClick={() => handleDeleteUnifiedWorker(w.id, w.name, w.dept)} className="p-3 bg-slate-50 dark:bg-zinc-800 rounded-xl text-rose-300 hover:text-rose-500 transition-all shadow-sm"><Trash2 size={16} /></button>}
                   </div>
                 </div>
-                <h5 className="text-lg font-black uppercase italic truncate">{w.name}</h5>
-                <div className="flex justify-between items-end mt-4">
-                   <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest italic font-mono">{t("wage") || "WAGE"}: ৳{w.wage}</p>
-                   <button onClick={() => sendWhatsApp(w.phone, t("salaryUpdateMsg") || "NRZOONE Salary Update: আপনার বর্তমান মজুরি আপডেট করা হয়েছে।")} className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-500 flex items-center justify-center hover:bg-emerald-500 hover:text-white transition-all shadow-sm">
-                      <MessageCircle size={14} strokeWidth={3} />
-                   </button>
+                <div className="space-y-1">
+                  <h5 className="text-xl font-black uppercase italic truncate tracking-tighter text-black dark:text-white">{w.name}</h5>
+                  <p className="text-[9px] font-black text-slate-500 uppercase tracking-[0.2em]">{dept} operative</p>
+                </div>
+                <div className="flex justify-between items-end mt-8 border-t border-slate-50 dark:border-zinc-800 pt-4">
+                   <div>
+                      <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest italic font-mono mb-1">Base Rate</p>
+                      <p className="text-xl font-black italic">৳{w.wage}</p>
+                   </div>
+                   <div className="flex gap-2">
+                     <button onClick={() => sendWhatsApp(w.phone, t("salaryUpdateMsg") || "NRZOONE Salary Update: আপনার বর্তমান মজুরি আপডেট করা হয়েছে।")} className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-500 flex items-center justify-center hover:bg-emerald-500 hover:text-white transition-all shadow-sm">
+                        <MessageCircle size={18} strokeWidth={2.5} />
+                     </button>
+                   </div>
                 </div>
               </div>
             ))}
@@ -758,6 +835,54 @@ const SettingsPanel = ({
           </div>
 
           <div className="space-y-4">
+            <AccordionItem id="profile" label="My Security & Profile" icon={User} description="Manage your login credentials & biometric ID">
+               <div className="space-y-8 p-4">
+                  <div className="bg-slate-50 dark:bg-black/20 p-10 rounded-[3rem] border-2 border-slate-100 dark:border-zinc-800 flex flex-col md:flex-row justify-between items-center gap-8 italic transition-all group">
+                     <div>
+                        <h4 className="text-2xl font-black uppercase italic tracking-tighter mb-2">Auth Credentials</h4>
+                        <p className="text-slate-500 text-[10px] font-black uppercase tracking-widest italic font-mono leading-none">Identity: {currentUser.id}</p>
+                     </div>
+                     <div className="flex gap-4 w-full md:w-auto">
+                        <div className="relative flex-1 md:w-64">
+                           <input 
+                              type={showProfilePass ? "text" : "password"} 
+                              id="profile-new-pass"
+                              className="w-full bg-white dark:bg-zinc-800 pl-6 pr-12 py-4 rounded-xl border border-slate-100 dark:border-zinc-700 text-sm font-black italic outline-none focus:border-black"
+                              placeholder="NEW PASSWORD"
+                              defaultValue={currentUser.password}
+                           />
+                           <button onClick={() => setShowProfilePass(!showProfilePass)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400">
+                              {showProfilePass ? <EyeOff size={16} /> : <Eye size={16} />}
+                           </button>
+                        </div>
+                        <button 
+                           onClick={() => handleUpdateCurrentPassword(document.getElementById('profile-new-pass').value)}
+                           className="bg-black dark:bg-white text-white dark:text-black px-8 py-4 rounded-xl font-black uppercase text-[10px] tracking-widest shadow-xl hover:scale-105 active:scale-95 transition-all italic"
+                        >
+                           Update
+                        </button>
+                     </div>
+                  </div>
+
+                  <div className="bg-emerald-50 dark:bg-emerald-950/20 p-10 rounded-[3rem] border-2 border-emerald-100 dark:border-emerald-900 flex flex-col md:flex-row justify-between items-center gap-8 italic">
+                     <div className="flex items-center gap-6">
+                        <div className="w-16 h-16 bg-white dark:bg-emerald-900 rounded-2xl flex items-center justify-center text-emerald-500 shadow-inner">
+                           <ShieldCheck size={32} />
+                        </div>
+                        <div>
+                           <h4 className="text-2xl font-black uppercase italic tracking-tighter mb-2">Finger / Face ID</h4>
+                           <p className="text-emerald-600 dark:text-emerald-400 text-[10px] font-black uppercase tracking-widest italic">{currentUser.biometricId ? 'SUCCESSFULLY REGISTERED' : 'NOT CONFIGURED YET'}</p>
+                        </div>
+                     </div>
+                     <button 
+                        onClick={registerAdminBiometric}
+                        className="bg-emerald-600 text-white px-10 py-5 rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-2xl hover:bg-emerald-700 transition-all italic border-b-[6px] border-emerald-800"
+                     >
+                        Register Biometric Login
+                     </button>
+                  </div>
+               </div>
+            </AccordionItem>
             <AccordionItem id="branding" label="System Branding" icon={ImageIcon} description="Personalize dashboard and print slip logo">
                {renderBrandingContent()}
             </AccordionItem>
@@ -1635,6 +1760,7 @@ const SettingsPanel = ({
                       .getElementById("wdoc-emergency")
                       .value.trim(),
                     note: document.getElementById("wdoc-note").value.trim(),
+                    password: document.getElementById("wdoc-pass").value.trim() || (workerDocModal?.password || "1234"),
                     photo: tempWorkerPhoto,
                     nidPhoto: tempNidPhoto,
                   };

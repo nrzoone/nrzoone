@@ -15,19 +15,25 @@ const NRZLogo = ({ size = "md", white = true, customUrl = null }) => {
 
   return (
     <div className={`flex flex-col items-center justify-center ${white ? "text-white" : "text-black"}`} style={{ width: s.w }}>
-        <img 
-          src={logoPath} 
-          alt="" 
-          onError={(e) => { e.target.style.display = 'none' }}
-          style={{ 
-            width: s.iconSize, 
-            height: 'auto', 
-            maxHeight: s.iconSize * 0.8,
-            objectFit: 'contain',
-            filter: white ? 'brightness(0) invert(1) drop-shadow(0 0 10px rgba(255,255,255,0.2))' : 'none'
-          }} 
-          className="mb-2"
-        />
+        {!imgError ? (
+          <img 
+            src={logoPath} 
+            alt="Company Logo" 
+            onError={() => setImgError(true)}
+            style={{ 
+              width: s.iconSize, 
+              height: 'auto', 
+              maxHeight: s.iconSize * 0.8,
+              objectFit: 'contain',
+              filter: white ? 'brightness(0) invert(1) drop-shadow(0 0 10px rgba(255,255,255,0.2))' : 'none'
+            }} 
+            className="mb-2"
+          />
+        ) : (
+          <div className={`mb-4 flex items-center justify-center rounded-2xl ${white ? 'bg-white/10 text-white' : 'bg-slate-100 text-slate-400'}`} style={{ width: s.iconSize, height: s.iconSize * 0.6 }}>
+             <p className="text-[10px] font-black uppercase tracking-widest text-center px-4">Logo Error</p>
+          </div>
+        )}
         <div className="text-center relative">
           <h1 className={`font-black uppercase italic tracking-[-0.06em] leading-none ${s.text}`} style={{ fontFamily: "serif" }}>
             NRZO<span className="opacity-70 mx-[-0.05em]">O</span>NE

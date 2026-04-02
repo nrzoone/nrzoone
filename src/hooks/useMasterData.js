@@ -38,7 +38,7 @@ const initialData = {
     pataTypes: ["Single", "Double", "Triple", "Mix"],
     pataStoneColors: ["White", "Golden", "Black", "Silver", "Multi", "Rainbow"],
     users: [
-        { id: "NRZO0NE", password: "Irham@#", role: "admin", name: "Super Admin" },
+        { id: "NRZONE", password: "Irham@#", role: "admin", name: "Super Admin" },
         { id: "MANAGER", password: "456", role: "manager", name: "Operations Manager" },
     ],
     cuttingStock: [],
