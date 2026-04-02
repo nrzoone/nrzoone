@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { UserCheck, Search, Download, TrendingUp, X, FileText, ArrowUpRight, History, MessageCircle, DollarSign, Plus, Eye, User } from 'lucide-react';
+import { UserCheck, Activity, Search, Download, TrendingUp, X, FileText, ArrowUpRight, History, MessageCircle, DollarSign, Plus, Eye, User } from 'lucide-react';
 import { sendWeeklySummary } from '../utils/whatsappUtils';
 import NRZLogo from "./NRZLogo";
 

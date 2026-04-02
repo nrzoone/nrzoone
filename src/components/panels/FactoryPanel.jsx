@@ -29,7 +29,8 @@ import {
   Trash2,
   Settings,
   ChevronRight,
-  Share2
+  Share2,
+  MessageCircle
 } from "lucide-react";
 import QRScanner from "../QRScanner";
 import UniversalSlip from "../UniversalSlip";

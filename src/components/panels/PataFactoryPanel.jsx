@@ -21,6 +21,7 @@ import {
   TrendingDown,
   MessageCircle,
   MessageSquare,
+  DollarSign,
 } from "lucide-react";
 const { Title, Text } = Typography;
 
