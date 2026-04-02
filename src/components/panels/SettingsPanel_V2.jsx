@@ -32,6 +32,7 @@ import {
   TrendingDown,
   Send,
   BarChart2,
+  Key,
   Search,
 } from "lucide-react";
 import { storage } from "../../firebase";
