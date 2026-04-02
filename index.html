@@ -54,6 +54,19 @@
     </script>
   </head>
   <body>
+    <script>
+      console.log("🛠️ HTML LOADING... (চেকিং: এইচটিএমএল লোড হচ্ছে)");
+      window.addEventListener('load', () => {
+         console.log("✅ WINDOW LOADED (উইন্ডো লোড হয়েছে)");
+         setTimeout(() => {
+            const root = document.getElementById('root');
+            if (root && root.innerText.includes('SYNCHRONIZING')) {
+               console.error("❌ JS BUNDLE FAILED TO START (জেএস বান্ডেল চালু হয়নি)");
+               // alert("JS BUNDLE FAILED! Check console for 404s.");
+            }
+         }, 5000);
+      });
+    </script>
     <noscript>
       <img
         height="1"
@@ -76,13 +89,10 @@
     </script>
     <script type="module" src="/src/main.jsx"></script>
     <script>
+      // Force unregister stale workers
       if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js').then(reg => {
-            console.log('SW registered:', reg);
-          }).catch(err => {
-            console.log('SW failed:', err);
-          });
+        navigator.serviceWorker.getRegistrations().then(regs => {
+          for(let r of regs) r.unregister();
         });
       }
     </script>

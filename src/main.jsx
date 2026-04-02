@@ -29,10 +29,4 @@ try {
     document.body.innerHTML = `<div style="background:red; color:white; padding:20px; font-family:sans-serif;"><h1>CRITICAL BOOT ERROR</h1><p>${e.message}</p></div>`;
 }
 
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js')
-            .then(reg => console.log('SW Registered', reg))
-            .catch(err => console.log('SW Error', err));
-    });
-}
+ // Service Worker Disabled

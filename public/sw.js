@@ -1,22 +1,16 @@
-const CACHE_NAME = 'nrzone-factory-v1';
-const ASSETS = [
-    '/',
-    '/index.html',
-    '/manifest.json',
-    '/logo_black.png',
-    '/logo_white.png'
-];
+self.addEventListener('install', (e) => {
+    self.skipWaiting();
+});
 
-self.addEventListener('install', (event) => {
-    event.waitUntil(
-        caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
+self.addEventListener('activate', (e) => {
+    e.waitUntil(
+        caches.keys().then((keys) => {
+            return Promise.all(keys.map((k) => caches.delete(k)));
+        }).then(() => self.clients.claim())
     );
 });
 
-self.addEventListener('fetch', (event) => {
-    event.respondWith(
-        caches.match(event.request).then((response) => {
-            return response || fetch(event.request);
-        })
-    );
+self.addEventListener('fetch', (e) => {
+    // PASS THROUGH - NO CACHING
+    return fetch(e.request);
 });
