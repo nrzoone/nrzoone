@@ -62,7 +62,18 @@
         src="https://www.facebook.com/tr?id=517991158551582&ev=PageView&noscript=1"
       />
     </noscript>
-    <div id="root"></div>
+    <div id="root">
+      <div style="background: black; color: white; display: flex; align-items: center; justify-content: center; height: 100vh; font-family: monospace; letter-spacing: 0.5em; font-size: 10px;">
+        SYNCHRONIZING NEURAL LINK...
+      </div>
+    </div>
+    <script type="module">
+      window.addEventListener('error', (e) => {
+        if (!/abort|resizeobserver|cancelled/i.test(e.message)) {
+          console.log("CRITICAL ERROR DURING BOOT:", e.message);
+        }
+      });
+    </script>
     <script type="module" src="/src/main.jsx"></script>
     <script>
       if ('serviceWorker' in navigator) {
