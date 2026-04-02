@@ -436,6 +436,23 @@ const AppContent = () => {
         setTimeout(() => setToast(null), 3000);
     };
 
+    const logAction = (user, type, detail) => {
+        setMasterData(prev => ({
+            ...prev,
+            auditLogs: [
+                {
+                    id: Date.now(),
+                    date: new Date().toLocaleDateString('en-GB'),
+                    time: new Date().toLocaleTimeString(),
+                    user: user?.name || 'System',
+                    type,
+                    detail
+                },
+                ...(prev.auditLogs || [])
+            ].slice(0, 300)
+        }));
+    };
+
     const handleLogin = (id, pass) => {
         const u = (masterData.users || []).find(x => x.id === id.toUpperCase() && x.password === pass);
         if (u) { setUser(u); showNotify(`স্বাগতম, ${u.name}!`); }
@@ -478,15 +495,12 @@ const AppContent = () => {
                                             <span className="text-[7px] font-black uppercase tracking-widest text-slate-500">{isLoading ? t('syncing') : t('stable')}</span>
                                         </div>
                                     </div>
-                                    <p className="text-[8px] font-black uppercase text-slate-500 tracking-widest mt-1">Status: {t('activeNode')}</p>
                                 </div>
                             </div>
-                            <div className="flex gap-4">
-                                <button onClick={() => setIsDarkMode(!isDarkMode)} className="neu-button w-14 h-14 bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-800 transition-all duration-500">
-                                    {isDarkMode ? <Sun size={20} className="text-amber-400" /> : <Moon size={20} className="text-slate-500" />}
+                            <div className="flex items-center gap-6 no-print">
+                                <button onClick={() => setIsDarkMode(!isDarkMode)} className="neu-button w-14 h-14 dark:bg-zinc-900 dark:border-zinc-800 transition-all duration-500">
+                                    {isDarkMode ? <Sun size={20} className="text-amber-500" /> : <Moon size={20} className="text-indigo-600" />}
                                 </button>
-                                <button onClick={() => setShowQR(true)} className="neu-button w-14 h-14 bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-800"><Activity size={20} /></button>
-                                <button onClick={() => setLanguage(language === 'BN' ? 'EN' : 'BN')} className="neu-button px-6 font-black text-[10px] italic h-14 dark:bg-zinc-900 dark:text-white dark:border-zinc-800">{language}</button>
                                 <div className="flex items-center gap-4 neu-card-flat px-6 h-14 min-w-[200px] dark:bg-zinc-900 dark:border-zinc-800">
                                     <div className="w-8 h-8 bg-black dark:bg-white rounded-full flex items-center justify-center text-white dark:text-black transition-all duration-500"><User size={14} /></div>
                                     <div className="text-left"><p className="text-xs font-black uppercase italic leading-none dark:text-white">{user.name}</p><p className="text-[7px] font-black text-slate-500 uppercase tracking-widest mt-1">{user.role}</p></div>
@@ -495,18 +509,18 @@ const AppContent = () => {
                         </header>
                         <div className="max-w-7xl mx-auto">
                             {activePanel === "Menu" && <MenuPanel setActivePanel={setActivePanel} user={user} t={t} />}
-                            {activePanel === "Overview" && <Overview masterData={masterData} setMasterData={setMasterData} user={user} setActivePanel={setActivePanel} t={t} />}
-                            {activePanel === "Cutting" && <CuttingPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} setActivePanel={setActivePanel} t={t} />}
-                            {activePanel === "Swing" && <FactoryPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} setActivePanel={setActivePanel} type="sewing" t={t} />}
-                            {activePanel === "Stone" && <FactoryPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} setActivePanel={setActivePanel} type="stone" t={t} />}
-                            {activePanel === "Pata" && <PataFactoryPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} setActivePanel={setActivePanel} />}
-                            {activePanel === "Outside" && <OutsideWorkPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} setActivePanel={setActivePanel} t={t} />}
-                            {activePanel === "Attendance" && <AttendancePanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} setActivePanel={setActivePanel} t={t} />}
-                            {activePanel === "Stock" && <InventoryPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} setActivePanel={setActivePanel} t={t} />}
-                            {activePanel === "Accounts" && <ExpensePanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} setActivePanel={setActivePanel} t={t} />}
-                            {activePanel === "Reports" && <ReportsPanel masterData={masterData} user={user} setActivePanel={setActivePanel} t={t} />}
-                            {activePanel === "Settings" && <SettingsPanel masterData={masterData} setMasterData={setMasterData} user={user} showNotify={showNotify} setActivePanel={setActivePanel} t={t} />}
-                            {activePanel === "Security" && <SecurityPanel masterData={masterData} user={user} t={t} />}
+                            {activePanel === "Overview" && <Overview masterData={masterData} setMasterData={setMasterData} user={user} setActivePanel={setActivePanel} t={t} logAction={logAction} />}
+                            {activePanel === "Cutting" && <CuttingPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} setActivePanel={setActivePanel} t={t} logAction={logAction} />}
+                            {activePanel === "Swing" && <FactoryPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} setActivePanel={setActivePanel} type="sewing" t={t} logAction={logAction} />}
+                            {activePanel === "Stone" && <FactoryPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} setActivePanel={setActivePanel} type="stone" t={t} logAction={logAction} />}
+                            {activePanel === "Pata" && <PataFactoryPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} setActivePanel={setActivePanel} logAction={logAction} />}
+                            {activePanel === "Outside" && <OutsideWorkPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} setActivePanel={setActivePanel} t={t} logAction={logAction} />}
+                            {activePanel === "Attendance" && <AttendancePanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} setActivePanel={setActivePanel} t={t} logAction={logAction} />}
+                            {activePanel === "Stock" && <InventoryPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} setActivePanel={setActivePanel} t={t} logAction={logAction} />}
+                            {activePanel === "Accounts" && <ExpensePanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} setActivePanel={setActivePanel} t={t} logAction={logAction} />}
+                            {activePanel === "Reports" && <ReportsPanel masterData={masterData} user={user} setActivePanel={setActivePanel} t={t} logAction={logAction} />}
+                            {activePanel === "Settings" && <SettingsPanel masterData={masterData} setMasterData={setMasterData} user={user} showNotify={showNotify} setActivePanel={setActivePanel} t={t} logAction={logAction} />}
+                            {activePanel === "Security" && <SecurityPanel masterData={masterData} user={user} t={t} logAction={logAction} />}
                         </div>
                     </main>
                     {activePanel !== "Menu" && (

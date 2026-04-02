@@ -87,7 +87,7 @@ export const useMasterData = () => {
         const saved = localStorage.getItem('nrzone_data');
         if (saved) {
             try {
-                return JSON.parse(saved);
+                return { ...initialData, ...JSON.parse(saved) };
             } catch (e) {
                 console.error("Local storage parse error:", e);
             }
@@ -150,15 +150,16 @@ export const useMasterData = () => {
                     }
 
                     setMasterData((prev) => {
-                        const cloudStr = JSON.stringify(cloud);
+                        const merged = { ...initialData, ...cloud };
+                        const mergedStr = JSON.stringify(merged);
                         const prevStr = JSON.stringify(prev);
-                        if (cloudStr !== prevStr) {
+                        if (mergedStr !== prevStr) {
                             try {
-                                localStorage.setItem('nrzone_data', cloudStr);
+                                localStorage.setItem('nrzone_data', mergedStr);
                             } catch (lsErr) {
                                 console.warn("Local storage update failed (likely quota):", lsErr);
                             }
-                            return cloud;
+                            return merged;
                         }
                         return prev;
                     });

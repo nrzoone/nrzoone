@@ -25,7 +25,7 @@ const QR_Slip_Theme = {
   token: { fontFamily: 'Inter, sans-serif', borderRadius: 4, fontSize: 12, colorTextBase: '#000000' },
 };
 
-const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActivePanel, t }) => {
+const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActivePanel, t, logAction }) => {
     const [showModal, setShowModal] = useState(false);
     const [view, setView] = useState('active'); // 'active' or 'history'
     const [searchTerm, setSearchTerm] = useState('');
