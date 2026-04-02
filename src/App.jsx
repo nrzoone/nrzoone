@@ -313,18 +313,18 @@ const SecurityPanel = ({ masterData, t, user }) => {
                     <Lock size={40} strokeWidth={3} />
                 </div>
                 <div>
-                   <h2 className="text-5xl font-black uppercase tracking-tighter italic">Security <span className="text-rose-500">Nexus</span></h2>
+                   <h2 className="text-5xl font-black uppercase tracking-tighter italic">{t('security')} <span className="text-rose-500">{t('nexus')}</span></h2>
                    <p className="text-xs font-black uppercase tracking-[0.5em] text-slate-400 mt-2 italic opacity-60">ADMIN AUDIT & SYSTEM INTEGRITY MONITOR</p>
                 </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="bg-white p-12 rounded-[4rem] border shadow-2xl text-center flex flex-col items-center">
-                    <p className="text-[10px] font-black uppercase tracking-[0.5em] text-slate-400 mb-6">Total Logs</p>
+                    <p className="text-[10px] font-black uppercase tracking-[0.5em] text-slate-400 mb-6">{t('totalLogs')}</p>
                     <p className="text-8xl font-black italic tracking-tighter">{masterData.auditLogs?.length || 0}</p>
                 </div>
                 <div className="col-span-2 bg-black text-rose-500 p-12 rounded-[4rem] shadow-3xl text-center flex flex-col items-center">
-                   <p className="text-[10px] font-black uppercase tracking-[0.5em] text-rose-500/50 mb-6 underline">Security Flags Detected</p>
+                   <p className="text-[10px] font-black uppercase tracking-[0.5em] text-rose-500/50 mb-6 underline">{t('securityFlags')}</p>
                    <p className="text-8xl font-black italic tracking-tighter underline">{alerts.length}</p>
                    <p className="text-[10px] font-black uppercase tracking-[0.2em] mt-8 text-white/40 italic">Unauthorized access attempts: 0 (Stable)</p>
                 </div>
@@ -332,7 +332,7 @@ const SecurityPanel = ({ masterData, t, user }) => {
 
             <div className="bg-white rounded-[3rem] border shadow-inner p-10 space-y-6 max-h-[60vh] overflow-y-auto no-scrollbar">
                 {alerts.length === 0 ? (
-                    <div className="py-20 text-center opacity-20"><ShieldCheck size={100} className="mx-auto border rounded-full p-4 mb-8" /><p className="text-4xl font-black uppercase tracking-tighter">System Secure</p></div>
+                    <div className="py-20 text-center opacity-20"><ShieldCheck size={100} className="mx-auto border rounded-full p-4 mb-8" /><p className="text-4xl font-black uppercase tracking-tighter">{t('systemSecure')}</p></div>
                 ) : (
                     alerts.map((log, i) => (
                         <div key={i} className="flex flex-col md:flex-row justify-between items-center bg-slate-50 p-10 rounded-[2.5rem] border border-slate-100 gap-8 group hover:border-rose-500 transition-all">
@@ -347,7 +347,7 @@ const SecurityPanel = ({ masterData, t, user }) => {
                                </div>
                            </div>
                            <div className="text-center md:text-right">
-                              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Initiated By</p>
+                              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">{t('initiatedBy')}</p>
                               <div className="px-6 py-2 bg-black text-white rounded-full text-xs font-black italic">{log.user} ({log.role})</div>
                            </div>
                         </div>
@@ -449,7 +449,7 @@ const AppContent = () => {
             ) : (
                 <div className="flex min-h-screen">
                     <Sidebar activePanel={activePanel} setActivePanel={setActivePanel} user={user} setUser={setUser} isOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} t={t} />
-                    <main className={`flex-1 p-8 md:p-20 transition-all ${isSidebarOpen ? "md:ml-[300px]" : "ml-0"}`}>
+                    <main className={`flex-1 p-4 md:p-20 transition-all ${isSidebarOpen ? "md:ml-[300px]" : "ml-0"}`}>
                         <header className="flex justify-between items-center mb-16 no-print">
                             <div className="flex items-center gap-6">
                                 <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="neu-button w-14 h-14 dark:bg-zinc-900 dark:border-zinc-800"><Menu size={20} /></button>
@@ -458,10 +458,10 @@ const AppContent = () => {
                                         <h2 className="text-xl font-black italic uppercase tracking-tighter text-[var(--text-primary)]">{t(activePanel.toLowerCase()) || activePanel}</h2>
                                         <div className="flex items-center gap-2 px-3 py-1 bg-slate-50 border border-slate-100 rounded-full">
                                             <div className={`w-1.5 h-1.5 rounded-full ${isLoading ? 'bg-amber-500 animate-pulse' : 'bg-emerald-500'}`} />
-                                            <span className="text-[7px] font-black uppercase tracking-widest text-slate-400">{isLoading ? 'Syncing...' : 'Stable'}</span>
+                                            <span className="text-[7px] font-black uppercase tracking-widest text-slate-400">{isLoading ? t('syncing') : t('stable')}</span>
                                         </div>
                                     </div>
-                                    <p className="text-[8px] font-black uppercase text-slate-400 tracking-widest mt-1">Status: Active Operational Node</p>
+                                    <p className="text-[8px] font-black uppercase text-slate-400 tracking-widest mt-1">Status: {t('activeNode')}</p>
                                 </div>
                             </div>
                             <div className="flex gap-4">

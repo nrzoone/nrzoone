@@ -972,7 +972,7 @@ const FactoryPanel = ({
               >
                 <div className={`absolute top-1 left-1 bg-white w-6 h-6 rounded-full shadow-md transition-transform duration-300 ${showAllLots ? "translate-x-6" : ""}`}></div>
               </button>
-              <span className={`text-[10px] font-black uppercase tracking-widest italic transition-colors ${showAllLots ? "text-rose-500" : "text-slate-400"}`}>Admin Power</span>
+              <span className={`text-[10px] font-black uppercase tracking-widest italic transition-colors ${showAllLots ? "text-rose-500" : "text-slate-400"}`}>{t('adminPower')}</span>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12">
@@ -1113,14 +1113,14 @@ const FactoryPanel = ({
                   <div className="flex items-center gap-3 mb-6">
                     <Layers size={18} className="text-slate-400" />
                     <label className="text-xs font-black text-black uppercase tracking-widest">
-                       Select Size & Quantity
+                       {t('qty')} & {t('category')}
                     </label>
                   </div>
 
                   <div className="flex-1 space-y-4 max-h-[400px] overflow-y-auto pr-2">
                     {issueSizes.length === 0 ? (
                       <div className="h-40 flex items-center justify-center text-slate-400 uppercase font-black italic tracking-widest text-[10px]">
-                        Select Lot to Populate
+                        লট সিলেক্ট করুন (Select Lot)
                       </div>
                     ) : (
                       issueSizes.map((row, idx) => {
@@ -1139,7 +1139,7 @@ const FactoryPanel = ({
                                        setIssueSizes(n);
                                      }}
                                    >
-                                     <option value="">SIZE</option>
+                                     <option value="">{t('category')}</option>
                                      {(masterData.sizes || []).map(s => <option key={s} value={s}>{s}</option>)}
                                    </select>
                                    {issueSizes.length > 1 && (
@@ -1256,7 +1256,7 @@ const FactoryPanel = ({
                 onClick={() => setShowIssueModal(false)}
                 className="py-4 md:py-6 px-8 rounded-full bg-slate-50 border-2 border-slate-200 text-slate-500 font-black uppercase text-xs tracking-widest hover:bg-slate-200 transition-all font-outfit"
               >
-                Cancel
+                {t('cancel')}
               </button>
               <button
                 type="submit"
@@ -1264,14 +1264,14 @@ const FactoryPanel = ({
                 onClick={handleIssue}
                 className="py-4 md:py-6 px-10 rounded-full bg-slate-900 text-white font-black uppercase text-xs tracking-[0.2em] shadow-xl hover:bg-black transition-all flex items-center justify-center gap-3 font-outfit"
               >
-                <Printer size={18} /> Print Note
+                <Printer size={18} /> {t('printNote')}
               </button>
               <button
                 type="submit"
                 onClick={handleIssue}
                 className="flex-[2] py-4 md:py-6 rounded-full bg-emerald-600 text-white font-black uppercase text-sm tracking-[0.2em] shadow-emerald-600/30 shadow-2xl hover:scale-[1.02] active:scale-95 transition-all text-center flex items-center justify-center gap-3 font-outfit"
               >
-                ASSIGN WORK <span className="text-[10px] hidden md:inline">(নিশ্চিত করুন)</span> <CheckCircle size={18} />
+                {t('issueWork')} <span className="text-[10px] hidden md:inline">(নিশ্চিত করুন)</span> <CheckCircle size={18} />
               </button>
             </div>
           </div>
@@ -1283,7 +1283,7 @@ const FactoryPanel = ({
           <div className="bg-white w-full max-w-sm rounded-2xl md:rounded-[4.5rem] border-4 border-slate-50 shadow-3xl p-5 md:p-6 space-y-10 animate-fade-up text-black italic">
             <div className="text-center space-y-2">
               <h3 className="text-3xl font-black uppercase italic tracking-tighter leading-none">
-                Job Completion
+                {t('receive')}
               </h3>
               <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
                 {receiveModal.worker} • {receiveModal.design}
@@ -1333,13 +1333,13 @@ const FactoryPanel = ({
                   onClick={() => setReceiveModal(null)}
                   className="py-5 bg-slate-50 text-slate-400 rounded-full font-black uppercase text-[10px] tracking-widest hover:text-black transition-all"
                 >
-                  Cancel
+                  {t('cancel')}
                 </button>
                 <button
                   type="submit"
                   className="py-6 bg-black text-white rounded-full font-black uppercase text-xs tracking-widest shadow-2xl border-b-8 border-zinc-900 transition-all hover:scale-105 active:scale-95"
                 >
-                  CONFIRM RECEIPT
+                  {t('confirmOnly')}
                 </button>
               </div>
             </form>
@@ -1356,7 +1356,7 @@ const FactoryPanel = ({
                   <Settings size={28} strokeWidth={2.5} />
                 </div>
                 <div>
-                  <h3 className="text-3xl font-black uppercase tracking-tighter leading-none">{type} <span className="text-amber-500">Override</span></h3>
+                  <h3 className="text-3xl font-black uppercase tracking-tighter leading-none">{t('designOverride')}</h3>
                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Industrial Data Correction</p>
                 </div>
               </div>
@@ -1435,7 +1435,7 @@ const FactoryPanel = ({
                 <textarea name="note" defaultValue={editModal.note} className="form-input h-24 italic py-4" placeholder="ADD NOTES..." />
               </div>
 
-              <button type="submit" className="md:col-span-2 py-6 bg-amber-500 text-white rounded-full font-black text-xl uppercase tracking-[0.2em] shadow-2xl border-b-[10px] border-amber-900 active:translate-y-2 transition-all mt-4">UPDATE PRODUCTION DATA</button>
+              <button type="submit" className="md:col-span-2 py-6 bg-amber-500 text-white rounded-full font-black text-xl uppercase tracking-[0.2em] shadow-2xl border-b-[10px] border-amber-900 active:translate-y-2 transition-all mt-4">{t('saveOverride')}</button>
             </form>
           </div>
         </div>
@@ -1446,7 +1446,7 @@ const FactoryPanel = ({
           <div className="bg-white w-full max-w-lg rounded-3xl border-4 border-slate-50 shadow-3xl p-6 md:p-8 space-y-12 animate-fade-up text-black italic">
             <div className="text-center space-y-3">
               <h3 className="text-3xl md:text-3xl font-black uppercase italic tracking-tighter leading-none">
-                Payout Pipeline
+                {t('pataSettlement')}
               </h3>
               <p className="text-sm font-black text-slate-500 italic uppercase">
                 Payment for: {payModal}
@@ -1477,7 +1477,7 @@ const FactoryPanel = ({
                   onClick={() => setPayModal(null)}
                   className="flex-1 py-8 rounded-full font-black text-sm uppercase bg-slate-50 text-slate-400 hover:text-black transition-all"
                 >
-                  Cancel
+                  {t('cancel')}
                 </button>
                 <button
                   type="submit"

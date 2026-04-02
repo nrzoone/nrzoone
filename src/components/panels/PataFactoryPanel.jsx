@@ -297,7 +297,7 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
 
         setEditPataModal(null);
         logAction(user, 'PATA_OVERRIDE', `Admin override on Pata record ID: ${updated.id} for ${updated.worker}`);
-        showNotify('হিসাব আপডেট করা হয়েছে (Admin Power)!');
+        showNotify(`${t('availableBalance')} ${t('received')} (Admin Mode)!`);
     };
 
     const handleManualStockIn = (e) => {
@@ -632,7 +632,7 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                                         <Plus size={28} strokeWidth={2.5} />
                                     </div>
                                     <div>
-                                        <h3 className="font-black uppercase text-3xl tracking-tighter leading-none">Pata Issue</h3>
+                                        <h3 className="font-black uppercase text-3xl tracking-tighter leading-none">{t('newTask')}</h3>
                                         <p className="text-[9px] text-slate-600 font-black uppercase tracking-[0.4em] mt-2 italic">Worker Assignment Hub</p>
                                     </div>
                                 </div>
@@ -712,7 +712,7 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                                         </div>
                                         <div className="space-y-2 bg-slate-50 p-6 rounded-[2rem] border border-slate-100 flex items-center justify-around shadow-inner">
                                             <div className="text-center">
-                                                <label className="text-[10px] text-black block mb-2 font-black">PATA QTY</label>
+                                                <label className="text-[10px] text-black block mb-2 font-black">{t('qty')}</label>
                                                 <input type="number" className="w-full text-center text-4xl bg-transparent outline-none font-black italic text-black" placeholder="0" value={entryData.pataQty} onChange={(e) => setEntryData(p => ({ ...p, pataQty: e.target.value }))} />
                                             </div>
                                             <div className="text-center">
@@ -760,9 +760,9 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                             </div>
 
                             <div className="p-6 border-t border-slate-100 bg-gray-50 flex gap-4 flex-shrink-0">
-                                <button onClick={() => setShowModal(false)} className="py-4 bg-white border border-slate-200 rounded-full font-black text-xs uppercase text-slate-600 hover:text-black transition-all flex-1 shadow-sm">Cancel</button>
-                                <button onClick={() => handleSaveIssue(false)} className="py-4 bg-amber-500 text-white rounded-full font-black text-lg uppercase tracking-[0.1em] shadow-lg hover:scale-[1.01] transition-all flex-[2]">CONFIRM ONLY</button>
-                                <button onClick={() => handleSaveIssue(true)} className="py-4 bg-indigo-600 text-white rounded-full font-black text-lg uppercase tracking-[0.1em] shadow-lg hover:bg-black transition-all flex-1 flex items-center justify-center gap-2"><Printer size={16} /> & PRINT</button>
+                                <button onClick={() => setShowModal(false)} className="py-4 bg-white border border-slate-200 rounded-full font-black text-xs uppercase text-slate-600 hover:text-black transition-all flex-1 shadow-sm">{t('cancel')}</button>
+                                <button onClick={() => handleSaveIssue(false)} className="py-4 bg-amber-500 text-white rounded-full font-black text-lg uppercase tracking-[0.1em] shadow-lg hover:scale-[1.01] transition-all flex-[2]">{t('confirmOnly')}</button>
+                                <button onClick={() => handleSaveIssue(true)} className="py-4 bg-indigo-600 text-white rounded-full font-black text-lg uppercase tracking-[0.1em] shadow-lg hover:bg-black transition-all flex-1 flex items-center justify-center gap-2"><Printer size={16} /> & {t('printNote')}</button>
                             </div>
                         </div>
                     </div>
@@ -786,10 +786,10 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                                     <input name="receiveDate" type="date" className="w-full py-3 bg-white border-2 border-slate-100 rounded-xl text-sm font-black italic px-4 text-center" value={receiveModal.receiveDate || new Date().toISOString().split('T')[0]} onChange={(e) => setReceiveModal({ ...receiveModal, receiveDate: e.target.value })} />
                                 </div>
                                 <div className="flex flex-col gap-3">
-                                    <button type="button" onClick={() => setReceiveModal(null)} className="flex-1 py-4 bg-slate-50 text-slate-600 font-black text-xs uppercase rounded-full hover:text-black transition-all">Cancel</button>
-                                    <button type="submit" className="flex-1 py-4 bg-black text-white font-black text-xs uppercase rounded-full shadow-xl border-b-[4px] border-zinc-900 transition-all">জমা নিন (Only)</button>
+                                    <button type="button" onClick={() => setReceiveModal(null)} className="flex-1 py-4 bg-slate-50 text-slate-600 font-black text-xs uppercase rounded-full hover:text-black transition-all">{t('cancel')}</button>
+                                    <button type="submit" className="flex-1 py-4 bg-black text-white font-black text-xs uppercase rounded-full shadow-xl border-b-[4px] border-zinc-900 transition-all">{t('confirmOnly')}</button>
                                     <button name="print" type="submit" className="flex-1 py-4 bg-indigo-600 text-white font-black text-xs uppercase rounded-full shadow-xl border-b-[4px] border-indigo-900 transition-all flex items-center justify-center gap-2">
-                                        <Printer size={16} /> জমা ও প্রিন্ট
+                                        <Printer size={16} /> {t('printNote')}
                                     </button>
                                 </div>
                             </form>
@@ -805,7 +805,7 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                                 <div className="mx-auto w-12 h-12 bg-amber-500 rounded-xl flex items-center justify-center text-white shadow-lg rotate-3 mb-2">
                                     <Box size={20} />
                                 </div>
-                                <h3 className="text-2xl font-black uppercase italic">Direct Stock In</h3>
+                                <h3 className="text-2xl font-black uppercase italic">{t('directStockIn')}</h3>
                                 <p className="text-[8px] font-black text-slate-600 tracking-[0.2em] uppercase italic">সরাসরি পাতা স্টক যোগ করুন</p>
                             </div>
 
@@ -837,8 +837,8 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                                 </div>
 
                                 <div className="flex gap-3 pt-2">
-                                    <button type="button" onClick={() => setShowManualModal(false)} className="flex-1 py-4 bg-slate-50 text-slate-600 border border-slate-100 rounded-full font-black text-xs uppercase">Cancel</button>
-                                    <button type="submit" className="flex-[2] py-4 bg-amber-500 text-white rounded-full font-black uppercase text-sm shadow-lg border-b-[6px] border-amber-900 active:scale-95 transition-all">ADD TO STOCK</button>
+                                    <button type="button" onClick={() => setShowManualModal(false)} className="flex-1 py-4 bg-slate-50 text-slate-600 border border-slate-100 rounded-full font-black text-xs uppercase">{t('cancel')}</button>
+                                    <button type="submit" className="flex-[2] py-4 bg-amber-500 text-white rounded-full font-black uppercase text-sm shadow-lg border-b-[6px] border-amber-900 active:scale-95 transition-all">{t('confirmOnly')}</button>
                                 </div>
                             </form>
                         </div>
@@ -854,7 +854,7 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                                     <div className="p-3 bg-amber-500 text-white rounded-[1rem] shadow-lg rotate-2">
                                         <Settings size={20} />
                                     </div>
-                                    <h3 className="text-2xl font-black uppercase tracking-tighter italic">Pata <span className="text-amber-500">Override</span></h3>
+                                    <h3 className="text-2xl font-black uppercase tracking-tighter italic">{t('designOverride')}</h3>
                                 </div>
                                 <button onClick={() => setEditPataModal(null)} className="p-3 bg-slate-50 rounded-full hover:bg-black hover:text-white transition-all"><X size={18} /></button>
                             </div>
@@ -913,7 +913,7 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                                     <textarea name="note" defaultValue={editPataModal.note} className="w-full h-16 bg-slate-50 border border-slate-100 rounded-[1rem] p-4 italic outline-none mt-1 focus:border-amber-500 text-xs" />
                                 </div>
 
-                                <button type="submit" className="col-span-2 py-5 bg-amber-500 text-white rounded-full font-black text-lg uppercase tracking-[0.1em] shadow-lg border-b-[8px] border-amber-900 active:scale-95 transition-all">SAVE ADMIN OVERRIDE</button>
+                                <button type="submit" className="col-span-2 py-5 bg-amber-500 text-white rounded-full font-black text-lg uppercase tracking-[0.1em] shadow-lg border-b-[8px] border-amber-900 active:scale-95 transition-all">{t('saveOverride')}</button>
                             </form>
                         </div>
                     </div>
@@ -945,8 +945,8 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                                     </div>
                                 </div>
                                 <div className="flex gap-3">
-                                    <button type="button" onClick={() => setPayModal(null)} className="flex-1 py-4 rounded-full font-black text-[10px] uppercase bg-slate-50 text-slate-600 border border-slate-100 hover:text-black transition-all">বাতিল</button>
-                                    <button type="submit" className="flex-[2] py-4 rounded-full font-black text-[10px] uppercase bg-black text-white shadow-xl border-b-[4px] border-zinc-900 hover:scale-105 transition-all">পেমেন্ট নিশ্চিত করুন</button>
+                                    <button type="button" onClick={() => setPayModal(null)} className="flex-1 py-4 rounded-full font-black text-[10px] uppercase bg-slate-50 text-slate-600 border border-slate-100 hover:text-black transition-all">{t('cancel')}</button>
+                                    <button type="submit" className="flex-[2] py-4 rounded-full font-black text-[10px] uppercase bg-black text-white shadow-xl border-b-[4px] border-zinc-900 hover:scale-105 transition-all">{t('makePayment')}</button>
                                     <button
                                       type="button"
                                       onClick={() => {
@@ -1019,11 +1019,11 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
 
                             <div className="p-8 bg-slate-50 border-t border-slate-100 flex justify-between items-center">
                                 <div>
-                                    <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest mb-1 italic">মোট পাওনা ব্যালেন্স (Available)</p>
+                                    <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest mb-1 italic">{t('availableBalance')}</p>
                                     <p className="text-4xl font-black italic tracking-tighter text-black leading-none mt-1">৳{getWorkerDue(ledgerModal).toLocaleString()}</p>
                                 </div>
                                 <button onClick={() => { setLedgerModal(null); setPayModal(ledgerModal); }} className="px-8 py-4 bg-black text-white rounded-full font-black text-[10px] uppercase tracking-widest shadow-xl hover:scale-105 active:scale-95 transition-all">
-                                    টাকা পরিশোধ করুন
+                                    {t('makePayment')}
                                 </button>
                             </div>
                         </div>
