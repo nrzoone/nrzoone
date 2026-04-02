@@ -108,12 +108,18 @@ export const useMasterData = () => {
 
     // Initial Load & Auth Sync
     useEffect(() => {
+        let isSubscribed = true;
+
+        setSyncStatus('syncing');
+
+        // Safety check: Fallback to local mode if Firebase is blocked or uninitialized
         if (!db) {
+            console.warn("DB not initialized - Cloud sync disabled. (ডাটাবেস পাওয়া যায়নি - লোকাল মোড চালু)");
             setIsLoading(false);
+            setSyncStatus('error');
             return;
         }
 
-        let isSubscribed = true;
         const unsub = onSnapshot(doc(db, COLLECTION_NAME, DOC_ID), (snap) => {
             if (!isSubscribed) return;
             try {

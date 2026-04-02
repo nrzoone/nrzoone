@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
 import './index.css'
 
+console.log("🚀 NRZONE SYSTEM BOOT SEQUENCE INITIATED");
+
 // Global Emergency Suppression for AbortError and quota issues
 window.addEventListener('unhandledrejection', (event) => {
     const reason = event.reason || event;
@@ -14,11 +16,18 @@ window.addEventListener('unhandledrejection', (event) => {
     }
 }, true);
 
-ReactDOM.createRoot(document.getElementById('root')).render(
-    <React.StrictMode>
-        <App />
-    </React.StrictMode>,
-);
+try {
+    const root = document.getElementById('root');
+    if (!root) throw new Error("Root element not found!");
+    ReactDOM.createRoot(root).render(
+        <React.StrictMode>
+            <App />
+        </React.StrictMode>,
+    );
+} catch (e) {
+    console.error("BOOT CRASH:", e);
+    document.body.innerHTML = `<div style="background:red; color:white; padding:20px; font-family:sans-serif;"><h1>CRITICAL BOOT ERROR</h1><p>${e.message}</p></div>`;
+}
 
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
