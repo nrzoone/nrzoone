@@ -187,7 +187,7 @@ const Overview = ({ masterData, setMasterData, setActivePanel, user, t }) => {
                         <div className="w-14 h-14 bg-emerald-50 dark:bg-emerald-500/10 rounded-full flex items-center justify-center text-emerald-500 shadow-inner"><UserCheck size={24} /></div>
                         <div>
                              <p className="text-3xl font-black leading-none italic dark:text-white">{stats.presentCount}</p>
-                             <p className="text-[10px] uppercase font-black text-slate-400 tracking-[0.3em] mt-2">Present Today</p>
+                             <p className="text-[10px] uppercase font-black text-slate-500 tracking-[0.3em] mt-2">Present Today</p>
                         </div>
                     </div>
                     <div className="w-px h-12 bg-slate-200 dark:bg-zinc-800"></div>
@@ -195,7 +195,7 @@ const Overview = ({ masterData, setMasterData, setActivePanel, user, t }) => {
                         <div className="w-14 h-14 bg-rose-50 dark:bg-rose-500/10 rounded-full flex items-center justify-center text-rose-500 shadow-inner"><Activity size={24} /></div>
                         <div>
                              <p className="text-3xl font-black leading-none italic dark:text-white">{stats.totalPayable.toLocaleString()}৳</p>
-                             <p className="text-[10px] uppercase font-black text-slate-400 tracking-[0.3em] mt-2">Kajer Taka</p>
+                             <p className="text-[10px] uppercase font-black text-slate-500 tracking-[0.3em] mt-2">Kajer Taka</p>
                         </div>
                     </div>
                 </div>
@@ -206,7 +206,7 @@ const Overview = ({ masterData, setMasterData, setActivePanel, user, t }) => {
                     <div className="flex flex-col md:flex-row justify-between items-center relative z-10 gap-8">
                         <div className="space-y-4">
                             <h3 className="text-4xl font-black italic tracking-tighter uppercase leading-none">Net Strategic Worth</h3>
-                            <p className="text-[10px] font-black uppercase text-white/40 tracking-[0.4em]">Real-time Factory Liquidity & Margin Analysis</p>
+                            <p className="text-[10px] font-black uppercase text-white/70 tracking-[0.4em]">Real-time Factory Liquidity & Margin Analysis</p>
                             <div className="flex gap-4 pt-4">
                                <button onClick={() => setActivePanel('Expense')} className="px-6 py-3 bg-white/10 hover:bg-white/20 rounded-full text-[9px] font-black uppercase tracking-widest border border-white/10 transition-all">Logging Expense</button>
                                <button onClick={() => setActivePanel('Inventory')} className="px-6 py-3 bg-white/10 hover:bg-white/20 rounded-full text-[9px] font-black uppercase tracking-widest border border-white/10 transition-all">Audit Stock</button>
@@ -229,13 +229,13 @@ const Overview = ({ masterData, setMasterData, setActivePanel, user, t }) => {
                 <div className="bg-white p-10 rounded-[4rem] border-4 border-slate-50 flex flex-col justify-between italic shadow-2xl group hover:border-black transition-all">
                     <div>
                         <div className="flex justify-between items-start mb-2">
-                           <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Total Fiscal Exposure</p>
+                           <p className="text-[10px] font-black uppercase text-slate-500 tracking-widest">Total Fiscal Exposure</p>
                            <TrendingDown size={16} className="text-rose-500" />
                         </div>
                         <h4 className="text-3xl font-black italic tracking-tighter text-black">৳{stats.financialIntel.totalCosts.toLocaleString()}</h4>
                     </div>
                     <div className="space-y-3">
-                         <div className="flex justify-between items-center text-[8px] font-black uppercase tracking-widest text-slate-400">
+                         <div className="flex justify-between items-center text-[8px] font-black uppercase tracking-widest text-slate-500">
                              <span>Production</span>
                              <span className="text-black">৳{stats.financialIntel.productionCosts.toLocaleString()}</span>
                          </div>
@@ -284,11 +284,11 @@ const Overview = ({ masterData, setMasterData, setActivePanel, user, t }) => {
 
                     <div className="w-full space-y-4">
                          <div className="p-6 bg-slate-50/50 rounded-[32px] border border-white text-left">
-                              <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2">Primary Access</p>
+                              <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-2">Primary Access</p>
                               <p className="text-sm font-black italic">Dhaka HQ Terminal</p>
                          </div>
                          <div className="p-6 bg-slate-50/50 rounded-[32px] border border-white text-left">
-                              <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2">Shift Domain</p>
+                              <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-2">Shift Domain</p>
                               <p className="text-sm font-black italic">Strategic Unit Ops</p>
                          </div>
                     </div>
@@ -332,7 +332,7 @@ const Overview = ({ masterData, setMasterData, setActivePanel, user, t }) => {
                          </ResponsiveContainer>
                          <div className="absolute inset-x-0 bottom-16 flex flex-col items-center">
                               <p className="text-7xl font-black italic tracking-tighter leading-none">{stats.totalProduction}</p>
-                              <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mt-3">Production Point</p>
+                              <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.4em] mt-3">Production Point</p>
                          </div>
                     </div>
 
@@ -365,12 +365,12 @@ const Overview = ({ masterData, setMasterData, setActivePanel, user, t }) => {
                          <div className="bg-gray-50/80 p-6 rounded-[32px] border border-white hover:border-black/5 transition-all shadow-sm">
                               <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-md mb-6"><Layers size={20} className="text-rose-500" /></div>
                               <p className="text-3xl font-black italic mb-1 text-black">{stats.pendingSewing}</p>
-                              <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest italic">Sewing Ops</p>
+                              <p className="text-[8px] font-black text-slate-500 uppercase tracking-widest italic">Sewing Ops</p>
                          </div>
                          <div className="bg-gray-50/80 p-6 rounded-[32px] border border-white hover:border-black/5 transition-all shadow-sm">
                               <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-md mb-6"><Hammer size={20} className="text-rose-500" /></div>
                               <p className="text-3xl font-black italic mb-1 text-black">{stats.pendingStone}</p>
-                              <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest italic">Stone Ops</p>
+                              <p className="text-[8px] font-black text-slate-500 uppercase tracking-widest italic">Stone Ops</p>
                          </div>
                          <div className="bg-emerald-500 p-6 rounded-[32px] text-white shadow-2xl group cursor-pointer hover:bg-black transition-all">
                               <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-white group-hover:text-black transition-all"><Package size={20} /></div>
@@ -384,10 +384,10 @@ const Overview = ({ masterData, setMasterData, setActivePanel, user, t }) => {
                              <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-sm text-rose-500"><AlertTriangle size={24} /></div>
                              <div>
                                  <h4 className="text-xl font-black uppercase italic leading-none text-black">Material Alert</h4>
-                                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-2">Critical low stock detected in unit B</p>
+                                 <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mt-2">Critical low stock detected in unit B</p>
                              </div>
                          </div>
-                         <ChevronRight size={24} className="text-slate-200 group-hover:text-rose-500 transition-all translate-x-0 group-hover:translate-x-2" />
+                         <ChevronRight size={24} className="text-slate-500 group-hover:text-rose-500 transition-all translate-x-0 group-hover:translate-x-2" />
                     </div>
                 </div>
 

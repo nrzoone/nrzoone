@@ -267,7 +267,7 @@ const AttendancePanel = ({
 
           <table className="w-full text-left relative z-10">
             <thead className="border-b-2 border-slate-100">
-              <tr className="text-[8px] font-black uppercase tracking-[0.3em] text-slate-400">
+              <tr className="text-[8px] font-black uppercase tracking-[0.3em] text-slate-500">
                 <th className="py-4">Worker Identity</th>
                 <th className="py-4 text-center">Duty</th>
                 <th className="py-4 text-right">Net Payable</th>
@@ -279,7 +279,7 @@ const AttendancePanel = ({
                   <td className="py-4 uppercase tracking-tighter text-black">
                     {w.worker}
                   </td>
-                  <td className="py-4 text-center text-slate-400">
+                  <td className="py-4 text-center text-slate-500">
                     {w.presentDays}{" "}
                     <span className="text-[8px] tracking-widest">DAYS</span>
                   </td>
@@ -293,7 +293,7 @@ const AttendancePanel = ({
               <tr className="border-t-4 border-black font-black text-2xl">
                 <td
                   colSpan="2"
-                  className="py-6 text-right italic text-slate-400"
+                  className="py-6 text-right italic text-slate-500"
                 >
                   TOTAL:
                 </td>
@@ -334,7 +334,7 @@ const AttendancePanel = ({
             >
               ← Cancel
             </button>
-            <p className="text-[9px] uppercase font-black tracking-[0.5em] text-slate-400">
+            <p className="text-[9px] uppercase font-black tracking-[0.5em] text-slate-500">
               DAILY PERFORMANCE (A4)
             </p>
             <button
@@ -356,7 +356,7 @@ const AttendancePanel = ({
               <NRZLogo size="sm" white={false} />
                 <div>
                   <h1 className="text-3xl font-black italic tracking-tighter leading-none mb-1 uppercase">
-                    NRZO0NE <span className="text-slate-300">PRO</span>
+                    NRZO0NE <span className="text-slate-500">PRO</span>
                   </h1>
                   <p className="text-[9px] font-black uppercase tracking-[0.4em] text-slate-500">
                     Official workforce recording
@@ -364,20 +364,20 @@ const AttendancePanel = ({
                 </div>
               </div>
               <div className="text-right">
-                <p className="text-[8px] font-black uppercase italic text-slate-400 mb-1">
+                <p className="text-[8px] font-black uppercase italic text-slate-500 mb-1">
                   Authenticated on
                 </p>
                 <p className="text-xl font-black italic tracking-tighter">
                   {selectedDate}
                 </p>
-                <p className="text-[8px] font-black uppercase italic text-slate-400 mt-1 tracking-widest">
+                <p className="text-[8px] font-black uppercase italic text-slate-500 mt-1 tracking-widest">
                   {selectedDepartment.toUpperCase()} DEPT
                 </p>
               </div>
             </div>
 
             <table className="w-full text-left italic relative z-10">
-              <thead className="border-b border-slate-100 text-[8px] font-black uppercase tracking-[0.3em] text-slate-400">
+              <thead className="border-b border-slate-100 text-[8px] font-black uppercase tracking-[0.3em] text-slate-500">
                 <tr>
                   <th className="py-4">Worker Identity</th>
                   <th className="py-4 text-center">Protocol</th>
@@ -401,7 +401,7 @@ const AttendancePanel = ({
                       </td>
                       <td className="py-4 text-center">
                         <span
-                          className={`px-4 py-1 rounded-full text-[8px] uppercase border shadow-sm ${status === "present" ? "bg-black text-white" : "text-slate-300 border-slate-50"}`}
+                          className={`px-4 py-1 rounded-full text-[8px] uppercase border shadow-sm ${status === "present" ? "bg-black text-white" : "text-slate-500 border-slate-50"}`}
                         >
                           {status}
                         </span>
@@ -433,14 +433,14 @@ const AttendancePanel = ({
                 <p className="text-[8px] font-black uppercase tracking-[0.5em] mb-3">
                   INTERNAL SECURITY SEAL
                 </p>
-                <div className="flex gap-1.5 overflow-hidden w-48 h-1.5 opacity-50">
+                <div className="flex gap-1.5 overflow-hidden w-48 h-1.5 opacity-75">
                   {Array.from({ length: 30 }).map((_, i) => (
                     <div key={i} className="w-1 h-full bg-black shrink-0"></div>
                   ))}
                 </div>
               </div>
               <div className="text-right">
-                <p className="text-[8px] font-black uppercase tracking-widest text-slate-400 italic">
+                <p className="text-[8px] font-black uppercase tracking-widest text-slate-500 italic">
                   V4.4 ARCHITECTURE — SECURITY VERIFIED
                 </p>
               </div>
@@ -463,9 +463,9 @@ const AttendancePanel = ({
           </button>
           <div>
             <h2 className="section-header">
-              {t('attendance')} <span className="text-slate-400">{t('and')} {t('payments')}</span>
+              {t('attendance')} <span className="text-slate-500">{t('and')} {t('payments')}</span>
             </h2>
-            <p className="text-[11px] font-black text-slate-400 uppercase tracking-[0.4em] mt-2 italic">
+            <p className="text-[11px] font-black text-slate-500 uppercase tracking-[0.4em] mt-2 italic">
                {t('operationalTerminal')}
             </p>
           </div>
@@ -487,7 +487,7 @@ const AttendancePanel = ({
             </button>
           </div>
           <div className="bg-white px-6 py-3 rounded-2xl border border-slate-100 shadow-sm text-right hidden md:block">
-            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">Daily Wages</p>
+            <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1 italic">Daily Wages</p>
             <p className="text-2xl font-black italic text-black leading-none uppercase">
                 ৳{stats.wages.toLocaleString()}
             </p>
@@ -500,14 +500,14 @@ const AttendancePanel = ({
           <div className="absolute top-0 right-0 p-8 text-slate-50 opacity-10 group-hover:rotate-12 transition-transform">
             <Calendar size={120} strokeWidth={3} />
           </div>
-          <label className="text-[10px] font-black text-slate-400 uppercase ml-6 block tracking-[0.2em] mb-2 italic">Calendar Access</label>
+          <label className="text-[10px] font-black text-slate-500 uppercase ml-6 block tracking-[0.2em] mb-2 italic">Calendar Access</label>
           <input
             type="date"
             value={selectedDate}
             onChange={(e) => setSelectedDate(e.target.value)}
             className="w-full text-3xl md:text-4xl font-black italic border-none outline-none bg-transparent text-black"
           />
-          <p className="mt-8 ml-6 text-sm md:text-xl font-black text-slate-200 uppercase tracking-widest italic">
+          <p className="mt-8 ml-6 text-sm md:text-xl font-black text-slate-500 uppercase tracking-widest italic">
             {getBengaliDay(selectedDate)} • {formatBengaliDate(selectedDate)}
           </p>
         </div>
@@ -515,7 +515,7 @@ const AttendancePanel = ({
           <div className="absolute top-0 right-0 p-8 text-slate-50 opacity-10 group-hover:-rotate-12 transition-transform">
             <Users size={120} strokeWidth={3} />
           </div>
-          <label className="text-[10px] font-black text-slate-400 uppercase ml-6 block tracking-[0.2em] mb-2 italic">Operational Dept</label>
+          <label className="text-[10px] font-black text-slate-500 uppercase ml-6 block tracking-[0.2em] mb-2 italic">Operational Dept</label>
           <select
             value={selectedDepartment}
             onChange={(e) => setSelectedDepartment(e.target.value)}
@@ -535,7 +535,7 @@ const AttendancePanel = ({
             <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
               <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1 italic">{t('worker')} (Total)</p>
               <p className="text-3xl font-black tracking-tighter text-black leading-none italic">{workers.length}</p>
-              <p className="text-[8px] font-black text-slate-400 uppercase mt-2 italic tracking-widest">{t('active')}</p>
+              <p className="text-[8px] font-black text-slate-500 uppercase mt-2 italic tracking-widest">{t('active')}</p>
             </div>
             <div className="bg-emerald-50 p-6 rounded-2xl border border-emerald-100 shadow-sm">
               <p className="text-[9px] font-black text-emerald-600 uppercase tracking-widest mb-1 italic">{t('present')}</p>
@@ -546,16 +546,16 @@ const AttendancePanel = ({
               onClick={() => setShowInvoice(true)}
               className="bg-black text-white p-6 rounded-2xl shadow-xl hover:scale-[1.02] transition-all text-left group"
             >
-              <Printer size={16} className="mb-3 text-white/40 group-hover:text-white transition-colors" />
-              <p className="text-[9px] font-black text-white/40 uppercase tracking-widest mb-1 italic">সাপ্তাহিক (Weekly)</p>
+              <Printer size={16} className="mb-3 text-white/70 group-hover:text-white transition-colors" />
+              <p className="text-[9px] font-black text-white/70 uppercase tracking-widest mb-1 italic">সাপ্তাহিক (Weekly)</p>
               <p className="text-sm font-black uppercase leading-tight italic">Wage Statement</p>
             </button>
             <button
               onClick={() => setShowQR(true)}
               className="bg-indigo-600 text-white p-6 rounded-2xl shadow-xl hover:scale-[1.02] transition-all text-left group"
             >
-              <Camera size={16} className="mb-3 text-white/40 group-hover:text-white transition-colors" />
-              <p className="text-[9px] font-black text-white/40 uppercase tracking-widest mb-1 italic">QR (Rapid Scan)</p>
+              <Camera size={16} className="mb-3 text-white/70 group-hover:text-white transition-colors" />
+              <p className="text-[9px] font-black text-white/70 uppercase tracking-widest mb-1 italic">QR (Rapid Scan)</p>
               <p className="text-sm font-black uppercase leading-tight italic">Scan Attendance</p>
             </button>
           </div>
@@ -569,7 +569,7 @@ const AttendancePanel = ({
 
           <div className="grid grid-cols-1 gap-4">
             {workers.length === 0 ? (
-                <div className="h-64 flex flex-col items-center justify-center bg-white rounded-3xl border-2 border-dashed border-slate-100 opacity-40">
+                <div className="h-64 flex flex-col items-center justify-center bg-white rounded-3xl border-2 border-dashed border-slate-100 opacity-70">
                   <AlertCircle size={48} strokeWidth={1} />
                   <p className="text-[10px] font-black uppercase tracking-[0.4em] mt-6">Zero Workers Found</p>
                 </div>
@@ -590,7 +590,7 @@ const AttendancePanel = ({
                           <h4 className="text-xl font-black italic uppercase leading-none tracking-tighter text-black">
                             {worker}
                           </h4>
-                          <p className="text-slate-400 text-[11px] font-black uppercase italic tracking-widest leading-none mt-1">
+                          <p className="text-slate-500 text-[11px] font-black uppercase italic tracking-widest leading-none mt-1">
                             • Daily Rate: ৳{wage.toLocaleString()}
                           </p>
                         </div>
@@ -604,7 +604,7 @@ const AttendancePanel = ({
                             className={`px-6 py-3 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${
                                 status === s 
                                 ? (s === "present" ? "bg-emerald-500 text-white shadow-lg" : s === "half-day" ? "bg-amber-500 text-white shadow-lg" : "bg-rose-500 text-white shadow-lg") 
-                                : "text-slate-400 hover:text-black hover:bg-white"
+                                : "text-slate-500 hover:text-black hover:bg-white"
                             }`}
                           >
                             {s === "present" ? `✓ ${t('present')}` : s === "half-day" ? `½ ${t('halfDay')}` : `✗ ${t('absent')}`}
@@ -625,7 +625,7 @@ const AttendancePanel = ({
                 <h3 className="text-2xl font-black uppercase tracking-tighter leading-none mb-3">
                   Live Duty Logs
                 </h3>
-                <p className="text-[10px] font-black text-slate-300 uppercase tracking-[0.5em]">
+                <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.5em]">
                   Real-time Work Assignments
                 </p>
               </div>
@@ -667,7 +667,7 @@ const AttendancePanel = ({
                             <div className="h-px bg-slate-100 flex-1"></div>
                             <div className="flex items-center gap-3">
                               <div className="w-1.5 h-1.5 rounded-full bg-slate-200"></div>
-                              <span className="text-[10px] font-black text-slate-300 uppercase tracking-[0.4em] italic whitespace-nowrap">
+                              <span className="text-[10px] font-black text-slate-500 uppercase tracking-[0.4em] italic whitespace-nowrap">
                                 {prod.date}
                               </span>
                               <div className="w-1.5 h-1.5 rounded-full bg-slate-200"></div>
@@ -699,7 +699,7 @@ const AttendancePanel = ({
                           </div>
                           <div className="text-right">
                             <div className="flex items-end gap-2 mb-2">
-                              <p className="text-xs font-black text-slate-300 uppercase italic">
+                              <p className="text-xs font-black text-slate-500 uppercase italic">
                                 Issued Units:
                               </p>
                               <p className="text-3xl font-black italic text-black leading-none">

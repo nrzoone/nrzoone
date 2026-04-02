@@ -24,6 +24,11 @@ import {
 import { syncToSheet } from '../../utils/syncUtils';
 import NRZLogo from "../NRZLogo";
 import QRScanner from '../QRScanner';
+import UniversalSlip from '../UniversalSlip';
+
+const QR_Slip_Theme = {
+  token: { fontFamily: 'Inter, sans-serif', borderRadius: 4, fontSize: 12, colorTextBase: '#000000' },
+};
 
 const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActivePanel, t }) => {
     const [showModal, setShowModal] = useState(false);
@@ -217,96 +222,26 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
     const historyEntries = filteredEntries.filter(e => e.status === 'Received');
 
     if (printSlip) {
-        const SlipCard = ({ copyTitle }) => (
-            <ConfigProvider theme={QR_Slip_Theme}>
-              <div className="w-full bg-white flex flex-col relative overflow-hidden border-2 border-black p-12" style={{ height: '148.5mm' }}>
-                   <div className="flex justify-between items-start border-b-4 border-black pb-8 mb-8">
-                      <div>
-                         <h1 className="text-4xl font-black tracking-tighter uppercase leading-none">NRZO0NE</h1>
-                         <p className="text-[10px] font-black uppercase tracking-[0.6em] text-slate-400 mt-2">EXTERNAL OPERATIONS • OUTSOURCE</p>
-                      </div>
-                      <div className="text-right">
-                         <p className="text-xl font-black uppercase tracking-widest italic decoration-double">TASK: {printSlip.task}</p>
-                         <p className="text-sm font-black text-slate-400 mt-1">{printSlip.date}</p>
-                      </div>
-                   </div>
-
-                   <div className="flex-1 flex flex-col justify-center gap-12">
-                        <div className="grid grid-cols-1 gap-12">
-                            <div className="border-4 border-black p-8 bg-slate-50 rounded-[2rem]">
-                                <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">IDENTIFIED CONTRACTOR</p>
-                                <p className="text-5xl font-black uppercase truncate">{printSlip.worker}</p>
-                            </div>
-                        </div>
-
-                        <div className="grid grid-cols-12 gap-8 items-center border-y-4 border-black py-12">
-                            <div className="col-span-8 flex gap-12">
-                                <div className="text-center group">
-                                    <p className="text-[11px] font-black uppercase text-slate-400 mb-2">Borka Qty</p>
-                                    <p className="text-7xl font-black italic">{printSlip.borkaQty}</p>
-                                </div>
-                                <div className="text-center">
-                                    <p className="text-[11px] font-black uppercase text-slate-400 mb-2">Hijab Qty</p>
-                                    <p className="text-7xl font-black italic">{printSlip.hijabQty}</p>
-                                </div>
-                            </div>
-                            <div className="col-span-4 flex items-center justify-end gap-6">
-                                <div className="text-right">
-                                    <p className="text-[10px] font-black uppercase text-slate-400 mb-1 tracking-widest">NR-EXT ID</p>
-                                    <p className="text-xs font-black italic opacity-30">{printSlip.id}</p>
-                                </div>
-                                <QRCode value={printSlip.id} size={110} bordered={false} style={{ padding: 0 }} />
-                            </div>
-                        </div>
-                   </div>
-
-                   <div className="mt-8 pt-8 flex justify-between items-center border-t-2 border-dashed border-slate-200">
-                        <div className="flex items-center gap-4">
-                            <div className="w-10 h-10 bg-black rounded flex items-center justify-center p-2">
-                        <NRZLogo size="sm" white={false} />
-                            </div>
-                            <div>
-                                <p className="text-[10px] font-black italic">SMART TRACK™ EXTERNAL NODE</p>
-                            </div>
-                        </div>
-                        <div className="px-12 py-4 bg-black text-white rounded-[2rem] font-black uppercase tracking-[0.4em] italic text-xl">
-                            {copyTitle}
-                        </div>
-                   </div>
-              </div>
-            </ConfigProvider>
-        );
-
         return (
-            <div className="min-h-screen bg-white text-black italic font-outfit py-10 print:py-0 print:bg-white text-black italic">
+            <div className="min-h-screen bg-white text-black italic font-outfit py-10 print:py-0 print:bg-white overflow-hidden">
                 <style>{`
                     @media print { 
                         .no-print { display: none !important; } 
                         body { background: white !important; margin: 0; padding: 0; }
-                        * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
                         @page { size: A4 portrait; margin: 0; }
                     }
                 `}</style>
                 <div className="no-print flex justify-between items-center mb-6 w-[210mm] mx-auto bg-white p-6 rounded-[2.5rem] shadow-xl border-4 border-black font-black">
                     <button onClick={() => setPrintSlip(null)} className="bg-slate-50 text-slate-600 px-10 py-5 uppercase text-xs rounded-full hover:bg-black hover:text-white transition-all">Cancel</button>
-                    <p className="text-[9px] font-black text-slate-600 uppercase tracking-widest italic">A4 Optimized Bundle (2x A5)</p>
                     <button onClick={() => window.print()} className="bg-black text-white px-10 py-5 rounded-full uppercase text-xs shadow-2xl flex items-center gap-3 active:scale-95 transition-all">
                         <Printer size={18} /> Print Job
                     </button>
                 </div>
                 
-                <div className="w-[210mm] h-[297mm] mx-auto bg-white shadow-2xl flex flex-col print:w-full print:h-[100vh] print:shadow-none box-border">
-                    <SlipCard copyTitle="RECIPIENT COPY" />
-                    
-                    {/* Stylized cut line */}
-                    <div className="w-full border-t-[6px] border-dashed border-slate-200 relative flex justify-center py-0 shrink-0 select-none items-center h-12">
-                        <div className="absolute inset-0 bg-slate-50/50"></div>
-                        <span className="relative z-10 bg-white px-6 py-2 text-[10px] font-black uppercase tracking-[0.5em] text-slate-400 border-2 border-slate-100 rounded-full shadow-sm flex items-center gap-3">
-                            <Scissors size={14} className="text-slate-300" /> Cut Here • এখান থেকে কাটুন
-                        </span>
-                    </div>
-
-                    <SlipCard copyTitle="OFFICE COPY" />
+                <div className="w-[210mm] min-h-[297mm] mx-auto bg-white border border-gray-100 overflow-hidden relative">
+                    <UniversalSlip data={printSlip} type="ISSUE" copyTitle="RECIPIENT COPY" />
+                    <div className="h-4 w-full border-t-2 border-dashed border-slate-300"></div>
+                    <UniversalSlip data={printSlip} type="ISSUE" copyTitle="OFFICE COPY" />
                 </div>
             </div>
         );
@@ -324,20 +259,20 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
           </button>
           <div>
             <h1 className="section-header">
-                Outside <span className="text-slate-400">Work</span>
+                Outside <span className="text-slate-500">Work</span>
             </h1>
-            <p className="text-[11px] font-black text-slate-400 uppercase tracking-[0.4em] mt-2 italic">
+            <p className="text-[11px] font-black text-slate-500 uppercase tracking-[0.4em] mt-2 italic">
                External Operations Unit
             </p>
           </div>
         </div>
         <div className="flex items-center gap-4 w-full md:w-auto">
           <div className="flex bg-slate-50 border-2 border-slate-100 rounded-3xl p-1 items-center shadow-inner group focus-within:border-black transition-all">
-            <div className="pl-4 text-slate-300 group-focus-within:text-black">
+            <div className="pl-4 text-slate-500 group-focus-within:text-black">
                <Search size={16} />
             </div>
             <input
-              className="bg-transparent border-none outline-none font-black italic uppercase text-[10px] py-4 px-3 w-40 md:w-64 placeholder:text-slate-300"
+              className="bg-transparent border-none outline-none font-black italic uppercase text-[10px] py-4 px-3 w-40 md:w-64 placeholder:text-slate-500"
               placeholder="OUTSIDE / WORKER / TASK..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -352,9 +287,9 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
           </div>
 
           <div className="bg-white px-6 py-3 rounded-2xl border border-slate-100 shadow-sm hidden md:block">
-            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">External Base</p>
+            <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1 italic">External Base</p>
             <p className="text-2xl font-black italic text-black leading-none uppercase">
-                {activeEntries.length} <span className="text-[10px] text-slate-300 ml-1">Live</span>
+                {activeEntries.length} <span className="text-[10px] text-slate-500 ml-1">Live</span>
             </p>
           </div>
           <button
@@ -390,7 +325,7 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
                     <button
                       key={v}
                       onClick={() => setView(v)}
-                      className={`px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${view === v ? 'bg-black text-white dark:bg-white dark:text-black shadow-lg' : 'text-slate-400 hover:text-black dark:hover:text-white'}`}
+                      className={`px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${view === v ? 'bg-black text-white dark:bg-white dark:text-black shadow-lg' : 'text-slate-500 hover:text-black dark:hover:text-white'}`}
                     >
                       {v === 'active' ? 'চলমান' : v === 'history' ? 'পুরাতন' : 'লেজার ও পেমেন্ট'}
                     </button>
@@ -398,7 +333,7 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
               </div>
               
               <div className="flex-1 relative w-full group">
-                  <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none text-slate-300 group-focus-within:text-black dark:group-focus-within:text-white transition-colors">
+                  <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none text-slate-500 group-focus-within:text-black dark:group-focus-within:text-white transition-colors">
                       <Search size={16} />
                   </div>
                   <input
@@ -414,7 +349,7 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
       <div className="space-y-4">
         <div className="space-y-4">
             {(view === 'active' ? activeEntries : historyEntries).length === 0 ? (
-                <div className="h-64 flex flex-col items-center justify-center bg-white rounded-3xl border-2 border-dashed border-slate-100 opacity-40">
+                <div className="h-64 flex flex-col items-center justify-center bg-white rounded-3xl border-2 border-dashed border-slate-100 opacity-70">
                     <ExternalLink size={48} strokeWidth={1} />
                     <p className="text-[10px] font-black uppercase tracking-[0.4em] mt-6">Zero External Nodes</p>
                 </div>
@@ -432,7 +367,7 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
                                     </h4>
                                     <span className="badge-standard">External</span>
                                 </div>
-                                <div className="flex items-center gap-4 text-slate-400 text-[11px] font-black uppercase italic tracking-widest">
+                                <div className="flex items-center gap-4 text-slate-500 text-[11px] font-black uppercase italic tracking-widest">
                                     <span className="text-rose-500">• {item.task}</span>
                                     <span>• {item.date}</span>
                                     {item.status === 'Received' && <span className="text-emerald-500 border-l border-slate-100 pl-4 ml-2">• REC: {item.receivedDate}</span>}
@@ -447,11 +382,11 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
                         <div className="flex items-center gap-12 w-full md:w-auto justify-between border-t md:border-t-0 pt-6 md:pt-0">
                             <div className="flex gap-8">
                                 <div className="text-center">
-                                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">Borka</p>
+                                    <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1 italic">Borka</p>
                                     <p className="text-3xl font-black italic tracking-tighter leading-none">{item.borkaQty}</p>
                                 </div>
                                 <div className="text-center">
-                                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">Hijab</p>
+                                    <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1 italic">Hijab</p>
                                     <p className="text-3xl font-black italic tracking-tighter leading-none">{item.hijabQty}</p>
                                 </div>
                                 {item.status === 'Received' && (
@@ -464,7 +399,7 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
                             <div className="flex gap-3 items-center">
                                 {item.status === 'Pending' ? (
                                     <>
-                                        <button onClick={() => setPrintSlip(item)} className="w-12 h-12 flex items-center justify-center rounded-full bg-slate-50 text-slate-400 hover:bg-black hover:text-white transition-all shadow-sm">
+                                        <button onClick={() => setPrintSlip(item)} className="w-12 h-12 flex items-center justify-center rounded-full bg-slate-50 text-slate-500 hover:bg-black hover:text-white transition-all shadow-sm">
                                             <Printer size={18} />
                                         </button>
                                         <button onClick={() => handleReceive(item)} className="black-button px-6">জমা নিন (REC)</button>
@@ -481,7 +416,7 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
                                     </>
                                 ) : (
                                     <>
-                                        <button onClick={() => setPrintSlip(item)} className="w-12 h-12 flex items-center justify-center rounded-full bg-slate-50 text-slate-400 hover:bg-black hover:text-white transition-all shadow-sm">
+                                        <button onClick={() => setPrintSlip(item)} className="w-12 h-12 flex items-center justify-center rounded-full bg-slate-50 text-slate-500 hover:bg-black hover:text-white transition-all shadow-sm">
                                             <Printer size={18} />
                                         </button>
                                         <button onClick={() => setPayModal(item)} className="w-12 h-12 flex items-center justify-center rounded-full bg-emerald-50 text-emerald-500 hover:bg-emerald-500 hover:text-white transition-all shadow-sm">
@@ -542,11 +477,11 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
                                 </div>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100">
-                                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Rate</p>
+                                        <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Rate</p>
                                         <input type="number" className="w-full bg-transparent text-xl font-black text-emerald-600 outline-none" placeholder="৳0" value={entryData.rate} onChange={(e) => setEntryData(p => ({ ...p, rate: e.target.value }))} />
                                     </div>
                                     <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100">
-                                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Date</p>
+                                        <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Date</p>
                                         <input type="date" className="w-full bg-transparent text-xs font-black outline-none" value={entryData.date} onChange={(e) => setEntryData(p => ({ ...p, date: e.target.value }))} />
                                     </div>
                                 </div>
@@ -556,11 +491,11 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
                                 <label className="text-xs font-black text-black uppercase tracking-widest">Quantities & Notes</label>
                                 <div className="grid grid-cols-2 gap-6">
                                     <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm text-center">
-                                        <p className="text-[10px] font-black text-slate-400 uppercase mb-2">Borka</p>
+                                        <p className="text-[10px] font-black text-slate-500 uppercase mb-2">Borka</p>
                                         <input type="number" className="w-full text-center text-4xl font-black outline-none" placeholder="0" value={entryData.borkaQty} onChange={(e) => setEntryData(p => ({ ...p, borkaQty: e.target.value }))} />
                                     </div>
                                     <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm text-center">
-                                        <p className="text-[10px] font-black text-slate-400 uppercase mb-2">Hijab</p>
+                                        <p className="text-[10px] font-black text-slate-500 uppercase mb-2">Hijab</p>
                                         <input type="number" className="w-full text-center text-4xl font-black outline-none" placeholder="0" value={entryData.hijabQty} onChange={(e) => setEntryData(p => ({ ...p, hijabQty: e.target.value }))} />
                                     </div>
                                 </div>
@@ -662,38 +597,38 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
                             </div>
                             <form onSubmit={handleEditSave} className="grid grid-cols-1 md:grid-cols-2 gap-6 font-black uppercase italic">
                                 <div className="space-y-1">
-                                    <label className="text-[10px] text-slate-400 ml-4 mb-2 block tracking-widest">Worker (কারিগর)</label>
+                                    <label className="text-[10px] text-slate-500 ml-4 mb-2 block tracking-widest">Worker (কারিগর)</label>
                                     <input name="worker" defaultValue={editModal.worker} className="form-input italic" required />
                                 </div>
                                 <div className="space-y-1">
-                                    <label className="text-[10px] text-slate-400 ml-4 mb-2 block tracking-widest">Task (কাজের ধরন)</label>
+                                    <label className="text-[10px] text-slate-500 ml-4 mb-2 block tracking-widest">Task (কাজের ধরন)</label>
                                     <input name="task" defaultValue={editModal.task} className="form-input italic" required />
                                 </div>
                                 <div className="space-y-1">
-                                    <label className="text-[10px] text-slate-400 ml-4 mb-2 block tracking-widest">Borka Qty</label>
+                                    <label className="text-[10px] text-slate-500 ml-4 mb-2 block tracking-widest">Borka Qty</label>
                                     <input name="borka" type="number" defaultValue={editModal.borkaQty} className="form-input italic" />
                                 </div>
                                 <div className="space-y-1">
-                                    <label className="text-[10px] text-slate-400 ml-4 mb-2 block tracking-widest">Hijab Qty</label>
+                                    <label className="text-[10px] text-slate-500 ml-4 mb-2 block tracking-widest">Hijab Qty</label>
                                     <input name="hijab" type="number" defaultValue={editModal.hijabQty} className="form-input italic" />
                                 </div>
                                 <div className="space-y-1">
-                                    <label className="text-[10px] text-slate-400 ml-4 mb-2 block tracking-widest">Rate (মজুরি)</label>
+                                    <label className="text-[10px] text-slate-500 ml-4 mb-2 block tracking-widest">Rate (মজুরি)</label>
                                     <input name="rate" type="number" defaultValue={editModal.rate} className="form-input italic" />
                                 </div>
                                 <div className="space-y-1">
-                                    <label className="text-[10px] text-slate-400 ml-4 mb-2 block tracking-widest">Date (তারিখ)</label>
+                                    <label className="text-[10px] text-slate-500 ml-4 mb-2 block tracking-widest">Date (তারিখ)</label>
                                     <input name="date" type="date" defaultValue={editModal.date ? (editModal.date.includes('/') ? editModal.date.split('/').reverse().join('-') : editModal.date) : ''} className="form-input italic" />
                                 </div>
                                 <div className="space-y-1 md:col-span-2">
-                                    <label className="text-[10px] text-slate-400 ml-4 mb-2 block tracking-widest">Status</label>
+                                    <label className="text-[10px] text-slate-500 ml-4 mb-2 block tracking-widest">Status</label>
                                     <select name="status" defaultValue={editModal.status} className="form-input bg-black text-white italic">
                                         <option value="Pending">PENDING</option>
                                         <option value="Received">RECEIVED</option>
                                     </select>
                                 </div>
                                 <div className="md:col-span-2">
-                                    <label className="text-[10px] text-slate-400 ml-4 mb-2 block tracking-widest">Note</label>
+                                    <label className="text-[10px] text-slate-500 ml-4 mb-2 block tracking-widest">Note</label>
                                     <textarea name="note" defaultValue={editModal.note} className="form-input h-24 italic py-4" />
                                 </div>
                                 <button type="submit" className="md:col-span-2 py-6 bg-amber-500 text-white rounded-full font-black text-xl uppercase tracking-widest shadow-2xl border-b-[8px] border-amber-900 active:scale-95 transition-all">SAVE MODIFICATIONS</button>

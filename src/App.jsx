@@ -101,7 +101,7 @@ class ErrorBoundary extends React.Component {
                         <div className="absolute inset-0 blur-3xl bg-amber-500 opacity-20 animate-pulse"></div>
                     </div>
                     <h1 className="text-4xl font-black uppercase italic tracking-tighter mb-4">Engine Protection Mode</h1>
-                    <p className="text-slate-400 text-sm max-w-md mb-12 uppercase tracking-widest leading-relaxed">
+                    <p className="text-slate-500 text-sm max-w-md mb-12 uppercase tracking-widest leading-relaxed">
                         A critical runtime discrepancy was detected. The system has paused to prevent data corruption.
                     </p>
                     <div className="bg-zinc-900 border border-zinc-800 p-6 rounded-3xl mb-12 w-full max-w-lg text-left overflow-auto max-h-40">
@@ -169,7 +169,7 @@ const LoginView = ({ onLogin, masterData }) => {
                 <div className="absolute inset-0 bg-[radial-gradient(#ffffff05_1px,transparent_1px)] bg-[size:40px_40px] opacity-20"></div>
                 <Logo size="lg" white />
                 <div className="mt-12 text-center hidden md:block">
-                    <p className="text-white/20 text-[10px] font-black uppercase tracking-[0.8em] italic">Industrial Strategic Nexus</p>
+                    <p className="text-white/50 text-[10px] font-black uppercase tracking-[0.8em] italic">Industrial Strategic Nexus</p>
                 </div>
             </div>
             
@@ -177,15 +177,15 @@ const LoginView = ({ onLogin, masterData }) => {
                 <div className="w-full max-w-md space-y-12">
                     <div className="text-center md:text-left">
                         <h2 className="text-4xl font-black italic tracking-tighter uppercase mb-2 text-[var(--text-primary)]">Login</h2>
-                        <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Strategic Unit Access Portal</p>
+                        <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">Strategic Unit Access Portal</p>
                     </div>
 
                     <form onSubmit={(e) => { e.preventDefault(); onLogin(id, password); }} className="space-y-8">
                         <div className="space-y-6">
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 ml-2 italic">Identity</label>
+                                <label className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-500 ml-2 italic">Identity</label>
                                 <div className="relative group">
-                                    <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none text-slate-300 group-focus-within:text-[var(--text-primary)] transition-colors">
+                                    <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none text-slate-500 group-focus-within:text-[var(--text-primary)] transition-colors">
                                         <User size={18} />
                                     </div>
                                     <input
@@ -199,9 +199,9 @@ const LoginView = ({ onLogin, masterData }) => {
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 ml-2 italic">Auth Protocol</label>
+                                <label className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-500 ml-2 italic">Auth Protocol</label>
                                 <div className="relative group">
-                                    <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none text-slate-300 group-focus-within:text-[var(--text-primary)] transition-colors">
+                                    <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none text-slate-500 group-focus-within:text-[var(--text-primary)] transition-colors">
                                         <Lock size={18} />
                                     </div>
                                     <input
@@ -211,7 +211,7 @@ const LoginView = ({ onLogin, masterData }) => {
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
                                     />
-                                    <button type="button" onClick={() => setShowPass(!showPass)} className="absolute right-6 top-1/2 -translate-y-1/2 text-slate-300 hover:text-[var(--text-primary)]">
+                                    <button type="button" onClick={() => setShowPass(!showPass)} className="absolute right-6 top-1/2 -translate-y-1/2 text-slate-500 hover:text-[var(--text-primary)]">
                                         {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
                                     </button>
                                 </div>
@@ -226,7 +226,7 @@ const LoginView = ({ onLogin, masterData }) => {
     );
 };
 
-const TrackingView = ({ trackId, masterData, onClose }) => {
+const TrackingView = ({ trackId, masterData, onClose, isDarkMode }) => {
     const item = [...(masterData.productions || []), ...(masterData.pataEntries || [])].find(i => String(i.id) === trackId);
     if (!item) return <div className="min-h-screen flex items-center justify-center bg-black text-rose-500 font-black uppercase">Tracking ID Not Found <button onClick={onClose} className="ml-4 bg-white text-black p-2 rounded">Close</button></div>;
 
@@ -234,12 +234,12 @@ const TrackingView = ({ trackId, masterData, onClose }) => {
         <div className="min-h-screen bg-white p-8 md:p-20 font-outfit italic animate-fade-up">
             <div className="max-w-4xl mx-auto space-y-12">
                 <div className="flex justify-between items-center">
-                    <Logo size="sm" />
+                    <Logo size="sm" white={false} />
                     <button onClick={onClose} className="p-4 bg-slate-100 rounded-full hover:bg-black hover:text-white transition-all"><X size={20} /></button>
                 </div>
                 
                 <div className="bg-black text-white p-12 rounded-[5rem] shadow-3xl text-center flex flex-col items-center">
-                    <NRZLogo size="md" white />
+                    <NRZLogo size="md" white={true} />
                     <p className="text-[10px] font-black uppercase tracking-[0.6em] text-slate-500 mt-6 mb-6">Status</p>
                     <h2 className="text-4xl md:text-7xl font-black uppercase italic tracking-tighter">{item.status === 'Pending' ? 'In Production' : 'Completed'}</h2>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-12 border-t border-white/10 pt-12">
@@ -270,10 +270,10 @@ const MENU_ITEMS = [
   { id: "Security", label: "Security", icon: Lock, sub: "Audit Log" },
 ];
 
-const Sidebar = ({ activePanel, setActivePanel, user, setUser, isOpen, setIsSidebarOpen, t }) => {
+const Sidebar = ({ activePanel, setActivePanel, user, setUser, isOpen, setIsSidebarOpen, t, isDarkMode }) => {
     return (
         <div className={`md:left-6 md:top-6 md:h-[calc(100vh-48px)] fixed left-0 top-0 h-full bg-[var(--bg-secondary)] backdrop-blur-3xl border border-[var(--border)] z-[100] flex flex-col py-10 transition-all duration-500 sidebar ${isOpen ? "w-[280px] md:rounded-[40px] shadow-2xl" : "w-0 -translate-x-full"}`}>
-            <div className="px-8 mb-16"><Logo size="sm" /></div>
+            <div className="px-8 mb-16"><Logo size="sm" white={isDarkMode} /></div>
             <div className="flex-1 overflow-y-auto px-4 space-y-2 no-scrollbar">
                 {MENU_ITEMS.map(item => {
                     const Icon = item.icon;
@@ -281,7 +281,7 @@ const Sidebar = ({ activePanel, setActivePanel, user, setUser, isOpen, setIsSide
                     return (
                         <button 
                             key={item.id} onClick={() => { setActivePanel(item.id); if (window.innerWidth < 768) setIsSidebarOpen(false); }}
-                            className={`w-full flex items-center gap-4 p-4 rounded-[24px] transition-all group ${active ? "bg-black text-white dark:bg-white dark:text-black shadow-xl translate-x-1" : "text-slate-400 hover:bg-[var(--bg-primary)] hover:text-[var(--text-primary)] hover:shadow-lg"}`}
+                            className={`w-full flex items-center gap-4 p-4 rounded-[24px] transition-all group ${active ? "bg-black text-white dark:bg-white dark:text-black shadow-xl translate-x-1" : "text-slate-500 hover:bg-[var(--bg-primary)] hover:text-[var(--text-primary)] hover:shadow-lg"}`}
                         >
                             <Icon size={18} strokeWidth={active ? 2.5 : 2} />
                             <span className={`text-xs uppercase tracking-widest italic ${active ? "font-black" : "font-bold"}`}>{t(item.id.toLowerCase()) || item.label}</span>
@@ -290,7 +290,7 @@ const Sidebar = ({ activePanel, setActivePanel, user, setUser, isOpen, setIsSide
                 })}
             </div>
             <div className="px-4 mt-8 pt-8 border-t border-slate-100">
-                <button onClick={() => setUser(null)} className="w-full flex items-center gap-4 p-4 rounded-xl text-slate-400 hover:text-rose-500 transition-colors">
+                <button onClick={() => setUser(null)} className="w-full flex items-center gap-4 p-4 rounded-xl text-slate-500 hover:text-rose-500 transition-colors">
                     <LogOut size={16} /><span className="text-[9px] font-black uppercase tracking-[0.3em] italic">{t('logout') || 'Logout'}</span>
                 </button>
             </div>
@@ -314,19 +314,19 @@ const SecurityPanel = ({ masterData, t, user }) => {
                 </div>
                 <div>
                    <h2 className="text-5xl font-black uppercase tracking-tighter italic">{t('security')} <span className="text-rose-500">{t('nexus')}</span></h2>
-                   <p className="text-xs font-black uppercase tracking-[0.5em] text-slate-400 mt-2 italic opacity-60">ADMIN AUDIT & SYSTEM INTEGRITY MONITOR</p>
+                   <p className="text-xs font-black uppercase tracking-[0.5em] text-slate-500 mt-2 italic opacity-60">ADMIN AUDIT & SYSTEM INTEGRITY MONITOR</p>
                 </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="bg-white p-12 rounded-[4rem] border shadow-2xl text-center flex flex-col items-center">
-                    <p className="text-[10px] font-black uppercase tracking-[0.5em] text-slate-400 mb-6">{t('totalLogs')}</p>
+                    <p className="text-[10px] font-black uppercase tracking-[0.5em] text-slate-500 mb-6">{t('totalLogs')}</p>
                     <p className="text-8xl font-black italic tracking-tighter">{masterData.auditLogs?.length || 0}</p>
                 </div>
                 <div className="col-span-2 bg-black text-rose-500 p-12 rounded-[4rem] shadow-3xl text-center flex flex-col items-center">
                    <p className="text-[10px] font-black uppercase tracking-[0.5em] text-rose-500/50 mb-6 underline">{t('securityFlags')}</p>
                    <p className="text-8xl font-black italic tracking-tighter underline">{alerts.length}</p>
-                   <p className="text-[10px] font-black uppercase tracking-[0.2em] mt-8 text-white/40 italic">Unauthorized access attempts: 0 (Stable)</p>
+                   <p className="text-[10px] font-black uppercase tracking-[0.2em] mt-8 text-white/70 italic">Unauthorized access attempts: 0 (Stable)</p>
                 </div>
             </div>
 
@@ -341,13 +341,13 @@ const SecurityPanel = ({ masterData, t, user }) => {
                                   {log.action?.includes('DELETE') ? <Trash2 size={30} /> : <AlertTriangle size={30} />}
                                </div>
                                <div>
-                                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 italic">{log.timestamp}</p>
+                                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2 italic">{log.timestamp}</p>
                                   <h4 className="text-2xl font-black uppercase italic tracking-tighter leading-none mb-1 text-black">{log.action}</h4>
                                   <p className="text-sm font-bold text-slate-600 line-clamp-2 italic">{log.details}</p>
                                </div>
                            </div>
                            <div className="text-center md:text-right">
-                              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">{t('initiatedBy')}</p>
+                              <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">{t('initiatedBy')}</p>
                               <div className="px-6 py-2 bg-black text-white rounded-full text-xs font-black italic">{log.user} ({log.role})</div>
                            </div>
                         </div>
@@ -377,11 +377,11 @@ const MenuPanel = ({ setActivePanel, user, t }) => {
                                 <div className="flex items-center gap-4">
                                     <NRZLogo size="sm" white={false} />
                                     <div>
-                                        <p className="text-[8px] font-black uppercase text-slate-400">System v2.10</p>
+                                        <p className="text-[8px] font-black uppercase text-slate-500">System v2.10</p>
                                         <p className="text-[10px] font-black tracking-tighter italic">SMART TRACK™ PRODUCTION NODE</p>
                                     </div>
                                 </div>
-                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2">{item.sub}</p>
+                                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-2">{item.sub}</p>
                             </div>
                         </div>
                     </button>
@@ -431,7 +431,7 @@ const AppContent = () => {
                 <Logo size="lg" white showText={false} />
             </div>
             <div className="relative group">
-                <p className="italic tracking-[0.8em] uppercase text-[10px] font-black text-white opacity-40 animate-pulse">
+                <p className="italic tracking-[0.8em] uppercase text-[10px] font-black text-white opacity-70 animate-pulse">
                     Connecting NRZONE Neural Link...
                 </p>
                 <div className="absolute -bottom-4 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
@@ -448,7 +448,7 @@ const AppContent = () => {
                 <LoginView onLogin={handleLogin} masterData={masterData} />
             ) : (
                 <div className="flex min-h-screen">
-                    <Sidebar activePanel={activePanel} setActivePanel={setActivePanel} user={user} setUser={setUser} isOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} t={t} />
+                    <Sidebar activePanel={activePanel} setActivePanel={setActivePanel} user={user} setUser={setUser} isOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} t={t} isDarkMode={isDarkMode} />
                     <main className={`flex-1 p-4 md:p-20 transition-all ${isSidebarOpen ? "md:ml-[300px]" : "ml-0"}`}>
                         <header className="flex justify-between items-center mb-16 no-print">
                             <div className="flex items-center gap-6">
@@ -458,21 +458,21 @@ const AppContent = () => {
                                         <h2 className="text-xl font-black italic uppercase tracking-tighter text-[var(--text-primary)]">{t(activePanel.toLowerCase()) || activePanel}</h2>
                                         <div className="flex items-center gap-2 px-3 py-1 bg-slate-50 border border-slate-100 rounded-full">
                                             <div className={`w-1.5 h-1.5 rounded-full ${isLoading ? 'bg-amber-500 animate-pulse' : 'bg-emerald-500'}`} />
-                                            <span className="text-[7px] font-black uppercase tracking-widest text-slate-400">{isLoading ? t('syncing') : t('stable')}</span>
+                                            <span className="text-[7px] font-black uppercase tracking-widest text-slate-500">{isLoading ? t('syncing') : t('stable')}</span>
                                         </div>
                                     </div>
-                                    <p className="text-[8px] font-black uppercase text-slate-400 tracking-widest mt-1">Status: {t('activeNode')}</p>
+                                    <p className="text-[8px] font-black uppercase text-slate-500 tracking-widest mt-1">Status: {t('activeNode')}</p>
                                 </div>
                             </div>
                             <div className="flex gap-4">
                                 <button onClick={() => setIsDarkMode(!isDarkMode)} className="neu-button w-14 h-14 bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-800 transition-all duration-500">
-                                    {isDarkMode ? <Sun size={20} className="text-amber-400" /> : <Moon size={20} className="text-slate-400" />}
+                                    {isDarkMode ? <Sun size={20} className="text-amber-400" /> : <Moon size={20} className="text-slate-500" />}
                                 </button>
                                 <button onClick={() => setShowQR(true)} className="neu-button w-14 h-14 bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-800"><Activity size={20} /></button>
                                 <button onClick={() => setLanguage(language === 'BN' ? 'EN' : 'BN')} className="neu-button px-6 font-black text-[10px] italic h-14 dark:bg-zinc-900 dark:text-white dark:border-zinc-800">{language}</button>
                                 <div className="flex items-center gap-4 neu-card-flat px-6 h-14 min-w-[200px] dark:bg-zinc-900 dark:border-zinc-800">
                                     <div className="w-8 h-8 bg-black dark:bg-white rounded-full flex items-center justify-center text-white dark:text-black transition-all duration-500"><User size={14} /></div>
-                                    <div className="text-left"><p className="text-xs font-black uppercase italic leading-none dark:text-white">{user.name}</p><p className="text-[7px] font-black text-slate-400 uppercase tracking-widest mt-1">{user.role}</p></div>
+                                    <div className="text-left"><p className="text-xs font-black uppercase italic leading-none dark:text-white">{user.name}</p><p className="text-[7px] font-black text-slate-500 uppercase tracking-widest mt-1">{user.role}</p></div>
                                 </div>
                             </div>
                         </header>
@@ -497,7 +497,7 @@ const AppContent = () => {
                     )}
                 </div>
             )}
-            {trackingId && <div className="fixed inset-0 z-[1000]"><TrackingView trackId={trackingId} masterData={masterData} onClose={() => setTrackingId(null)} /></div>}
+            {trackingId && <div className="fixed inset-0 z-[1000]"><TrackingView trackId={trackingId} masterData={masterData} onClose={() => setTrackingId(null)} isDarkMode={isDarkMode} /></div>}
             {showQR && <QRScanner onScanSuccess={(data) => setTrackingId(data)} onClose={() => setShowQR(false)} />}
             {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
         </div>

@@ -32,6 +32,7 @@ import {
   Share2
 } from "lucide-react";
 import QRScanner from "../QRScanner";
+import UniversalSlip from "../UniversalSlip";
 import {
   getStock,
   getSewingStock,
@@ -537,108 +538,26 @@ const FactoryPanel = ({
   };
 
   if (printSlip) {
-    const SlipHalf = ({ data, copyTitle }) => (
-      <ConfigProvider theme={QR_Slip_Theme}>
-        <div className="w-full bg-white flex flex-col relative overflow-hidden border-b-2 border-black/10 last:border-0 p-12" style={{ height: '148.5mm' }}>
-             <div className="flex justify-between items-start border-b-4 border-black pb-8 mb-8">
-                <div>
-                   <h1 className="text-5xl font-black tracking-tighter uppercase leading-none">NRZO0NE</h1>
-                   <p className="text-xs font-black uppercase tracking-[0.6em] text-slate-400 mt-2">FACTORY LOGISTICS • SECURE NODE</p>
-                </div>
-                <div className="text-right">
-                   <p className="text-2xl font-black uppercase tracking-widest italic decoration-double">লট নং #{data.lotNo}</p>
-                   <p className="text-lg font-black text-slate-400 mt-1">{data.date}</p>
-                </div>
-             </div>
-
-             <div className="flex-1 flex flex-col justify-center gap-12">
-                  <div className="grid grid-cols-2 gap-12">
-                      <div className="border-4 border-black p-6 bg-slate-50 rounded-3xl">
-                          <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">ডিজাইন স্পেক (Design)</p>
-                          <p className="text-4xl font-black uppercase truncate">{data.design}</p>
-                      </div>
-                      <div className="border-4 border-black p-6 bg-slate-50 rounded-3xl">
-                          <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">নিযুক্ত কারিগর (Worker)</p>
-                          <p className="text-4xl font-black uppercase truncate">{data.worker}</p>
-                      </div>
-                  </div>
-
-                  <div className="grid grid-cols-12 gap-8 items-center border-y-4 border-black py-10">
-                      <div className="col-span-8 grid grid-cols-3 gap-4">
-                          <div className="text-center group">
-                              <p className="text-[11px] font-black uppercase text-slate-400 mb-2">সাইজ (Size)</p>
-                              <p className="text-6xl font-black italic leading-none">{data.size}</p>
-                          </div>
-                          <div className="text-center">
-                              <p className="text-[11px] font-black uppercase text-slate-400 mb-2">বোরকা (Borka)</p>
-                              <p className="text-6xl font-black italic leading-none">{data.issueBorka}</p>
-                          </div>
-                          <div className="text-center">
-                              <p className="text-[11px] font-black uppercase text-slate-400 mb-2">হিজাব (Hijab)</p>
-                              <p className="text-6xl font-black italic leading-none">{data.issueHijab}</p>
-                          </div>
-                      </div>
-                      <div className="col-span-4 flex items-center justify-end gap-6">
-                          <div className="text-right">
-                              <p className="text-[10px] font-black uppercase text-slate-400 mb-1 tracking-widest">NR-SCAN ID</p>
-                              <p className="text-xs font-black italic opacity-30">{data.id}</p>
-                          </div>
-                          <QRCode value={data.id} size={120} bordered={false} style={{ padding: 0 }} />
-                      </div>
-                  </div>
-             </div>
-
-             <div className="mt-8 pt-8 flex justify-between items-center border-t-2 border-dashed border-slate-200">
-                  <div className="flex items-center gap-4">
-                      <NRZLogo size="sm" white={false} />
-                      <div>
-                        <p className="text-[8px] font-black uppercase text-slate-400">System v2.10</p>
-                        <p className="text-[10px] font-black tracking-tighter italic">SMART TRACK™ PRODUCTION NODE</p>
-                      </div>
-                  </div>
-                   <div className="px-12 py-4 bg-black text-white rounded-[2rem] font-black uppercase tracking-[0.4em] italic text-xl shadow-2xl">
-                      {copyTitle === "WORKER COPY" ? "কারিগর কপি" : "ফ্যাক্টরি কপি"}
-                   </div>
-             </div>
-        </div>
-      </ConfigProvider>
-    );
-
     return (
-      <div className="min-h-screen bg-slate-100 text-black font-outfit py-10 print:p-0 print:bg-white">
+      <div className="min-h-screen bg-white text-black italic font-outfit py-10 print:py-0 print:bg-white overflow-hidden">
         <style>{`
-          @media print {
-            .no-print { display: none !important; }
-            body { background: white !important; padding: 0 !important; }
-            @page { size: A4 portrait; margin: 0mm; }
-            .print-grid {
-              display: block !important;
-              padding: 0 !important;
-              width: 210mm !important;
-              height: 297mm !important;
-            }
+          @media print { 
+              .no-print { display: none !important; } 
+              body { background: white !important; margin: 0; padding: 0; }
+              @page { size: A4 portrait; margin: 0; }
           }
         `}</style>
-        <div className="no-print flex justify-between items-center p-6 w-[210mm] mx-auto mb-6 bg-white rounded-2xl shadow-xl">
-          <button onClick={() => setPrintSlip(null)} className="px-6 py-2 rounded-full font-bold border-2 border-black hover:bg-black hover:text-white transition-all">Back</button>
-          <div className="text-center">
-            <h2 className="text-sm font-black uppercase tracking-widest leading-none">Eco-Print Layout (3x2)</h2>
-            <p className="text-[10px] font-bold text-gray-400 mt-1 uppercase">Saves 60% Paper usage</p>
-          </div>
-          <button onClick={() => window.print()} className="bg-black text-white px-8 py-2 rounded-full font-bold shadow-lg flex items-center gap-2 hover:scale-105 active:scale-95 transition-all">
-            <Printer size={18} /> PRINT A4
+        <div className="no-print flex justify-between items-center mb-6 w-[210mm] mx-auto bg-white p-6 rounded-[2.5rem] shadow-xl border-4 border-black font-black">
+          <button onClick={() => setPrintSlip(null)} className="bg-slate-50 text-slate-600 px-10 py-5 uppercase text-xs rounded-full hover:bg-black hover:text-white transition-all">Cancel</button>
+          <button onClick={() => window.print()} className="bg-black text-white px-10 py-5 rounded-full uppercase text-xs shadow-2xl flex items-center gap-3 active:scale-95 transition-all">
+            <Printer size={18} /> Print Job
           </button>
         </div>
         
-        <div className="print-grid w-[210mm] h-[297mm] mx-auto bg-white border border-gray-100 overflow-hidden relative">
-           {/* Half A4 - Top Slip */}
-           <SlipHalf data={printSlip} copyTitle="WORKER COPY" />
-           
-           {/* Visual Cut Line Indicator */}
-           <div className="absolute top-[148.5mm] left-0 w-full border-t-2 border-dashed border-gray-300 z-50"></div>
-           
-           {/* Half A4 - Bottom Slip */}
-           <SlipHalf data={printSlip} copyTitle="FACTORY COPY" />
+        <div className="w-[210mm] min-h-[297mm] mx-auto bg-white border border-gray-100 overflow-hidden relative">
+          <UniversalSlip data={printSlip} type="ISSUE" copyTitle="WORKER COPY" />
+          <div className="h-4 w-full border-t-2 border-dashed border-slate-300"></div>
+          <UniversalSlip data={printSlip} type="ISSUE" copyTitle="FACTORY COPY" />
         </div>
       </div>
     );
@@ -656,9 +575,9 @@ const FactoryPanel = ({
           </button>
           <div>
             <h1 className="section-header">
-              {type === "sewing" ? t('sewing') : t('stone')} <span className="text-slate-400">{t('productionUnit') || "Unit"}</span>
+              {type === "sewing" ? t('sewing') : t('stone')} <span className="text-slate-500">{t('productionUnit') || "Unit"}</span>
             </h1>
-            <p className="text-[11px] font-black text-slate-400 uppercase tracking-[0.4em] mt-2 italic">
+            <p className="text-[11px] font-black text-slate-500 uppercase tracking-[0.4em] mt-2 italic">
                {t('fullSystemHub') || "Production Division"} {type.toUpperCase()}
             </p>
           </div>
@@ -681,7 +600,7 @@ const FactoryPanel = ({
                     <button
                       key={v}
                       onClick={() => setView(v)}
-                      className={`px-10 py-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${view === v ? 'bg-black text-white dark:bg-white dark:text-black shadow-lg italic' : 'text-slate-400 hover:text-black dark:hover:text-white'}`}
+                      className={`px-10 py-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${view === v ? 'bg-black text-white dark:bg-white dark:text-black shadow-lg italic' : 'text-slate-500 hover:text-black dark:hover:text-white'}`}
                     >
                       {t(v)}
                     </button>
@@ -689,7 +608,7 @@ const FactoryPanel = ({
               </div>
               
               <div className="flex-1 relative w-full group">
-                  <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none text-slate-300 group-focus-within:text-black dark:group-focus-within:text-white transition-colors">
+                  <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none text-slate-500 group-focus-within:text-black dark:group-focus-within:text-white transition-colors">
                       <Search size={16} />
                   </div>
                   <input
@@ -714,7 +633,7 @@ const FactoryPanel = ({
         <div className="space-y-4">
 
           {activeProductions.length === 0 ? (
-            <div className="h-64 flex flex-col items-center justify-center bg-white rounded-3xl border-2 border-dashed border-slate-100 opacity-40">
+            <div className="h-64 flex flex-col items-center justify-center bg-white rounded-3xl border-2 border-dashed border-slate-100 opacity-70">
               <Box size={48} strokeWidth={1} />
               <p className="text-[10px] font-black uppercase tracking-[0.4em] mt-6">Zero Active Nodes</p>
             </div>
@@ -735,7 +654,7 @@ const FactoryPanel = ({
                       </h4>
                       <span className="badge-standard">#{p.lotNo}</span>
                     </div>
-                    <div className="flex items-center gap-4 text-slate-400 text-[11px] font-black uppercase italic tracking-widest">
+                    <div className="flex items-center gap-4 text-slate-500 text-[11px] font-black uppercase italic tracking-widest">
                       <span>• {p.design}</span>
                       <span>• {p.date}</span>
                       {p.pataQty > 0 && <span className="text-black">PATA: {p.pataQty}</span>}
@@ -746,11 +665,11 @@ const FactoryPanel = ({
                 <div className="flex items-center gap-12 w-full md:w-auto justify-between border-t md:border-t-0 pt-6 md:pt-0">
                   <div className="flex gap-12">
                     <div className="text-center">
-                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">Borka</p>
+                      <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1 italic">Borka</p>
                       <p className="text-4xl font-black italic tracking-tighter leading-none">{p.issueBorka}</p>
                     </div>
                     <div className="text-center">
-                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">Hijab</p>
+                      <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1 italic">Hijab</p>
                       <p className="text-4xl font-black italic tracking-tighter leading-none">{p.issueHijab}</p>
                     </div>
                   </div>
@@ -763,7 +682,7 @@ const FactoryPanel = ({
                     </button>
                     <button
                       onClick={() => setPrintSlip(p)}
-                      className="w-12 h-12 flex items-center justify-center rounded-full bg-slate-50 text-slate-400 hover:bg-black hover:text-white transition-all"
+                      className="w-12 h-12 flex items-center justify-center rounded-full bg-slate-50 text-slate-500 hover:bg-black hover:text-white transition-all"
                     >
                       <Printer size={18} />
                     </button>
@@ -818,7 +737,7 @@ const FactoryPanel = ({
                       </h4>
                       <span className="badge-standard">#{p.lotNo}</span>
                     </div>
-                    <div className="flex items-center gap-4 text-slate-400 text-[11px] font-black uppercase italic tracking-widest">
+                    <div className="flex items-center gap-4 text-slate-500 text-[11px] font-black uppercase italic tracking-widest">
                       <span>• {p.date}</span>
                       <span className="text-emerald-500 font-black">• DONE {p.receiveDate}</span>
                       {(p.wasteBorka > 0 || p.wasteHijab > 0) && (
@@ -833,22 +752,22 @@ const FactoryPanel = ({
                 <div className="flex gap-12 text-center w-full md:w-auto justify-between border-t md:border-t-0 pt-6 md:pt-0">
                   <div className="flex gap-12">
                     <div>
-                      <p className="text-[9px] font-black text-slate-400 mb-1 uppercase tracking-widest">Borka</p>
+                      <p className="text-[9px] font-black text-slate-500 mb-1 uppercase tracking-widest">Borka</p>
                       <p className="text-4xl font-black italic tracking-tighter leading-none">{p.receivedBorka || 0}</p>
                     </div>
                     <div>
-                      <p className="text-[9px] font-black text-slate-400 mb-1 uppercase tracking-widest">Hijab</p>
+                      <p className="text-[9px] font-black text-slate-500 mb-1 uppercase tracking-widest">Hijab</p>
                       <p className="text-4xl font-black italic tracking-tighter leading-none">{p.receivedHijab || 0}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-4 ml-6">
                     <div className="text-right">
-                      <p className="text-[9px] font-black text-slate-400 mb-1 uppercase tracking-widest">Wage</p>
+                      <p className="text-[9px] font-black text-slate-500 mb-1 uppercase tracking-widest">Wage</p>
                       <p className="text-3xl font-black text-emerald-500 italic">৳{p.rate}</p>
                     </div>
                     <button
                       onClick={() => setPrintSlip(p)}
-                      className="w-12 h-12 flex items-center justify-center rounded-full bg-slate-50 text-slate-400 hover:bg-black hover:text-white transition-all shadow-sm"
+                      className="w-12 h-12 flex items-center justify-center rounded-full bg-slate-50 text-slate-500 hover:bg-black hover:text-white transition-all shadow-sm"
                     >
                       <Printer size={18} />
                     </button>
@@ -886,7 +805,7 @@ const FactoryPanel = ({
       {view === "payments" && (
         <div className="space-y-6">
           {workers.length === 0 ? (
-            <div className="h-[300px] flex flex-col items-center justify-center text-slate-200 uppercase font-black italic gap-6">
+            <div className="h-[300px] flex flex-col items-center justify-center text-slate-500 uppercase font-black italic gap-6">
               <User size={60} strokeWidth={1} />
               <p>No Factory Personnel Registered</p>
             </div>
@@ -906,7 +825,7 @@ const FactoryPanel = ({
                       <h4 className="text-xl md:text-2xl font-black italic uppercase mb-2">
                         {w}
                       </h4>
-                      <p className="text-xs font-black text-slate-400 uppercase tracking-[0.4em] italic opacity-60">
+                      <p className="text-xs font-black text-slate-500 uppercase tracking-[0.4em] italic opacity-60">
                         SENIOR {type.toUpperCase()} OPERATIVE
                       </p>
                     </div>
@@ -930,7 +849,7 @@ const FactoryPanel = ({
                     </button>
                     <button
                       onClick={() => setLedgerModal(w)}
-                      className="p-6 bg-white border-4 border-slate-50 text-slate-300 rounded-full hover:border-black hover:text-black transition-all"
+                      className="p-6 bg-white border-4 border-slate-50 text-slate-500 rounded-full hover:border-black hover:text-black transition-all"
                     >
                       <DollarSign size={24} />
                     </button>
@@ -964,7 +883,7 @@ const FactoryPanel = ({
             </div>
 
             <div className="flex items-center justify-center gap-4">
-              <span className={`text-[10px] font-black uppercase tracking-widest italic transition-colors ${!showAllLots ? "text-black" : "text-slate-400"}`}>Normal Pipeline</span>
+              <span className={`text-[10px] font-black uppercase tracking-widest italic transition-colors ${!showAllLots ? "text-black" : "text-slate-500"}`}>Normal Pipeline</span>
               <button
                 type="button"
                 onClick={() => setShowAllLots(!showAllLots)}
@@ -972,7 +891,7 @@ const FactoryPanel = ({
               >
                 <div className={`absolute top-1 left-1 bg-white w-6 h-6 rounded-full shadow-md transition-transform duration-300 ${showAllLots ? "translate-x-6" : ""}`}></div>
               </button>
-              <span className={`text-[10px] font-black uppercase tracking-widest italic transition-colors ${showAllLots ? "text-rose-500" : "text-slate-400"}`}>{t('adminPower')}</span>
+              <span className={`text-[10px] font-black uppercase tracking-widest italic transition-colors ${showAllLots ? "text-rose-500" : "text-slate-500"}`}>{t('adminPower')}</span>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12">
@@ -981,9 +900,9 @@ const FactoryPanel = ({
                 {/* Lot Selection Box */}
                 <div className="bg-slate-50 p-6 md:p-8 rounded-[2rem] border border-slate-100 relative group transition-all hover:border-black">
                   <div className="flex items-center gap-3 mb-4">
-                    <Search size={18} className="text-slate-400" />
+                    <Search size={18} className="text-slate-500" />
                     <label className="text-xs font-black text-black uppercase tracking-widest">
-                      Select Available Lot <span className="text-slate-400 text-[10px] ml-1">(লট পছন্দ করুন)</span>
+                      Select Available Lot <span className="text-slate-500 text-[10px] ml-1">(লট পছন্দ করুন)</span>
                     </label>
                   </div>
                   <div className="relative">
@@ -1002,10 +921,10 @@ const FactoryPanel = ({
                         </option>
                       ))}
                     </select>
-                    <ChevronRight size={20} className="absolute right-6 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                    <ChevronRight size={20} className="absolute right-6 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
                   </div>
                   {availableLots.length === 0 && (
-                    <div className="mt-4 p-4 bg-white border-2 border-dashed border-slate-200 rounded-xl flex items-center justify-center gap-2 text-slate-400">
+                    <div className="mt-4 p-4 bg-white border-2 border-dashed border-slate-200 rounded-xl flex items-center justify-center gap-2 text-slate-500">
                        <Box size={16} /> <span className="text-[10px] font-black tracking-widest uppercase">No Matching Lots Found</span>
                     </div>
                   )}
@@ -1014,7 +933,7 @@ const FactoryPanel = ({
                 <div className="bg-white space-y-6">
                   <div>
                     <label className="flex items-center gap-2 text-xs font-black text-black uppercase tracking-widest mb-3">
-                      <User size={16} className="text-slate-400" /> Select Worker <span className="text-slate-400 text-[10px]">(কারিগর নির্বাচন করুন)</span>
+                      <User size={16} className="text-slate-500" /> Select Worker <span className="text-slate-500 text-[10px]">(কারিগর নির্বাচন করুন)</span>
                     </label>
                     <div className="relative">
                       <select
@@ -1040,7 +959,7 @@ const FactoryPanel = ({
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="bg-slate-50 p-4 shrink-0 rounded-2xl border border-slate-100 flex flex-col justify-center">
-                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Rate (রেট)</p>
+                      <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Rate (রেট)</p>
                       <div className="flex items-center gap-1 font-black text-emerald-600 text-2xl">
                          ৳
                          <input
@@ -1053,7 +972,7 @@ const FactoryPanel = ({
                       </div>
                     </div>
                     <div className="bg-slate-50 p-4 shrink-0 rounded-2xl border border-slate-100 flex flex-col justify-center">
-                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Date (তারিখ)</p>
+                      <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Date (তারিখ)</p>
                       <input 
                         type="date"
                         className="w-full bg-transparent text-sm font-black text-black outline-none p-0"
@@ -1062,20 +981,20 @@ const FactoryPanel = ({
                       />
                     </div>
                     <div className="bg-slate-50 p-4 shrink-0 rounded-2xl border border-slate-100 flex flex-col justify-center">
-                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Design</p>
+                      <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Design</p>
                       <p className="text-sm font-black truncate">{selection.design || "---"}</p>
                     </div>
                     <div className="bg-slate-50 p-4 shrink-0 rounded-2xl border border-slate-100 flex flex-col justify-center">
-                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Color</p>
+                      <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Color</p>
                       <p className="text-sm font-black truncate">{selection.color || "---"}</p>
                     </div>
                   </div>
 
                   <div>
-                     <label className="text-[10px] font-black text-slate-400 uppercase block mb-2 tracking-widest">Optional Note (ঐচ্ছিক)</label>
+                     <label className="text-[10px] font-black text-slate-500 uppercase block mb-2 tracking-widest">Optional Note (ঐচ্ছিক)</label>
                      <input
                        type="text"
-                       className="w-full bg-slate-50 border border-slate-100 px-5 py-4 rounded-xl font-bold text-sm italic outline-none focus:border-black transition-all placeholder:text-slate-300"
+                       className="w-full bg-slate-50 border border-slate-100 px-5 py-4 rounded-xl font-bold text-sm italic outline-none focus:border-black transition-all placeholder:text-slate-500"
                        placeholder="Type Remarks..."
                        value={selection.note || ""}
                        onChange={(e) => setSelection(p => ({ ...p, note: e.target.value }))}
@@ -1111,7 +1030,7 @@ const FactoryPanel = ({
               <div className="lg:col-span-6">
                 <div className="bg-slate-50 p-6 md:p-8 rounded-[2rem] border border-slate-100 h-full flex flex-col">
                   <div className="flex items-center gap-3 mb-6">
-                    <Layers size={18} className="text-slate-400" />
+                    <Layers size={18} className="text-slate-500" />
                     <label className="text-xs font-black text-black uppercase tracking-widest">
                        {t('qty')} & {t('category')}
                     </label>
@@ -1119,7 +1038,7 @@ const FactoryPanel = ({
 
                   <div className="flex-1 space-y-4 max-h-[400px] overflow-y-auto pr-2">
                     {issueSizes.length === 0 ? (
-                      <div className="h-40 flex items-center justify-center text-slate-400 uppercase font-black italic tracking-widest text-[10px]">
+                      <div className="h-40 flex items-center justify-center text-slate-500 uppercase font-black italic tracking-widest text-[10px]">
                         লট সিলেক্ট করুন (Select Lot)
                       </div>
                     ) : (
@@ -1155,8 +1074,8 @@ const FactoryPanel = ({
                                <div className="grid grid-cols-2 md:grid-cols-3 gap-4 items-center">
                                   <div className="bg-slate-50 p-3 rounded-xl border border-slate-100">
                                       <div className="flex justify-between items-center mb-1">
-                                         <p className="text-[9px] font-black uppercase text-slate-400">Borka Qty</p>
-                                         <span className="text-[8px] font-bold text-slate-400">Max: {maxBorka}</span>
+                                         <p className="text-[9px] font-black uppercase text-slate-500">Borka Qty</p>
+                                         <span className="text-[8px] font-bold text-slate-500">Max: {maxBorka}</span>
                                       </div>
                                       <input
                                         type="number"
@@ -1172,12 +1091,12 @@ const FactoryPanel = ({
                                   </div>
                                   <div className="bg-slate-50 p-3 rounded-xl border border-slate-100">
                                       <div className="flex justify-between items-center mb-1">
-                                         <p className="text-[9px] font-black uppercase text-slate-400">Hijab Qty</p>
-                                         <span className="text-[8px] font-bold text-slate-400">Max: {maxHijab}</span>
+                                         <p className="text-[9px] font-black uppercase text-slate-500">Hijab Qty</p>
+                                         <span className="text-[8px] font-bold text-slate-500">Max: {maxHijab}</span>
                                       </div>
                                       <input
                                         type="number"
-                                        className="w-full bg-transparent text-xl font-black text-slate-400 outline-none p-0"
+                                        className="w-full bg-transparent text-xl font-black text-slate-500 outline-none p-0"
                                         placeholder="0"
                                         value={row.hijab}
                                         onChange={(e) => {
@@ -1198,7 +1117,7 @@ const FactoryPanel = ({
                                                     <>
                                                       <p className={`text-[7px] font-black uppercase tracking-widest ${stock < 10 ? 'text-rose-500 animate-pulse' : 'text-indigo-300'}`}>{stock < 10 ? 'ALERT: LOW' : 'Live Stock'}</p>
                                                       <p className={`text-[10px] font-black ${stock < 10 ? 'text-rose-500' : 'text-black'}`}>
-                                                          {stock} <span className="text-[8px] text-slate-400">Pcs</span>
+                                                          {stock} <span className="text-[8px] text-slate-500">Pcs</span>
                                                       </p>
                                                     </>
                                                   );
@@ -1225,7 +1144,7 @@ const FactoryPanel = ({
                      <button
                        type="button"
                        onClick={() => setIssueSizes([...issueSizes, { size: "", borka: "", hijab: "", pataQty: "" }])}
-                       className="w-full py-4 border-2 border-dashed border-slate-200 rounded-2xl flex items-center justify-center gap-2 text-slate-400 hover:border-black hover:text-black transition-all text-[10px] font-black uppercase tracking-widest mt-4"
+                       className="w-full py-4 border-2 border-dashed border-slate-200 rounded-2xl flex items-center justify-center gap-2 text-slate-500 hover:border-black hover:text-black transition-all text-[10px] font-black uppercase tracking-widest mt-4"
                      >
                        <Plus size={14} /> Add Another Size
                      </button>
@@ -1234,14 +1153,14 @@ const FactoryPanel = ({
                   {/* Selection Summary Counter */}
                   {issueSizes.some(s => Number(s.borka || 0) > 0 || Number(s.hijab || 0) > 0) && (
                     <div className="mt-4 pt-4 border-t border-slate-100 flex justify-between items-center px-4">
-                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest italic leading-none">Selected Volume</p>
+                        <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest italic leading-none">Selected Volume</p>
                         <div className="flex gap-6 items-baseline text-black">
                            <div className="flex items-baseline gap-1">
-                               <span className="text-[10px] text-slate-400">BORKA:</span>
+                               <span className="text-[10px] text-slate-500">BORKA:</span>
                                <span className="text-xl font-black italic">{issueSizes.reduce((s, r) => s + Number(r.borka || 0), 0)}</span>
                            </div>
                            <div className="flex items-baseline gap-1">
-                               <span className="text-[10px] text-slate-400">HIJAB:</span>
+                               <span className="text-[10px] text-slate-500">HIJAB:</span>
                                <span className="text-xl font-black italic">{issueSizes.reduce((s, r) => s + Number(r.hijab || 0), 0)}</span>
                            </div>
                         </div>
@@ -1285,7 +1204,7 @@ const FactoryPanel = ({
               <h3 className="text-3xl font-black uppercase italic tracking-tighter leading-none">
                 {t('receive')}
               </h3>
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+              <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">
                 {receiveModal.worker} • {receiveModal.design}
               </p>
             </div>
@@ -1295,7 +1214,7 @@ const FactoryPanel = ({
             >
               <div className="grid grid-cols-2 gap-6 bg-slate-50 p-8 rounded-2xl border border-slate-100 shadow-inner">
                 <div className="text-center">
-                  <label className="text-[8px] font-black text-slate-400 uppercase mb-3 block">
+                  <label className="text-[8px] font-black text-slate-500 uppercase mb-3 block">
                     Rec Borka
                   </label>
                   <input
@@ -1307,7 +1226,7 @@ const FactoryPanel = ({
                   />
                 </div>
                 <div className="text-center">
-                  <label className="text-[8px] font-black text-slate-400 uppercase mb-3 block">
+                  <label className="text-[8px] font-black text-slate-500 uppercase mb-3 block">
                     Rec Hijab
                   </label>
                   <input
@@ -1331,7 +1250,7 @@ const FactoryPanel = ({
                 <button
                   type="button"
                   onClick={() => setReceiveModal(null)}
-                  className="py-5 bg-slate-50 text-slate-400 rounded-full font-black uppercase text-[10px] tracking-widest hover:text-black transition-all"
+                  className="py-5 bg-slate-50 text-slate-500 rounded-full font-black uppercase text-[10px] tracking-widest hover:text-black transition-all"
                 >
                   {t('cancel')}
                 </button>
@@ -1357,7 +1276,7 @@ const FactoryPanel = ({
                 </div>
                 <div>
                   <h3 className="text-3xl font-black uppercase tracking-tighter leading-none">{t('designOverride')}</h3>
-                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Industrial Data Correction</p>
+                  <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mt-1">Industrial Data Correction</p>
                 </div>
               </div>
               <button onClick={() => setEditModal(null)} className="p-4 bg-slate-50 rounded-full hover:bg-black hover:text-white transition-all"><X size={24} /></button>
@@ -1365,19 +1284,19 @@ const FactoryPanel = ({
 
             <form onSubmit={handleEditSave} className="grid grid-cols-1 md:grid-cols-2 gap-6 font-black uppercase italic">
               <div className="space-y-1">
-                <label className="text-[10px] text-slate-400 ml-4 mb-2 block tracking-widest">Worker (কারিগর)</label>
+                <label className="text-[10px] text-slate-500 ml-4 mb-2 block tracking-widest">Worker (কারিগর)</label>
                 <select name="worker" defaultValue={editModal.worker} className="form-input italic" required>
                   {workers.map(w => <option key={w} value={w}>{w}</option>)}
                 </select>
               </div>
               <div className="space-y-1">
-                <label className="text-[10px] text-slate-400 ml-4 mb-2 block tracking-widest">Design (ডিজাইন)</label>
+                <label className="text-[10px] text-slate-500 ml-4 mb-2 block tracking-widest">Design (ডিজাইন)</label>
                 <select name="design" defaultValue={editModal.design} className="form-input italic" required>
                   {(masterData.designs || []).map(d => <option key={d.name} value={d.name}>{d.name}</option>)}
                 </select>
               </div>
               <div className="space-y-1">
-                <label className="text-[10px] text-slate-400 ml-4 mb-2 block tracking-widest">Color & Lot</label>
+                <label className="text-[10px] text-slate-500 ml-4 mb-2 block tracking-widest">Color & Lot</label>
                 <div className="grid grid-cols-2 gap-4">
                   <select name="color" defaultValue={editModal.color} className="form-input italic" required>
                     {(masterData.colors || []).map(c => <option key={c} value={c}>{c}</option>)}
@@ -1386,7 +1305,7 @@ const FactoryPanel = ({
                 </div>
               </div>
               <div className="space-y-1">
-                <label className="text-[10px] text-slate-400 ml-4 mb-2 block tracking-widest">Status & Date</label>
+                <label className="text-[10px] text-slate-500 ml-4 mb-2 block tracking-widest">Status & Date</label>
                 <div className="grid grid-cols-2 gap-4">
                   <select name="status" defaultValue={editModal.status} className="form-input bg-black text-white italic" required>
                     <option value="Pending">PENDING</option>
@@ -1398,14 +1317,14 @@ const FactoryPanel = ({
 
               <div className="md:col-span-2 bg-slate-50 p-6 rounded-[2rem] border border-slate-100 grid grid-cols-2 gap-8">
                 <div className="space-y-4">
-                   <p className="text-[10px] font-black text-slate-400 text-center uppercase tracking-widest">Issue (দেওয়া কাজ)</p>
+                   <p className="text-[10px] font-black text-slate-500 text-center uppercase tracking-widest">Issue (দেওয়া কাজ)</p>
                    <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label className="text-[8px] text-slate-400 text-center block mb-1">Borka</label>
+                        <label className="text-[8px] text-slate-500 text-center block mb-1">Borka</label>
                         <input name="iBorka" type="number" defaultValue={editModal.issueBorka} className="w-full text-center text-3xl bg-white border border-slate-100 rounded-xl py-3 outline-none font-black italic focus:border-black transition-all" />
                       </div>
                       <div>
-                        <label className="text-[8px] text-slate-400 text-center block mb-1">Hijab</label>
+                        <label className="text-[8px] text-slate-500 text-center block mb-1">Hijab</label>
                         <input name="iHijab" type="number" defaultValue={editModal.issueHijab} className="w-full text-center text-3xl bg-white border border-slate-100 rounded-xl py-3 outline-none font-black italic focus:border-black transition-all" />
                       </div>
                    </div>
@@ -1426,12 +1345,12 @@ const FactoryPanel = ({
               </div>
 
               <div className="space-y-1 md:col-span-1">
-                <label className="text-[10px] text-slate-400 ml-4 mb-2 block tracking-widest">Wage Rate (মজুরি)</label>
+                <label className="text-[10px] text-slate-500 ml-4 mb-2 block tracking-widest">Wage Rate (মজুরি)</label>
                 <input name="rate" type="number" defaultValue={editModal.rate} className="form-input text-2xl font-black text-rose-600 italic" required />
               </div>
 
               <div className="md:col-span-2">
-                <label className="text-[10px] text-slate-400 ml-4 mb-2 block tracking-widest">Worker Note (বিশেষ দ্রষ্টব্য)</label>
+                <label className="text-[10px] text-slate-500 ml-4 mb-2 block tracking-widest">Worker Note (বিশেষ দ্রষ্টব্য)</label>
                 <textarea name="note" defaultValue={editModal.note} className="form-input h-24 italic py-4" placeholder="ADD NOTES..." />
               </div>
 
@@ -1454,7 +1373,7 @@ const FactoryPanel = ({
             </div>
             <form onSubmit={handleConfirmPayment} className="space-y-12">
               <div className="bg-black p-10 rounded-2xl shadow-2xl text-center">
-                <label className="text-[10px] font-black text-white/40 uppercase tracking-[0.5em] mb-4 block">
+                <label className="text-[10px] font-black text-white/70 uppercase tracking-[0.5em] mb-4 block">
                   Amount to Disburse
                 </label>
                 <input
@@ -1468,14 +1387,14 @@ const FactoryPanel = ({
               </div>
               <input
                 name="note"
-                className="w-full py-6 text-sm font-black bg-slate-50 border-slate-100 text-black placeholder:text-slate-400 px-10 rounded-2xl italic uppercase"
+                className="w-full py-6 text-sm font-black bg-slate-50 border-slate-100 text-black placeholder:text-slate-500 px-10 rounded-2xl italic uppercase"
                 placeholder="Internal Memo..."
               />
               <div className="flex flex-col md:flex-row gap-6">
                 <button
                   type="button"
                   onClick={() => setPayModal(null)}
-                  className="flex-1 py-8 rounded-full font-black text-sm uppercase bg-slate-50 text-slate-400 hover:text-black transition-all"
+                  className="flex-1 py-8 rounded-full font-black text-sm uppercase bg-slate-50 text-slate-500 hover:text-black transition-all"
                 >
                   {t('cancel')}
                 </button>

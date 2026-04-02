@@ -168,9 +168,9 @@ const InventoryPanel = ({
           </button>
           <div>
             <h2 className="section-header">
-              {t('stockMatrix')} <span className="text-slate-400">Matrix</span>
+              {t('stockMatrix')} <span className="text-slate-500">Matrix</span>
             </h2>
-            <p className="text-[11px] font-black text-slate-400 uppercase tracking-[0.4em] mt-2 italic">
+            <p className="text-[11px] font-black text-slate-500 uppercase tracking-[0.4em] mt-2 italic">
                {t('inventoryHub')}
             </p>
           </div>
@@ -185,10 +185,10 @@ const InventoryPanel = ({
             <Camera size={20} />
           </button>
           <div className="bg-white px-6 py-3 rounded-2xl border border-slate-100 shadow-sm hidden md:block">
-            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">Finished Assets</p>
+            <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1 italic">Finished Assets</p>
             <p className="text-2xl font-black italic text-black leading-none uppercase">
                 {(masterData.productions || []).filter((p) => p.status === "Received").length.toLocaleString()}{" "}
-                <span className="text-[10px] text-slate-300 ml-1">BATCHES</span>
+                <span className="text-[10px] text-slate-500 ml-1">BATCHES</span>
             </p>
           </div>
           <div className="flex gap-3 w-full md:w-auto">
@@ -218,7 +218,7 @@ const InventoryPanel = ({
                                 {identifying ? (
                                     <div className="space-y-10 flex flex-col items-center">
                                         <div className="w-40 h-40 border-[12px] border-slate-100 border-t-indigo-600 rounded-full animate-spin"></div>
-                                        <p className="text-[11px] font-black uppercase tracking-[0.8em] text-slate-400 animate-pulse">Analyzing Visual Nodes...</p>
+                                        <p className="text-[11px] font-black uppercase tracking-[0.8em] text-slate-500 animate-pulse">Analyzing Visual Nodes...</p>
                                     </div>
                                 ) : (
                                     <div className="animate-fade-up text-center space-y-8 p-12">
@@ -226,12 +226,12 @@ const InventoryPanel = ({
                                         <h4 className="text-8xl font-black italic tracking-tighter uppercase">{masterData.designs?.[0]?.name || 'Unknown Design'}</h4>
                                         <div className="flex justify-center gap-10">
                                             <div className="text-center">
-                                                <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-2 font-outfit">Match Confidence</p>
+                                                <p className="text-[10px] font-black uppercase text-slate-500 tracking-widest mb-2 font-outfit">Match Confidence</p>
                                                 <p className="text-3xl font-black italic">98.4%</p>
                                             </div>
                                             <div className="w-px h-12 bg-slate-200"></div>
                                             <div className="text-center">
-                                                <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-2">Category</p>
+                                                <p className="text-[10px] font-black uppercase text-slate-500 tracking-widest mb-2">Category</p>
                                                 <p className="text-3xl font-black italic">PREMIUM BORKA</p>
                                             </div>
                                         </div>
@@ -240,7 +240,7 @@ const InventoryPanel = ({
                             </div>
                             <div className="absolute top-0 left-0 w-full h-1 bg-indigo-600 animate-scan"></div>
                        </div>
-                       <p className="mt-12 text-[10px] font-black uppercase text-slate-300 tracking-[0.5em] italic">NRZO0NE Core Vision Architecture v1.0</p>
+                       <p className="mt-12 text-[10px] font-black uppercase text-slate-500 tracking-[0.5em] italic">NRZO0NE Core Vision Architecture v1.0</p>
                   </div>
               </div>
           </div>
@@ -262,7 +262,7 @@ const InventoryPanel = ({
         <div className="space-y-8">
           <div className="flex items-center justify-between px-6">
             <h3 className="text-2xl font-black uppercase italic tracking-tighter text-black">
-              Finished <span className="text-slate-300">Goods</span>
+              Finished <span className="text-slate-500">Goods</span>
             </h3>
             <div className="px-5 py-2 bg-slate-50 border border-slate-100 rounded-full text-[9px] font-black uppercase tracking-widest italic text-slate-500">
               {summary.length} Items
@@ -271,7 +271,7 @@ const InventoryPanel = ({
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
             {summary.length === 0 ? (
-              <div className="md:col-span-2 h-64 flex flex-col items-center justify-center bg-white rounded-3xl border-2 border-dashed border-slate-100 opacity-40">
+              <div className="md:col-span-2 h-64 flex flex-col items-center justify-center bg-white rounded-3xl border-2 border-dashed border-slate-100 opacity-70">
                 <Box size={48} strokeWidth={1} />
                 <p className="text-[10px] font-black uppercase tracking-[0.4em] mt-6">Zero Assets Detected</p>
               </div>
@@ -296,17 +296,17 @@ const InventoryPanel = ({
                         </h4>
                         <span className="badge-standard">{item.size}</span>
                       </div>
-                      <p className="text-slate-400 text-[11px] font-black uppercase italic tracking-widest leading-none">• {item.color}</p>
+                      <p className="text-slate-500 text-[11px] font-black uppercase italic tracking-widest leading-none">• {item.color}</p>
                     </div>
                   </div>
 
                   <div className="flex items-center gap-8 border-l border-slate-50 pl-8 relative z-10">
                     <div className="text-center">
-                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">Borka</p>
+                      <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1 italic">Borka</p>
                       <p className="text-2xl font-black italic tracking-tighter leading-none">{item.borka}</p>
                     </div>
                     <div className="text-center">
-                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">Hijab</p>
+                      <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1 italic">Hijab</p>
                       <p className="text-2xl font-black italic tracking-tighter leading-none">{item.hijab}</p>
                     </div>
                   </div>
@@ -321,7 +321,7 @@ const InventoryPanel = ({
         <div className="space-y-8">
           <div className="flex items-center justify-between px-6">
             <h3 className="text-2xl font-black uppercase italic tracking-tighter text-black">
-              Sewing <span className="text-slate-300">Stock</span>
+              Sewing <span className="text-slate-500">Stock</span>
             </h3>
             <div className="px-5 py-2 bg-slate-50 border border-slate-100 rounded-full text-[9px] font-black uppercase tracking-widest italic text-slate-500">
               {sewingSummary.length} Items
@@ -330,7 +330,7 @@ const InventoryPanel = ({
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
             {sewingSummary.length === 0 ? (
-              <div className="md:col-span-2 h-64 flex flex-col items-center justify-center bg-white rounded-3xl border-2 border-dashed border-slate-100 opacity-40">
+              <div className="md:col-span-2 h-64 flex flex-col items-center justify-center bg-white rounded-3xl border-2 border-dashed border-slate-100 opacity-70">
                 <Box size={48} strokeWidth={1} />
                 <p className="text-[10px] font-black uppercase tracking-[0.4em] mt-6">Zero Assets Detected</p>
               </div>
@@ -355,17 +355,17 @@ const InventoryPanel = ({
                         </h4>
                         <span className="badge-standard">{item.size}</span>
                       </div>
-                      <p className="text-slate-400 text-[11px] font-black uppercase italic tracking-widest leading-none">• {item.color}</p>
+                      <p className="text-slate-500 text-[11px] font-black uppercase italic tracking-widest leading-none">• {item.color}</p>
                     </div>
                   </div>
 
                   <div className="flex items-center gap-8 border-l border-slate-50 pl-8 relative z-10">
                     <div className="text-center">
-                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">Borka</p>
+                      <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1 italic">Borka</p>
                       <p className="text-2xl font-black italic tracking-tighter leading-none">{item.borka}</p>
                     </div>
                     <div className="text-center">
-                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">Hijab</p>
+                      <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1 italic">Hijab</p>
                       <p className="text-2xl font-black italic tracking-tighter leading-none">{item.hijab}</p>
                     </div>
                   </div>
@@ -380,7 +380,7 @@ const InventoryPanel = ({
         <div className="space-y-8">
           <div className="flex items-center justify-between px-6">
             <h3 className="text-2xl font-black uppercase italic tracking-tighter text-black">
-              Stone <span className="text-slate-300">Stock</span>
+              Stone <span className="text-slate-500">Stock</span>
             </h3>
             <div className="px-5 py-2 bg-slate-50 border border-slate-100 rounded-full text-[9px] font-black uppercase tracking-widest italic text-slate-500">
               {stoneSummary.length} Items
@@ -389,7 +389,7 @@ const InventoryPanel = ({
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
             {stoneSummary.length === 0 ? (
-              <div className="md:col-span-2 h-64 flex flex-col items-center justify-center bg-white rounded-3xl border-2 border-dashed border-slate-100 opacity-40">
+              <div className="md:col-span-2 h-64 flex flex-col items-center justify-center bg-white rounded-3xl border-2 border-dashed border-slate-100 opacity-70">
                 <Box size={48} strokeWidth={1} />
                 <p className="text-[10px] font-black uppercase tracking-[0.4em] mt-6">Zero Assets Detected</p>
               </div>
@@ -414,17 +414,17 @@ const InventoryPanel = ({
                         </h4>
                         <span className="badge-standard">{item.size}</span>
                       </div>
-                      <p className="text-slate-400 text-[11px] font-black uppercase italic tracking-widest leading-none">• {item.color}</p>
+                      <p className="text-slate-500 text-[11px] font-black uppercase italic tracking-widest leading-none">• {item.color}</p>
                     </div>
                   </div>
 
                   <div className="flex items-center gap-8 border-l border-slate-50 pl-8 relative z-10">
                     <div className="text-center">
-                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">Borka</p>
+                      <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1 italic">Borka</p>
                       <p className="text-2xl font-black italic tracking-tighter leading-none">{item.borka}</p>
                     </div>
                     <div className="text-center">
-                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">Hijab</p>
+                      <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1 italic">Hijab</p>
                       <p className="text-2xl font-black italic tracking-tighter leading-none">{item.hijab}</p>
                     </div>
                   </div>
@@ -440,7 +440,7 @@ const InventoryPanel = ({
             <div className="floating-header-group mb-12 p-2 dark:bg-zinc-900 border-none shadow-2xl">
                 <div className="flex flex-col lg:flex-row items-center gap-4 w-full">
                     <div className="flex-1 relative w-full group">
-                        <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none text-slate-300 group-focus-within:text-black dark:group-focus-within:text-white transition-colors">
+                        <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none text-slate-500 group-focus-within:text-black dark:group-focus-within:text-white transition-colors">
                             <Search size={16} />
                         </div>
                         <input
@@ -454,7 +454,7 @@ const InventoryPanel = ({
             </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10">
             {filteredInventory.length === 0 ? (
-                 <div className="lg:col-span-3 h-64 flex flex-col items-center justify-center bg-white rounded-3xl border-2 border-dashed border-slate-100 opacity-40">
+                 <div className="lg:col-span-3 h-64 flex flex-col items-center justify-center bg-white rounded-3xl border-2 border-dashed border-slate-100 opacity-70">
                     <Database size={48} strokeWidth={1} />
                     <p className="text-[10px] font-black uppercase tracking-[0.4em] mt-6">Zero Materials Detected</p>
                 </div>
@@ -471,7 +471,7 @@ const InventoryPanel = ({
                     <h4 className="text-3xl font-black italic uppercase leading-none mb-3 text-black group-hover:translate-x-1 transition-transform">
                       {item.name}
                     </h4>
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest italic">
+                    <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest italic">
                       TYPE: {item.color || "STANDARD"}
                     </p>
                   </div>
@@ -481,7 +481,7 @@ const InventoryPanel = ({
                     >
                       {item.qty}
                     </p>
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">
+                    <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1 italic">
                       PACKETS / UNITS
                     </p>
                   </div>
@@ -493,7 +493,7 @@ const InventoryPanel = ({
       )}
 
       {view === "add" && (
-        <div className="h-[400px] flex flex-col items-center justify-center text-slate-200 gap-6">
+        <div className="h-[400px] flex flex-col items-center justify-center text-slate-500 gap-6">
           <Package size={100} strokeWidth={1} className="opacity-10" />
           <p className="text-[10px] font-black uppercase tracking-[0.8em]">
             Entry Protocol Ready • উপরে বাটন দেখুন
@@ -511,7 +511,7 @@ const InventoryPanel = ({
               <h3 className="text-2xl md:text-3xl font-black uppercase italic mb-2 text-black">
                 স্টক {transactionType === "in" ? "যোগ" : "বিয়োগ"}
               </h3>
-              <p className="text-[10px] font-black tracking-widest text-slate-400 italic uppercase">
+              <p className="text-[10px] font-black tracking-widest text-slate-500 italic uppercase">
                 Inventory Adjustment Protocol
               </p>
             </div>
@@ -532,7 +532,7 @@ const InventoryPanel = ({
                     <input
                       name="item"
                       list="items-list"
-                      className="form-input py-4 md:py-5 text-sm font-black bg-slate-50 border-slate-100 placeholder:text-slate-200"
+                      className="form-input py-4 md:py-5 text-sm font-black bg-slate-50 border-slate-100 placeholder:text-slate-500"
                       placeholder="Material Name..."
                       required
                     />
@@ -552,7 +552,7 @@ const InventoryPanel = ({
                   <label className="text-[10px] text-slate-600 ml-4 font-black">Color (Optional)</label>
                   <input
                     name="color"
-                    className="form-input py-4 md:py-5 text-sm font-black bg-slate-50 border-slate-100 placeholder:text-slate-200"
+                    className="form-input py-4 md:py-5 text-sm font-black bg-slate-50 border-slate-100 placeholder:text-slate-500"
                     placeholder="Physical Property..."
                   />
               </div>
@@ -573,7 +573,7 @@ const InventoryPanel = ({
                   <label className="text-[10px] text-slate-600 ml-4 font-black">Reference Note</label>
                   <input
                     name="note"
-                    className="form-input py-4 md:py-5 text-sm font-black bg-slate-50 border-slate-100 placeholder:text-slate-200"
+                    className="form-input py-4 md:py-5 text-sm font-black bg-slate-50 border-slate-100 placeholder:text-slate-500"
                     placeholder="Log details..."
                   />
               </div>
@@ -582,7 +582,7 @@ const InventoryPanel = ({
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="py-5 md:py-6 rounded-full font-black text-xs md:text-sm uppercase bg-white border border-slate-100 text-slate-400 hover:text-black transition-all order-2 md:order-1 flex-1"
+                  className="py-5 md:py-6 rounded-full font-black text-xs md:text-sm uppercase bg-white border border-slate-100 text-slate-500 hover:text-black transition-all order-2 md:order-1 flex-1"
                 >
                   Cancel
                 </button>

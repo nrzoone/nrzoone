@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Card, Row, Col, Typography, Divider, QRCode, Tag, ConfigProvider, Modal, Input, Button, Select, DatePicker } from 'antd';
 import QRScanner from '../QRScanner';
+import UniversalSlip from '../UniversalSlip';
 import { 
   Plus,
   Trash2,
@@ -349,72 +350,8 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
     const isWorker = user?.role !== 'admin' && user?.role !== 'manager';
 
     if (printSlip) {
-        const SlipCard = ({ copyTitle }) => (
-            <ConfigProvider theme={QR_Slip_Theme}>
-              <div className="w-full bg-white flex flex-col relative overflow-hidden border-2 border-black p-12" style={{ height: '148.5mm' }}>
-                   <div className="flex justify-between items-start border-b-4 border-black pb-8 mb-8">
-                      <div>
-                         <h1 className="text-4xl font-black tracking-tighter uppercase leading-none">NRZO0NE</h1>
-                         <p className="text-[10px] font-black uppercase tracking-[0.6em] text-slate-400 mt-2">PATA PRODUCTION • LOGISTICS</p>
-                      </div>
-                      <div className="text-right">
-                         <p className="text-xl font-black uppercase tracking-widest italic decoration-double">লট নং #{printSlip.lotNo}</p>
-                         <p className="text-sm font-black text-slate-400 mt-1">{printSlip.date}</p>
-                      </div>
-                   </div>
-
-                   <div className="flex-1 flex flex-col justify-center gap-12">
-                        <div className="grid grid-cols-2 gap-12">
-                            <div className="border-4 border-black p-8 bg-slate-50 rounded-[2.5rem]">
-                                <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">ডিজাইন / প্যাটার্ন (Design)</p>
-                                <p className="text-4xl font-black uppercase truncate">{printSlip.design}</p>
-                            </div>
-                            <div className="border-4 border-black p-8 bg-slate-50 rounded-[2.5rem]">
-                                <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">নিযুক্ত কারিগর (Worker)</p>
-                                <p className="text-4xl font-black uppercase truncate">{printSlip.worker}</p>
-                            </div>
-                        </div>
-
-                        <div className="grid grid-cols-12 gap-8 items-center border-y-4 border-black py-12">
-                            <div className="col-span-8 flex gap-12">
-                                <div className="text-center group">
-                                    <p className="text-[11px] font-black uppercase text-slate-400 mb-2">পাতার পরিমাণ (Qty)</p>
-                                    <p className="text-8xl font-black italic">{printSlip.pataQty}</p>
-                                </div>
-                                <div className="text-center border-l-4 border-black pl-12">
-                                    <p className="text-[11px] font-black uppercase text-slate-400 mb-2">টাইপ (Type)</p>
-                                    <p className="text-4xl font-black uppercase italic">{printSlip.pataType}</p>
-                                </div>
-                            </div>
-                            <div className="col-span-4 flex items-center justify-end gap-6">
-                                <div className="text-right">
-                                    <p className="text-[10px] font-black uppercase text-slate-400 mb-1 tracking-widest">NR-PATA ID</p>
-                                    <p className="text-xs font-black italic opacity-30">{printSlip.id}</p>
-                                </div>
-                                <QRCode value={printSlip.id} size={110} bordered={false} style={{ padding: 0 }} />
-                            </div>
-                        </div>
-                   </div>
-
-                   <div className="mt-8 pt-8 flex justify-between items-center border-t-2 border-dashed border-slate-200">
-                        <div className="flex items-center gap-4">
-                            <div className="w-10 h-10 bg-black rounded flex items-center justify-center p-2">
-                        <NRZLogo size="sm" white={false} />
-                            </div>
-                            <div>
-                                <p className="text-[10px] font-black italic">SMART TRACK™ PRODUCTION NODE</p>
-                            </div>
-                        </div>
-                        <div className="px-12 py-4 bg-black text-white rounded-[2rem] font-black uppercase tracking-[0.4em] italic text-xl shadow-2xl">
-                            {copyTitle === "RECIPIENT COPY" ? "কারিগর কপি" : "অফিস কপি"}
-                        </div>
-                   </div>
-              </div>
-            </ConfigProvider>
-        );
-
         return (
-            <div className="min-h-screen bg-white text-black italic font-outfit py-10 print:py-0 print:bg-white">
+            <div className="min-h-screen bg-white text-black italic font-outfit py-10 print:py-0 print:bg-white overflow-hidden">
                 <style>{`
                     @media print { 
                         .no-print { display: none !important; } 
@@ -430,9 +367,9 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                 </div>
                 
                 <div className="w-[210mm] min-h-[297mm] mx-auto bg-white border border-gray-100 overflow-hidden relative">
-                    <SlipCard copyTitle="RECIPIENT COPY" />
-                    <div className="h-6 w-full border-t-4 border-dashed border-slate-200"></div>
-                    <SlipCard copyTitle="OFFICE COPY" />
+                    <UniversalSlip data={printSlip} type="ISSUE" copyTitle="RECIPIENT COPY" />
+                    <div className="h-4 w-full border-t-2 border-dashed border-slate-300"></div>
+                    <UniversalSlip data={printSlip} type="ISSUE" copyTitle="OFFICE COPY" />
                 </div>
             </div>
         );
@@ -460,9 +397,9 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
           </button>
           <div>
             <h1 className="section-header">
-                {t('pataHub')} <span className="text-slate-400">{t('productionUnit') || "Division"}</span>
+                {t('pataHub')} <span className="text-slate-500">{t('productionUnit') || "Division"}</span>
             </h1>
-            <p className="text-[11px] font-black text-slate-400 uppercase tracking-[0.4em] mt-2 italic">
+            <p className="text-[11px] font-black text-slate-500 uppercase tracking-[0.4em] mt-2 italic">
             </p>
         </div>
       </div>
@@ -483,7 +420,7 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                     <button
                       key={v}
                       onClick={() => setView(v)}
-                      className={`px-10 py-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${view === v ? 'bg-black text-white dark:bg-white dark:text-black shadow-lg italic' : 'text-slate-400 hover:text-black dark:hover:text-white'}`}
+                      className={`px-10 py-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${view === v ? 'bg-black text-white dark:bg-white dark:text-black shadow-lg italic' : 'text-slate-500 hover:text-black dark:hover:text-white'}`}
                     >
                       {t(v)}
                     </button>
@@ -491,7 +428,7 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
               </div>
               
               <div className="flex-1 relative w-full group">
-                  <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none text-slate-300 group-focus-within:text-black dark:group-focus-within:text-white transition-colors">
+                  <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none text-slate-500 group-focus-within:text-black dark:group-focus-within:text-white transition-colors">
                       <Search size={16} />
                   </div>
                   <input
@@ -524,11 +461,11 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                             </div>
                             <div>
                                 <h4 className="text-3xl font-black italic uppercase leading-none mb-3 text-black group-hover:translate-x-1 transition-transform">{w}</h4>
-                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Total Due (পাওনা)</p>
+                                <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Total Due (পাওনা)</p>
                             </div>
                             <div className="flex justify-between items-end relative z-10">
                                 <div className="flex items-baseline gap-2">
-                                    <p className={`text-5xl font-black italic tracking-tighter leading-none ${due > 0 ? 'text-amber-600' : 'text-slate-200'}`}>৳{due.toLocaleString()}</p>
+                                    <p className={`text-5xl font-black italic tracking-tighter leading-none ${due > 0 ? 'text-amber-600' : 'text-slate-500'}`}>৳{due.toLocaleString()}</p>
                                 </div>
                                 <div className="flex gap-4">
                                     <button
@@ -554,7 +491,7 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
         ) : (
             <div className="space-y-4">
                 {(view === 'active' ? activeEntries : historyEntries).length === 0 ? (
-                    <div className="h-64 flex flex-col items-center justify-center bg-white rounded-3xl border-2 border-dashed border-slate-100 opacity-40">
+                    <div className="h-64 flex flex-col items-center justify-center bg-white rounded-3xl border-2 border-dashed border-slate-100 opacity-70">
                         <Box size={48} strokeWidth={1} />
                         <p className="text-[10px] font-black uppercase tracking-[0.4em] mt-6">Zero Production Nodes</p>
                     </div>
@@ -572,7 +509,7 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                                         </h4>
                                         <span className="badge-standard">#{item.lotNo}</span>
                                     </div>
-                                    <div className="flex items-center gap-4 text-slate-400 text-[11px] font-black uppercase italic tracking-widest">
+                                    <div className="flex items-center gap-4 text-slate-500 text-[11px] font-black uppercase italic tracking-widest">
                                         <span>• {item.design}</span>
                                         <span>• {item.color}</span>
                                         <span>• {item.date}</span>
@@ -580,26 +517,26 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                                     </div>
                                     <div className="flex items-center gap-3">
                                         <span className="text-[9px] font-black uppercase tracking-widest px-3 py-1 bg-slate-50 border border-slate-100 rounded-full text-slate-500">{item.pataType}</span>
-                                        <span className="text-[9px] font-black uppercase tracking-widest text-slate-400 italic">S:{item.stonePackets || 0} Pkt • P:{item.paperRolls || 0} Roll</span>
+                                        <span className="text-[9px] font-black uppercase tracking-widest text-slate-500 italic">S:{item.stonePackets || 0} Pkt • P:{item.paperRolls || 0} Roll</span>
                                     </div>
                                 </div>
                             </div>
 
                             <div className="flex items-center gap-12 w-full md:w-auto justify-between border-t md:border-t-0 pt-6 md:pt-0">
                                 <div className="text-center">
-                                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">Total Pcs</p>
+                                    <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1 italic">Total Pcs</p>
                                     <p className="text-4xl font-black italic tracking-tighter leading-none">{item.receivedQty || item.pataQty}</p>
                                 </div>
                                 <div className="flex gap-3">
                                     {item.status === 'Pending' ? (
                                         <>
-                                            <button onClick={() => setPrintSlip(item)} className="w-12 h-12 flex items-center justify-center rounded-full bg-slate-50 text-slate-400 hover:bg-black hover:text-white transition-all shadow-sm">
+                                            <button onClick={() => setPrintSlip(item)} className="w-12 h-12 flex items-center justify-center rounded-full bg-slate-50 text-slate-500 hover:bg-black hover:text-white transition-all shadow-sm">
                                                 <Printer size={18} />
                                             </button>
                                             <button onClick={() => setReceiveModal(item)} className="black-button">জমা নিন (REC)</button>
                                         </>
                                     ) : (
-                                        <button onClick={() => setPrintSlip(item)} className="w-12 h-12 flex items-center justify-center rounded-full bg-slate-50 text-slate-400 hover:bg-black hover:text-white transition-all shadow-sm">
+                                        <button onClick={() => setPrintSlip(item)} className="w-12 h-12 flex items-center justify-center rounded-full bg-slate-50 text-slate-500 hover:bg-black hover:text-white transition-all shadow-sm">
                                             <Printer size={18} />
                                         </button>
                                     )}
@@ -655,7 +592,7 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                                     <p className={`text-4xl font-black italic tracking-tighter ${rawStock.roll < 3 ? 'text-rose-600' : 'text-blue-600'}`}>{rawStock.roll}</p>
                                 </div>
                                 <div className="md:col-span-2 bg-slate-50 p-6 rounded-3xl border-2 border-slate-100 flex flex-col justify-center">
-                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">Est. Wage Load</p>
+                                    <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1 italic">Est. Wage Load</p>
                                     <p className="text-4xl font-black italic text-black tracking-tighter leading-none">
                                         ৳{(Number(entryData.pataQty || 0) * (masterData.pataRates?.[entryData.pataType] || 0)).toLocaleString()}
                                     </p>
@@ -737,14 +674,14 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                                             <label className="text-[10px] font-black text-slate-600 uppercase tracking-widest italic mb-3 block">পাথর প্যাকেট (Stone Packet)</label>
                                             <div className="flex items-end gap-2">
                                                 <input type="number" className="bg-transparent text-5xl font-black text-black w-full outline-none italic placeholder:text-slate-100" placeholder="0" value={entryData.stonePackets} onChange={(e) => setEntryData(p => ({ ...p, stonePackets: e.target.value }))} />
-                                                <span className="text-lg font-black text-slate-400 mb-2 italic uppercase">Pkt</span>
+                                                <span className="text-lg font-black text-slate-500 mb-2 italic uppercase">Pkt</span>
                                             </div>
                                         </div>
                                         <div className="bg-white p-6 rounded-[1.5rem] border-2 border-slate-50 relative group overflow-hidden shadow-sm">
                                             <label className="text-[10px] font-black text-slate-600 uppercase tracking-widest italic mb-3 block">পেপার রোল (Paper Roll)</label>
                                             <div className="flex items-end gap-2">
                                                 <input type="number" className="bg-transparent text-5xl font-black text-black w-full outline-none italic placeholder:text-slate-100" placeholder="0" value={entryData.paperRolls} onChange={(e) => setEntryData(p => ({ ...p, paperRolls: e.target.value }))} />
-                                                <span className="text-lg font-black text-slate-400 mb-2 italic uppercase">Roll</span>
+                                                <span className="text-lg font-black text-slate-500 mb-2 italic uppercase">Roll</span>
                                             </div>
                                         </div>
                                     </div>
@@ -941,7 +878,7 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                                     </div>
                                     <div className="space-y-1">
                                         <label className="text-[8px] font-black text-slate-600 uppercase tracking-widest ml-2 block italic">রিমার্কস (ঐচ্ছিক)</label>
-                                        <input name="note" className="w-full py-3 text-[10px] font-black bg-slate-50 border-slate-100 text-black placeholder:text-slate-400 italic uppercase px-4 rounded-[1rem] border-none" placeholder="পেমেন্ট নোট লিখুন..." />
+                                        <input name="note" className="w-full py-3 text-[10px] font-black bg-slate-50 border-slate-100 text-black placeholder:text-slate-500 italic uppercase px-4 rounded-[1rem] border-none" placeholder="পেমেন্ট নোট লিখুন..." />
                                     </div>
                                 </div>
                                 <div className="flex gap-3">

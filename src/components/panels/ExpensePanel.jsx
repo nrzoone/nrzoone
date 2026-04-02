@@ -165,7 +165,7 @@ const ExpensePanel = ({
                 <h1 className="text-3xl font-black italic tracking-tighter leading-none mb-2">
                   NRZO0NE CASH
                 </h1>
-                <p className="text-[10px] font-black uppercase tracking-[0.5em] text-slate-400">
+                <p className="text-[10px] font-black uppercase tracking-[0.5em] text-slate-500">
                   Official Expense Documentation
                 </p>
               </div>
@@ -187,7 +187,7 @@ const ExpensePanel = ({
                     <p className="text-xl font-black leading-none">
                       {exp.description}
                     </p>
-                    <p className="text-[9px] font-black text-slate-400 tracking-widest opacity-60">
+                    <p className="text-[9px] font-black text-slate-500 tracking-widest opacity-60">
                       {exp.category}
                     </p>
                   </div>
@@ -199,7 +199,7 @@ const ExpensePanel = ({
             </div>
 
             <div className="mt-16 pt-10 border-t-[6px] border-black flex justify-between items-center">
-              <p className="text-2xl font-black text-slate-400 uppercase">
+              <p className="text-2xl font-black text-slate-500 uppercase">
                 Daily Outflow Total
               </p>
               <p className="text-3xl font-black text-black">
@@ -235,9 +235,9 @@ const ExpensePanel = ({
             </div>
             <div>
               <h2 className="text-xl md:text-2xl font-black tracking-tighter leading-none italic uppercase">
-                Cash <span className="text-slate-400">Nexus</span>
+                Cash <span className="text-slate-500">Nexus</span>
               </h2>
-              <p className="text-[10px] md:text-xs font-black text-slate-400 uppercase tracking-widest mt-2 md:mt-4 italic opacity-80">
+              <p className="text-[10px] md:text-xs font-black text-slate-500 uppercase tracking-widest mt-2 md:mt-4 italic opacity-80">
                 TREASURY MANAGEMENT SYSTEM
               </p>
             </div>
@@ -245,7 +245,7 @@ const ExpensePanel = ({
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4 w-full md:w-auto">
           <div className="bg-white p-6 rounded-xl border-2 border-slate-50 shadow-lg text-center">
-            <p className="text-[9px] font-black text-slate-300 uppercase italic">
+            <p className="text-[9px] font-black text-slate-500 uppercase italic">
               Cash In-Hand
             </p>
             <p className="text-xl md:text-2xl font-black text-emerald-600 italic">
@@ -253,7 +253,7 @@ const ExpensePanel = ({
             </p>
           </div>
           <div className="bg-white p-6 rounded-xl border-2 border-slate-50 shadow-lg text-center">
-            <p className="text-[9px] font-black text-slate-300 uppercase italic">
+            <p className="text-[9px] font-black text-slate-500 uppercase italic">
               Total Outflow
             </p>
             <p className="text-xl md:text-2xl font-black text-rose-500 italic">
@@ -277,7 +277,7 @@ const ExpensePanel = ({
                     <button
                       key={v}
                       onClick={() => setActiveTab(v)}
-                      className={`px-8 py-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${activeTab === v ? 'bg-black text-white dark:bg-white dark:text-black shadow-lg italic' : 'text-slate-400 hover:text-black dark:hover:text-white'}`}
+                      className={`px-8 py-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${activeTab === v ? 'bg-black text-white dark:bg-white dark:text-black shadow-lg italic' : 'text-slate-500 hover:text-black dark:hover:text-white'}`}
                     >
                       {v === "new" ? "নতুন এন্ট্রি" : v === "daily" ? "ডেইলি খরচ" : v === "cashIn" ? "ক্যাশ-ইন" : v === "worker" ? "শিল্পী বিবরণ" : v === "invoice" ? "ইনভয়েস" : "হিসাব বহি"}
                     </button>
@@ -285,7 +285,7 @@ const ExpensePanel = ({
               </div>
               
               <div className="flex-1 relative w-full group">
-                  <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none text-slate-300 group-focus-within:text-black dark:group-focus-within:text-white transition-colors">
+                  <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none text-slate-500 group-focus-within:text-black dark:group-focus-within:text-white transition-colors">
                       <Search size={16} />
                   </div>
                   <input
@@ -302,27 +302,27 @@ const ExpensePanel = ({
            <div className="ui-card flex flex-col gap-8">
               <div className="text-center">
                   <h3 className="text-3xl font-black italic uppercase italic">টাকা খরচ (Expense)</h3>
-                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-2 italic">Record money going out of the business</p>
+                  <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mt-2 italic">Record money going out of the business</p>
               </div>
               <form onSubmit={handleAddExpense} className="space-y-6">
                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-1">
-                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-4 italic">Expense Category</label>
+                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-4 italic">Expense Category</label>
                         <select name="category" className="form-input italic" required>
                              {["teaSnacks", "transport", "material", "utilities", "salary", "bonus", "others"].map(c => <option key={c} value={c}>{t(c)}</option>)}
                         </select>
                     </div>
                     <div className="space-y-1">
-                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-4 italic">Date (তারিখ)</label>
+                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-4 italic">Date (তারিখ)</label>
                         <input name="date" type="date" defaultValue={new Date().toISOString().split('T')[0]} className="form-input italic" required />
                     </div>
                  </div>
                  <div className="space-y-1">
-                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-4 italic">Description (কিসের খরচ)</label>
+                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-4 italic">Description (কিসের খরচ)</label>
                     <input name="description" placeholder="EXPENSE DETAILS..." className="form-input italic uppercase" required />
                  </div>
                  <div className="space-y-1">
-                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-4 italic">Amount (টাকার পরিমাণ)</label>
+                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-4 italic">Amount (টাকার পরিমাণ)</label>
                     <input name="amount" type="number" placeholder="৳ 0.00" className="form-input text-2xl font-black text-rose-600 bg-rose-50/10 border-rose-100 italic" required />
                  </div>
                  <button type="submit" className="issue-work-btn max-w-none mt-4 rotate-1 bg-black text-white py-6 rounded-3xl shadow-2xl hover:scale-105 active:scale-95 transition-all text-xl font-black italic">CONFIRM EXPENSE</button>
@@ -336,19 +336,19 @@ const ExpensePanel = ({
            <div className="ui-card flex flex-col gap-8">
               <div className="text-center">
                   <h3 className="text-3xl font-black italic uppercase italic">টাকা আসা (Cash In)</h3>
-                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-2 italic">Record money coming into the business</p>
+                  <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mt-2 italic">Record money coming into the business</p>
               </div>
               <form onSubmit={handleAddCash} className="space-y-6">
                  <div className="space-y-1">
-                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-4 italic">Date (তারিখ)</label>
+                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-4 italic">Date (তারিখ)</label>
                     <input name="date" type="date" defaultValue={new Date().toISOString().split('T')[0]} className="form-input italic" required />
                  </div>
                  <div className="space-y-1">
-                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-4 italic">Source / Details (টাকার উৎস)</label>
+                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-4 italic">Source / Details (টাকার উৎস)</label>
                     <input name="description" placeholder="CASH SOURCE DETAILS..." className="form-input italic uppercase" required />
                  </div>
                  <div className="space-y-1">
-                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-4 italic">Amount (টাকার পরিমাণ)</label>
+                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-4 italic">Amount (টাকার পরিমাণ)</label>
                     <input name="amount" type="number" placeholder="৳ 0.00" className="form-input text-2xl font-black text-emerald-600 bg-emerald-50/10 border-emerald-100 italic" required />
                  </div>
                  <button type="submit" className="issue-work-btn max-w-none mt-4 -rotate-1 bg-emerald-600 text-white py-6 rounded-3xl shadow-2xl hover:bg-black hover:scale-105 active:scale-95 transition-all text-xl font-black italic">RECEIVE CASH</button>
@@ -359,7 +359,7 @@ const ExpensePanel = ({
       {activeTab === "daily" && (
         <div className="space-y-8">
           <div className="flex justify-between items-center px-10">
-            <h4 className="text-xl font-black italic text-slate-400">
+            <h4 className="text-xl font-black italic text-slate-500">
               Entry List
             </h4>
             <input
@@ -373,7 +373,7 @@ const ExpensePanel = ({
             {filteredExpenses.length === 0 ? (
               <div className="col-span-full h-[400px] flex flex-col items-center justify-center bg-white rounded-[5rem] border-4 border-dashed border-slate-50 text-slate-100 gap-10">
                 <TrendingDown size={100} strokeWidth={1} />
-                <p className="text-[12px] font-black tracking-[0.8em] opacity-40">
+                <p className="text-[12px] font-black tracking-[0.8em] opacity-70">
                   No Leakage Found For This Date
                 </p>
               </div>
@@ -388,7 +388,7 @@ const ExpensePanel = ({
                   </div>
                   <div className="relative z-10">
                     <div className="flex justify-between mb-8">
-                      <span className="px-5 py-2 bg-slate-50 rounded-full text-[9px] font-black text-slate-400 tracking-widest border border-slate-100 shadow-sm">
+                      <span className="px-5 py-2 bg-slate-50 rounded-full text-[9px] font-black text-slate-500 tracking-widest border border-slate-100 shadow-sm">
                         {exp.category}
                       </span>
                       <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -403,7 +403,7 @@ const ExpensePanel = ({
                     <h5 className="text-3xl md:text-2xl font-black tracking-tighter italic leading-none uppercase mb-2">
                       {exp.description}
                     </h5>
-                    <p className="text-[10px] font-black text-slate-200 uppercase tracking-[0.5em]">
+                    <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.5em]">
                       {exp.date}
                     </p>
                   </div>

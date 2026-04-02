@@ -6,7 +6,7 @@ export const DashboardCard = ({ title, pending, finished, bill, color, label2 = 
         <div className="bg-white p-12 rounded-[4.5rem] border-4 border-gray-100 shadow-2xl space-y-10 hover:border-black transition-all duration-500 group relative overflow-hidden italic active:scale-[0.98] text-black">
             <div className="flex justify-between items-start relative z-10">
                 <div>
-                    <p className="text-[11px] font-black uppercase tracking-[0.5em] text-gray-400 mb-2 italic">OPERATIONAL NODE</p>
+                    <p className="text-[11px] font-black uppercase tracking-[0.5em] text-slate-500 mb-2 italic">OPERATIONAL NODE</p>
                     <h3 className="text-4xl font-black uppercase tracking-tighter italic leading-none">{title}</h3>
                 </div>
                 <div className="w-12 h-12 rounded-2xl bg-black text-white flex items-center justify-center shadow-2xl group-hover:rotate-12 transition-transform">
@@ -16,18 +16,18 @@ export const DashboardCard = ({ title, pending, finished, bill, color, label2 = 
 
             <div className="grid grid-cols-2 gap-8 relative z-10">
                 <div className="bg-gray-50 p-8 rounded-[2.5rem] border border-gray-100 shadow-inner group-hover:bg-gray-100 transition-colors">
-                    <p className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-400 mb-4 italic">IN PROGRESS</p>
+                    <p className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-500 mb-4 italic">IN PROGRESS</p>
                     <p className="text-5xl font-black text-black tracking-tighter leading-none italic">{pending}</p>
                 </div>
                 <div className="bg-gray-50 p-8 rounded-[2.5rem] border border-gray-100 shadow-inner group-hover:bg-gray-100 transition-colors">
-                    <p className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-400 mb-4 italic">{label2.toUpperCase()}</p>
+                    <p className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-500 mb-4 italic">{label2.toUpperCase()}</p>
                     <p className="text-5xl font-black text-black tracking-tighter leading-none italic">{finished}</p>
                 </div>
             </div>
 
             {bill > 0 && (
                 <div className="pt-10 border-t border-gray-100 relative z-10">
-                    <p className="text-[11px] font-black uppercase tracking-[0.5em] text-gray-400 mb-4 italic">ACCUMULATED REVENUE</p>
+                    <p className="text-[11px] font-black uppercase tracking-[0.5em] text-slate-500 mb-4 italic">ACCUMULATED REVENUE</p>
                     <div className="flex items-baseline gap-4">
                         <span className="text-4xl font-black text-emerald-500 italic">৳</span>
                         <p className="text-7xl font-black text-black tracking-tighter leading-none italic">{bill.toLocaleString()}</p>
@@ -56,7 +56,7 @@ export const MenuButton = ({ title, sub, onClick, icon, color }) => {
                     <h4 className="font-black text-black leading-none uppercase tracking-tighter text-5xl mb-3 transition-colors italic">
                         {title}
                     </h4>
-                    <span className="text-[11px] font-black text-gray-400 uppercase tracking-[0.6em] italic">{sub}</span>
+                    <span className="text-[11px] font-black text-slate-500 uppercase tracking-[0.6em] italic">{sub}</span>
                 </div>
             </div>
 

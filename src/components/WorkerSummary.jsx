@@ -75,22 +75,22 @@ const WorkerSummary = ({ masterData }) => {
                         <NRZLogo size="sm" white />
                     </div>
                     <div>
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.6em] mb-1">Performance Intelligence</p>
+                        <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.6em] mb-1">Performance Intelligence</p>
                         <h2 className="text-3xl md:text-5xl font-black uppercase tracking-tighter leading-none text-black italic">
-                            Worker <span className="text-slate-400">Ledger</span>
+                            Worker <span className="text-slate-500">Ledger</span>
                         </h2>
                     </div>
                 </div>
                 <div className="bg-white p-8 rounded-[3rem] border border-slate-50 shadow-2xl text-right min-w-[300px]">
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mb-2">Total Net Payable</p>
+                    <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.4em] mb-2">Total Net Payable</p>
                     <p className="text-4xl font-black italic tracking-tighter text-black">৳{totalBillAll.toLocaleString()}</p>
                 </div>
             </div>
 
             <div className="bg-white p-4 rounded-[2rem] border border-slate-50 shadow-inner flex flex-col md:flex-row gap-4">
                 <div className="flex-1 bg-slate-50 px-8 py-5 rounded-2xl flex items-center gap-4 border border-white shadow-sm">
-                    <Search size={20} className="text-slate-300" />
-                    <input type="text" placeholder="Search Identity..." className="bg-transparent font-black italic border-none outline-none w-full uppercase text-lg text-black placeholder:text-slate-200" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+                    <Search size={20} className="text-slate-500" />
+                    <input type="text" placeholder="Search Identity..." className="bg-transparent font-black italic border-none outline-none w-full uppercase text-lg text-black placeholder:text-slate-500" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
                 </div>
                 <select className="bg-black text-white px-10 py-5 rounded-2xl font-black uppercase text-xs tracking-widest cursor-pointer hover:bg-zinc-800 transition-colors" value={filterDept} onChange={(e) => setFilterDept(e.target.value)}>
                     <option value="all">Global Domain</option>
@@ -112,18 +112,18 @@ const WorkerSummary = ({ masterData }) => {
                         </div>
                         <div className="flex justify-between items-start mb-10 relative z-10">
                             <div>
-                                <p className="text-[8px] font-black text-slate-300 uppercase tracking-[0.5em] mb-2 italic">Entity Identity</p>
+                                <p className="text-[8px] font-black text-slate-500 uppercase tracking-[0.5em] mb-2 italic">Entity Identity</p>
                                 <h4 className="text-3xl font-black italic uppercase leading-none text-black">{w.name}</h4>
                             </div>
                         </div>
                         <div className="space-y-6 mt-auto relative z-10">
                             <div className="bg-slate-50 p-6 rounded-[2.5rem] border border-white shadow-inner">
                                 <div className="flex justify-between items-center mb-4">
-                                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">{w.label}</p>
-                                    <p className="text-xl font-black italic text-black">{w.qty} <span className="text-[10px] text-slate-300">{w.label === 'PRESENT DAYS' ? 'DAYS' : 'PCS'}</span></p>
+                                    <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest">{w.label}</p>
+                                    <p className="text-xl font-black italic text-black">{w.qty} <span className="text-[10px] text-slate-500">{w.label === 'PRESENT DAYS' ? 'DAYS' : 'PCS'}</span></p>
                                 </div>
                                 <div className="flex justify-between items-center">
-                                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Gross Bill</p>
+                                    <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Gross Bill</p>
                                     <p className="text-xl font-black italic text-black">৳{w.bill.toLocaleString()}</p>
                                 </div>
                             </div>
@@ -133,11 +133,11 @@ const WorkerSummary = ({ masterData }) => {
                                     <p className="text-xl font-black italic">৳{w.paid.toLocaleString()}</p>
                                 </div>
                                 <div className="bg-black text-white p-6 rounded-[2.5rem] shadow-xl flex flex-col justify-center">
-                                    <p className="text-[8px] font-black text-white/40 uppercase tracking-widest mb-1">Balance</p>
+                                    <p className="text-[8px] font-black text-white/70 uppercase tracking-widest mb-1">Balance</p>
                                     <p className="text-xl font-black italic">৳{w.balance.toLocaleString()}</p>
                                 </div>
                             </div>
-                            <div className="pt-4 flex items-center justify-between text-slate-400 group-hover:text-black transition-colors">
+                            <div className="pt-4 flex items-center justify-between text-slate-500 group-hover:text-black transition-colors">
                                 <span className="text-[9px] font-black uppercase tracking-[0.3em] italic">Open Ledger History</span>
                                 <ArrowUpRight size={16} />
                             </div>
@@ -162,7 +162,7 @@ const WorkerSummary = ({ masterData }) => {
                                         <FileText size={40} className="text-white" />
                                     </div>
                                     <div>
-                                        <p className="text-sm font-black uppercase tracking-[0.8em] text-white/40 mb-2">Worker Audit Journal</p>
+                                        <p className="text-sm font-black uppercase tracking-[0.8em] text-white/70 mb-2">Worker Audit Journal</p>
                                         <h2 className="text-5xl md:text-7xl font-black uppercase italic tracking-tighter leading-none">{selectedWorker.name}</h2>
                                     </div>
                                 </div>
@@ -177,7 +177,7 @@ const WorkerSummary = ({ masterData }) => {
 
                         <div className="flex-1 overflow-y-auto p-12 md:p-20 space-y-12 no-scrollbar bg-[#fcfcfc]">
                              <div className="space-y-6">
-                                <h3 className="text-sm font-black uppercase tracking-[0.4em] text-slate-300 mb-8 border-b border-slate-100 pb-4 flex items-center gap-4 italic"><History size={16} /> Production Logs (কাজের বিবরণ)</h3>
+                                <h3 className="text-sm font-black uppercase tracking-[0.4em] text-slate-500 mb-8 border-b border-slate-100 pb-4 flex items-center gap-4 italic"><History size={16} /> Production Logs (কাজের বিবরণ)</h3>
                                 <div className="space-y-4">
                                     {selectedWorker.history.length === 0 ? (
                                         <div className="py-20 text-center opacity-30 italic uppercase font-black tracking-widest">No production records found for this unit.</div>
@@ -187,8 +187,8 @@ const WorkerSummary = ({ masterData }) => {
                                                 <div className="flex items-center gap-8">
                                                     <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center font-black italic border border-slate-100 group-hover:bg-black group-hover:text-white transition-all">{log.date.split('-')[2]}</div>
                                                     <div>
-                                                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">{log.date}</p>
-                                                        <h4 className="text-xl font-black uppercase italic text-black">{log.design || 'Pata Work'} <span className="text-[10px] text-slate-300 ml-2">#{log.lotNo || 'N/A'}</span></h4>
+                                                        <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1 italic">{log.date}</p>
+                                                        <h4 className="text-xl font-black uppercase italic text-black">{log.design || 'Pata Work'} <span className="text-[10px] text-slate-500 ml-2">#{log.lotNo || 'N/A'}</span></h4>
                                                     </div>
                                                 </div>
                                                 <div className="text-right">
@@ -202,12 +202,12 @@ const WorkerSummary = ({ masterData }) => {
                              </div>
 
                              <div className="space-y-6">
-                                <h3 className="text-sm font-black uppercase tracking-[0.4em] text-slate-300 mb-8 border-b border-slate-100 pb-4 flex items-center gap-4 italic"><UserCheck size={16} /> Attendance Log (হাজিরা রেকর্ড)</h3>
+                                <h3 className="text-sm font-black uppercase tracking-[0.4em] text-slate-500 mb-8 border-b border-slate-100 pb-4 flex items-center gap-4 italic"><UserCheck size={16} /> Attendance Log (হাজিরা রেকর্ড)</h3>
                                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                                     {(selectedWorker.attendanceHistory || []).slice(0, 12).map((a, aidx) => (
                                         <div key={aidx} className="bg-white p-6 rounded-2xl border border-slate-50 flex items-center justify-between relative overflow-hidden group hover:border-black transition-all">
                                             <div>
-                                                <p className="text-[8px] font-black text-slate-300 uppercase italic mb-1">{a.date}</p>
+                                                <p className="text-[8px] font-black text-slate-500 uppercase italic mb-1">{a.date}</p>
                                                 <p className={`text-[10px] font-black uppercase italic ${a.status === 'present' ? 'text-emerald-500' : 'text-rose-500'}`}>{a.status}</p>
                                             </div>
                                             <div className={`w-2 h-full absolute right-0 top-0 ${a.status === 'present' ? 'bg-emerald-500' : 'bg-rose-500'}`}></div>

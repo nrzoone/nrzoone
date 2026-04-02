@@ -346,7 +346,7 @@ const SettingsPanel = ({
     <button
       onClick={() => onClick(id)}
       className={`px-8 py-4 rounded-xl font-black uppercase text-[10px] tracking-widest transition-all italic ${
-        active === id ? "bg-black text-white shadow-xl rotate-3" : "text-slate-400 hover:bg-slate-50"
+        active === id ? "bg-black text-white shadow-xl rotate-3" : "text-slate-500 hover:bg-slate-50"
       }`}
     >
       {label}
@@ -371,7 +371,7 @@ const SettingsPanel = ({
             <h3 className="text-2xl md:text-4xl font-black uppercase tracking-tighter leading-none italic">
               {title}
             </h3>
-            <p className="text-[10px] md:text-[11px] text-slate-400 font-black uppercase tracking-[0.4em] md:tracking-[0.5em] mt-3 md:mt-4 italic">
+            <p className="text-[10px] md:text-[11px] text-slate-500 font-black uppercase tracking-[0.4em] md:tracking-[0.5em] mt-3 md:mt-4 italic">
               {items?.length || 0} NODES CONFIGURED
             </p>
           </div>
@@ -422,13 +422,13 @@ const SettingsPanel = ({
                   <div className="flex gap-4 opacity-10 group-hover:opacity-100 transition-all relative z-10">
                     <button
                       onClick={() => setEditingItem(`${category}-${idx}`)}
-                      className="flex-1 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-200 hover:text-black transition-all"
+                      className="flex-1 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-500 hover:text-black transition-all"
                     >
                       <Edit2 size={16} />
                     </button>
                     <button
                       onClick={() => handleDeleteListItem(category, idx)}
-                      className="flex-1 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-200 hover:text-rose-500 transition-all"
+                      className="flex-1 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-500 hover:text-rose-500 transition-all"
                     >
                       <Trash2 size={16} />
                     </button>
@@ -481,7 +481,7 @@ const SettingsPanel = ({
         return (
           <div key={idx} className="bg-slate-50 dark:bg-black/40 p-10 rounded-[3rem] border-2 border-slate-100 dark:border-zinc-800 italic relative group shadow-sm min-h-[250px] flex flex-col justify-between">
             <div className="flex justify-between items-start">
-              <span className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest ${u.role === 'admin' ? 'bg-black text-white dark:bg-white dark:text-black' : 'bg-white dark:bg-zinc-900 text-slate-400'}`}>
+              <span className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest ${u.role === 'admin' ? 'bg-black text-white dark:bg-white dark:text-black' : 'bg-white dark:bg-zinc-900 text-slate-500'}`}>
                 {u.role}
               </span>
               <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-all">
@@ -491,7 +491,7 @@ const SettingsPanel = ({
             </div>
             <div className="mt-8">
               <h4 className="text-3xl font-black uppercase tracking-tighter italic leading-none">{u.name}</h4>
-              <p className="text-[11px] font-black text-slate-400 uppercase tracking-widest mt-2">{u.id}</p>
+              <p className="text-[11px] font-black text-slate-500 uppercase tracking-widest mt-2">{u.id}</p>
             </div>
           </div>
         );
@@ -513,10 +513,10 @@ const SettingsPanel = ({
               <div className="p-4 bg-white dark:bg-zinc-900 rounded-2xl group-hover:rotate-6 transition-transform"><sec.icon size={20} /></div>
               <div>
                  <h4 className="text-lg font-black uppercase italic leading-none">{sec.label}</h4>
-                 <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mt-1">{sec.items?.length || 0} {t("nodes") || "NODES"}</p>
+                 <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mt-1">{sec.items?.length || 0} {t("nodes") || "NODES"}</p>
               </div>
             </div>
-            <ChevronRight size={16} className="text-slate-300" />
+            <ChevronRight size={16} className="text-slate-500" />
           </button>
         ))}
       </div>
@@ -537,10 +537,10 @@ const SettingsPanel = ({
             </div>
             <div className="text-left">
               <h3 className="text-2xl font-black uppercase italic leading-none">{label}</h3>
-              <p className="text-[10px] uppercase font-black text-slate-400 tracking-widest mt-2">{description}</p>
+              <p className="text-[10px] uppercase font-black text-slate-500 tracking-widest mt-2">{description}</p>
             </div>
           </div>
-          <div className={`transition-all duration-500 ${isOpen ? 'rotate-90 scale-125 text-black dark:text-white' : 'text-slate-300'}`}>
+          <div className={`transition-all duration-500 ${isOpen ? 'rotate-90 scale-125 text-black dark:text-white' : 'text-slate-500'}`}>
              <ChevronRight size={24} />
           </div>
         </button>
@@ -578,23 +578,23 @@ const SettingsPanel = ({
         <div key={dept} className="bg-slate-50 dark:bg-black/20 p-8 rounded-[3rem] border border-slate-100 dark:border-zinc-800">
           <div className="flex justify-between items-center mb-8 px-4">
              <h4 className="text-xl font-black uppercase italic tracking-tighter">{dept} {t("operatives") || "Operatives"}</h4>
-             <span className="text-[10px] font-black uppercase text-slate-400 tracking-widest">{getUnifiedWorkers(dept).length} {t("staff") || "Staff"}</span>
+             <span className="text-[10px] font-black uppercase text-slate-500 tracking-widest">{getUnifiedWorkers(dept).length} {t("staff") || "Staff"}</span>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {getUnifiedWorkers(dept).map((w, idx) => (
               <div key={idx} className="bg-white dark:bg-zinc-900/50 p-6 rounded-3xl border border-slate-50 dark:border-zinc-800 hover:border-black dark:hover:border-white transition-all group relative overflow-hidden">
                 <div className="flex justify-between items-start mb-4">
-                  <div className="w-10 h-10 bg-slate-50 dark:bg-white/5 rounded-xl flex items-center justify-center text-slate-300 group-hover:scale-110 transition-transform">
+                  <div className="w-10 h-10 bg-slate-50 dark:bg-white/5 rounded-xl flex items-center justify-center text-slate-500 group-hover:scale-110 transition-transform">
                      <User size={18} />
                   </div>
                   <div className="flex gap-2">
-                    <button onClick={() => setWorkerDocModal(w)} className="p-2 text-slate-400 hover:text-black dark:hover:text-white"><Edit2 size={14} /></button>
+                    <button onClick={() => setWorkerDocModal(w)} className="p-2 text-slate-500 hover:text-black dark:hover:text-white"><Edit2 size={14} /></button>
                     {!w.isLegacy && <button onClick={() => handleDeleteUnifiedWorker(w.id, w.name, w.dept)} className="p-2 text-rose-300 hover:text-rose-500"><Trash2 size={14} /></button>}
                   </div>
                 </div>
                 <h5 className="text-lg font-black uppercase italic truncate">{w.name}</h5>
                 <div className="flex justify-between items-end mt-4">
-                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest italic font-mono">{t("wage") || "WAGE"}: ৳{w.wage}</p>
+                   <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest italic font-mono">{t("wage") || "WAGE"}: ৳{w.wage}</p>
                    <button onClick={() => sendWhatsApp(w.phone, t("salaryUpdateMsg") || "NRZOONE Salary Update: আপনার বর্তমান মজুরি আপডেট করা হয়েছে।")} className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-500 flex items-center justify-center hover:bg-emerald-500 hover:text-white transition-all shadow-sm">
                       <MessageCircle size={14} strokeWidth={3} />
                    </button>
@@ -611,7 +611,7 @@ const SettingsPanel = ({
     <div className="bg-white dark:bg-zinc-900/50 rounded-[3rem] border border-slate-100 dark:border-zinc-900 overflow-hidden min-h-[400px]">
       <div className="overflow-x-auto">
         <table className="w-full text-left italic">
-          <thead className="bg-slate-50 dark:bg-black/20 text-slate-400 font-black text-[11px] uppercase tracking-[0.2em]">
+          <thead className="bg-slate-50 dark:bg-black/20 text-slate-500 font-black text-[11px] uppercase tracking-[0.2em]">
             <tr>
               <th className="px-8 py-6">{t("timestamp") || "Timestamp"}</th>
               <th className="px-6 py-6">{t("nodeCreator") || "Node Creator"}</th>
@@ -624,11 +624,11 @@ const SettingsPanel = ({
               <tr key={i} className="hover:bg-slate-50/50 dark:hover:bg-white/5 transition-all">
                 <td className="px-8 py-5">
                    <p className="text-[10px] font-black opacity-30">{new Date(log.timestamp).toLocaleTimeString()}</p>
-                   <p className="text-[9px] font-bold text-slate-400">{new Date(log.timestamp).toLocaleDateString()}</p>
+                   <p className="text-[9px] font-bold text-slate-500">{new Date(log.timestamp).toLocaleDateString()}</p>
                 </td>
                 <td className="px-6 py-5">
                    <p className="text-xs font-black uppercase">{log.user}</p>
-                   <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest">{log.role}</span>
+                   <span className="text-[8px] font-black text-slate-500 uppercase tracking-widest">{log.role}</span>
                 </td>
                 <td className="px-6 py-5 font-black text-[10px] uppercase text-emerald-500 italic">{log.action}</td>
                 <td className="px-6 py-5 text-[10px] text-slate-500 truncate max-w-xs">{typeof log.details === 'string' ? log.details : JSON.stringify(log.details)}</td>
@@ -645,7 +645,7 @@ const SettingsPanel = ({
       <div className="bg-black text-white rounded-[3rem] p-12 text-center relative overflow-hidden group border-8 border-white/5">
          <div className="relative z-10">
             <h4 className="text-4xl font-black italic uppercase tracking-tighter mb-4">{t("masterArchives") || "Master Archives"}</h4>
-            <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest max-w-md mx-auto mb-10 italic">{t("backupDesc") || "Secure production backups with instant node restoration capabilities."}</p>
+            <p className="text-slate-500 text-[10px] font-black uppercase tracking-widest max-w-md mx-auto mb-10 italic">{t("backupDesc") || "Secure production backups with instant node restoration capabilities."}</p>
             <div className="flex flex-col md:flex-row justify-center gap-4 px-10">
                <button onClick={handleBackup} className="bg-white text-black px-10 py-6 rounded-2xl font-black uppercase text-[10px] tracking-widest hover:scale-105 transition-all shadow-xl flex items-center justify-center gap-3 italic">
                   <Download size={18} /> {t("downloadJson") || "Download JSON"}
@@ -661,7 +661,7 @@ const SettingsPanel = ({
          {['productions', 'cuttingStock', 'pataEntries', 'deliveries', 'attendance'].map(key => (
             <div key={key} className="bg-slate-50 dark:bg-black/20 p-8 rounded-[3rem] flex justify-between items-center group hover:border-rose-500 transition-all border border-transparent">
                <div>
-                  <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">{key.toUpperCase()}</p>
+                  <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">{key.toUpperCase()}</p>
                   <p className="text-2xl font-black italic tracking-tighter">{masterData[key]?.length || 0}</p>
                </div>
                <button onClick={() => { if(confirm(t("confirmWipe", { key }) || `Wipe all ${key}?`)) setMasterData(prev => ({...prev, [key]: []})); }} className="w-10 h-10 rounded-xl bg-white dark:bg-zinc-800 text-rose-500 flex items-center justify-center hover:bg-rose-500 hover:text-white transition-all shadow-sm opacity-20 group-hover:opacity-100">
@@ -687,9 +687,9 @@ const SettingsPanel = ({
               </button>
               <div>
                 <h1 className="section-header">
-                   {t("strategicHub") || "Strategic"} <span className="text-slate-400">{t("hub") || "Hub"}</span>
+                   {t("strategicHub") || "Strategic"} <span className="text-slate-500">{t("hub") || "Hub"}</span>
                 </h1>
-                <p className="text-[11px] font-black text-slate-400 uppercase tracking-[0.4em] mt-2 italic">
+                <p className="text-[11px] font-black text-slate-500 uppercase tracking-[0.4em] mt-2 italic">
                    {t("systemVersion") || "System Control Node v2.1"}
                 </p>
               </div>
@@ -725,18 +725,18 @@ const SettingsPanel = ({
               <h3 className="text-2xl font-black uppercase mb-8 italic tracking-tighter">{t('systemDiagnostic') || "Diagnostic Node"}</h3>
               <div className="space-y-8">
                 <div>
-                   <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">{t("nodeSyncStatus") || "Node Sync Status"}</p>
+                   <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">{t("nodeSyncStatus") || "Node Sync Status"}</p>
                    <div className="flex items-center gap-2">
                       <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></div>
                       <p className="text-xs font-black uppercase italic">{t("primaryCloudOnline") || "Primary Cloud Online"}</p>
                    </div>
                 </div>
                 <div>
-                   <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">{t("dbLatency") || "Database Latency"}</p>
-                   <p className="text-4xl font-black italic tracking-tighter">14<span className="text-xs ml-1 opacity-40">ms</span></p>
+                   <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">{t("dbLatency") || "Database Latency"}</p>
+                   <p className="text-4xl font-black italic tracking-tighter">14<span className="text-xs ml-1 opacity-70">ms</span></p>
                 </div>
                 <div className="pt-6 border-t border-slate-50 dark:border-zinc-800">
-                   <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-3">{t("systemCapacity") || "System Capacity"}</p>
+                   <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-3">{t("systemCapacity") || "System Capacity"}</p>
                    <div className="w-full h-1 bg-slate-50 dark:bg-black/50 rounded-full overflow-hidden">
                       <div className="w-[84%] h-full bg-black dark:bg-white"></div>
                    </div>
@@ -749,7 +749,7 @@ const SettingsPanel = ({
 
           <div className="bg-black text-white p-10 rounded-[3.5rem] shadow-3xl text-center italic group overflow-hidden relative border-8 border-white/5">
              <div className="relative z-10">
-                <p className="text-[9px] font-black tracking-[0.5em] mb-4 uppercase opacity-40">Administrative</p>
+                <p className="text-[9px] font-black tracking-[0.5em] mb-4 uppercase opacity-70">Administrative</p>
                 <h4 className="text-2xl font-black uppercase italic mb-8 tracking-tighter italic">Self-Correction Node</h4>
                 <button onClick={() => window.location.reload()} className="w-full bg-white text-black py-4 rounded-2xl font-black uppercase text-[10px] tracking-widest hover:scale-105 transition-all shadow-xl italic">
                    Soft Reboot
@@ -767,7 +767,7 @@ const SettingsPanel = ({
               <h3 className="text-4xl font-black uppercase italic mb-2">
                 {t('addUser') || "নতুন ইউজার"}
               </h3>
-              <p className="text-xl font-black tracking-widest text-slate-200 italic">
+              <p className="text-xl font-black tracking-widest text-slate-500 italic">
                 Identity Provisioning
               </p>
             </div>
@@ -808,7 +808,7 @@ const SettingsPanel = ({
               <div className="flex gap-4">
                 <button
                   onClick={() => setShowAddModal(false)}
-                  className="flex-1 py-10 rounded-full font-black text-sm uppercase bg-slate-50 text-slate-400"
+                  className="flex-1 py-10 rounded-full font-black text-sm uppercase bg-slate-50 text-slate-500"
                 >
                   Cancel
                 </button>
@@ -838,7 +838,7 @@ const SettingsPanel = ({
               <h3 className="text-4xl font-black uppercase italic mb-2">
                 ADD {showAddModal.toUpperCase()}
               </h3>
-              <p className="text-xl font-black tracking-widest text-slate-200 italic">
+              <p className="text-xl font-black tracking-widest text-slate-500 italic">
                 Core configuration
               </p>
             </div>
@@ -852,7 +852,7 @@ const SettingsPanel = ({
               <div className="flex gap-4">
                 <button
                   onClick={() => setShowAddModal(false)}
-                  className="flex-1 py-10 rounded-full font-black text-sm uppercase bg-slate-50 text-slate-400"
+                  className="flex-1 py-10 rounded-full font-black text-sm uppercase bg-slate-50 text-slate-500"
                 >
                   Cancel
                 </button>
@@ -880,7 +880,7 @@ const SettingsPanel = ({
               <h3 className="text-4xl font-black uppercase italic mb-2">
                 নতুন কর্মী
               </h3>
-              <p className="text-xl font-black tracking-widest text-slate-200 italic">
+              <p className="text-xl font-black tracking-widest text-slate-500 italic">
                 User Deployment
               </p>
             </div>
@@ -915,7 +915,7 @@ const SettingsPanel = ({
               <div className="flex gap-4">
                 <button
                   onClick={() => setShowAddModal(false)}
-                  className="flex-1 py-10 rounded-full font-black text-sm uppercase bg-slate-50 text-slate-400"
+                  className="flex-1 py-10 rounded-full font-black text-sm uppercase bg-slate-50 text-slate-500"
                 >
                   Cancel
                 </button>
@@ -944,7 +944,7 @@ const SettingsPanel = ({
               <h3 className="text-4xl font-black uppercase italic mb-2">
                 নতুন ডিজাইন
               </h3>
-              <p className="text-xl font-black tracking-widest text-slate-200 italic">
+              <p className="text-xl font-black tracking-widest text-slate-500 italic">
                 Product Development
               </p>
             </div>
@@ -1051,7 +1051,7 @@ const SettingsPanel = ({
                   <input
                     id="new-design-cost"
                     type="number"
-                    className="form-input py-4 text-center font-black bg-white border-slate-100 placeholder:text-slate-200"
+                    className="form-input py-4 text-center font-black bg-white border-slate-100 placeholder:text-slate-500"
                     placeholder="0"
                   />
                 </div>
@@ -1071,7 +1071,7 @@ const SettingsPanel = ({
               <div className="flex gap-4 pt-4">
                 <button
                   onClick={() => setShowAddModal(false)}
-                  className="flex-1 py-10 rounded-full font-black text-sm uppercase bg-slate-50 text-slate-400"
+                  className="flex-1 py-10 rounded-full font-black text-sm uppercase bg-slate-50 text-slate-500"
                 >
                   Cancel
                 </button>
@@ -1104,7 +1104,7 @@ const SettingsPanel = ({
               <h3 className="text-4xl font-black uppercase italic mb-2">
                 স্টাইল আপডেট
               </h3>
-              <p className="text-xl font-black tracking-widest text-slate-200 italic">
+              <p className="text-xl font-black tracking-widest text-slate-500 italic">
                 Style Refinement
               </p>
             </div>
@@ -1233,7 +1233,7 @@ const SettingsPanel = ({
                     setEditDesignModal(null);
                     setTempImgUrl(null);
                   }}
-                  className="flex-1 py-10 rounded-full font-black text-sm uppercase bg-slate-50 text-slate-400"
+                  className="flex-1 py-10 rounded-full font-black text-sm uppercase bg-slate-50 text-slate-500"
                 >
                   Cancel
                 </button>
@@ -1301,7 +1301,7 @@ const SettingsPanel = ({
                     ? "নতুন কর্মী নিবন্ধন"
                     : "তথ্য আপডেট করুন"}
                 </h3>
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">
+                <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mt-1">
                   Worker Profile
                 </p>
               </div>
@@ -1331,7 +1331,7 @@ const SettingsPanel = ({
                           </button>
                         </>
                       ) : (
-                        <ImageIcon size={30} className="text-slate-200" />
+                        <ImageIcon size={30} className="text-slate-500" />
                       )}
                       {uploadingWorkerPhoto && (
                         <div className="absolute inset-0 bg-white/80 flex items-center justify-center">
@@ -1347,7 +1347,7 @@ const SettingsPanel = ({
                         size={20}
                         className="text-slate-500 group-hover:text-black mb-2 transition-colors"
                       />
-                      <span className="text-[9px] font-black uppercase text-slate-400 group-hover:text-black transition-colors">
+                      <span className="text-[9px] font-black uppercase text-slate-500 group-hover:text-black transition-colors">
                         ছবি আপলোড করুন
                       </span>
                       <input
@@ -1389,7 +1389,7 @@ const SettingsPanel = ({
                           </button>
                         </>
                       ) : (
-                        <ImageIcon size={30} className="text-slate-200" />
+                        <ImageIcon size={30} className="text-slate-500" />
                       )}
                       {uploadingWorkerPhoto && (
                         <div className="absolute inset-0 bg-white/80 flex items-center justify-center">
@@ -1405,7 +1405,7 @@ const SettingsPanel = ({
                         size={20}
                         className="text-slate-500 group-hover:text-black mb-2 transition-colors"
                       />
-                      <span className="text-[9px] font-black uppercase text-slate-400 group-hover:text-black transition-colors">
+                      <span className="text-[9px] font-black uppercase text-slate-500 group-hover:text-black transition-colors">
                         NID আপলোড করুন
                       </span>
                       <input
@@ -1548,7 +1548,7 @@ const SettingsPanel = ({
             <div className="flex gap-4 pt-4">
               <button
                 onClick={() => setWorkerDocModal(null)}
-                className="flex-1 py-6 rounded-full font-black text-sm uppercase bg-slate-50 text-slate-400"
+                className="flex-1 py-6 rounded-full font-black text-sm uppercase bg-slate-50 text-slate-500"
               >
                 বাতিল
               </button>
@@ -1615,7 +1615,7 @@ const SettingsPanel = ({
             >
               ← বাতিল
             </button>
-            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+            <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">
               Worker ID Card • A5 Print
             </p>
             <button
@@ -1646,7 +1646,7 @@ const SettingsPanel = ({
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="text-[9px] font-black uppercase text-slate-400">
+                  <p className="text-[9px] font-black uppercase text-slate-500">
                     Issue Date
                   </p>
                   <p className="font-black text-sm">
@@ -1665,7 +1665,7 @@ const SettingsPanel = ({
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-slate-200">
+                    <div className="w-full h-full flex items-center justify-center text-slate-500">
                       <User size={60} />
                     </div>
                   )}
@@ -1738,7 +1738,7 @@ const SettingsPanel = ({
 
               {printWorkerDoc.nidPhoto && (
                 <div className="mt-4">
-                  <p className="text-[8px] font-black uppercase text-slate-400 tracking-widest mb-2">
+                  <p className="text-[8px] font-black uppercase text-slate-500 tracking-widest mb-2">
                     ATTACHED NID DOCUMENT
                   </p>
                   <div className="w-full h-48 border-2 border-slate-100 rounded-2xl overflow-hidden">
@@ -1755,13 +1755,13 @@ const SettingsPanel = ({
               <div className="mt-8 pt-6 border-t border-slate-200 flex justify-between">
                 <div>
                   <div className="w-32 h-px bg-black mb-2"></div>
-                  <p className="text-[9px] font-black uppercase text-slate-400">
+                  <p className="text-[9px] font-black uppercase text-slate-500">
                     কর্মীর স্বাক্ষর
                   </p>
                 </div>
                 <div className="text-right">
                   <div className="w-32 h-px bg-black mb-2 ml-auto"></div>
-                  <p className="text-[9px] font-black uppercase text-slate-400">
+                  <p className="text-[9px] font-black uppercase text-slate-500">
                     কর্তৃপক্ষের স্বাক্ষর
                   </p>
                 </div>

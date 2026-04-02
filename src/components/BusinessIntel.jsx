@@ -83,7 +83,7 @@ const BusinessIntel = ({ masterData }) => {
                         </div>
                         <div>
                             <p className="text-xs md:text-sm font-black text-slate-500 uppercase tracking-[0.4em] mb-3 italic">STRATEGIC ANALYTICS</p>
-                            <h2 className="text-4xl md:text-7xl lg:text-8xl font-black uppercase italic tracking-tighter leading-none text-black">Business <span className="text-slate-300">Intel</span></h2>
+                            <h2 className="text-4xl md:text-7xl lg:text-8xl font-black uppercase italic tracking-tighter leading-none text-black">Business <span className="text-slate-500">Intel</span></h2>
                         </div>
                     </div>
                 </div>
@@ -92,14 +92,14 @@ const BusinessIntel = ({ masterData }) => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 
                 <div className="bg-white p-10 rounded-[4rem] border-4 border-slate-50 shadow-xl relative overflow-hidden group">
-                    <p className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400 mb-4">Production Output</p>
+                    <p className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-500 mb-4">Production Output</p>
                     <h3 className="text-5xl font-black italic tracking-tighter text-black mb-2">{(stats.totalProduced + stats.totalPata).toLocaleString()}</h3>
-                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-200">Total Finished Units</p>
-                    <TrendingUp className="absolute bottom-[-10%] right-[-5%] text-slate-100 opacity-50" size={120} />
+                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">Total Finished Units</p>
+                    <TrendingUp className="absolute bottom-[-10%] right-[-5%] text-slate-100 opacity-75" size={120} />
                 </div>
 
                 <div className="bg-white p-10 rounded-[4rem] border-4 border-slate-50 shadow-xl relative overflow-hidden">
-                    <p className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400 mb-4">Work Efficiency</p>
+                    <p className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-500 mb-4">Work Efficiency</p>
                     <div className="flex items-end gap-4">
                         <h3 className="text-7xl font-black italic tracking-tighter text-black">{stats.efficiency}%</h3>
                         <div className="mb-4 space-y-1">
@@ -114,7 +114,7 @@ const BusinessIntel = ({ masterData }) => {
                 <div className={`p-10 rounded-[4rem] border-4 shadow-xl relative overflow-hidden transition-all ${stats.lowStockItems.length > 0 ? 'bg-rose-50 border-rose-100' : 'bg-emerald-50 border-emerald-100'}`}>
                     <p className={`text-[10px] font-black uppercase tracking-[0.4em] mb-4 ${stats.lowStockItems.length > 0 ? 'text-rose-400' : 'text-emerald-400'}`}>Material Status</p>
                     <h3 className={`text-5xl font-black italic tracking-tighter mb-2 ${stats.lowStockItems.length > 0 ? 'text-rose-600' : 'text-emerald-600'}`}>{stats.lowStockItems.length > 0 ? 'CRITICAL' : 'OPTIMAL'}</h3>
-                    <p className="text-[10px] font-black uppercase tracking-widest opacity-50">{stats.lowStockItems.length} Items needing restock</p>
+                    <p className="text-[10px] font-black uppercase tracking-widest opacity-75">{stats.lowStockItems.length} Items needing restock</p>
                     <AlertTriangle className={`absolute bottom-[-10%] right-[-5%] opacity-10 ${stats.lowStockItems.length > 0 ? 'text-rose-500' : 'text-emerald-500'}`} size={120} />
                 </div>
             </div>
@@ -135,11 +135,11 @@ const BusinessIntel = ({ masterData }) => {
                                 </div>
                                 <div className="text-right">
                                     <p className="text-2xl font-black italic tracking-tighter">+{qty.toLocaleString()}</p>
-                                    <p className="text-[9px] font-black uppercase opacity-40">Total Yield</p>
+                                    <p className="text-[9px] font-black uppercase opacity-70">Total Yield</p>
                                 </div>
                             </div>
                         ))}
-                        {stats.topDesigns.length === 0 && <p className="text-center py-20 text-slate-200 font-black uppercase tracking-[0.5em] italic">No production data yet</p>}
+                        {stats.topDesigns.length === 0 && <p className="text-center py-20 text-slate-500 font-black uppercase tracking-[0.5em] italic">No production data yet</p>}
                     </div>
                 </div>
 
@@ -156,11 +156,11 @@ const BusinessIntel = ({ masterData }) => {
                                 <div key={idx} className="flex items-center justify-between p-6 border-2 border-slate-50 rounded-3xl bg-slate-50/50 italic group hover:border-black transition-all">
                                     <div>
                                         <p className="text-xl font-black text-black uppercase">{item.design}</p>
-                                        <p className="text-[10px] font-black text-slate-400 uppercase mt-1">{item.color} • {item.type}</p>
+                                        <p className="text-[10px] font-black text-slate-500 uppercase mt-1">{item.color} • {item.type}</p>
                                     </div>
                                     <div className="flex items-center gap-6">
                                         <div className="text-right">
-                                            <p className="text-xs font-black text-slate-200 uppercase">Balance</p>
+                                            <p className="text-xs font-black text-slate-500 uppercase">Balance</p>
                                             <p className={`text-4xl font-black italic tracking-tighter leading-none ${item.balance > 0 ? 'text-black' : 'text-rose-500'}`}>{item.balance}</p>
                                         </div>
                                     </div>
@@ -180,17 +180,17 @@ const BusinessIntel = ({ masterData }) => {
                             <h4 className="text-2xl font-black uppercase italic tracking-tighter flex items-center gap-4 text-black">
                                 <TrendingUp className="text-emerald-500" /> Depletion Trend Intel
                             </h4>
-                            <span className="px-6 py-2 bg-slate-50 text-slate-400 rounded-full text-[10px] font-black uppercase tracking-widest">Predictive Monitoring</span>
+                            <span className="px-6 py-2 bg-slate-50 text-slate-500 rounded-full text-[10px] font-black uppercase tracking-widest">Predictive Monitoring</span>
                         </div>
                         <div className="grid grid-cols-1 gap-4 overflow-y-auto max-h-[400px] pr-2 custom-scrollbar">
                             {stats.depletionTrends.sort((a,b) => (a.daysLeft === 'INF' ? 999 : a.daysLeft) - (b.daysLeft === 'INF' ? 999 : b.daysLeft)).map((item, idx) => (
                                 <div key={idx} className="flex items-center justify-between p-6 border-2 border-slate-50 rounded-3xl bg-slate-50/50 italic group hover:border-black transition-all">
                                     <div className="flex-1">
                                         <p className="text-xl font-black text-black uppercase">{item.name}</p>
-                                        <p className="text-[10px] font-black text-slate-400 uppercase mt-1">Avg Cons: {item.dailyBurn} / day</p>
+                                        <p className="text-[10px] font-black text-slate-500 uppercase mt-1">Avg Cons: {item.dailyBurn} / day</p>
                                     </div>
                                     <div className="text-right">
-                                        <p className="text-[9px] font-black uppercase text-slate-300">EST. DEPLETION</p>
+                                        <p className="text-[9px] font-black uppercase text-slate-500">EST. DEPLETION</p>
                                         <p className={`text-4xl font-black italic tracking-tighter leading-none ${item.daysLeft < 3 ? 'text-rose-500' : item.daysLeft < 7 ? 'text-amber-500' : 'text-emerald-500'}`}>
                                             {item.daysLeft === 'INF' ? '∞' : `${item.daysLeft}d`}
                                         </p>
@@ -216,12 +216,12 @@ const BusinessIntel = ({ masterData }) => {
                                         </div>
                                         <div>
                                             <p className="text-xl font-black uppercase">{w.name}</p>
-                                            <p className="text-[10px] font-black text-white/40 uppercase group-hover/row:text-black/40">Yield: {w.received} Units</p>
+                                            <p className="text-[10px] font-black text-white/70 uppercase group-hover/row:text-black/40">Yield: {w.received} Units</p>
                                         </div>
                                     </div>
                                     <div className="text-right">
                                         <p className="text-3xl font-black italic tracking-tighter leading-none">{Math.round((w.received / (w.total || 1)) * 100)}%</p>
-                                        <p className="text-[9px] font-black uppercase opacity-40">Efficiency</p>
+                                        <p className="text-[9px] font-black uppercase opacity-70">Efficiency</p>
                                     </div>
                                 </div>
                             ))}

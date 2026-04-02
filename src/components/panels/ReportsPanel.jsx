@@ -112,7 +112,7 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t }) => {
           >
             ← Back
           </button>
-          <p className="text-[10px] uppercase font-black text-slate-400">
+          <p className="text-[10px] uppercase font-black text-slate-500">
             Total: {jobsToPrint.length} Slips (Batch Grid Mode)
           </p>
           <button
@@ -133,7 +133,7 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t }) => {
                       key={idx}
                       className="grid-slip relative border-r border-b"
                     >
-                      <div className="absolute top-4 right-4 text-[10px] font-black uppercase text-slate-200">
+                      <div className="absolute top-4 right-4 text-[10px] font-black uppercase text-slate-500">
                         {job.jobType}
                       </div>
                       <div className="flex items-center gap-4 border-b border-black/5 pb-4 mb-4">
@@ -181,7 +181,7 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t }) => {
                         </div>
                       </div>
                       <div className="flex justify-between items-end mt-4 pt-4 border-t border-black/5">
-                        <div className="text-[8px] font-black uppercase text-slate-300">
+                        <div className="text-[8px] font-black uppercase text-slate-500">
                           Verified Signature
                           <div className="h-4 border-b border-black/10 mt-2"></div>
                         </div>
@@ -300,14 +300,14 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t }) => {
           <div className="flex justify-between items-start border-b-2 border-black/5 pb-10 mb-10">
             <div>
               <h1 className="text-5xl font-black italic tracking-tighter leading-none mb-4">
-                NRZO0NE <span className="text-slate-200">PRO</span>
+                NRZO0NE <span className="text-slate-500">PRO</span>
               </h1>
-              <p className="text-[9px] font-black uppercase tracking-[0.6em] text-slate-400">
+              <p className="text-[9px] font-black uppercase tracking-[0.6em] text-slate-500">
                 Master Audit Record — {transactionTab.toUpperCase()} UNIT
               </p>
             </div>
             <div className="text-right">
-              <p className="text-[10px] font-black uppercase tracking-widest text-slate-300 mb-2">
+              <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">
                 Authenticated On
               </p>
               <p className="text-lg font-black italic">
@@ -318,7 +318,7 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t }) => {
           </div>
 
           <table className="w-full text-left">
-            <thead className="border-b border-black/10 text-[9px] font-black uppercase tracking-widest text-slate-400 italic">
+            <thead className="border-b border-black/10 text-[9px] font-black uppercase tracking-widest text-slate-500 italic">
               <tr>
                 <th className="py-6">Date</th>
                 <th className="py-6">Description / Entity</th>
@@ -345,7 +345,7 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t }) => {
                         item.description ||
                         item.task}
                     </p>
-                    <p className="text-[8px] text-slate-400 mt-0.5">
+                    <p className="text-[8px] text-slate-500 mt-0.5">
                       {item.design
                         ? `${item.design} (${item.color})`
                         : item.department || item.source || "General Registry"}
@@ -378,21 +378,21 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t }) => {
 
           <div className="mt-20 pt-10 border-t border-black/5 grid grid-cols-2 gap-20">
             <div className="space-y-4">
-              <p className="text-[8px] font-black uppercase tracking-widest text-slate-300">
+              <p className="text-[8px] font-black uppercase tracking-widest text-slate-500">
                 Authorized System Signature
               </p>
               <div className="h-10 border-b border-black/10"></div>
-              <p className="text-[8px] font-black uppercase italic text-slate-400 opacity-30">
+              <p className="text-[8px] font-black uppercase italic text-slate-500 opacity-30">
                 NRZO0NE INTELLIGENCE CLOUD VERIFIED
               </p>
             </div>
             <div className="text-right">
-              <p className="text-[8px] font-black uppercase tracking-widest text-slate-300">
+              <p className="text-[8px] font-black uppercase tracking-widest text-slate-500">
                 Total Audit Count
               </p>
               <p className="text-4xl font-black italic">
                 {printData.length}{" "}
-                <span className="text-[10px] text-slate-400">Entries</span>
+                <span className="text-[10px] text-slate-500">Entries</span>
               </p>
             </div>
           </div>
@@ -424,9 +424,9 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t }) => {
             </div>
             <div>
               <h2 className="text-xl md:text-3xl font-black uppercase italic tracking-tighter leading-none text-black">
-                Data <span className="text-slate-400">Vault</span>
+                Data <span className="text-slate-500">Vault</span>
               </h2>
-              <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mt-0.5">
+              <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mt-0.5">
                 Official Intelligence Hub
               </p>
             </div>
@@ -438,7 +438,7 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t }) => {
         {isAdmin && (
           <button
             onClick={() => setActiveTab("intel")}
-            className={`px-6 md:px-10 py-4 md:py-6 rounded-[1.5rem] md:rounded-[2rem] font-black uppercase text-[10px] md:text-xs tracking-widest transition-all whitespace-nowrap ${activeTab === "intel" ? "bg-black text-white shadow-2xl" : "text-slate-400 hover:text-black"}`}
+            className={`px-6 md:px-10 py-4 md:py-6 rounded-[1.5rem] md:rounded-[2rem] font-black uppercase text-[10px] md:text-xs tracking-widest transition-all whitespace-nowrap ${activeTab === "intel" ? "bg-black text-white shadow-2xl" : "text-slate-500 hover:text-black"}`}
           >
             Intelligence
           </button>
@@ -446,26 +446,26 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t }) => {
         {!isAdmin && (
           <button
             onClick={() => setActiveTab("summary")}
-            className={`px-6 md:px-10 py-4 md:py-6 rounded-[1.5rem] md:rounded-[2rem] font-black uppercase text-[10px] md:text-xs tracking-widest transition-all whitespace-nowrap ${activeTab === "summary" ? "bg-black text-white shadow-2xl" : "text-slate-400 hover:text-black"}`}
+            className={`px-6 md:px-10 py-4 md:py-6 rounded-[1.5rem] md:rounded-[2rem] font-black uppercase text-[10px] md:text-xs tracking-widest transition-all whitespace-nowrap ${activeTab === "summary" ? "bg-black text-white shadow-2xl" : "text-slate-500 hover:text-black"}`}
           >
             Ledger
           </button>
         )}
         <button
           onClick={() => setActiveTab("dispatch")}
-          className={`px-6 md:px-10 py-4 md:py-6 rounded-[1.5rem] md:rounded-[2rem] font-black uppercase text-[10px] md:text-xs tracking-widest transition-all whitespace-nowrap ${activeTab === "dispatch" ? "bg-black text-white shadow-2xl" : "text-slate-400 hover:text-black"}`}
+          className={`px-6 md:px-10 py-4 md:py-6 rounded-[1.5rem] md:rounded-[2rem] font-black uppercase text-[10px] md:text-xs tracking-widest transition-all whitespace-nowrap ${activeTab === "dispatch" ? "bg-black text-white shadow-2xl" : "text-slate-500 hover:text-black"}`}
         >
           Dispatch Hub
         </button>
         <button
           onClick={() => setActiveTab("invoice")}
-          className={`px-6 md:px-10 py-4 md:py-6 rounded-[1.5rem] md:rounded-[2rem] font-black uppercase text-[10px] md:text-xs tracking-widest transition-all whitespace-nowrap ${activeTab === "invoice" ? "bg-black text-white shadow-2xl" : "text-slate-400 hover:text-black"}`}
+          className={`px-6 md:px-10 py-4 md:py-6 rounded-[1.5rem] md:rounded-[2rem] font-black uppercase text-[10px] md:text-xs tracking-widest transition-all whitespace-nowrap ${activeTab === "invoice" ? "bg-black text-white shadow-2xl" : "text-slate-500 hover:text-black"}`}
         >
           Invoice Matrix
         </button>
         <button
           onClick={() => setActiveTab("transactions")}
-          className={`px-6 md:px-10 py-4 md:py-6 rounded-[1.5rem] md:rounded-[2rem] font-black uppercase text-[10px] md:text-xs tracking-widest transition-all whitespace-nowrap ${activeTab === "transactions" ? "bg-black text-white shadow-2xl" : "text-slate-400 hover:text-black"}`}
+          className={`px-6 md:px-10 py-4 md:py-6 rounded-[1.5rem] md:rounded-[2rem] font-black uppercase text-[10px] md:text-xs tracking-widest transition-all whitespace-nowrap ${activeTab === "transactions" ? "bg-black text-white shadow-2xl" : "text-slate-500 hover:text-black"}`}
         >
           Audit Log
         </button>
@@ -490,7 +490,7 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t }) => {
                   <h3 className="text-3xl font-black uppercase italic tracking-tighter text-black">
                     Global Dispatch Hub
                   </h3>
-                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mt-2">
+                  <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.4em] mt-2">
                     BATCH PRINT SYSTEM • 4 SLIPS PER PAGE
                   </p>
                 </div>
@@ -533,7 +533,7 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t }) => {
                     >
                       {job.jobType}
                     </p>
-                    <p className="text-[9px] opacity-40 font-black tracking-tighter">
+                    <p className="text-[9px] opacity-70 font-black tracking-tighter">
                       {job.date}
                     </p>
                   </div>
@@ -541,14 +541,14 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t }) => {
                     {job.worker}
                   </h4>
                   <p
-                    className={`text-xs font-black uppercase opacity-60 leading-tight ${selectedJobIds.includes(job.id) ? "text-white" : "text-slate-400"}`}
+                    className={`text-xs font-black uppercase opacity-60 leading-tight ${selectedJobIds.includes(job.id) ? "text-white" : "text-slate-500"}`}
                   >
                     {job.design || job.task}
                   </p>
                   <div className="mt-8 flex justify-between items-end">
                     <div className="flex gap-6">
                       <div className="text-center">
-                        <p className="text-[8px] font-black uppercase opacity-50 mb-1">
+                        <p className="text-[8px] font-black uppercase opacity-75 mb-1">
                           Borka
                         </p>
                         <p className="text-3xl font-black">
@@ -556,7 +556,7 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t }) => {
                         </p>
                       </div>
                       <div className="text-center">
-                        <p className="text-[8px] font-black uppercase opacity-50 mb-1">
+                        <p className="text-[8px] font-black uppercase opacity-75 mb-1">
                           Hijab
                         </p>
                         <p className="text-3xl font-black">
@@ -590,7 +590,7 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t }) => {
                   <button
                     key={t}
                     onClick={() => setTransactionTab(t)}
-                    className={`px-4 md:px-8 py-3 md:py-4 rounded-full text-[8px] md:text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${transactionTab === t ? "bg-black text-white shadow-xl" : "bg-slate-50 text-slate-400 hover:text-black"}`}
+                    className={`px-4 md:px-8 py-3 md:py-4 rounded-full text-[8px] md:text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${transactionTab === t ? "bg-black text-white shadow-xl" : "bg-slate-50 text-slate-500 hover:text-black"}`}
                   >
                     {t}
                   </button>
@@ -598,7 +598,7 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t }) => {
               </div>
               <div className="flex items-center gap-4 w-full md:w-auto">
                 <div className="flex-1 md:w-64 bg-white p-3 md:p-4 rounded-full flex items-center gap-3 md:gap-4 px-6 md:px-8 border border-slate-100 shadow-inner">
-                  <Search size={20} className="text-slate-200" />
+                  <Search size={20} className="text-slate-500" />
                   <input
                     type="text"
                     placeholder="Scanning..."
@@ -618,7 +618,7 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t }) => {
 
             <div className="overflow-x-auto">
               <table className="w-full text-left">
-                <thead className="border-b-2 border-slate-50 text-[8px] md:text-[10px] font-black uppercase tracking-widest text-slate-400 italic">
+                <thead className="border-b-2 border-slate-50 text-[8px] md:text-[10px] font-black uppercase tracking-widest text-slate-500 italic">
                   <tr>
                     <th className="py-4 md:py-6 px-2 md:px-4">Date</th>
                     <th className="py-4 md:py-6 px-2 md:px-4">Details</th>
@@ -645,11 +645,11 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t }) => {
                                 className="py-2 px-2 md:px-4 border-y border-slate-100/50"
                               >
                                 <div className="flex items-center gap-4">
-                                  <div className="h-px bg-slate-200 flex-1 opacity-50"></div>
-                                  <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest italic">
+                                  <div className="h-px bg-slate-200 flex-1 opacity-75"></div>
+                                  <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest italic">
                                     {p.date}
                                   </span>
-                                  <div className="h-px bg-slate-200 flex-1 opacity-50"></div>
+                                  <div className="h-px bg-slate-200 flex-1 opacity-75"></div>
                                 </div>
                               </td>
                             </tr>
@@ -668,7 +668,7 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t }) => {
                             </td>
                             <td className="py-6 md:py-8 px-2 md:px-4 text-center">
                               <span
-                                className={`px-2 md:px-4 py-1 md:py-1.5 rounded-full text-[7px] md:text-[9px] font-black uppercase tracking-widest ${p.status === "Received" ? "bg-black text-white shadow-xl" : "bg-slate-50 text-slate-400 border border-slate-100"}`}
+                                className={`px-2 md:px-4 py-1 md:py-1.5 rounded-full text-[7px] md:text-[9px] font-black uppercase tracking-widest ${p.status === "Received" ? "bg-black text-white shadow-xl" : "bg-slate-50 text-slate-500 border border-slate-100"}`}
                               >
                                 {p.status}
                               </span>
@@ -693,11 +693,11 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t }) => {
                                 className="py-2 px-2 md:px-4 border-y border-slate-100/50"
                               >
                                 <div className="flex items-center gap-4">
-                                  <div className="h-px bg-slate-200 flex-1 opacity-50"></div>
-                                  <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest italic">
+                                  <div className="h-px bg-slate-200 flex-1 opacity-75"></div>
+                                  <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest italic">
                                     {c.date}
                                   </span>
-                                  <div className="h-px bg-slate-200 flex-1 opacity-50"></div>
+                                  <div className="h-px bg-slate-200 flex-1 opacity-75"></div>
                                 </div>
                               </td>
                             </tr>
@@ -739,11 +739,11 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t }) => {
                                 className="py-2 px-2 md:px-4 border-y border-slate-100/50"
                               >
                                 <div className="flex items-center gap-4">
-                                  <div className="h-px bg-slate-200 flex-1 opacity-50"></div>
-                                  <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest italic">
+                                  <div className="h-px bg-slate-200 flex-1 opacity-75"></div>
+                                  <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest italic">
                                     {e.date}
                                   </span>
-                                  <div className="h-px bg-slate-200 flex-1 opacity-50"></div>
+                                  <div className="h-px bg-slate-200 flex-1 opacity-75"></div>
                                 </div>
                               </td>
                             </tr>
@@ -792,7 +792,7 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t }) => {
                           </td>
                           <td className="py-6 md:py-8 px-2 md:px-4 text-center">
                             <span
-                              className={`px-2 md:px-4 py-1 md:py-1.5 rounded-full text-[7px] md:text-[9px] font-black uppercase tracking-widest ${e.status === "Received" ? "bg-black text-white shadow-xl" : "bg-slate-50 text-slate-400 border border-slate-100"}`}
+                              className={`px-2 md:px-4 py-1 md:py-1.5 rounded-full text-[7px] md:text-[9px] font-black uppercase tracking-widest ${e.status === "Received" ? "bg-black text-white shadow-xl" : "bg-slate-50 text-slate-500 border border-slate-100"}`}
                             >
                               {e.status}
                             </span>
