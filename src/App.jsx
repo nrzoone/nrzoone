@@ -428,7 +428,7 @@ const AppContent = () => {
     );
 
     return (
-        <div className="min-h-screen bg-[var(--bg-primary)] transition-colors duration-500">
+        <div className="min-h-screen bg-[var(--bg-primary)]">
             {!user ? (
                 <LoginView onLogin={handleLogin} masterData={masterData} />
             ) : (
