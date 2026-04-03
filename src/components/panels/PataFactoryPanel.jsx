@@ -518,11 +518,9 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                                         <span>• {item.date}</span>
                                         {item.status === 'Received' && <span className="text-emerald-500 font-black tracking-widest pl-4 ml-2 border-l border-slate-100">• DONE {item.receiveDate}</span>}
                                     </div>
-                                    <div className="flex items-center gap-3">
-                                        <span className="text-[9px] font-black uppercase tracking-widest px-3 py-1 bg-slate-50 border border-slate-100 rounded-full text-slate-500">{item.pataType}</span>
-                                    <div className="flex items-center gap-3">
-                                        <span className="text-[9px] font-black uppercase tracking-widest px-3 py-1 bg-slate-50 border border-slate-100 rounded-full text-slate-500">{item.pataType}</span>
-                                        <span className="text-[9px] font-black uppercase tracking-widest text-slate-500 italic">S:{item.stonePackets || 0} Pkt • P:{item.paperRolls || 0} Roll</span>
+                                    <div className="flex flex-wrap gap-3">
+                                        <span className="px-3 py-1 bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-white/5 rounded-lg text-[9px] font-bold text-slate-500 uppercase tracking-widest">{item.pataType} PATA</span>
+                                        <span className="px-3 py-1 bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-white/5 rounded-lg text-[9px] font-bold text-slate-400 uppercase tracking-widest italic">S:{item.stonePackets || 0} Pkt • P:{item.paperRolls || 0} Roll</span>
                                     </div>
                                 </div>
                             </div>
@@ -544,16 +542,6 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                                         <button onClick={() => setPrintSlip(item)} className="w-12 h-12 flex items-center justify-center rounded-full bg-slate-50 text-slate-500 hover:bg-black hover:text-white transition-all shadow-sm">
                                             <Printer size={18} />
                                         </button>
-                                    )}
-                                    {isAdmin && (
-                                        <div className="flex gap-2">
-                                            <button onClick={() => setEditPataModal(item)} className="w-12 h-12 flex items-center justify-center rounded-full bg-slate-50 text-amber-500 hover:bg-amber-500 hover:text-white transition-all shadow-sm">
-                                                <Settings size={18} />
-                                            </button>
-                                            <button onClick={() => handleDelete(item.id)} className="w-12 h-12 flex items-center justify-center rounded-full bg-rose-50 text-rose-500 hover:bg-rose-500 hover:text-white transition-all shadow-sm">
-                                                <Trash2 size={18} />
-                                            </button>
-                                        </div>
                                     )}
                                     {isAdmin && (
                                         <div className="flex gap-2">

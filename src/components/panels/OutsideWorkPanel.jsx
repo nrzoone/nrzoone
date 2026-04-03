@@ -405,10 +405,8 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
                             </div>
                         </div>
                     </div>
-                ))
-            )}
+                )))}
         </div>
-      </div>
 
             {showModal && (
                 <div className="fixed inset-0 bg-black/40 backdrop-blur-3xl z-[250] flex items-start md:items-center justify-center p-2 md:p-4 overflow-y-auto">
