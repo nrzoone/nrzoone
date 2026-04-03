@@ -303,6 +303,7 @@ const MENU_ITEMS = [
     { id: "Attendance", label: "Attendance", icon: Users, sub: "Staff" },
     { id: "Stock", label: "Inventory", icon: Database, sub: "Vault" },
     { id: "Accounts", label: "Accounts", icon: DollarSign, sub: "Financial" },
+    { id: "WorkerSummary", label: "My Ledger", icon: DollarSign, sub: "Personal" },
     { id: "Reports", label: "Reports", icon: FileText, sub: "Analytics" },
     { id: "Settings", label: "Settings", icon: Settings, sub: "System" },
     { id: "Security", label: "Security", icon: Lock, sub: "Audit Log" },
@@ -334,7 +335,7 @@ const Sidebar = ({ activePanel, setActivePanel, user, setUser, isOpen, setIsSide
                     }
                     
                     // Specific allowed items for workers in Sidebar
-                    const workerAllowed = ['Menu', 'Overview', 'Cutting', 'Swing', 'Stone', 'Pata', 'Outside', 'Attendance'];
+                    const workerAllowed = ['Menu', 'Overview', 'Cutting', 'Swing', 'Stone', 'Pata', 'Outside', 'Attendance', 'WorkerSummary'];
                     return workerAllowed.includes(item.id);
                 }).map(item => {
                     const Icon = item.icon;
@@ -562,6 +563,7 @@ const AppContent = () => {
                             {activePanel === "Attendance" && <AttendancePanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} setActivePanel={setActivePanel} t={t} logAction={logAction} />}
                             {activePanel === "Stock" && <InventoryPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} setActivePanel={setActivePanel} t={t} logAction={logAction} />}
                             {activePanel === "Accounts" && <ExpensePanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} setActivePanel={setActivePanel} t={t} logAction={logAction} />}
+                            {activePanel === "WorkerSummary" && <WorkerSummary masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} setActivePanel={setActivePanel} logAction={logAction} />}
                             {activePanel === "Reports" && <ReportsPanel masterData={masterData} user={user} setActivePanel={setActivePanel} t={t} logAction={logAction} />}
                             {activePanel === "Settings" && <SettingsPanel masterData={masterData} setMasterData={setMasterData} user={user} showNotify={showNotify} setActivePanel={setActivePanel} t={t} logAction={logAction} />}
                             {activePanel === "Security" && <SecurityPanel masterData={masterData} user={user} setActivePanel={setActivePanel} t={t} logAction={logAction} />}
