@@ -276,7 +276,7 @@ const AttendancePanel = ({
 
   if (showInvoice) {
     return (
-      <div className="space-y-12 p-8 bg-white text-black min-h-screen italic font-outfit selection:bg-black selection:text-white">
+      <div className="space-y-12 p-8 bg-white text-black min-h-screen font-sans selection:bg-black selection:text-white">
         <style>{`
                     @media print {
                         .no-print { display: none !important; }
@@ -284,16 +284,70 @@ const AttendancePanel = ({
                         @page { size: A4 portrait; margin: 0; }
                     }
                 `}</style>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 no-print">
+        {workers.map((worker) => {
+          const status = getAttendance(worker);
+          const dailyWage = getWorkerWage(worker);
+
+          return (
+            <div
+              key={worker}
+              className={`premium-card !p-6 border-l-[6px] transition-all group ${status === 'present' ? 'border-emerald-500 bg-emerald-50/10' : status === 'half-day' ? 'border-amber-400 bg-amber-50/10' : 'border-slate-100 bg-white dark:bg-slate-900/50'}`}
+            >
+              <div className="flex justify-between items-start mb-6">
+                <div>
+                   <h3 className="text-lg font-bold tracking-tight text-[var(--text-primary)]">{worker}</h3>
+                   <p className="text-[8px] font-bold text-slate-400 uppercase tracking-widest mt-1">ID: REF-{worker.slice(0,3).toUpperCase()}</p>
+                </div>
+                <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${status === 'present' ? 'bg-emerald-500 text-white shadow-lg' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'}`}>
+                   <UserCheck size={14} />
+                </div>
+              </div>
+
+              <div className="space-y-4 mb-8">
+                 <div className="flex justify-between items-center text-[9px] font-bold uppercase text-slate-400 tracking-widest">
+                    <span>Base Earnings</span>
+                    <span className="text-black dark:text-white">৳{dailyWage}</span>
+                 </div>
+                 <div className="w-full h-1 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                    <div className="h-full bg-emerald-500 transition-all duration-1000" style={{ width: status === 'present' ? '100%' : status === 'half-day' ? '50%' : '0%' }}></div>
+                 </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => markAttendance(worker, "present")}
+                  className={`flex-1 py-2.5 rounded-lg text-[9px] font-bold uppercase tracking-widest transition-all ${status === "present" ? "bg-emerald-500 text-white shadow-md" : "bg-slate-50 dark:bg-slate-800 text-slate-400 hover:bg-emerald-50 hover:text-emerald-600"}`}
+                >
+                  FULL
+                </button>
+                <button
+                  onClick={() => markAttendance(worker, "half-day")}
+                  className={`flex-1 py-2.5 rounded-lg text-[9px] font-bold uppercase tracking-widest transition-all ${status === "half-day" ? "bg-amber-400 text-black shadow-md font-extrabold" : "bg-slate-50 dark:bg-slate-800 text-slate-400 hover:bg-amber-50 hover:text-amber-600"}`}
+                >
+                  HALF
+                </button>
+                <button
+                  onClick={() => markAttendance(worker, "absent")}
+                  className={`p-2.5 rounded-lg transition-all ${status === "absent" ? "bg-rose-500 text-white shadow-md rotate-90" : "bg-slate-50 dark:bg-slate-800 text-slate-400 hover:bg-rose-50 hover:text-rose-600"}`}
+                >
+                  <X size={14} />
+                </button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
         <div className="flex justify-between items-center no-print w-[210mm] mx-auto mb-12">
           <button
             onClick={() => setShowInvoice(false)}
-            className="bg-slate-50 text-black px-5 py-3 rounded-full font-black uppercase text-xs border border-slate-100 shadow-sm hover:bg-black hover:text-white transition-all font-outfit"
+            className="bg-slate-50 text-black px-5 py-3 rounded-full font-black uppercase text-xs border border-slate-100 shadow-sm hover:bg-black hover:text-white transition-all"
           >
             ফিরে যান
           </button>
           <button
             onClick={() => window.print()}
-            className="bg-black text-white px-12 py-5 rounded-full font-black uppercase text-xs shadow-2xl border-b-[8px] border-zinc-900 font-outfit"
+            className="bg-black text-white px-12 py-5 rounded-full font-black uppercase text-xs shadow-2xl border-b-[8px] border-zinc-900"
           >
             প্রিন্ট ইনভয়েস (A4)
           </button>
@@ -304,7 +358,7 @@ const AttendancePanel = ({
           </div>
 
           <div className="text-center mb-10 flex flex-col items-center relative z-10">
-            <h1 className="text-2xl font-black italic tracking-tighter mb-2 text-black uppercase">
+            <h1 className="text-2xl font-black tracking-tighter mb-2 text-black uppercase">
               NRZO0NE
             </h1>
             <p className="text-[8px] font-black uppercase tracking-[0.5em] text-slate-500">
@@ -325,7 +379,7 @@ const AttendancePanel = ({
                 <th className="py-4 text-right">Net Payable</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-50 italic">
+            <tbody className="divide-y divide-slate-50">
               {weeklySummary.workers.map((w, i) => (
                 <tr key={i} className="text-sm font-black group">
                   <td className="py-4 uppercase tracking-tighter text-black">
@@ -345,11 +399,11 @@ const AttendancePanel = ({
               <tr className="border-t-4 border-black font-black text-2xl">
                 <td
                   colSpan="2"
-                  className="py-6 text-right italic text-slate-500"
+                  className="py-6 text-right text-slate-500"
                 >
                   TOTAL:
                 </td>
-                <td className="py-6 text-right italic text-black font-black">
+                <td className="py-6 text-right text-black font-black">
                   ৳{weeklySummary.totalPayable.toLocaleString()}
                 </td>
               </tr>
@@ -361,40 +415,62 @@ const AttendancePanel = ({
   }
 
   return (
-    <div className="space-y-6 md:space-y-8 pb-24 animate-fade-up px-2 italic text-black font-outfit">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
-        <div className="flex items-center gap-6">
-          <button
-            onClick={() => setActivePanel("Overview")}
-            className="w-12 h-12 flex items-center justify-center bg-white border border-slate-200 rounded-xl hover:bg-black hover:text-white transition-all shadow-sm"
-          >
-            <ArrowLeft size={20} />
-          </button>
-          <div>
-            <h2 className="section-header">
-              {t('attendance')} <span className="text-slate-500">{t('and')} {t('payments')}</span>
-            </h2>
-            <p className="text-[11px] font-black text-slate-500 uppercase tracking-[0.4em] mt-2 italic">
-               {t('operationalTerminal')}
-            </p>
+    <div className="space-y-8 pb-32 animate-fade-up font-sans">
+      {/* Header Section */}
+      <div className="flex flex-col md:flex-row justify-between items-end gap-10 mb-16 px-2">
+        <div className="space-y-4">
+          <h1 className="section-header !mb-0 tracking-tightest">Workforce <span className="text-slate-300 dark:text-slate-700 font-light">Attendance</span></h1>
+          <div className="flex flex-wrap gap-3 items-center">
+            <span className="px-5 py-1.5 bg-black text-white dark:bg-white dark:text-black rounded-lg text-[9px] font-bold uppercase tracking-widest shadow-lg">v2.5 BIOMETRICS</span>
+            <span className="px-5 py-1.5 bg-[var(--bg-secondary)] border border-[var(--border)] text-slate-500 rounded-lg text-[9px] font-bold uppercase tracking-widest italic">{selectedDepartment.toUpperCase()} UNIT</span>
+          </div>
+        </div>
+        <div className="flex flex-wrap gap-8 items-center bg-[var(--bg-secondary)] p-8 rounded-3xl border border-[var(--border)] shadow-sm">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-emerald-50 dark:bg-emerald-500/10 rounded-xl flex items-center justify-center text-emerald-500 shadow-inner group hover:scale-110 transition-all"><UserCheck size={20} /></div>
+            <div>
+              <p className="text-3xl font-bold leading-none dark:text-white tracking-tight">{stats.present}</p>
+              <p className="text-[9px] uppercase font-bold text-slate-400 tracking-wider mt-1.5">Staff Active</p>
+            </div>
+          </div>
+          <div className="w-px h-10 bg-[var(--border)]"></div>
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-indigo-50 dark:bg-indigo-500/10 rounded-xl flex items-center justify-center text-indigo-500 shadow-inner group hover:scale-110 transition-all"><DollarSign size={20} /></div>
+            <div>
+              <p className="text-3xl font-bold leading-none dark:text-white tracking-tight">{stats.wages.toLocaleString()}৳</p>
+              <p className="text-[9px] uppercase font-bold text-slate-400 tracking-wider mt-1.5">Wage Load</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Control Bar */}
+      <div className="flex flex-wrap items-center justify-between gap-8 mb-16 no-print bg-[var(--bg-secondary)] p-4 rounded-2xl border border-[var(--border)] shadow-sm">
+        <div className="flex items-center gap-3">
+          <div className="pill-nav !p-1 shadow-none !bg-slate-100/50 dark:!bg-slate-900/50">
+            {['sewing', 'cutting', 'stone', 'pata', 'office'].map(dept => (
+              <button
+                key={dept}
+                onClick={() => setSelectedDepartment(dept)}
+                className={`px-6 py-2.5 rounded-xl text-[9px] font-bold uppercase tracking-widest transition-all ${selectedDepartment === dept ? 'bg-black text-white dark:bg-white dark:text-black shadow-md' : 'text-slate-400 hover:text-black dark:hover:text-white'}`}
+              >
+                {dept}
+              </button>
+            ))}
           </div>
         </div>
 
-        <div className="flex items-center gap-6 w-full md:w-auto">
-          <div className="flex gap-2 bg-white p-1 rounded-2xl border border-slate-100 shadow-sm">
-            <button
-              onClick={() => setViewMode("attendance")}
-              className={`pill-tab ${viewMode === "attendance" ? "pill-tab-active" : "pill-tab-inactive hover:text-black"}`}
-            >
-              {t('attendance')}
-            </button>
-            <button
-              onClick={() => setViewMode("duty")}
-              className={`pill-tab ${viewMode === "duty" ? "pill-tab-active" : "pill-tab-inactive hover:text-black"}`}
-            >
-              {t('liveMonitor')}
-            </button>
+        <div className="flex items-center gap-4">
+          <div className="relative group">
+            <Calendar size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" />
+            <input
+              type="date"
+              className="bg-slate-50 dark:bg-slate-800 border border-[var(--border)] rounded-xl py-3 pl-12 pr-4 text-xs font-bold uppercase tracking-widest outline-none focus:ring-1 focus:ring-black/10 transition-all"
+              value={selectedDate}
+              onChange={(e) => setSelectedDate(e.target.value)}
+            />
           </div>
+          <button onClick={() => setShowQR(true)} className="p-3.5 bg-black text-white dark:bg-white dark:text-black rounded-xl shadow-lg hover:scale-105 active:scale-95 transition-all"><Fingerprint size={18} /></button>
         </div>
       </div>
 

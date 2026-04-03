@@ -27,18 +27,18 @@ const ProductionTrend = ({ data }) => {
                         dataKey="name" 
                         axisLine={false} 
                         tickLine={false} 
-                        tick={{fontSize: 9, fontWeight: 900, fill: 'var(--text-secondary)'}}
+                        tick={{fontSize: 10, fontWeight: 700, fill: 'var(--text-secondary)'}}
                         dy={10}
                     />
                     <Tooltip 
-                        contentStyle={{borderRadius: '24px', border: 'none', background: 'var(--bg-secondary)', color: 'var(--text-primary)', boxShadow: 'var(--premium-shadow)', fontSize: '10px', fontWeight: 'bold'}}
+                        contentStyle={{borderRadius: '16px', border: 'none', background: 'var(--bg-secondary)', color: 'var(--text-primary)', boxShadow: 'var(--premium-shadow)', fontSize: '11px', fontWeight: 'bold'}}
                         cursor={{stroke: '#10b981', strokeWidth: 1}}
                     />
                     <Area 
                         type="monotone" 
                         dataKey="value" 
                         stroke="#10b981" 
-                        strokeWidth={3}
+                        strokeWidth={2}
                         fillOpacity={1} 
                         fill="url(#colorVal)" 
                     />
@@ -198,127 +198,126 @@ const Overview = ({ masterData, setMasterData, setActivePanel, user, t }) => {
             </div>
 
             {/* Header Section */}
-            <div className="flex flex-col md:flex-row justify-between items-end gap-10 mb-20 animate-fade-up">
-                <div className="space-y-8">
-                     <h1 className="section-header !mb-0 italic leading-none">YOUR <span className="opacity-20 italic">STATISTICS</span></h1>
-                     <div className="flex flex-wrap gap-4 items-center">
-                         <span className="px-6 py-2 bg-black text-white dark:bg-white dark:text-black rounded-full text-[9px] font-black uppercase tracking-[0.2em] shadow-xl italic">FACTORY ENGINE v2.1</span>
-                         <span className="px-6 py-2 bg-[var(--bg-secondary)] border border-[var(--border)] text-slate-400 rounded-full text-[9px] font-black uppercase tracking-[0.2em] italic">REAL-TIME ANALYTICS</span>
+            <div className="flex flex-col md:flex-row justify-between items-end gap-10 mb-16 animate-fade-up">
+                <div className="space-y-4">
+                     <h1 className="section-header !mb-0 tracking-tightest">Dashboard <span className="text-slate-300 dark:text-slate-700 font-light">Overview</span></h1>
+                     <div className="flex flex-wrap gap-3 items-center">
+                         <span className="px-5 py-1.5 bg-black text-white dark:bg-white dark:text-black rounded-lg text-[9px] font-bold uppercase tracking-widest shadow-lg">v3.0 PRO</span>
+                         <span className="px-5 py-1.5 bg-[var(--bg-secondary)] border border-[var(--border)] text-slate-500 rounded-lg text-[9px] font-bold uppercase tracking-widest">Real-time Node</span>
                          { (user?.role?.toLowerCase() === 'admin' || user?.role?.toLowerCase() === 'manager') && (
-                            <button onClick={shareEOD} className="ml-4 action-btn-primary flex items-center gap-3">
-                                <Share2 size={16} /> Share EOD Report
+                            <button onClick={shareEOD} className="ml-2 action-btn-primary !py-2 !px-6 flex items-center gap-2">
+                                <Share2 size={14} /> Export Report
                             </button>
                          )}
                      </div>
                 </div>
-                <div className="flex flex-wrap gap-10 items-center bg-[var(--bg-secondary)] p-10 rounded-[3rem] border border-[var(--border)] shadow-2xl">
-                    <div className="flex items-center gap-6">
-                        <div className="w-14 h-14 bg-emerald-50 dark:bg-emerald-500/10 rounded-2xl flex items-center justify-center text-emerald-500 shadow-inner group hover:scale-110 transition-all"><UserCheck size={24} /></div>
+                <div className="flex flex-wrap gap-8 items-center bg-[var(--bg-secondary)] p-8 rounded-3xl border border-[var(--border)] shadow-sm">
+                    <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 bg-emerald-50 dark:bg-emerald-500/10 rounded-xl flex items-center justify-center text-emerald-500"><UserCheck size={20} /></div>
                         <div>
-                             <p className="text-4xl font-black leading-none italic dark:text-white tracking-tighter">{stats.presentCount}</p>
-                             <p className="text-[10px] uppercase font-black text-slate-400 tracking-[0.3em] mt-2 italic">Present Today</p>
+                             <p className="text-3xl font-bold leading-none dark:text-white tracking-tight">{stats.presentCount}</p>
+                             <p className="text-[9px] uppercase font-bold text-slate-400 tracking-wider mt-1.5">Present Today</p>
                         </div>
                     </div>
-                    <div className="w-px h-16 bg-[var(--border)]"></div>
-                    <div className="flex items-center gap-6">
-                        <div className="w-14 h-14 bg-indigo-50 dark:bg-indigo-500/10 rounded-2xl flex items-center justify-center text-indigo-500 shadow-inner group hover:scale-110 transition-all"><Activity size={24} /></div>
+                    <div className="w-px h-10 bg-[var(--border)]"></div>
+                    <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 bg-indigo-50 dark:bg-indigo-500/10 rounded-xl flex items-center justify-center text-indigo-500"><Activity size={20} /></div>
                         <div>
-                             <p className="text-4xl font-black leading-none italic dark:text-white tracking-tighter">{stats.totalPayable.toLocaleString()}৳</p>
-                             <p className="text-[10px] uppercase font-black text-slate-400 tracking-[0.3em] mt-2 italic">Production Load</p>
+                             <p className="text-3xl font-bold leading-none dark:text-white tracking-tight">{stats.totalPayable.toLocaleString()}৳</p>
+                             <p className="text-[9px] uppercase font-bold text-slate-400 tracking-wider mt-1.5">Work Volume</p>
                         </div>
                     </div>
                 </div>
             </div>
             {/* Strategic Fiscal Hub */}
             { (user?.role?.toLowerCase() === 'admin' || user?.role?.toLowerCase() === 'manager') ? (
-                <div className="mb-20 grid grid-cols-1 md:grid-cols-4 gap-10">
-                    <div className="md:col-span-3 bg-black text-white p-16 rounded-[4rem] relative overflow-hidden group shadow-[var(--premium-shadow)] italic">
+                <div className="mb-16 grid grid-cols-1 md:grid-cols-4 gap-8">
+                    <div className="md:col-span-3 bg-black text-white p-12 rounded-[2.5rem] relative overflow-hidden group shadow-xl">
                         <div className="flex flex-col md:flex-row justify-between items-center relative z-10 gap-10">
-                            <div className="space-y-6">
-                                <h3 className="text-5xl font-black italic tracking-tighter uppercase leading-none">Net Tactical Worth</h3>
-                                <p className="text-[10px] font-black uppercase text-white/40 tracking-[0.5em] italic">Real-time Liquidity & Production Yield Analysis</p>
-                                <div className="flex gap-4 pt-6">
-                                <button onClick={() => setActivePanel('Accounts')} className="px-8 py-4 bg-white/10 hover:bg-white text-white hover:text-black rounded-full text-[9px] font-black uppercase tracking-widest border border-white/10 transition-all">Audit Expenses</button>
-                                <button onClick={() => setActivePanel('Inventory')} className="px-8 py-4 bg-white/10 hover:bg-white text-white hover:text-black rounded-full text-[9px] font-black uppercase tracking-widest border border-white/10 transition-all">Vault Stock</button>
+                            <div className="space-y-4">
+                                <h3 className="text-4xl font-bold tracking-tight uppercase leading-none">Net Tactical Worth</h3>
+                                <p className="text-[9px] font-bold uppercase text-white/40 tracking-widest">Real-time Liquidity & Production Yield Analysis</p>
+                                <div className="flex gap-3 pt-6">
+                                <button onClick={() => setActivePanel('Accounts')} className="px-6 py-3 bg-white/10 hover:bg-white text-white hover:text-black rounded-xl text-[9px] font-bold uppercase tracking-widest border border-white/10 transition-all">Audit Expenses</button>
+                                <button onClick={() => setActivePanel('Inventory')} className="px-6 py-3 bg-white/10 hover:bg-white text-white hover:text-black rounded-xl text-[9px] font-bold uppercase tracking-widest border border-white/10 transition-all">Vault Stock</button>
                                 </div>
                             </div>
                             <div className="text-right">
-                                <p className="text-8xl font-black italic tracking-tighter leading-none mb-4 text-emerald-400">৳{stats.financialIntel.netProfit.toLocaleString()}</p>
+                                <p className="text-7xl font-bold tracking-tighter leading-none mb-3 text-white">৳{stats.financialIntel.netProfit.toLocaleString()}</p>
                                 <div className="flex items-center gap-3 justify-end">
-                                    <div className={`px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-widest ${stats.financialIntel.margin > 0 ? 'bg-emerald-400/20 text-emerald-400' : 'bg-rose-500/20 text-rose-500'}`}>
+                                    <div className={`px-4 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider ${stats.financialIntel.margin > 0 ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-500'}`}>
                                         {stats.financialIntel.margin.toFixed(1)}% PROFIT MARGIN
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div className="absolute bottom-[-10%] right-[-5%] text-white opacity-[0.05] rotate-12 pointer-events-none">
-                            <TrendingUp size={300} strokeWidth={4} />
+                        <div className="absolute bottom-[-10%] right-[-5%] text-white opacity-[0.05] pointer-events-none">
+                            <TrendingUp size={240} strokeWidth={4} />
                         </div>
                     </div>
-                    <div className="premium-card flex flex-col justify-between italic bg-[var(--bg-secondary)] border-[var(--border)] group hover:border-black dark:hover:border-white transition-all">
+                    <div className="premium-card flex flex-col justify-between bg-[var(--bg-secondary)] group hover:border-black/20 dark:hover:border-white/20 transition-all">
                         <div>
                             <div className="flex justify-between items-start mb-4">
-                            <p className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] italic">Operational Exposure</p>
-                            <TrendingDown size={18} className="text-rose-500" />
+                            <p className="text-[10px] font-bold uppercase text-slate-400 tracking-wider">Operational Cost</p>
+                            <TrendingDown size={16} className="text-rose-500" />
                             </div>
-                            <h4 className="text-4xl font-black italic tracking-tighter text-[var(--text-primary)]">৳{stats.financialIntel.totalCosts.toLocaleString()}</h4>
+                            <h4 className="text-3xl font-bold tracking-tight text-[var(--text-primary)]">৳{stats.financialIntel.totalCosts.toLocaleString()}</h4>
                         </div>
-                        <div className="space-y-4">
-                            <div className="flex justify-between items-center text-[9px] font-black uppercase tracking-widest text-slate-400">
-                                <span className="italic">Production</span>
-                                <span className="text-[var(--text-primary)]">৳{stats.financialIntel.productionCosts.toLocaleString()}</span>
+                        <div className="space-y-4 pt-8">
+                            <div className="flex justify-between items-center text-[9px] font-bold uppercase tracking-widest text-slate-400">
+                                <span>Production %</span>
+                                <span className="text-[var(--text-primary)]">{((stats.financialIntel.productionCosts / Math.max(1, stats.financialIntel.totalCosts)) * 100).toFixed(0)}%</span>
                             </div>
-                            <div className="w-full h-2 bg-[var(--bg-primary)] rounded-full overflow-hidden">
+                            <div className="w-full h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
                                 <div className="h-full bg-black dark:bg-white transition-all duration-1000" style={{ width: `${(stats.financialIntel.productionCosts / Math.max(1, stats.financialIntel.totalCosts)) * 100}%` }}></div>
                             </div>
                         </div>
                     </div>
                 </div>
             ) : (
-                <div className="mb-20 grid grid-cols-1 md:grid-cols-4 gap-10">
-                    <div className="md:col-span-3 bg-indigo-600 text-white p-16 rounded-[4rem] relative overflow-hidden group shadow-[var(--premium-shadow)] italic">
+                <div className="mb-16 grid grid-cols-1 md:grid-cols-4 gap-8">
+                    <div className="md:col-span-3 bg-indigo-600 text-white p-12 rounded-[2.5rem] relative overflow-hidden group shadow-xl">
                         <div className="flex flex-col md:flex-row justify-between items-center relative z-10 gap-10">
-                            <div className="space-y-6">
-                                <h3 className="text-5xl font-black italic tracking-tighter uppercase leading-none">My Performance</h3>
-                                <p className="text-[10px] font-black uppercase text-white/40 tracking-[0.5em] italic">Personal Productivity & Shared Earnings Summary</p>
+                            <div className="space-y-4">
+                                <h3 className="text-4xl font-bold tracking-tight uppercase leading-none">Personal Ledger</h3>
+                                <p className="text-[9px] font-bold uppercase text-white/40 tracking-widest">Real-time Performance & Shared Earnings</p>
                             </div>
                             <div className="text-right">
-                                <p className="text-[10px] font-black uppercase text-white/60 tracking-widest mb-4">Current Earnings (পাওনা)</p>
-                                <p className="text-8xl font-black italic tracking-tighter leading-none mb-4 text-white">৳{stats.totalPayable.toLocaleString()}</p>
+                                <p className="text-[10px] font-bold uppercase text-white/60 tracking-widest mb-3">Total Payable (৳)</p>
+                                <p className="text-7xl font-bold tracking-tighter leading-none text-white">৳{stats.totalPayable.toLocaleString()}</p>
                             </div>
                         </div>
                     </div>
-                    <div className="premium-card flex flex-col justify-between italic bg-[var(--bg-secondary)] border-[var(--border)] group hover:border-black dark:hover:border-white transition-all">
+                    <div className="premium-card flex flex-col justify-between bg-[var(--bg-secondary)] border-[var(--border)]">
                         <div>
-                           <p className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] italic mb-4">Today Status</p>
-                           <h4 className="text-4xl font-black italic tracking-tighter text-[var(--text-primary)]"> {stats.presentCount > 0 ? "PRESENT" : "ABSENT"}</h4>
+                           <p className="text-[10px] font-bold uppercase text-slate-400 tracking-wider mb-4">Availability status</p>
+                           <h4 className={`text-3xl font-bold tracking-tight ${stats.presentCount > 0 ? "text-emerald-500" : "text-rose-500"}`}> {stats.presentCount > 0 ? "PRESENT" : "ABSENT"}</h4>
                         </div>
-                        <div className="text-[9px] font-black uppercase tracking-[0.4em] text-slate-400 italic">
-                             Automated Log
+                        <div className="text-[9px] font-bold uppercase tracking-widest text-slate-400">
+                             Official Log Verified
                         </div>
                     </div>
                 </div>
             )}
 
-            {/* Rapid Command Center */}
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-8 mb-20">
+            {/* Command Grid */}
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-6 mb-16">
                  {[
-                    { label: 'Issue cutting', panel: 'Cutting', icon: <Scissors size={20} />, color: 'bg-black text-white dark:bg-white dark:text-black shadow-2xl' },
-                    { label: 'Sewing Node', panel: 'Swing', icon: <Layers size={20} />, color: 'bg-[var(--bg-secondary)] text-[var(--text-primary)]' },
-                    { label: 'Stone Unit', panel: 'Stone', icon: <Hammer size={20} />, color: 'bg-[var(--bg-secondary)] text-[var(--text-primary)]' },
-                    { label: 'Pata Workshop', panel: 'Pata', icon: <Activity size={20} />, color: 'bg-[var(--bg-secondary)] text-[var(--text-primary)]' },
-                    { label: 'Outside Ops', panel: 'Outside', icon: <Truck size={20} />, color: 'bg-[var(--bg-secondary)] text-[var(--text-primary)]' }
+                    { label: 'Cutting Unit', panel: 'Cutting', icon: <Scissors size={18} />, color: 'bg-black text-white dark:bg-white dark:text-black shadow-lg hover:bg-slate-900' },
+                    { label: 'Sewing Node', panel: 'Swing', icon: <Layers size={18} />, color: 'bg-[var(--bg-secondary)] text-[var(--text-primary)]' },
+                    { label: 'Stone Unit', panel: 'Stone', icon: <Hammer size={18} />, color: 'bg-[var(--bg-secondary)] text-[var(--text-primary)]' },
+                    { label: 'Pata Hub', panel: 'Pata', icon: <Activity size={18} />, color: 'bg-[var(--bg-secondary)] text-[var(--text-primary)]' },
+                    { label: 'Outside Ops', panel: 'Outside', icon: <Truck size={18} />, color: 'bg-[var(--bg-secondary)] text-[var(--text-primary)]' }
                  ].map((cmd, idx) => (
                     <button 
                         key={idx}
                         onClick={() => setActivePanel(cmd.panel)}
-                        className={`p-10 rounded-[3rem] ${cmd.color} border border-[var(--border)] hover:translate-y-[-5px] active:translate-y-[2px] transition-all shadow-xl group text-left relative overflow-hidden`}
+                        className={`p-8 rounded-2xl ${cmd.color} border border-[var(--border)] hover:translate-y-[-4px] transition-all shadow-sm group text-left relative overflow-hidden`}
                     >
-                        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-6 shadow-lg transition-transform group-hover:scale-110 ${cmd.color.includes('bg-black') ? 'bg-white/10 text-white' : 'bg-[var(--bg-primary)] text-[var(--text-primary)]'}`}>
+                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-4 shadow-sm transition-transform group-hover:scale-110 ${cmd.color.includes('bg-black') ? 'bg-white/10 text-white' : 'bg-[var(--bg-primary)] text-black dark:text-white'}`}>
                             {cmd.icon}
                         </div>
-                        <p className="text-[10px] font-black uppercase tracking-[0.2em] leading-tight italic">{cmd.label}</p>
-                        <ChevronRight className="absolute bottom-10 right-10 opacity-10 group-hover:opacity-40 transition-all" size={24} />
+                        <p className="text-[10px] font-bold uppercase tracking-widest leading-tight">{cmd.label}</p>
                     </button>
                  ))}
             </div>
@@ -402,46 +401,46 @@ const Overview = ({ masterData, setMasterData, setActivePanel, user, t }) => {
 
                 {/* Analytics & Pulse Widget */}
                 <div className="md:col-span-5 premium-card">
-                    <div className="flex justify-between items-center mb-12">
-                         <h3 className="font-black text-xl italic uppercase tracking-tighter">Live Intelligence</h3>
-                         <div className="pill-nav !bg-gray-100 !py-1 !px-1">
-                             <button className="pill-item !px-6 !py-2 !text-[10px] pill-item-active">WEEK</button>
-                             <button className="pill-item !px-6 !py-2 !text-[10px]">MONTH</button>
+                    <div className="flex justify-between items-center mb-10">
+                         <h3 className="font-bold text-lg uppercase tracking-tight text-slate-500">Live Intelligence</h3>
+                         <div className="pill-nav !bg-slate-50/50 dark:!bg-slate-800/50">
+                             <button className="pill-item !px-5 !py-2 !text-[9px] pill-item-active">WEEKLY</button>
+                             <button className="pill-item !px-5 !py-2 !text-[9px]">MONTHLY</button>
                          </div>
                     </div>
 
-                    <div className="h-64 mt-12 bg-white rounded-[40px] p-6 shadow-inner">
+                    <div className="h-56 mt-8 bg-slate-50/50 dark:bg-slate-800/30 rounded-2xl p-4 border border-slate-100/50 dark:border-white/5">
                          <ProductionTrend data={stats.trendData} />
                     </div>
 
-                    <div className="grid grid-cols-3 gap-6 mt-16">
-                         <div className="bg-gray-50/80 p-6 rounded-[32px] border border-white hover:border-black/5 transition-all shadow-sm">
-                              <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-md mb-6"><Layers size={20} className="text-rose-500" /></div>
-                              <p className="text-3xl font-black italic mb-1 text-black">{stats.pendingSewing}</p>
-                              <p className="text-[8px] font-black text-slate-500 uppercase tracking-widest italic">Sewing Ops</p>
+                    <div className="grid grid-cols-3 gap-6 mt-12">
+                         <div className="bg-slate-50/50 dark:bg-slate-800/50 p-6 rounded-2xl border border-slate-100/50 dark:border-white/5 hover:border-black/5 transition-all">
+                              <div className="w-10 h-10 bg-white dark:bg-slate-900 rounded-xl flex items-center justify-center shadow-sm mb-4"><Layers size={18} className="text-rose-500" /></div>
+                              <p className="text-2xl font-bold mb-1 text-black dark:text-white">{stats.pendingSewing}</p>
+                              <p className="text-[8px] font-bold text-slate-400 uppercase tracking-widest">Sewing</p>
                          </div>
-                         <div className="bg-gray-50/80 p-6 rounded-[32px] border border-white hover:border-black/5 transition-all shadow-sm">
-                              <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-md mb-6"><Hammer size={20} className="text-rose-500" /></div>
-                              <p className="text-3xl font-black italic mb-1 text-black">{stats.pendingStone}</p>
-                              <p className="text-[8px] font-black text-slate-500 uppercase tracking-widest italic">Stone Ops</p>
+                         <div className="bg-slate-50/50 dark:bg-slate-800/50 p-6 rounded-2xl border border-slate-100/50 dark:border-white/5 hover:border-black/5 transition-all">
+                              <div className="w-10 h-10 bg-white dark:bg-slate-900 rounded-xl flex items-center justify-center shadow-sm mb-4"><Hammer size={18} className="text-rose-500" /></div>
+                              <p className="text-2xl font-bold mb-1 text-black dark:text-white">{stats.pendingStone}</p>
+                              <p className="text-[8px] font-bold text-slate-400 uppercase tracking-widest">Stone</p>
                          </div>
-                         <div className="bg-emerald-500 p-6 rounded-[32px] text-white shadow-2xl group cursor-pointer hover:bg-black transition-all">
-                              <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-white group-hover:text-black transition-all"><Package size={20} /></div>
-                              <p className="text-3xl font-black italic mb-1">{stats.totalStock}</p>
-                              <p className="text-[8px] font-black text-white/60 uppercase tracking-widest italic">Sync Stock</p>
+                         <div className="bg-emerald-500 p-6 rounded-2xl text-white shadow-lg group cursor-pointer hover:bg-black transition-all">
+                              <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center mb-4 group-hover:bg-white group-hover:text-black transition-all"><Package size={18} /></div>
+                              <p className="text-2xl font-bold mb-1">{stats.totalStock}</p>
+                              <p className="text-[8px] font-bold text-white/60 uppercase tracking-widest">Stock</p>
                          </div>
                     </div>
 
                     { (user?.role?.toLowerCase() === 'admin' || user?.role?.toLowerCase() === 'manager') && (
-                        <div className="mt-12 bg-slate-50 p-10 rounded-[3rem] border border-white flex justify-between items-center group cursor-pointer hover:border-rose-500 transition-all italic">
-                            <div className="flex items-center gap-6">
-                                <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-sm text-rose-500"><AlertTriangle size={24} /></div>
+                        <div className="mt-10 bg-slate-50 dark:bg-slate-800/50 p-8 rounded-2xl border border-slate-100/50 dark:border-white/5 flex justify-between items-center group cursor-pointer hover:border-emerald-500/30 transition-all">
+                            <div className="flex items-center gap-4">
+                                <div className="w-12 h-12 bg-white dark:bg-slate-900 rounded-xl flex items-center justify-center shadow-sm text-amber-500"><AlertTriangle size={20} /></div>
                                 <div>
-                                    <h4 className="text-xl font-black uppercase italic leading-none text-black">Material Alert</h4>
-                                    <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mt-2">Critical low stock detected</p>
+                                    <h4 className="text-lg font-bold uppercase leading-none text-black dark:text-white">Audit Required</h4>
+                                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider mt-2">Critical stock nodes found</p>
                                 </div>
                             </div>
-                            <ChevronRight size={24} className="text-slate-500 group-hover:text-rose-500 transition-all translate-x-0 group-hover:translate-x-2" />
+                            <ChevronRight size={20} className="text-slate-400 group-hover:text-emerald-500 transition-all" />
                         </div>
                     )}
                 </div>

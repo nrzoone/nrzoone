@@ -226,9 +226,9 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
                         @page { size: A4 portrait; margin: 0; }
                     }
                 `}</style>
-                <div className="no-print flex justify-between items-center mb-6 w-[210mm] mx-auto bg-white p-6 rounded-[2.5rem] shadow-xl border-4 border-black font-black">
-                    <button onClick={() => setPrintSlip(null)} className="bg-slate-50 text-slate-600 px-10 py-5 uppercase text-xs rounded-full hover:bg-black hover:text-white transition-all">Cancel</button>
-                    <button onClick={() => window.print()} className="bg-black text-white px-10 py-5 rounded-full uppercase text-xs shadow-2xl flex items-center gap-3 active:scale-95 transition-all">
+                <div className="no-print flex justify-between items-center mb-6 w-[210mm] mx-auto bg-white p-6 rounded-3xl shadow-xl border border-slate-100 font-bold">
+                    <button onClick={() => setPrintSlip(null)} className="bg-slate-50 text-slate-600 px-10 py-5 uppercase text-xs rounded-2xl hover:bg-black hover:text-white transition-all">Cancel</button>
+                    <button onClick={() => window.print()} className="bg-black text-white px-10 py-5 rounded-2xl uppercase text-xs shadow-2xl flex items-center gap-3 active:scale-95 transition-all">
                         <Printer size={18} /> Print Job
                     </button>
                 </div>
@@ -243,61 +243,34 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
     }
 
     return (
-    <div className="space-y-4 pb-24 animate-fade-up px-1 md:px-2 italic text-black font-outfit uppercase">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
-        <div className="flex items-center gap-6">
-          <button
-            onClick={() => setActivePanel("Overview")}
-            className="w-12 h-12 flex items-center justify-center bg-white border border-slate-200 rounded-xl hover:bg-black hover:text-white transition-all shadow-sm"
-          >
-            <ArrowLeft size={20} />
-          </button>
-          <div>
-            <h1 className="section-header">
-                Outside <span className="text-slate-500">Work</span>
-            </h1>
-            <p className="text-[11px] font-black text-slate-500 uppercase tracking-[0.4em] mt-2 italic">
-               External Operations Unit
-            </p>
-          </div>
-        </div>
-        <div className="flex items-center gap-4 w-full md:w-auto">
-          <div className="flex bg-slate-50 border-2 border-slate-100 rounded-3xl p-1 items-center shadow-inner group focus-within:border-black transition-all">
-            <div className="pl-4 text-slate-500 group-focus-within:text-black">
-               <Search size={16} />
+    <div className="space-y-4 pb-24 animate-fade-up px-1 md:px-2 text-black font-sans">
+      {/* Header Section */}
+            <div className="flex flex-col md:flex-row justify-between items-end gap-10 mb-16 animate-fade-up px-2">
+                <div className="space-y-4">
+                     <h1 className="section-header !mb-0 tracking-tightest">Outside <span className="text-slate-300 dark:text-slate-700 font-light">Work Management</span></h1>
+                     <div className="flex flex-wrap gap-3 items-center">
+                         <span className="px-5 py-1.5 bg-black text-white dark:bg-white dark:text-black rounded-lg text-[9px] font-bold uppercase tracking-widest shadow-lg">OUTSIDE FACTORY v2.0</span>
+                         <span className="px-5 py-1.5 bg-[var(--bg-secondary)] border border-[var(--border)] text-slate-500 rounded-lg text-[9px] font-bold uppercase tracking-widest">Global Logistics</span>
+                     </div>
+                </div>
+                <div className="flex flex-wrap gap-8 items-center bg-[var(--bg-secondary)] p-8 rounded-3xl border border-[var(--border)] shadow-sm">
+                    <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 bg-emerald-50 dark:bg-emerald-500/10 rounded-xl flex items-center justify-center text-emerald-500 shadow-inner group hover:scale-110 transition-all"><CheckCircle size={20} /></div>
+                        <div>
+                             <p className="text-3xl font-bold leading-none dark:text-white tracking-tight">{activeEntries.length}</p>
+                             <p className="text-[9px] uppercase font-bold text-slate-400 tracking-wider mt-1.5">Active Tasks</p>
+                        </div>
+                    </div>
+                    <div className="w-px h-10 bg-[var(--border)]"></div>
+                    <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 bg-indigo-50 dark:bg-indigo-500/10 rounded-xl flex items-center justify-center text-indigo-500 shadow-inner group hover:scale-110 transition-all"><DollarSign size={20} /></div>
+                        <div>
+                             <p className="text-3xl font-bold leading-none dark:text-white tracking-tight">{historyEntries.reduce((acc, curr) => acc + (curr.totalAmount - (curr.paidAmount || 0)), 0).toLocaleString()}৳</p>
+                             <p className="text-[9px] uppercase font-bold text-slate-400 tracking-wider mt-1.5">Total Payable</p>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <input
-              className="bg-transparent border-none outline-none font-black italic uppercase text-[10px] py-4 px-3 w-40 md:w-64 placeholder:text-slate-500"
-              placeholder="OUTSIDE / WORKER / TASK..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-            <button 
-              onClick={() => setShowQR(true)}
-              className="w-10 h-10 bg-black text-white rounded-2xl flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-lg mx-1"
-              title="QR RECEIVE"
-            >
-               <Camera size={16} />
-            </button>
-          </div>
-
-          <div className="bg-white px-6 py-3 rounded-2xl border border-slate-100 shadow-sm hidden md:block">
-            <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1 italic">External Base</p>
-            <p className="text-2xl font-black italic text-black leading-none uppercase">
-                {activeEntries.length} <span className="text-[10px] text-slate-500 ml-1">Live</span>
-            </p>
-          </div>
-          {(isAdmin || isManager) && (
-            <button
-              onClick={() => setShowModal(true)}
-              className="px-10 py-5 bg-black text-white rounded-2xl font-black uppercase text-xs tracking-widest shadow-2xl flex items-center gap-3 hover:scale-105 active:scale-95 transition-all italic border-b-[6px] border-zinc-900"
-            >
-              <Plus size={20} strokeWidth={3} />
-              নতুন কাজ (OUTSIDE)
-            </button>
-          )}
-        </div>
-      </div>
 
       {showQR && (
         <QRScanner
@@ -314,106 +287,102 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
         />
       )}
 
-      {/* Unified Floating Filter Bar */}
-      <div className="floating-header-group mb-12 p-2 dark:bg-zinc-900 border-none shadow-2xl">
-          <div className="flex flex-col lg:flex-row items-center gap-4 w-full">
-              <div className="flex items-center gap-1 bg-slate-100 dark:bg-black/50 p-1.5 rounded-2xl w-full lg:w-auto">
-                  {['active', 'history', (isAdmin || isManager) && 'payments'].filter(Boolean).map(v => (
-                    <button
-                      key={v}
-                      onClick={() => setView(v)}
-                      className={`px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${view === v ? 'bg-black text-white dark:bg-white dark:text-black shadow-lg' : 'text-slate-500 hover:text-black dark:hover:text-white'}`}
-                    >
-                      {v === 'active' ? 'চলমান' : v === 'history' ? 'পুরাতন' : 'লেজার ও পেমেন্ট'}
-                    </button>
-                  ))}
-              </div>
-              
-              <div className="flex-1 relative w-full group">
-                  <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none text-slate-500 group-focus-within:text-black dark:group-focus-within:text-white transition-colors">
-                      <Search size={16} />
-                  </div>
-                  <input
-                      placeholder="সার্চ কারিগর বা কাজের বিবরণ..."
-                      className="w-full bg-slate-50 dark:bg-black/20 h-14 rounded-2xl pl-16 pr-8 text-xs font-black uppercase tracking-widest italic outline-none border border-transparent focus:border-black/10 dark:focus:border-white/10 transition-all text-black dark:text-white"
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                  />
-              </div>
-          </div>
-      </div>
+            <div className="flex flex-wrap items-center justify-between gap-8 mb-16 no-print">
+                <div className="pill-nav shadow-sm">
+                    <button onClick={() => setView('active')} className={`pill-tab ${view === 'active' ? 'pill-tab-active' : 'pill-tab-inactive'}`}>Active Operations ({activeEntries.length})</button>
+                    <button onClick={() => setView('history')} className={`pill-tab ${view === 'history' ? 'pill-tab-active' : 'pill-tab-inactive'}`}>Activity Logs ({historyEntries.length})</button>
+                </div>
 
-      <div className="space-y-4">
-        <div className="space-y-4">
+                <div className="flex items-center gap-4 w-full md:w-auto">
+                    <div className="relative group flex-1 md:w-80">
+                        <Search size={16} className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-black transition-all" />
+                        <input
+                            type="text"
+                            placeholder="Find Task or Worker..."
+                            className="premium-input !py-4 !pl-14 !rounded-2xl"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                    </div>
+                    {(isAdmin || isManager) && (
+                        <button
+                            onClick={() => setShowModal(true)}
+                            className="action-btn-primary flex items-center gap-2"
+                        >
+                            <Plus size={18} strokeWidth={3} /> Issue Task
+                        </button>
+                    )}
+                </div>
+            </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {(view === 'active' ? activeEntries : historyEntries).length === 0 ? (
-                <div className="h-64 flex flex-col items-center justify-center bg-white rounded-3xl border-2 border-dashed border-slate-100 opacity-70">
+                <div className="col-span-full h-64 flex flex-col items-center justify-center bg-white rounded-3xl border-2 border-dashed border-slate-100 opacity-70">
                     <ExternalLink size={48} strokeWidth={1} />
-                    <p className="text-[10px] font-black uppercase tracking-[0.4em] mt-6">Zero External Nodes</p>
+                    <p className="text-[10px] font-bold uppercase tracking-[0.4em] mt-6">Zero External Nodes</p>
                 </div>
             ) : (
-                (view === 'active' ? activeEntries : historyEntries).map((item, idx) => (
-                    <div key={item.id || idx} className="item-card flex flex-col md:flex-row justify-between items-center gap-8 group">
-                        <div className="flex items-center gap-8 flex-1 w-full md:w-auto">
-                            <div className={`w-14 h-14 bg-slate-50 flex items-center justify-center text-3xl font-black italic rounded-xl border border-slate-100 shadow-inner group-hover:bg-black group-hover:text-white transition-all transform group-hover:-rotate-6 ${item.status === 'Pending' ? 'border-amber-200' : 'border-emerald-200'}`}>
-                                {item.status === 'Pending' ? <div className="w-4 h-4 rounded-full bg-amber-500 animate-pulse" /> : <div className="w-4 h-4 rounded-full bg-emerald-500" />}
-                            </div>
-                            <div className="space-y-2 flex-1">
-                                <div className="flex items-center gap-4">
-                                    <h4 className="text-xl md:text-2xl font-black italic uppercase leading-none tracking-tighter">
-                                        • {item.worker}
-                                    </h4>
-                                    <span className="badge-standard">External</span>
+                (view === 'active' ? activeEntries : historyEntries).map((item) => (
+                    <div key={item.id} className="premium-card p-0 group">
+                        <div className="flex flex-col h-full">
+                            {/* Top Banner */}
+                            <div className="bg-slate-50 dark:bg-slate-800/50 p-8 border-b border-[var(--border)] flex justify-between items-start">
+                                <div>
+                                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Issue Reference</p>
+                                    <h3 className="text-2xl font-bold tracking-tight text-[var(--text-primary)]">{item.worker}</h3>
                                 </div>
-                                <div className="flex items-center gap-4 text-slate-500 text-[11px] font-black uppercase italic tracking-widest">
-                                    <span className="text-rose-500">• {item.task}</span>
-                                    <span>• {item.date}</span>
-                                    {item.status === 'Received' && <span className="text-emerald-500 border-l border-slate-100 pl-4 ml-2">• REC: {item.receivedDate}</span>}
-                                </div>
-                                <div className="flex items-center gap-3">
-                                    <span className="text-[9px] font-black uppercase tracking-widest px-3 py-1 bg-slate-50 border border-slate-100 rounded-full text-slate-500">Rate: ৳{item.rate}</span>
-                                    {item.note && <span className="text-[9px] font-black uppercase tracking-widest text-amber-600 italic bg-amber-50 px-3 py-1 rounded-full border border-amber-100">Note: {item.note}</span>}
+                                <div className={`px-4 py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-wider ${item.status === 'Completed' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-amber-500/10 text-amber-500'}`}>
+                                    {item.status}
                                 </div>
                             </div>
-                        </div>
 
-                        <div className="flex items-center gap-12 w-full md:w-auto justify-between border-t md:border-t-0 pt-6 md:pt-0">
-                            <div className="flex gap-8">
-                                <div className="text-center">
-                                    <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1 italic">Borka</p>
-                                    <p className="text-3xl font-black italic tracking-tighter leading-none">{item.borkaQty}</p>
-                                </div>
-                                <div className="text-center">
-                                    <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1 italic">Hijab</p>
-                                    <p className="text-3xl font-black italic tracking-tighter leading-none">{item.hijabQty}</p>
-                                </div>
-                                {item.status === 'Received' && (
-                                    <div className="text-center border-l border-slate-100 pl-8">
-                                        <p className="text-[9px] font-black text-emerald-500 uppercase tracking-widest mb-1 italic">Balance</p>
-                                        <p className="text-3xl font-black italic tracking-tighter leading-none text-emerald-600">৳{(item.totalAmount - (item.paidAmount || 0)).toLocaleString()}</p>
+                            {/* Details Content */}
+                            <div className="p-8 space-y-6 flex-1">
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="bg-slate-50/50 dark:bg-slate-900/30 p-4 rounded-xl border border-slate-100/50 dark:border-white/5">
+                                        <p className="text-[8px] font-bold text-slate-400 uppercase tracking-widest mb-1">Operations</p>
+                                        <p className="text-sm font-bold truncate">{item.task}</p>
                                     </div>
-                                )}
+                                    <div className="bg-slate-50/50 dark:bg-slate-900/30 p-4 rounded-xl border border-slate-100/50 dark:border-white/5">
+                                        <p className="text-[8px] font-bold text-slate-400 uppercase tracking-widest mb-1">Lot Size</p>
+                                        <p className="text-sm font-bold truncate">B:{item.borkaQty} | H:{item.hijabQty}</p>
+                                    </div>
+                                </div>
+                                
+                                <div className="flex justify-between items-center py-4 border-y border-[var(--border)] border-dashed">
+                                    <div className="flex flex-col">
+                                         <span className="text-[8px] font-bold text-slate-400 uppercase tracking-widest">Financial Yield</span>
+                                         <span className="text-xl font-bold text-[var(--text-primary)]">৳{((item.borkaQty + item.hijabQty) * item.rate).toLocaleString()}</span>
+                                    </div>
+                                    <div className="text-right">
+                                         <span className="text-[8px] font-bold text-slate-400 uppercase tracking-widest">Assigned</span>
+                                         <p className="text-[10px] font-semibold text-slate-500">{item.date}</p>
+                                    </div>
+                                </div>
                             </div>
-                            <div className="flex gap-3 items-center">
+
+                            {/* Action Footer */}
+                            <div className="flex gap-3 p-8 border-t border-[var(--border)] bg-slate-50/50 dark:bg-slate-800/20">
                                 {item.status === 'Pending' ? (
                                     <>
-                                        <button onClick={() => setPrintSlip(item)} className="w-12 h-12 flex items-center justify-center rounded-full bg-slate-50 text-slate-500 hover:bg-black hover:text-white transition-all shadow-sm">
+                                        <button onClick={() => setPrintSlip(item)} className="w-12 h-12 flex items-center justify-center rounded-full bg-white dark:bg-slate-800 text-slate-500 hover:bg-black hover:text-white transition-all shadow-sm border border-[var(--border)]">
                                             <Printer size={18} />
                                         </button>
-                                        {(isAdmin || isManager) && <button onClick={() => handleReceive(item)} className="black-button px-6">জমা নিন (REC)</button>}
+                                        {(isAdmin || isManager) && <button onClick={() => handleReceive(item)} className="bg-black text-white px-6 py-2 rounded-xl text-xs font-bold uppercase tracking-widest shadow-lg">জমা নিন (REC)</button>}
                                         {isAdmin && (
-                                            <div className="flex gap-2">
-                                                <button onClick={() => setEditModal(item)} className="w-12 h-12 flex items-center justify-center rounded-full bg-slate-50 text-amber-500 hover:bg-amber-500 hover:text-white transition-all shadow-sm">
-                                                    <Settings size={18} />
+                                            <div className="flex gap-2 ml-auto">
+                                                <button onClick={() => setEditModal(item)} className="w-10 h-10 flex items-center justify-center rounded-lg bg-white dark:bg-slate-800 text-amber-500 hover:bg-amber-500 hover:text-white transition-all shadow-sm border border-[var(--border)]">
+                                                    <Settings size={16} />
                                                 </button>
-                                                <button onClick={() => handleDelete(item.id)} className="w-12 h-12 flex items-center justify-center rounded-full bg-rose-50 text-rose-500 hover:bg-rose-500 hover:text-white transition-all shadow-sm">
-                                                    <Trash2 size={18} />
+                                                <button onClick={() => handleDelete(item.id)} className="w-10 h-10 flex items-center justify-center rounded-lg bg-white dark:bg-slate-800 text-rose-500 hover:bg-rose-500 hover:text-white transition-all shadow-sm border border-[var(--border)]">
+                                                    <Trash2 size={16} />
                                                 </button>
                                             </div>
                                         )}
                                     </>
                                 ) : (
                                     <>
-                                        <button onClick={() => setPrintSlip(item)} className="w-12 h-12 flex items-center justify-center rounded-full bg-slate-50 text-slate-500 hover:bg-black hover:text-white transition-all shadow-sm">
+                                        <button onClick={() => setPrintSlip(item)} className="w-12 h-12 flex items-center justify-center rounded-full bg-white dark:bg-slate-800 text-slate-500 hover:bg-black hover:text-white transition-all shadow-sm border border-[var(--border)]">
                                             <Printer size={18} />
                                         </button>
                                         {(isAdmin || isManager) && (
@@ -422,12 +391,12 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
                                             </button>
                                         )}
                                         {isAdmin && (
-                                            <div className="flex gap-2">
-                                                <button onClick={() => setEditModal(item)} className="w-12 h-12 flex items-center justify-center rounded-full bg-slate-50 text-amber-500 hover:bg-amber-500 hover:text-white transition-all shadow-sm">
-                                                    <Settings size={18} />
+                                            <div className="flex gap-2 ml-auto">
+                                                <button onClick={() => setEditModal(item)} className="w-10 h-10 flex items-center justify-center rounded-lg bg-white dark:bg-slate-800 text-amber-500 hover:bg-amber-500 hover:text-white transition-all shadow-sm border border-[var(--border)]">
+                                                    <Settings size={16} />
                                                 </button>
-                                                <button onClick={() => handleDelete(item.id)} className="w-12 h-12 flex items-center justify-center rounded-full bg-rose-50 text-rose-500 hover:bg-rose-500 hover:text-white transition-all shadow-sm">
-                                                    <Trash2 size={18} />
+                                                <button onClick={() => handleDelete(item.id)} className="w-10 h-10 flex items-center justify-center rounded-lg bg-white dark:bg-slate-800 text-rose-500 hover:bg-rose-500 hover:text-white transition-all shadow-sm border border-[var(--border)]">
+                                                    <Trash2 size={16} />
                                                 </button>
                                             </div>
                                         )}

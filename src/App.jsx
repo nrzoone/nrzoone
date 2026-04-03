@@ -343,10 +343,10 @@ const Sidebar = ({ activePanel, setActivePanel, user, setUser, isOpen, setIsSide
                     return (
                         <button
                             key={item.id} onClick={() => navigate(item.id)}
-                            className={`w-full flex items-center gap-5 p-5 rounded-[2rem] transition-all group ${active ? "bg-black text-white dark:bg-white dark:text-black shadow-2xl scale-[1.02] -translate-x-2" : "text-slate-400 hover:text-black dark:hover:text-white"}`}
+                            className={`w-full flex items-center gap-4 p-4 rounded-xl transition-all group ${active ? "bg-black text-white dark:bg-white dark:text-black shadow-lg" : "text-slate-400 hover:text-black dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/50"}`}
                         >
-                            <Icon size={18} strokeWidth={active ? 3 : 2} className="shrink-0" />
-                            <span className={`text-[10px] uppercase tracking-[0.2em] italic ${active ? "font-black" : "font-bold opacity-70"}`}>{t(item.id.toLowerCase()) || item.label}</span>
+                            <Icon size={16} strokeWidth={active ? 2.5 : 2} className="shrink-0" />
+                            <span className={`text-[10px] uppercase tracking-wider ${active ? "font-bold" : "font-semibold opacity-70"}`}>{t(item.id.toLowerCase()) || item.label}</span>
                         </button>
                     );
                 })}
@@ -517,38 +517,38 @@ const AppContent = () => {
             ) : (
                 <div className="flex min-h-screen">
                     <Sidebar activePanel={activePanel} setActivePanel={setActivePanel} user={user} setUser={setUser} isOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} t={t} isDarkMode={isDarkMode} masterData={masterData} />
-                    <main className={`flex-1 p-4 md:p-20 transition-all ${isSidebarOpen ? "md:ml-[300px]" : "ml-0"}`}>
-                        <header className="flex flex-col md:flex-row justify-between items-center mb-20 gap-8 no-print">
-                            <div className="flex items-center gap-6 w-full md:w-auto">
-                                <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="w-16 h-16 bg-[var(--bg-secondary)] border border-[var(--border)] rounded-[1.5rem] shadow-xl flex items-center justify-center hover:scale-105 active:scale-95 transition-all"><Menu size={20} /></button>
-                                <div className="space-y-1">
-                                    <h2 className="text-4xl font-black italic uppercase tracking-tighter text-[var(--text-primary)] leading-none">{t(activePanel.toLowerCase()) || activePanel}</h2>
+                    <main className={`flex-1 p-4 md:p-12 transition-all ${isSidebarOpen ? "md:ml-[300px]" : "ml-0"}`}>
+                        <header className="flex flex-col md:flex-row justify-between items-center mb-12 gap-8 no-print">
+                            <div className="flex items-center gap-5 w-full md:w-auto">
+                                <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="w-12 h-12 bg-[var(--bg-secondary)] border border-[var(--border)] rounded-xl shadow-sm flex items-center justify-center hover:bg-slate-50 transition-all"><Menu size={18} /></button>
+                                <div className="space-y-0.5">
+                                    <h2 className="text-3xl font-extrabold tracking-tight text-[var(--text-primary)] leading-none">{t(activePanel.toLowerCase()) || activePanel}</h2>
                                     <div className="flex items-center gap-2">
-                                        <div className={`w-1.5 h-1.5 rounded-full ${isLoading ? 'bg-amber-500 animate-pulse' : 'bg-emerald-500'}`} />
-                                        <span className="text-[8px] font-black uppercase tracking-widest text-slate-400">{isLoading ? 'Syncing Neural Link...' : 'Connection Stable'}</span>
+                                        <div className={`w-1 h-1 rounded-full ${isLoading ? 'bg-amber-500 animate-pulse' : 'bg-emerald-500'}`} />
+                                        <span className="text-[7px] font-bold uppercase tracking-widest text-slate-400">{isLoading ? 'Syncing...' : 'System Active'}</span>
                                     </div>
                                 </div>
                             </div>
-                            <div className="flex items-center gap-6 no-print w-full md:w-auto justify-end">
-                                <div className="flex items-center gap-3 bg-[var(--bg-secondary)] p-2 rounded-[2rem] border border-[var(--border)] shadow-xl">
+                            <div className="flex items-center gap-4 no-print w-full md:w-auto justify-end">
+                                <div className="flex items-center gap-2 bg-[var(--bg-secondary)] p-1.5 rounded-xl border border-[var(--border)] shadow-sm">
                                     <button 
                                         onClick={() => setLanguage(language === 'BN' ? 'EN' : 'BN')} 
-                                        className="w-12 h-12 rounded-2xl flex flex-col items-center justify-center hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-all"
+                                        className="w-10 h-10 rounded-lg flex flex-col items-center justify-center hover:bg-slate-50 dark:hover:bg-slate-800 transition-all"
                                     >
-                                        <Globe size={16} />
-                                        <span className="text-[6px] font-black mt-0.5">{language}</span>
+                                        <Globe size={14} />
+                                        <span className="text-[5px] font-bold mt-0.5">{language}</span>
                                     </button>
-                                    <div className="w-px h-8 bg-[var(--border)]" />
+                                    <div className="w-px h-6 bg-[var(--border)]" />
                                     <button 
                                         onClick={() => setIsDarkMode(!isDarkMode)} 
-                                        className="w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-500"
+                                        className="w-10 h-10 rounded-lg flex items-center justify-center transition-all duration-500 hover:bg-slate-50 dark:hover:bg-slate-800"
                                     >
-                                        {isDarkMode ? <Sun size={18} className="text-amber-500" /> : <Moon size={18} className="text-indigo-600" />}
+                                        {isDarkMode ? <Sun size={15} className="text-amber-500" /> : <Moon size={15} className="text-indigo-600" />}
                                     </button>
                                 </div>
-                                <div className="flex items-center gap-5 bg-[var(--bg-secondary)] border border-[var(--border)] px-6 py-3 rounded-[2.5rem] shadow-2xl">
-                                    <div className="w-10 h-10 bg-black dark:bg-white text-white dark:text-black rounded-full flex items-center justify-center shadow-lg"><User size={16} /></div>
-                                    <div className="text-left"><p className="text-[11px] font-black uppercase italic leading-none">{user.name}</p><p className="text-[7px] font-black text-slate-400 uppercase tracking-widest mt-1">{user.role}</p></div>
+                                <div className="flex items-center gap-4 bg-[var(--bg-secondary)] border border-[var(--border)] px-5 py-2.5 rounded-xl shadow-sm">
+                                    <div className="w-8 h-8 bg-black dark:bg-white text-white dark:text-black rounded-lg flex items-center justify-center shadow-lg"><User size={14} /></div>
+                                    <div className="text-left"><p className="text-[10px] font-bold uppercase leading-none">{user.name}</p><p className="text-[6px] font-bold text-slate-400 uppercase tracking-widest mt-1">{user.role}</p></div>
                                 </div>
                             </div>
                         </header>

@@ -55,17 +55,17 @@ const SettingsPanel = ({
 
   if (!isAdmin) {
     return (
-      <div className="min-h-[60vh] flex flex-col items-center justify-center p-20 text-center animate-fade-up">
-        <div className="w-24 h-24 bg-rose-50 text-rose-500 rounded-full flex items-center justify-center mb-10 shadow-inner">
-          <ShieldAlert size={48} />
+      <div className="min-h-[60vh] flex flex-col items-center justify-center p-12 text-center animate-fade-up font-sans">
+        <div className="w-20 h-20 bg-rose-50 dark:bg-rose-500/10 text-rose-500 rounded-2xl flex items-center justify-center mb-8 shadow-sm">
+          <ShieldAlert size={36} />
         </div>
-        <h3 className="text-4xl font-black italic uppercase tracking-tighter mb-4 text-black">ACCESS RESTRICTED</h3>
-        <p className="text-[11px] font-black text-slate-400 uppercase tracking-[0.4em] italic max-w-sm">
-           This unit contains strategic core protocols. Access is strictly reserved for Admin personnel only.
+        <h3 className="text-3xl font-extrabold tracking-tight mb-4 text-[var(--text-primary)]">ACCESS RESTRICTED</h3>
+        <p className="text-xs font-medium text-slate-400 uppercase tracking-widest max-w-xs leading-relaxed">
+           This unit contains administrative protocols. Access is strictly reserved for authorized personnel only.
         </p>
         <button 
            onClick={() => setActivePanel('Overview')}
-           className="mt-12 px-10 py-5 bg-black text-white rounded-full font-black uppercase text-[10px] tracking-widest shadow-2xl hover:scale-105 active:scale-95 transition-all italic"
+           className="mt-12 px-10 py-5 bg-black text-white dark:bg-white dark:text-black rounded-xl font-bold uppercase text-[9px] tracking-widest shadow-xl hover:-translate-y-1 transition-all"
         >
            Return to Safety
         </button>
