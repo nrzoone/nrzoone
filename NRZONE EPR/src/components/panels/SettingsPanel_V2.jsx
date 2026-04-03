@@ -554,94 +554,27 @@ const SettingsPanel = ({
   };
 
   const renderUsersContent = () => (
-    <div className="space-y-8">
-       <div className="flex justify-between items-center px-6">
-          <h4 className="text-2xl font-black uppercase italic tracking-tighter">System <span className="text-slate-500">Access Nodes</span></h4>
-          <button 
-             onClick={() => {
-                const name = prompt("Enter User Name:");
-                const id = prompt("Enter User ID / Phone:");
-                const pass = prompt("Enter Password:");
-                if (name && id && pass) {
-                   setMasterData(prev => ({
-                      ...prev,
-                      users: [...(prev.users || []), { name, id, password: pass, role: 'manager' }]
-                   }));
-                   showNotify("New Manager Node Registered!");
-                }
-             }}
-             className="px-6 py-3 bg-black text-white rounded-full text-[10px] font-black uppercase tracking-widest hover:scale-110 transition-all shadow-xl"
-          >
-             <Plus size={16} /> Add Access Node
-          </button>
-       </div>
-       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {masterData.users?.map((u, idx) => (
-             <div key={idx} className="bg-white dark:bg-black/40 p-10 rounded-[3rem] border-2 border-slate-100 dark:border-zinc-800 italic relative group shadow-sm flex flex-col justify-between overflow-hidden">
-                <div className="absolute top-0 right-0 p-8 opacity-[0.02] group-hover:opacity-[0.05] transition-opacity">
-                   <ShieldCheck size={140} className="text-black dark:text-white" />
-                </div>
-                
-                <div className="flex justify-between items-start mb-8 relative z-10">
-                   <span className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest ${u.role === 'admin' ? 'bg-black text-white dark:bg-white dark:text-black shadow-lg' : 'bg-slate-100 dark:bg-zinc-800 text-slate-500'}`}>
-                      {u.role}
-                   </span>
-                   <div className="flex gap-2">
-                       <button 
-                          onClick={() => {
-                             const newPass = prompt(`RESET PASSWORD FOR ${u.name.toUpperCase()}?`, u.password);
-                             if (newPass) {
-                                setMasterData(prev => ({
-                                   ...prev,
-                                   users: (prev.users || []).map(usr => usr.id === u.id ? { ...usr, password: newPass } : usr)
-                                }));
-                                showNotify("Access Password Updated!");
-                             }
-                          }}
-                          className="w-10 h-10 bg-slate-50 dark:bg-zinc-800 rounded-xl flex items-center justify-center text-amber-500 hover:bg-amber-500 hover:text-white transition-all shadow-sm"
-                          title="Reset Password"
-                       >
-                          <Key size={16} />
-                       </button>
-                       {u.id === currentUser.id && (
-                          <button 
-                             onClick={registerAdminBiometric} 
-                             className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all shadow-sm ${u.biometricId ? 'bg-emerald-100 text-emerald-600' : 'bg-indigo-50 text-indigo-500 hover:bg-indigo-500 hover:text-white font-bold animate-pulse'}`}
-                             title={u.biometricId ? "Biometric Registered" : "Register Finger/Face ID"}
-                          >
-                             <Fingerprint size={18} />
-                          </button>
-                       )}
-                       {u.id !== "NRZO0NE" && <button onClick={() => handleDeleteUser(u.id)} className="w-10 h-10 bg-rose-50 dark:bg-rose-950/20 text-rose-300 hover:text-rose-500 rounded-xl flex items-center justify-center transition-all"><Trash2 size={16} /></button>}
-                   </div>
-                </div>
-
-                <div className="relative z-10">
-                   <h4 className="text-3xl font-black uppercase tracking-tighter italic leading-none group-hover:translate-x-1 transition-transform">{u.name}</h4>
-                   <div className="flex items-center gap-3 mt-3">
-                      <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{u.id}</p>
-                      <div className="w-1 h-1 bg-slate-300 rounded-full"></div>
-                      <p className="text-[9px] font-black text-emerald-500 uppercase tracking-widest">Active Link</p>
-                   </div>
-                </div>
-
-                <div className="mt-10 pt-6 border-t border-slate-50 dark:border-zinc-800 flex justify-between items-center relative z-10">
-                   <div>
-                      <p className="text-[8px] font-black text-slate-400 uppercase tracking-tight mb-1">Auth Secret</p>
-                      <p className="font-mono text-xs text-slate-300 group-hover:text-black dark:group-hover:text-white transition-colors">••••••••</p>
-                   </div>
-                   <div className="flex gap-2">
-                       <button 
-                          onClick={() => alert(`AUTH IDENTITY: ${u.id}\nSECRET PIN: ${u.password}`)}
-                          className="px-4 py-2 bg-slate-50 dark:bg-zinc-800 text-slate-500 hover:text-black dark:hover:text-white rounded-lg text-[8px] font-black uppercase tracking-widest transition-all"
-                       >
-                          Verify Access
-                       </button>
-                   </div>
-                </div>
-             </div>
-          ))}
-       </div>
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {masterData.users?.map((u, idx) => {
+        const isEditing = editingItem === `user-${idx}`;
+        return (
+          <div key={idx} className="bg-slate-50 dark:bg-black/40 p-10 rounded-[3rem] border-2 border-slate-100 dark:border-zinc-800 italic relative group shadow-sm min-h-[250px] flex flex-col justify-between">
+            <div className="flex justify-between items-start">
+              <span className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest ${u.role === 'admin' ? 'bg-black text-white dark:bg-white dark:text-black' : 'bg-white dark:bg-zinc-900 text-slate-500'}`}>
+                {u.role}
+              </span>
+              <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-all">
+                <button onClick={() => setEditingItem(`user-${idx}`)} className="p-2 text-slate-500 hover:text-black dark:hover:text-white"><Edit2 size={16} /></button>
+                {u.id !== "NRZO0NE" && <button onClick={() => handleDeleteUser(u.id)} className="p-2 text-rose-300 hover:text-rose-500"><Trash2 size={16} /></button>}
+              </div>
+            </div>
+            <div className="mt-8">
+              <h4 className="text-3xl font-black uppercase tracking-tighter italic leading-none">{u.name}</h4>
+              <p className="text-[11px] font-black text-slate-500 uppercase tracking-widest mt-2">{u.id}</p>
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 
@@ -746,44 +679,8 @@ const SettingsPanel = ({
                      {w.photo ? <img src={w.photo} className="w-full h-full object-cover" /> : <User size={24} />}
                   </div>
                   <div className="flex gap-2">
-                    <button 
-                      onClick={() => {
-                        setWorkerDocModal(w);
-                        setTempWorkerPhoto(w.photo || null);
-                        setTempNidPhoto(w.nidPhoto || null);
-                      }} 
-                      className="p-3 bg-slate-50 dark:bg-zinc-800 rounded-xl text-slate-500 hover:text-black dark:hover:text-white transition-all shadow-sm"
-                    >
-                      <Edit2 size={16} />
-                    </button>
+                    <button onClick={() => setWorkerDocModal(w)} className="p-3 bg-slate-50 dark:bg-zinc-800 rounded-xl text-slate-500 hover:text-black dark:hover:text-white transition-all shadow-sm"><Edit2 size={16} /></button>
                     {!w.isLegacy && <button onClick={() => handleDeleteUnifiedWorker(w.id, w.name, w.dept)} className="p-3 bg-slate-50 dark:bg-zinc-800 rounded-xl text-rose-300 hover:text-rose-500 transition-all shadow-sm"><Trash2 size={16} /></button>}
-                    <button 
-                      onClick={() => setPrintWorkerDoc(w)} 
-                      className="p-3 bg-slate-50 dark:bg-zinc-800 rounded-xl text-indigo-500 hover:text-indigo-700 transition-all shadow-sm"
-                      title="Print Worker Card"
-                    >
-                      <Printer size={16} />
-                    </button>
-                    <button 
-                       onClick={() => {
-                          const newPass = prompt(`RESET PASSWORD FOR ${w.name.toUpperCase()}?`, w.password || "1234");
-                          if (newPass) {
-                             const updatedW = { ...w, password: newPass };
-                             handleSaveUnifiedWorker(updatedW, w.name, w.dept);
-                          }
-                       }}
-                       className="p-3 bg-slate-50 dark:bg-zinc-800 rounded-xl text-amber-500 hover:text-amber-700 transition-all shadow-sm"
-                       title="Reset Password"
-                    >
-                       <Key size={16} />
-                    </button>
-                    <button 
-                      onClick={() => alert(`PASSWORD FOR ${w.name.toUpperCase()}: ${w.password || '1234'}`)} 
-                      className="p-3 bg-slate-50 dark:bg-zinc-800 rounded-xl text-emerald-500 hover:text-emerald-700 transition-all shadow-sm"
-                      title="View Current Password"
-                    >
-                      {w.password ? <Eye size={16} /> : <EyeOff size={16} />}
-                    </button>
                   </div>
                 </div>
                 <div className="space-y-1">

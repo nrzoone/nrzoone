@@ -1,0 +1,104 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-primary: #f0f2f5;
+  --bg-secondary: #ffffff;
+  --text-primary: #121212;
+  --text-secondary: #64748b;
+  --accent: #E11D48;
+  --border: #e2e8f0;
+  --shadow: 0 4px 30px rgba(0,0,0,0.02);
+  --neu-shadow: 10px 10px 20px #e2e8f0, -10px -10px 20px #ffffff;
+}
+
+.dark {
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #121212;
+  --text-primary: #ffffff;
+  --text-secondary: #94a3b8;
+  --border: #1e1e1e;
+  --shadow: 0 10px 30px rgba(0,0,0,0.5);
+  --neu-shadow: 10px 10px 20px #050505, -10px -10px 20px #181818;
+}
+
+@layer base {
+  body {
+    @apply bg-[var(--bg-primary)] text-[var(--text-primary)] transition-all duration-500 overflow-x-hidden;
+  }
+}
+
+@layer components {
+  .section-header {
+    @apply text-4xl md:text-6xl font-black tracking-tighter uppercase italic text-[var(--text-primary)] mb-4 leading-none;
+  }
+  
+  .premium-card {
+    @apply bg-[var(--bg-secondary)] rounded-[40px] p-8 border border-[var(--border)] shadow-[var(--shadow)] transition-all duration-500 overflow-hidden relative;
+  }
+
+  .premium-input {
+    @apply bg-[var(--bg-secondary)] border-2 border-[var(--border)] rounded-2xl px-6 py-4 font-bold text-[var(--text-primary)] outline-none focus:border-black dark:focus:border-white transition-all text-sm w-full;
+  }
+
+  .neu-button {
+    @apply flex items-center justify-center rounded-2xl border-2 border-[var(--border)] bg-[var(--bg-secondary)] shadow-sm hover:scale-105 active:scale-95 transition-all text-[var(--text-primary)];
+  }
+
+  .pill-nav {
+    @apply flex items-center gap-2 bg-[var(--bg-secondary)] p-2 rounded-full border border-[var(--border)] shadow-xl;
+  }
+
+  .pill-item {
+    @apply px-8 py-3 rounded-full text-[10px] font-black uppercase tracking-widest transition-all;
+    color: var(--text-secondary);
+  }
+
+  .pill-item-active {
+    @apply bg-black text-white dark:bg-white dark:text-black shadow-lg;
+  }
+
+  /* Floating Header & Navigation Toggle UI */
+  .floating-header-group {
+    @apply bg-[var(--bg-secondary)] border border-[var(--border)] rounded-[2.5rem] shadow-[var(--shadow)] backdrop-blur-xl transition-all duration-500 overflow-hidden;
+  }
+
+  .pill-tab {
+    @apply px-10 py-5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap;
+    color: var(--text-secondary);
+  }
+
+  .pill-tab-active {
+    @apply bg-black text-white dark:bg-white dark:text-black shadow-2xl scale-[1.02] italic;
+  }
+
+  .pill-tab-inactive {
+    @apply hover:bg-slate-50 dark:hover:bg-zinc-800/50 hover:text-[var(--text-primary)];
+  }
+}
+
+/* Animations */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.custom-scrollbar::-webkit-scrollbar { width: 4px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+.boot-screen {
+  background: black;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  font-family: monospace;
+  letter-spacing: 0.5em;
+  font-size: 10px;
+}

@@ -397,11 +397,11 @@ const AppContent = () => {
 
                 if (credential) {
                     const rawId = btoa(String.fromCharCode(...new Uint8Array(credential.rawId)));
-                    const matchingUser = (masterData.users || []).find(u => (u.role === 'admin' || u.role === 'manager') && u.biometricId === rawId);
+                    const adminUser = (masterData.users || []).find(u => u.role === 'admin' && u.biometricId === rawId);
                     
-                    if (matchingUser) {
-                        setUser(matchingUser);
-                        showNotify(`Biometric Auth: স্বাগতম, ${matchingUser.name}!`);
+                    if (adminUser) {
+                        setUser(adminUser);
+                        showNotify(`Biometric Auth: স্বাগতম, ${adminUser.name}!`);
                         return;
                     } else {
                         showNotify("এটি অজানা বায়োমেট্রিক আইডি!", "error");
