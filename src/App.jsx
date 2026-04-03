@@ -175,74 +175,87 @@ const LoginView = ({ onLogin, masterData }) => {
     const [showPass, setShowPass] = useState(false);
 
     return (
-        <div className="min-h-screen flex flex-col md:flex-row bg-[var(--bg-primary)] animate-fade-up transition-colors duration-500">
-            <div className="w-full md:w-1/2 bg-black flex flex-col items-center justify-center p-12 relative overflow-hidden">
+        <div className="min-h-screen flex flex-col md:flex-row bg-black font-outfit overflow-hidden">
+            {/* Left Section: Branding */}
+            <div className="w-full md:w-1/2 bg-black flex flex-col items-center justify-center p-12 relative min-h-[40vh] md:min-h-screen">
                 <div className="absolute inset-0 bg-[radial-gradient(#ffffff05_1px,transparent_1px)] bg-[size:40px_40px] opacity-20"></div>
-                <Logo size="lg" white={true} customUrl={masterData.settings?.logo} />
-                <div className="mt-12 text-center hidden md:block">
-                    <p className="text-white/50 text-[10px] font-black uppercase tracking-[0.8em] italic">Industrial Strategic Nexus</p>
+                <div className="relative z-10 flex flex-col items-center text-center animate-fade-up">
+                    <Logo size="xl" white={true} customUrl={masterData.settings?.logo} />
+                    <div className="mt-12 space-y-2">
+                        <h2 className="text-4xl md:text-5xl font-black italic tracking-tighter text-white uppercase group">
+                            Factory <span className="text-white/40">Management</span>
+                        </h2>
+                        <div className="h-1.5 w-24 bg-white mx-auto rounded-full mt-4"></div>
+                    </div>
                 </div>
+                <p className="absolute bottom-10 left-10 text-[8px] font-black uppercase text-white/20 tracking-[0.5em] hidden md:block">
+                    © NRZO0NE NEURAL NETWORK 2026
+                </p>
             </div>
 
-            <div className="flex-1 flex flex-col items-center justify-center p-8 md:p-20">
-                <div className="w-full max-w-md space-y-12">
-                    <div className="text-center md:text-left">
-                        <h2 className="text-4xl font-black italic tracking-tighter uppercase mb-2 text-[var(--text-primary)]">Login</h2>
-                        <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">Strategic Unit Access Portal</p>
+            {/* Right Section: Login Form */}
+            <div className="w-full md:w-1/2 bg-[#0a0a0a] md:bg-black p-10 md:p-24 flex items-center justify-center border-t md:border-t-0 md:border-l border-white/5 relative">
+                 <div className="w-full max-w-md space-y-12 animate-fade-in delay-200">
+                    <div className="space-y-4">
+                        <h3 className="text-5xl md:text-7xl font-black italic text-white tracking-tighter">Login</h3>
+                        <p className="text-xs font-black uppercase text-white/30 tracking-[0.3em] italic">Access Factory Core Systems</p>
                     </div>
 
-                    <form onSubmit={(e) => { e.preventDefault(); onLogin(id, password); }} className="space-y-8">
-                        <div className="space-y-6">
-                            <div className="space-y-2">
-                                <label className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-500 ml-2 italic">Identity</label>
-                                <div className="relative group">
-                                    <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none text-slate-500 group-focus-within:text-[var(--text-primary)] transition-colors">
-                                        <User size={18} />
-                                    </div>
-                                    <input
-                                        autoFocus
-                                        className="premium-input pl-16 py-6"
-                                        placeholder="UNID-NRZ-XXXX"
-                                        value={id}
-                                        onChange={(e) => setId(e.target.value)}
-                                    />
-                                </div>
-                            </div>
+                    <div className="space-y-8">
+                        <div className="space-y-2">
+                            <label className="text-[10px] font-black uppercase text-white/50 tracking-widest block ml-2">Identity / Email</label>
+                            <input 
+                                type="text"
+                                value={id}
+                                onChange={(e) => setId(e.target.value)}
+                                className="w-full bg-white/5 border-b-2 border-white/10 p-5 rounded-2xl text-white font-black italic outline-none focus:border-white focus:bg-white/10 transition-all placeholder:text-white/10"
+                                placeholder="mark.johnson@gmail.com"
+                            />
+                        </div>
 
-                            <div className="space-y-2">
-                                <label className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-500 ml-2 italic">Auth Protocol</label>
-                                <div className="relative group">
-                                    <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none text-slate-500 group-focus-within:text-[var(--text-primary)] transition-colors">
-                                        <Lock size={18} />
-                                    </div>
-                                    <input
-                                        type={showPass ? "text" : "password"}
-                                        className="premium-input pl-16 pr-16 py-6"
-                                        placeholder="••••••••"
-                                        value={password}
-                                        onChange={(e) => setPassword(e.target.value)}
-                                    />
-                                    <button type="button" onClick={() => setShowPass(!showPass)} className="absolute right-6 top-1/2 -translate-y-1/2 text-slate-500 hover:text-[var(--text-primary)]">
-                                        {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
-                                    </button>
-                                </div>
+                        <div className="space-y-2">
+                            <label className="text-[10px] font-black uppercase text-white/50 tracking-widest block ml-2">Secure Pin</label>
+                            <div className="relative">
+                                <input 
+                                    type={showPass ? "text" : "password"}
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    className="w-full bg-white/5 border-b-2 border-white/10 p-5 rounded-2xl text-white font-black italic outline-none focus:border-white focus:bg-white/10 transition-all placeholder:text-white/10"
+                                    placeholder="••••••••"
+                                />
+                                <button onClick={() => setShowPass(!showPass)} className="absolute right-5 top-1/2 -translate-y-1/2 text-white/30 hover:text-white transition-colors">
+                                    {showPass ? <EyeOff size={20} /> : <Eye size={20} />}
+                                </button>
                             </div>
                         </div>
 
-                        <button className="w-full py-6 text-xl italic mt-12 bg-black dark:bg-white text-white dark:text-black rounded-3xl font-black uppercase tracking-widest shadow-2xl hover:scale-105 active:scale-95 transition-all">Sign In Now</button>
-                    </form>
-
-                    {masterData.settings?.adminBiometricRegistered && (
-                        <div className="pt-8 border-t border-slate-100 dark:border-zinc-800">
-                             <button 
-                                onClick={() => onLogin('BIOMETRIC')}
-                                className="w-full py-6 flex items-center justify-center gap-4 bg-emerald-50 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 rounded-3xl font-black uppercase text-xs tracking-[0.3em] hover:scale-105 transition-all border-2 border-emerald-100 dark:border-emerald-900 shadow-xl italic"
-                             >
-                                <ShieldCheck size={24} /> Login with Finger/Face ID
-                             </button>
+                        <div className="flex justify-between items-center text-[10px] font-black uppercase text-white/40 tracking-widest">
+                            <label className="flex items-center gap-2 cursor-pointer hover:text-white transition-colors">
+                                <input type="checkbox" className="accent-white" /> Remember me
+                            </label>
+                            <button className="hover:text-white transition-colors">Forgot?</button>
                         </div>
-                    )}
-                </div>
+                    </div>
+
+                    <div className="pt-10 flex justify-end items-center gap-8">
+                        <p className="text-[9px] font-black uppercase text-white/20 tracking-widest hidden md:block">Neural Link Protocol v2.1</p>
+                        <button 
+                            onClick={() => onLogin(id, password)}
+                            className="w-24 h-24 bg-white text-black rounded-full font-black uppercase text-[10px] tracking-widest shadow-[0_0_50px_rgba(255,255,255,0.1)] hover:scale-110 active:scale-95 transition-all flex items-center justify-center group shrink-0"
+                        >
+                            <div className="relative overflow-hidden flex items-center justify-center w-full h-full">
+                                <span className="group-hover:-translate-y-12 transition-transform duration-300">Sign In</span>
+                                <ChevronRight className="absolute translate-y-12 group-hover:translate-y-0 transition-transform duration-300" size={20} />
+                            </div>
+                        </button>
+                    </div>
+
+                    <div className="pt-12 border-t border-white/5 text-center md:text-left">
+                        <p className="text-[10px] font-black uppercase text-white/30 tracking-widest">
+                            Don't have any account? <button className="text-white hover:underline ml-2">Sign Up</button>
+                        </p>
+                    </div>
+                 </div>
             </div>
         </div>
     );
@@ -310,16 +323,23 @@ const MENU_ITEMS = [
 ];
 
 const Sidebar = ({ activePanel, setActivePanel, user, setUser, isOpen, setIsSidebarOpen, t, isDarkMode, masterData }) => {
+    const navigate = (id) => {
+        setActivePanel(id);
+        if (window.innerWidth < 768) setIsSidebarOpen(false);
+    };
+
     return (
-        <div className={`md:left-6 md:top-6 md:h-[calc(100vh-48px)] fixed left-0 top-0 h-full bg-[var(--bg-secondary)] backdrop-blur-3xl border border-[var(--border)] z-[100] flex flex-col py-10 transition-all duration-500 sidebar ${isOpen ? "w-[280px] md:rounded-[40px] shadow-2xl" : "w-0 -translate-x-full"}`}>
-            <div className="px-8 mb-16"><Logo size="sm" white={isDarkMode} customUrl={masterData.settings?.logo} /></div>
+        <aside className={`fixed inset-y-0 left-0 z-[150] w-[300px] flex flex-col bg-white dark:bg-[#0a0a0a] border-r border-[var(--border)] transition-all duration-700 ease-in-out font-outfit shadow-2xl ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+            <div className="p-10 flex flex-col items-center">
+                <Logo size="sm" white={false} customUrl={masterData.settings?.logo} />
+            </div>
             <div className="flex-1 overflow-y-auto px-4 space-y-2 no-scrollbar">
                 {MENU_ITEMS.map(item => {
                     const Icon = item.icon;
                     const active = activePanel === item.id;
                     return (
                         <button
-                            key={item.id} onClick={() => { setActivePanel(item.id); if (window.innerWidth < 768) setIsSidebarOpen(false); }}
+                            key={item.id} onClick={() => navigate(item.id)}
                             className={`w-full flex items-center gap-4 p-4 rounded-[24px] transition-all group ${active ? "bg-black text-white dark:bg-white dark:text-black shadow-xl translate-x-1" : "text-slate-500 hover:bg-[var(--bg-primary)] hover:text-[var(--text-primary)] hover:shadow-lg"}`}
                         >
                             <Icon size={18} strokeWidth={active ? 2.5 : 2} />
@@ -333,7 +353,7 @@ const Sidebar = ({ activePanel, setActivePanel, user, setUser, isOpen, setIsSide
                     <LogOut size={16} /><span className="text-[9px] font-black uppercase tracking-[0.3em] italic">{t('logout') || 'Logout'}</span>
                 </button>
             </div>
-        </div>
+        </aside>
     );
 };
 
