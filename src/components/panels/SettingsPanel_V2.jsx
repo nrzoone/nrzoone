@@ -2059,6 +2059,29 @@ const SettingsPanel = ({
                 </div>
               )}
 
+              {/* Access Credentials */}
+              <div className="mt-6 p-4 bg-slate-50 border-2 border-dashed border-slate-200 rounded-2xl">
+                <p className="text-[8px] font-black uppercase text-slate-500 mb-3 tracking-widest text-center">
+                  Smart Access Credentials
+                </p>
+                <div className="flex justify-between items-center gap-4">
+                  <div className="flex-1">
+                    <p className="text-[7px] font-black uppercase text-slate-400 mb-1">Login Identity</p>
+                    <p className="text-sm font-black uppercase tracking-tighter">{printWorkerDoc.name}</p>
+                  </div>
+                  <div className="w-px h-8 bg-slate-200"></div>
+                  <div className="flex-1">
+                    <p className="text-[7px] font-black uppercase text-slate-400 mb-1">Access Password</p>
+                    <p className="text-sm font-black tracking-widest">{printWorkerDoc.password || "••••"}</p>
+                  </div>
+                  <div className="w-px h-8 bg-slate-200"></div>
+                  <div className="flex-1 text-right">
+                    <p className="text-[7px] font-black uppercase text-slate-400 mb-1">System Node</p>
+                    <p className="text-[10px] font-black uppercase">NRZO0NE-ERP</p>
+                  </div>
+                </div>
+              </div>
+
               {/* Signature */}
               <div className="mt-8 pt-6 border-t border-slate-200 flex justify-between">
                 <div>
