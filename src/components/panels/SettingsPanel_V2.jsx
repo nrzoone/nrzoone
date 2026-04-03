@@ -34,6 +34,7 @@ import {
   BarChart2,
   Key,
   Search,
+  Fingerprint,
 } from "lucide-react";
 import { storage } from "../../firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";

@@ -417,6 +417,13 @@ const AttendancePanel = ({
               <p className="text-[10px] font-black uppercase leading-tight italic text-white/50">Weekly Report</p>
             </button>
             <button
+              onClick={() => setShowQR(true)}
+              className="bg-indigo-600 text-white p-6 rounded-2xl shadow-xl hover:scale-[1.02] transition-all text-left group"
+            >
+              <Camera size={16} className="mb-3" />
+              <p className="text-[10px] font-black uppercase leading-tight italic text-white/50">QR Camera Scan</p>
+            </button>
+            <button
               onClick={scanBiometricAttendance}
               className="bg-emerald-600 text-white p-6 rounded-2xl shadow-xl hover:scale-[1.02] transition-all text-left group"
             >
