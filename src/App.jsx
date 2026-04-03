@@ -38,6 +38,7 @@ import {
     ShieldCheck,
     ShieldAlert,
     Trash2,
+    ChevronRight,
 } from "lucide-react";
 import Overview from "./components/Overview";
 import CuttingPanel from "./components/panels/CuttingPanel";
