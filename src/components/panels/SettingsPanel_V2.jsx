@@ -844,9 +844,10 @@ const SettingsPanel = ({
   );
 
   const renderBrandingContent = () => (
-    <div className="space-y-10 p-4 animate-fade-up">
-       <div className="bg-slate-50 dark:bg-black/20 p-12 rounded-[4rem] border-2 border-slate-100 dark:border-zinc-800 flex flex-col md:flex-row items-center gap-12 group transition-all hover:border-black dark:hover:border-white">
-          <div className="w-48 h-48 bg-white dark:bg-zinc-900 rounded-[3rem] shadow-2xl flex items-center justify-center overflow-hidden border-4 border-slate-50 dark:border-zinc-800 relative group-hover:rotate-3 transition-transform">
+    <div className="space-y-12 p-4 animate-fade-up">
+       {/* Card 1: Logo & Identity */}
+       <div className="bg-white dark:bg-black/20 p-12 rounded-[4rem] border-2 border-slate-100 dark:border-zinc-800 flex flex-col md:flex-row items-center gap-12 group transition-all hover:border-black dark:hover:border-white shadow-sm hover:shadow-2xl">
+          <div className="w-48 h-48 bg-slate-50 dark:bg-zinc-900 rounded-[3rem] shadow-2xl flex items-center justify-center overflow-hidden border-4 border-white dark:border-zinc-800 relative group-hover:rotate-3 transition-transform duration-500">
              {masterData.settings?.logo ? (
                 <img src={masterData.settings.logo} className="w-full h-full object-contain p-4" alt="Company Logo" />
              ) : (
@@ -861,40 +862,43 @@ const SettingsPanel = ({
                 </div>
              )}
           </div>
-          </div>
-       </div>
-
-       <div className="bg-emerald-50 dark:bg-emerald-950/20 p-12 rounded-[4rem] border-2 border-emerald-100 dark:border-emerald-900 flex flex-col md:flex-row items-center gap-12 group transition-all hover:border-emerald-500">
-          <div className="w-48 h-48 bg-white dark:bg-emerald-900 rounded-[3rem] shadow-2xl flex items-center justify-center overflow-hidden border-4 border-emerald-50 dark:border-emerald-800 relative group-hover:rotate-3 transition-transform">
-             <MessageCircle size={60} className="text-emerald-500" />
-          </div>
           <div className="flex-1 text-center md:text-left">
-             <h4 className="text-3xl font-black uppercase italic tracking-tighter mb-4">Enterprise Branding</h4>
+             <h4 className="text-3xl font-black uppercase italic tracking-tighter mb-4">Enterprise <span className="text-slate-400">Branding</span></h4>
              <p className="text-slate-500 text-xs font-black uppercase tracking-widest leading-relaxed mb-10 italic">
                 Upload your factory logo to personalize the ERP dashboard and print slips. High-resolution PNG/SVG recommended.
              </p>
-             <label className="inline-flex items-center gap-4 bg-black dark:bg-white text-white dark:text-black px-12 py-6 rounded-2xl font-black uppercase text-[10px] tracking-[0.2em] hover:scale-105 transition-all shadow-3xl cursor-pointer italic">
-                <Upload size={18} />
-                {uploading ? "Uploading Neural Link..." : "Upload New Logo"}
-                <input type="file" accept="image/*" onChange={(e) => handleLogoUpload(e.target.files[0])} className="hidden" />
-             </label>
-             {masterData.settings?.logo && (
-                <button 
-                   onClick={() => setMasterData(prev => ({...prev, settings: {...prev.settings, logo: ""}}))}
-                   className="ml-0 md:ml-6 mt-4 md:mt-0 text-[10px] font-black uppercase text-rose-500 tracking-widest hover:underline italic"
-                >
-                   Reset to Defaults
-                </button>
-             )}
+             <div className="flex flex-col md:flex-row items-center gap-6">
+                <label className="inline-flex items-center gap-4 bg-black dark:bg-white text-white dark:text-black px-12 py-6 rounded-2xl font-black uppercase text-[10px] tracking-[0.2em] hover:scale-105 transition-all shadow-3xl cursor-pointer italic">
+                   <Upload size={18} />
+                   {uploading ? "Syncing Identity..." : "Upload New Logo"}
+                   <input type="file" accept="image/*" onChange={(e) => handleLogoUpload(e.target.files[0])} className="hidden" />
+                </label>
+                {masterData.settings?.logo && (
+                   <button 
+                      onClick={() => setMasterData(prev => ({...prev, settings: {...prev.settings, logo: ""}}))}
+                      className="text-[10px] font-black uppercase text-rose-500 tracking-widest hover:underline italic"
+                   >
+                      Reset to Default
+                   </button>
+                )}
+             </div>
           </div>
        </div>
 
-       <div className="bg-emerald-50 dark:bg-emerald-950/20 p-12 rounded-[4rem] border-2 border-emerald-100 dark:border-emerald-900 flex flex-col md:flex-row items-center gap-12 group transition-all hover:border-emerald-500">
+       {/* Card 2: WhatsApp Connectivity */}
+       <div className="bg-emerald-50 dark:bg-emerald-950/20 p-12 rounded-[4rem] border-2 border-emerald-100 dark:border-emerald-900 flex flex-col md:flex-row items-center gap-12 group transition-all hover:border-emerald-500 shadow-sm hover:shadow-2xl">
+          <div className="w-48 h-48 bg-white dark:bg-emerald-900 rounded-[3rem] shadow-2xl flex items-center justify-center overflow-hidden border-4 border-emerald-50 dark:border-emerald-800 relative group-hover:rotate-3 transition-transform duration-500">
+             <div className="p-8 bg-emerald-500 text-white rounded-[2rem] shadow-xl group-hover:scale-110 transition-transform">
+                <MessageCircle size={60} />
+             </div>
+          </div>
+          <div className="flex-1 text-center md:text-left">
+             <h4 className="text-3xl font-black uppercase italic tracking-tighter mb-4 text-emerald-900 dark:text-emerald-400">WhatsApp <span className="opacity-40">Linkage</span></h4>
              <p className="text-emerald-700/60 dark:text-emerald-400/60 text-xs font-black uppercase tracking-widest leading-relaxed mb-10 italic">
-                Set your factory's official WhatsApp number for receiving automated reports, tracking alerts, and system notifications.
+                Set your factory's official WhatsApp number for receiving automated production reports and system notifications.
              </p>
              <div className="flex flex-col md:flex-row gap-4">
-                <div className="relative flex-1 md:w-80">
+                <div className="relative flex-1 md:max-w-sm">
                    <div className="absolute left-6 top-1/2 -translate-y-1/2 text-emerald-500">
                       <Phone size={18} />
                    </div>
@@ -913,12 +917,12 @@ const SettingsPanel = ({
                             ...prev, 
                             settings: { ...(prev.settings || {}), whatsappNumber: num }
                          }));
-                         showNotify("Official WhatsApp Number Updated!", "success");
+                         showNotify("Official WhatsApp Link Updated!", "success");
                       }
                    }}
                    className="bg-emerald-600 dark:bg-emerald-500 text-white px-12 py-6 rounded-2xl font-black uppercase text-[10px] tracking-[0.2em] shadow-3xl hover:bg-emerald-700 active:scale-95 transition-all italic border-b-[8px] border-emerald-800"
                 >
-                   Update Link
+                   Secure Link
                 </button>
              </div>
           </div>

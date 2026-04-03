@@ -56,7 +56,7 @@ const initialData = {
     notifications: [],
     workerDocs: [],
     workerAdvances: [],
-    settings: { logo: "/logo.jpg" },
+    settings: { logo: "" },
     whatsappRequests: [],
     expenses: [],
     cashEntries: [],
