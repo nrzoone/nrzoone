@@ -861,6 +861,13 @@ const SettingsPanel = ({
                 </div>
              )}
           </div>
+          </div>
+       </div>
+
+       <div className="bg-emerald-50 dark:bg-emerald-950/20 p-12 rounded-[4rem] border-2 border-emerald-100 dark:border-emerald-900 flex flex-col md:flex-row items-center gap-12 group transition-all hover:border-emerald-500">
+          <div className="w-48 h-48 bg-white dark:bg-emerald-900 rounded-[3rem] shadow-2xl flex items-center justify-center overflow-hidden border-4 border-emerald-50 dark:border-emerald-800 relative group-hover:rotate-3 transition-transform">
+             <MessageCircle size={60} className="text-emerald-500" />
+          </div>
           <div className="flex-1 text-center md:text-left">
              <h4 className="text-3xl font-black uppercase italic tracking-tighter mb-4">Enterprise Branding</h4>
              <p className="text-slate-500 text-xs font-black uppercase tracking-widest leading-relaxed mb-10 italic">
@@ -879,6 +886,41 @@ const SettingsPanel = ({
                    Reset to Defaults
                 </button>
              )}
+          </div>
+       </div>
+
+       <div className="bg-emerald-50 dark:bg-emerald-950/20 p-12 rounded-[4rem] border-2 border-emerald-100 dark:border-emerald-900 flex flex-col md:flex-row items-center gap-12 group transition-all hover:border-emerald-500">
+             <p className="text-emerald-700/60 dark:text-emerald-400/60 text-xs font-black uppercase tracking-widest leading-relaxed mb-10 italic">
+                Set your factory's official WhatsApp number for receiving automated reports, tracking alerts, and system notifications.
+             </p>
+             <div className="flex flex-col md:flex-row gap-4">
+                <div className="relative flex-1 md:w-80">
+                   <div className="absolute left-6 top-1/2 -translate-y-1/2 text-emerald-500">
+                      <Phone size={18} />
+                   </div>
+                   <input 
+                      id="system-whatsapp"
+                      className="w-full bg-white dark:bg-zinc-800 pl-16 pr-8 py-6 rounded-2xl border-2 border-emerald-100 dark:border-emerald-900/50 text-base font-black italic outline-none focus:border-emerald-500 text-emerald-900 dark:text-emerald-100"
+                      placeholder="01XXXXXXXXX"
+                      defaultValue={masterData.settings?.whatsappNumber || ""}
+                   />
+                </div>
+                <button 
+                   onClick={() => {
+                      const num = document.getElementById('system-whatsapp').value.trim();
+                      if (num) {
+                         setMasterData(prev => ({
+                            ...prev, 
+                            settings: { ...(prev.settings || {}), whatsappNumber: num }
+                         }));
+                         showNotify("Official WhatsApp Number Updated!", "success");
+                      }
+                   }}
+                   className="bg-emerald-600 dark:bg-emerald-500 text-white px-12 py-6 rounded-2xl font-black uppercase text-[10px] tracking-[0.2em] shadow-3xl hover:bg-emerald-700 active:scale-95 transition-all italic border-b-[8px] border-emerald-800"
+                >
+                   Update Link
+                </button>
+             </div>
           </div>
        </div>
     </div>
