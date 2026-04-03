@@ -57,6 +57,10 @@ const DashboardCard = ({ children, isDark = false, className = '' }) => (
 const Overview = ({ masterData, setMasterData, setActivePanel, user, t }) => {
     const stats = useMemo(() => {
         try {
+            const role = user?.role?.toLowerCase();
+            const isWorker = role !== 'admin' && role !== 'manager';
+            const workerName = user?.name?.toLowerCase();
+
             const today = new Date();
             const last7Days = Array.from({ length: 7 }, (_, i) => {
                 const d = new Date();
@@ -64,15 +68,20 @@ const Overview = ({ masterData, setMasterData, setActivePanel, user, t }) => {
                 return d.toLocaleDateString('en-GB');
             }).reverse();
 
-            const trendData = last7Days.map(date => (masterData?.productions || []).filter(p => p.date === date).length);
-            const totalProduction = (masterData?.productions || []).length;
-            const totalPata = (masterData?.pataEntries || []).length;
+            // Filter data based on role
+            const allProds = (masterData?.productions || []).filter(p => !isWorker || p.worker?.toLowerCase() === workerName);
+            const allPata = (masterData?.pataEntries || []).filter(p => !isWorker || p.worker?.toLowerCase() === workerName);
+            const allOutside = (masterData?.outsideWorkEntries || []).filter(p => !isWorker || p.worker?.toLowerCase() === workerName);
 
-            const pendingSewing = (masterData?.productions || []).filter(p => p.type === 'sewing' && p.status !== 'Received').length;
-            const pendingStone = (masterData?.productions || []).filter(p => p.type === 'stone' && p.status !== 'Received').length;
-            const pendingOutside = (masterData?.outsideWorkEntries || []).filter(p => p.status !== 'Received').length;
+            const trendData = last7Days.map(date => allProds.filter(p => p.date === date).length);
+            const totalProduction = allProds.length;
+            const totalPata = allPata.length;
+
+            const pendingSewing = allProds.filter(p => p.type === 'sewing' && p.status !== 'Received').length;
+            const pendingStone = allProds.filter(p => p.type === 'stone' && p.status !== 'Received').length;
+            const pendingOutside = allOutside.filter(p => p.status !== 'Received').length;
             
-            const completions = (masterData?.productions || []).filter(p => p.status === 'Received').length;
+            const completions = allProds.filter(p => p.status === 'Received').length;
             
             const totalStock = (masterData?.inventory || []).reduce((sum, item) => {
                 const sizes = item.sizes || {};
@@ -82,19 +91,32 @@ const Overview = ({ masterData, setMasterData, setActivePanel, user, t }) => {
 
             const todayDate = new Date().toISOString().split('T')[0];
             const todayAttendance = (masterData?.attendance || []).filter(a => a.date === todayDate);
-            const presentCount = todayAttendance.filter(a => a.status === 'present' || a.status === 'present').length;
-            const absentCount = todayAttendance.filter(a => a.status === 'absent').length;
-            const halfDayCount = todayAttendance.filter(a => a.status === 'half-day').length;
+            
+            // For workers, check only their own attendance
+            const myAttendance = isWorker 
+                ? todayAttendance.filter(a => a.worker?.toLowerCase() === workerName)
+                : todayAttendance;
 
-            const totalPayable = (masterData?.workerCategories?.sewing || []).reduce((sum, w) => {
-                const entries = (masterData?.productions || []).filter(p => p.worker === w && p.status === 'Received');
-                return sum + entries.reduce((acc, b) => {
+            const presentCount = myAttendance.filter(a => a.status === 'present').length;
+            const absentCount = myAttendance.filter(a => a.status === 'absent').length;
+            const halfDayCount = myAttendance.filter(a => a.status === 'half-day').length;
+
+            // Individual earnings for worker or total for admin
+            const calculateWorkerEarnings = (name) => {
+                const sewingEarnings = (masterData?.productions || []).filter(p => p.worker?.toLowerCase() === name?.toLowerCase() && p.status === 'Received').reduce((acc, b) => {
                     const design = masterData?.designs?.find(d => d.name === b.design);
                     return acc + (Number(b.receivedBorka || 0) * (design?.sewingRate || 0));
                 }, 0);
-            }, 0) + (masterData?.pataEntries || []).filter(e => e.status === 'Received').reduce((s, e) => s + Number(e.amount || 0), 0);
+                const pataEarnings = (masterData?.pataEntries || []).filter(e => e.worker?.toLowerCase() === name?.toLowerCase() && e.status === 'Received').reduce((s, e) => s + Number(e.amount || 0), 0);
+                const outsideEarnings = (masterData?.outsideWorkEntries || []).filter(e => e.worker?.toLowerCase() === name?.toLowerCase() && e.status === 'Received').reduce((s, e) => s + Number(e.totalAmount || 0), 0);
+                return sewingEarnings + pataEarnings + outsideEarnings;
+            };
+
+            const totalPayable = isWorker ? calculateWorkerEarnings(user.name) : (masterData?.workerCategories?.sewing || []).reduce((sum, w) => sum + calculateWorkerEarnings(w), 0);
 
             const financialIntel = (() => {
+                if (isWorker) return { revenue: 0, productionCosts: 0, materialCosts: 0, totalCosts: 0, netProfit: 0, margin: 0 };
+                
                 const revenue = (masterData?.deliveries || []).reduce((acc, d) => {
                     const design = masterData?.designs?.find(ds => ds.name === d.design);
                     const price = Number(design?.sellingPrice || 0);
@@ -126,8 +148,8 @@ const Overview = ({ masterData, setMasterData, setActivePanel, user, t }) => {
             })();
 
             const activeJobs = [
-                ...(masterData?.productions || []).filter(p => p.status === 'Pending').map(p => ({ ...p, activityType: p.type === 'sewing' ? 'Sewing' : 'Stone' })),
-                ...(masterData?.pataEntries || []).filter(p => p.status === 'Pending').map(p => ({ ...p, activityType: 'Pata' }))
+                ...allProds.filter(p => p.status === 'Pending').map(p => ({ ...p, activityType: p.type === 'sewing' ? 'Sewing' : 'Stone' })),
+                ...allPata.filter(p => p.status === 'Pending').map(p => ({ ...p, activityType: 'Pata' }))
             ].sort((a, b) => (b.id || 0) - (a.id || 0));
 
             return { totalProduction, totalPata, pendingSewing, pendingStone, pendingOutside, completions, totalStock, trendData, activeJobs, presentCount, absentCount, halfDayCount, totalPayable, financialIntel };
@@ -139,7 +161,7 @@ const Overview = ({ masterData, setMasterData, setActivePanel, user, t }) => {
                 totalPayable: 0, financialIntel: { revenue: 0, totalCosts: 0, netProfit: 0, margin: 0 } 
             };
         }
-    }, [masterData]);
+    }, [masterData, user]);
 
     const shareEOD = () => {
         const today = new Date().toLocaleDateString('en-GB');
@@ -182,9 +204,11 @@ const Overview = ({ masterData, setMasterData, setActivePanel, user, t }) => {
                      <div className="flex flex-wrap gap-4 items-center">
                          <span className="px-6 py-2 bg-black text-white dark:bg-white dark:text-black rounded-full text-[9px] font-black uppercase tracking-[0.2em] shadow-xl italic">FACTORY ENGINE v2.1</span>
                          <span className="px-6 py-2 bg-[var(--bg-secondary)] border border-[var(--border)] text-slate-400 rounded-full text-[9px] font-black uppercase tracking-[0.2em] italic">REAL-TIME ANALYTICS</span>
-                         <button onClick={shareEOD} className="ml-4 action-btn-primary flex items-center gap-3">
-                            <Share2 size={16} /> Share EOD Report
-                         </button>
+                         { (user?.role?.toLowerCase() === 'admin' || user?.role?.toLowerCase() === 'manager') && (
+                            <button onClick={shareEOD} className="ml-4 action-btn-primary flex items-center gap-3">
+                                <Share2 size={16} /> Share EOD Report
+                            </button>
+                         )}
                      </div>
                 </div>
                 <div className="flex flex-wrap gap-10 items-center bg-[var(--bg-secondary)] p-10 rounded-[3rem] border border-[var(--border)] shadow-2xl">
@@ -206,49 +230,75 @@ const Overview = ({ masterData, setMasterData, setActivePanel, user, t }) => {
                 </div>
             </div>
             {/* Strategic Fiscal Hub */}
-            <div className="mb-20 grid grid-cols-1 md:grid-cols-4 gap-10">
-                <div className="md:col-span-3 bg-black text-white p-16 rounded-[4rem] relative overflow-hidden group shadow-[var(--premium-shadow)] italic">
-                    <div className="flex flex-col md:flex-row justify-between items-center relative z-10 gap-10">
-                        <div className="space-y-6">
-                            <h3 className="text-5xl font-black italic tracking-tighter uppercase leading-none">Net Tactical Worth</h3>
-                            <p className="text-[10px] font-black uppercase text-white/40 tracking-[0.5em] italic">Real-time Liquidity & Production Yield Analysis</p>
-                            <div className="flex gap-4 pt-6">
-                               <button onClick={() => setActivePanel('Accounts')} className="px-8 py-4 bg-white/10 hover:bg-white text-white hover:text-black rounded-full text-[9px] font-black uppercase tracking-widest border border-white/10 transition-all">Audit Expenses</button>
-                               <button onClick={() => setActivePanel('Inventory')} className="px-8 py-4 bg-white/10 hover:bg-white text-white hover:text-black rounded-full text-[9px] font-black uppercase tracking-widest border border-white/10 transition-all">Vault Stock</button>
+            { (user?.role?.toLowerCase() === 'admin' || user?.role?.toLowerCase() === 'manager') ? (
+                <div className="mb-20 grid grid-cols-1 md:grid-cols-4 gap-10">
+                    <div className="md:col-span-3 bg-black text-white p-16 rounded-[4rem] relative overflow-hidden group shadow-[var(--premium-shadow)] italic">
+                        <div className="flex flex-col md:flex-row justify-between items-center relative z-10 gap-10">
+                            <div className="space-y-6">
+                                <h3 className="text-5xl font-black italic tracking-tighter uppercase leading-none">Net Tactical Worth</h3>
+                                <p className="text-[10px] font-black uppercase text-white/40 tracking-[0.5em] italic">Real-time Liquidity & Production Yield Analysis</p>
+                                <div className="flex gap-4 pt-6">
+                                <button onClick={() => setActivePanel('Accounts')} className="px-8 py-4 bg-white/10 hover:bg-white text-white hover:text-black rounded-full text-[9px] font-black uppercase tracking-widest border border-white/10 transition-all">Audit Expenses</button>
+                                <button onClick={() => setActivePanel('Inventory')} className="px-8 py-4 bg-white/10 hover:bg-white text-white hover:text-black rounded-full text-[9px] font-black uppercase tracking-widest border border-white/10 transition-all">Vault Stock</button>
+                                </div>
+                            </div>
+                            <div className="text-right">
+                                <p className="text-8xl font-black italic tracking-tighter leading-none mb-4 text-emerald-400">৳{stats.financialIntel.netProfit.toLocaleString()}</p>
+                                <div className="flex items-center gap-3 justify-end">
+                                    <div className={`px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-widest ${stats.financialIntel.margin > 0 ? 'bg-emerald-400/20 text-emerald-400' : 'bg-rose-500/20 text-rose-500'}`}>
+                                        {stats.financialIntel.margin.toFixed(1)}% PROFIT MARGIN
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div className="text-right">
-                             <p className="text-8xl font-black italic tracking-tighter leading-none mb-4 text-emerald-400">৳{stats.financialIntel.netProfit.toLocaleString()}</p>
-                             <div className="flex items-center gap-3 justify-end">
-                                 <div className={`px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-widest ${stats.financialIntel.margin > 0 ? 'bg-emerald-400/20 text-emerald-400' : 'bg-rose-500/20 text-rose-500'}`}>
-                                     {stats.financialIntel.margin.toFixed(1)}% PROFIT MARGIN
-                                 </div>
-                             </div>
+                        <div className="absolute bottom-[-10%] right-[-5%] text-white opacity-[0.05] rotate-12 pointer-events-none">
+                            <TrendingUp size={300} strokeWidth={4} />
                         </div>
                     </div>
-                    <div className="absolute bottom-[-10%] right-[-5%] text-white opacity-[0.05] rotate-12 pointer-events-none">
-                        <TrendingUp size={300} strokeWidth={4} />
-                    </div>
-                </div>
-                <div className="premium-card flex flex-col justify-between italic bg-[var(--bg-secondary)] border-[var(--border)] group hover:border-black dark:hover:border-white transition-all">
-                    <div>
-                        <div className="flex justify-between items-start mb-4">
-                           <p className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] italic">Operational Exposure</p>
-                           <TrendingDown size={18} className="text-rose-500" />
+                    <div className="premium-card flex flex-col justify-between italic bg-[var(--bg-secondary)] border-[var(--border)] group hover:border-black dark:hover:border-white transition-all">
+                        <div>
+                            <div className="flex justify-between items-start mb-4">
+                            <p className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] italic">Operational Exposure</p>
+                            <TrendingDown size={18} className="text-rose-500" />
+                            </div>
+                            <h4 className="text-4xl font-black italic tracking-tighter text-[var(--text-primary)]">৳{stats.financialIntel.totalCosts.toLocaleString()}</h4>
                         </div>
-                        <h4 className="text-4xl font-black italic tracking-tighter text-[var(--text-primary)]">৳{stats.financialIntel.totalCosts.toLocaleString()}</h4>
-                    </div>
-                    <div className="space-y-4">
-                         <div className="flex justify-between items-center text-[9px] font-black uppercase tracking-widest text-slate-400">
-                             <span className="italic">Production</span>
-                             <span className="text-[var(--text-primary)]">৳{stats.financialIntel.productionCosts.toLocaleString()}</span>
-                         </div>
-                         <div className="w-full h-2 bg-[var(--bg-primary)] rounded-full overflow-hidden">
-                             <div className="h-full bg-black dark:bg-white transition-all duration-1000" style={{ width: `${(stats.financialIntel.productionCosts / Math.max(1, stats.financialIntel.totalCosts)) * 100}%` }}></div>
-                         </div>
+                        <div className="space-y-4">
+                            <div className="flex justify-between items-center text-[9px] font-black uppercase tracking-widest text-slate-400">
+                                <span className="italic">Production</span>
+                                <span className="text-[var(--text-primary)]">৳{stats.financialIntel.productionCosts.toLocaleString()}</span>
+                            </div>
+                            <div className="w-full h-2 bg-[var(--bg-primary)] rounded-full overflow-hidden">
+                                <div className="h-full bg-black dark:bg-white transition-all duration-1000" style={{ width: `${(stats.financialIntel.productionCosts / Math.max(1, stats.financialIntel.totalCosts)) * 100}%` }}></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
+            ) : (
+                <div className="mb-20 grid grid-cols-1 md:grid-cols-4 gap-10">
+                    <div className="md:col-span-3 bg-indigo-600 text-white p-16 rounded-[4rem] relative overflow-hidden group shadow-[var(--premium-shadow)] italic">
+                        <div className="flex flex-col md:flex-row justify-between items-center relative z-10 gap-10">
+                            <div className="space-y-6">
+                                <h3 className="text-5xl font-black italic tracking-tighter uppercase leading-none">My Performance</h3>
+                                <p className="text-[10px] font-black uppercase text-white/40 tracking-[0.5em] italic">Personal Productivity & Shared Earnings Summary</p>
+                            </div>
+                            <div className="text-right">
+                                <p className="text-[10px] font-black uppercase text-white/60 tracking-widest mb-4">Current Earnings (পাওনা)</p>
+                                <p className="text-8xl font-black italic tracking-tighter leading-none mb-4 text-white">৳{stats.totalPayable.toLocaleString()}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="premium-card flex flex-col justify-between italic bg-[var(--bg-secondary)] border-[var(--border)] group hover:border-black dark:hover:border-white transition-all">
+                        <div>
+                           <p className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] italic mb-4">Today Status</p>
+                           <h4 className="text-4xl font-black italic tracking-tighter text-[var(--text-primary)]"> {stats.presentCount > 0 ? "PRESENT" : "ABSENT"}</h4>
+                        </div>
+                        <div className="text-[9px] font-black uppercase tracking-[0.4em] text-slate-400 italic">
+                             Automated Log
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Rapid Command Center */}
             <div className="grid grid-cols-2 md:grid-cols-5 gap-8 mb-20">
@@ -337,12 +387,14 @@ const Overview = ({ masterData, setMasterData, setActivePanel, user, t }) => {
                          </div>
                     </div>
 
-                    <div className="w-full mt-10 bg-black dark:bg-white text-white dark:text-black p-12 rounded-[4rem] text-left relative overflow-hidden group hover:scale-[1.02] transition-all shadow-2xl">
+                    <div className="w-full mt-10 bg-indigo-600 text-white p-12 rounded-[4rem] text-left relative overflow-hidden group hover:scale-[1.02] transition-all shadow-2xl">
                          <div className="relative z-10">
-                            <h4 className="text-4xl font-black tracking-tighter mb-2 italic uppercase">Final Audit</h4>
-                            <p className="opacity-40 text-[10px] font-black uppercase tracking-[0.4em] italic leading-relaxed">85% Optimization detected above established KPIs</p>
+                            <h4 className="text-4xl font-black tracking-tighter mb-2 italic uppercase">Task Progress</h4>
+                            <p className="opacity-40 text-[10px] font-black uppercase tracking-[0.4em] italic leading-relaxed">
+                                {stats.completions} jobs completed out of {stats.totalProduction} assigned.
+                            </p>
                          </div>
-                         <div className="absolute top-10 right-10 w-16 h-16 bg-white/10 rounded-full flex items-center justify-center group-hover:bg-emerald-500 group-hover:text-white group-hover:scale-110 transition-all cursor-pointer shadow-2xl">
+                         <div className="absolute top-10 right-10 w-16 h-16 bg-white/10 rounded-full flex items-center justify-center group-hover:bg-white group-hover:text-black group-hover:scale-110 transition-all cursor-pointer shadow-2xl">
                               <ArrowUpRight size={28} />
                          </div>
                     </div>
@@ -380,16 +432,18 @@ const Overview = ({ masterData, setMasterData, setActivePanel, user, t }) => {
                          </div>
                     </div>
 
-                    <div className="mt-12 bg-slate-50 p-10 rounded-[3rem] border border-white flex justify-between items-center group cursor-pointer hover:border-rose-500 transition-all italic">
-                         <div className="flex items-center gap-6">
-                             <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-sm text-rose-500"><AlertTriangle size={24} /></div>
-                             <div>
-                                 <h4 className="text-xl font-black uppercase italic leading-none text-black">Material Alert</h4>
-                                 <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mt-2">Critical low stock detected</p>
-                             </div>
-                         </div>
-                         <ChevronRight size={24} className="text-slate-500 group-hover:text-rose-500 transition-all translate-x-0 group-hover:translate-x-2" />
-                    </div>
+                    { (user?.role?.toLowerCase() === 'admin' || user?.role?.toLowerCase() === 'manager') && (
+                        <div className="mt-12 bg-slate-50 p-10 rounded-[3rem] border border-white flex justify-between items-center group cursor-pointer hover:border-rose-500 transition-all italic">
+                            <div className="flex items-center gap-6">
+                                <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-sm text-rose-500"><AlertTriangle size={24} /></div>
+                                <div>
+                                    <h4 className="text-xl font-black uppercase italic leading-none text-black">Material Alert</h4>
+                                    <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mt-2">Critical low stock detected</p>
+                                </div>
+                            </div>
+                            <ChevronRight size={24} className="text-slate-500 group-hover:text-rose-500 transition-all translate-x-0 group-hover:translate-x-2" />
+                        </div>
+                    )}
                 </div>
 
             </div>

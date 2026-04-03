@@ -35,6 +35,7 @@ import {
   Key,
   Search,
   Fingerprint,
+  ShieldAlert,
 } from "lucide-react";
 import { storage } from "../../firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
@@ -49,6 +50,29 @@ const SettingsPanel = ({
   setActivePanel,
   t,
 }) => {
+  const role = currentUser?.role?.toLowerCase();
+  const isAdmin = role === "admin";
+
+  if (!isAdmin) {
+    return (
+      <div className="min-h-[60vh] flex flex-col items-center justify-center p-20 text-center animate-fade-up">
+        <div className="w-24 h-24 bg-rose-50 text-rose-500 rounded-full flex items-center justify-center mb-10 shadow-inner">
+          <ShieldAlert size={48} />
+        </div>
+        <h3 className="text-4xl font-black italic uppercase tracking-tighter mb-4 text-black">ACCESS RESTRICTED</h3>
+        <p className="text-[11px] font-black text-slate-400 uppercase tracking-[0.4em] italic max-w-sm">
+           This unit contains strategic core protocols. Access is strictly reserved for Admin personnel only.
+        </p>
+        <button 
+           onClick={() => setActivePanel('Overview')}
+           className="mt-12 px-10 py-5 bg-black text-white rounded-full font-black uppercase text-[10px] tracking-widest shadow-2xl hover:scale-105 active:scale-95 transition-all italic"
+        >
+           Return to Safety
+        </button>
+      </div>
+    );
+  }
+
   const [activeTab, setActiveTab] = useState("users");
   const [editingItem, setEditingItem] = useState(null);
   const [showAddModal, setShowAddModal] = useState(false);
