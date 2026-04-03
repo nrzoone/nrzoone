@@ -176,85 +176,70 @@ const LoginView = ({ onLogin, masterData }) => {
     const [showPass, setShowPass] = useState(false);
 
     return (
-        <div className="min-h-screen flex flex-col md:flex-row bg-black font-outfit overflow-hidden">
+        <div className="min-h-screen flex flex-col md:flex-row bg-[var(--bg-primary)] font-outfit overflow-hidden">
+            <div className="absolute inset-0 bg-dot-pattern pointer-events-none opacity-[0.05]"></div>
+            
             {/* Left Section: Branding */}
             <div className="w-full md:w-1/2 bg-black flex flex-col items-center justify-center p-12 relative min-h-[40vh] md:min-h-screen">
-                <div className="absolute inset-0 bg-[radial-gradient(#ffffff05_1px,transparent_1px)] bg-[size:40px_40px] opacity-20"></div>
                 <div className="relative z-10 flex flex-col items-center text-center animate-fade-up">
                     <Logo size="xl" white={true} customUrl={masterData.settings?.logo} />
-                    <div className="mt-12 space-y-2">
-                        <h2 className="text-4xl md:text-5xl font-black italic tracking-tighter text-white uppercase group">
-                            Factory <span className="text-white/40">Management</span>
+                    <div className="mt-12 space-y-4">
+                        <h2 className="text-5xl md:text-7xl font-black italic tracking-tighter text-white uppercase leading-none">
+                            Factory <span className="opacity-30">Management</span>
                         </h2>
-                        <div className="h-1.5 w-24 bg-white mx-auto rounded-full mt-4"></div>
+                        <div className="h-2 w-32 bg-white mx-auto rounded-full"></div>
                     </div>
                 </div>
-                <p className="absolute bottom-10 left-10 text-[8px] font-black uppercase text-white/20 tracking-[0.5em] hidden md:block">
-                    © NRZO0NE NEURAL NETWORK 2026
+                <p className="absolute bottom-10 left-10 text-[9px] font-black uppercase text-white/20 tracking-[0.5em] hidden md:block">
+                    PRO-GRADE ERP // NRZO0NE 2026
                 </p>
             </div>
 
             {/* Right Section: Login Form */}
-            <div className="w-full md:w-1/2 bg-[#0a0a0a] md:bg-black p-10 md:p-24 flex items-center justify-center border-t md:border-t-0 md:border-l border-white/5 relative">
-                 <div className="w-full max-w-md space-y-12 animate-fade-in delay-200">
+            <div className="w-full md:w-1/2 p-10 md:p-32 flex items-center justify-center relative">
+                 <div className="w-full max-w-md space-y-16 animate-fade-up">
                     <div className="space-y-4">
-                        <h3 className="text-5xl md:text-7xl font-black italic text-white tracking-tighter">Login</h3>
-                        <p className="text-xs font-black uppercase text-white/30 tracking-[0.3em] italic">Access Factory Core Systems</p>
+                        <h3 className="text-6xl md:text-8xl font-black italic text-[var(--text-primary)] tracking-tighter leading-none">Sign In</h3>
+                        <p className="text-[10px] font-black uppercase text-slate-400 tracking-[0.4em] italic mb-4">Enterprise Access Protocol</p>
                     </div>
 
-                    <div className="space-y-8">
-                        <div className="space-y-2">
-                            <label className="text-[10px] font-black uppercase text-white/50 tracking-widest block ml-2">Identity / Email</label>
+                    <div className="space-y-10">
+                        <div className="space-y-3">
+                            <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest block ml-2">Identity Hub</label>
                             <input 
                                 type="text"
                                 value={id}
                                 onChange={(e) => setId(e.target.value)}
-                                className="w-full bg-white/5 border-b-2 border-white/10 p-5 rounded-2xl text-white font-black italic outline-none focus:border-white focus:bg-white/10 transition-all placeholder:text-white/10"
-                                placeholder="mark.johnson@gmail.com"
+                                className="premium-input !bg-transparent !border-b-2 !border-t-0 !border-x-0 !rounded-none !px-2 focus:!border-black dark:focus:!border-white"
+                                placeholder="Admin ID or Identity"
                             />
                         </div>
 
-                        <div className="space-y-2">
-                            <label className="text-[10px] font-black uppercase text-white/50 tracking-widest block ml-2">Secure Pin</label>
+                        <div className="space-y-3">
+                            <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest block ml-2">Secure Pin</label>
                             <div className="relative">
                                 <input 
                                     type={showPass ? "text" : "password"}
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    className="w-full bg-white/5 border-b-2 border-white/10 p-5 rounded-2xl text-white font-black italic outline-none focus:border-white focus:bg-white/10 transition-all placeholder:text-white/10"
+                                    className="premium-input !bg-transparent !border-b-2 !border-t-0 !border-x-0 !rounded-none !px-2 focus:!border-black dark:focus:!border-white"
                                     placeholder="••••••••"
                                 />
-                                <button onClick={() => setShowPass(!showPass)} className="absolute right-5 top-1/2 -translate-y-1/2 text-white/30 hover:text-white transition-colors">
-                                    {showPass ? <EyeOff size={20} /> : <Eye size={20} />}
+                                <button onClick={() => setShowPass(!showPass)} className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-300 hover:text-black dark:hover:text-white transition-colors">
+                                    {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
                                 </button>
                             </div>
                         </div>
-
-                        <div className="flex justify-between items-center text-[10px] font-black uppercase text-white/40 tracking-widest">
-                            <label className="flex items-center gap-2 cursor-pointer hover:text-white transition-colors">
-                                <input type="checkbox" className="accent-white" /> Remember me
-                            </label>
-                            <button className="hover:text-white transition-colors">Forgot?</button>
-                        </div>
                     </div>
 
-                    <div className="pt-10 flex justify-end items-center gap-8">
-                        <p className="text-[9px] font-black uppercase text-white/20 tracking-widest hidden md:block">Neural Link Protocol v2.1</p>
+                    <div className="pt-8 flex flex-col md:flex-row justify-between items-center gap-10">
+                        <div className="text-[9px] font-black uppercase text-slate-300 tracking-[0.3em]">Neural Link Status: <span className="text-emerald-500 animate-pulse">Running</span></div>
                         <button 
                             onClick={() => onLogin(id, password)}
-                            className="w-24 h-24 bg-white text-black rounded-full font-black uppercase text-[10px] tracking-widest shadow-[0_0_50px_rgba(255,255,255,0.1)] hover:scale-110 active:scale-95 transition-all flex items-center justify-center group shrink-0"
+                            className="action-btn-primary h-24 w-full md:w-auto md:min-w-[200px]"
                         >
-                            <div className="relative overflow-hidden flex items-center justify-center w-full h-full">
-                                <span className="group-hover:-translate-y-12 transition-transform duration-300">Sign In</span>
-                                <ChevronRight className="absolute translate-y-12 group-hover:translate-y-0 transition-transform duration-300" size={20} />
-                            </div>
+                            Authorize Access
                         </button>
-                    </div>
-
-                    <div className="pt-12 border-t border-white/5 text-center md:text-left">
-                        <p className="text-[10px] font-black uppercase text-white/30 tracking-widest">
-                            Don't have any account? <button className="text-white hover:underline ml-2">Sign Up</button>
-                        </p>
                     </div>
                  </div>
             </div>
@@ -330,27 +315,43 @@ const Sidebar = ({ activePanel, setActivePanel, user, setUser, isOpen, setIsSide
     };
 
     return (
-        <aside className={`fixed inset-y-0 left-0 z-[150] w-[300px] flex flex-col bg-white dark:bg-[#0a0a0a] border-r border-[var(--border)] transition-all duration-700 ease-in-out font-outfit shadow-2xl ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-            <div className="p-10 flex flex-col items-center">
+        <aside className={`fixed inset-y-0 left-0 z-[150] w-[300px] flex flex-col bg-[var(--bg-secondary)] border-r border-[var(--border)] transition-all duration-700 ease-in-out font-outfit shadow-2xl ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+            <div className="p-12 flex flex-col items-center">
                 <Logo size="sm" white={false} customUrl={masterData.settings?.logo} />
+                <div className="mt-6 h-1 w-12 bg-black dark:bg-white rounded-full opacity-10"></div>
             </div>
-            <div className="flex-1 overflow-y-auto px-4 space-y-2 no-scrollbar">
-                {MENU_ITEMS.map(item => {
+            <div className="flex-1 overflow-y-auto px-6 space-y-2 no-scrollbar">
+                {MENU_ITEMS.filter(item => {
+                    const role = user?.role?.toLowerCase();
+                    const isSuperAdmin = role === 'admin';
+                    const isManager = role === 'manager';
+                    
+                    if (isSuperAdmin) return true;
+                    
+                    if (isManager) {
+                        const managerRestricted = ['Settings', 'Security'];
+                        return !managerRestricted.includes(item.id);
+                    }
+                    
+                    // Specific allowed items for workers in Sidebar
+                    const workerAllowed = ['Menu', 'Overview', 'Cutting', 'Swing', 'Stone', 'Pata', 'Outside', 'Attendance'];
+                    return workerAllowed.includes(item.id);
+                }).map(item => {
                     const Icon = item.icon;
                     const active = activePanel === item.id;
                     return (
                         <button
                             key={item.id} onClick={() => navigate(item.id)}
-                            className={`w-full flex items-center gap-4 p-4 rounded-[24px] transition-all group ${active ? "bg-black text-white dark:bg-white dark:text-black shadow-xl translate-x-1" : "text-slate-500 hover:bg-[var(--bg-primary)] hover:text-[var(--text-primary)] hover:shadow-lg"}`}
+                            className={`w-full flex items-center gap-5 p-5 rounded-[2rem] transition-all group ${active ? "bg-black text-white dark:bg-white dark:text-black shadow-2xl scale-[1.02] -translate-x-2" : "text-slate-400 hover:text-black dark:hover:text-white"}`}
                         >
-                            <Icon size={18} strokeWidth={active ? 2.5 : 2} />
-                            <span className={`text-xs uppercase tracking-widest italic ${active ? "font-black" : "font-bold"}`}>{t(item.id.toLowerCase()) || item.label}</span>
+                            <Icon size={18} strokeWidth={active ? 3 : 2} className="shrink-0" />
+                            <span className={`text-[10px] uppercase tracking-[0.2em] italic ${active ? "font-black" : "font-bold opacity-70"}`}>{t(item.id.toLowerCase()) || item.label}</span>
                         </button>
                     );
                 })}
             </div>
-            <div className="px-4 mt-8 pt-8 border-t border-slate-100">
-                <button onClick={() => setUser(null)} className="w-full flex items-center gap-4 p-4 rounded-xl text-slate-500 hover:text-rose-500 transition-colors">
+            <div className="p-10 border-t border-[var(--border)]">
+                <button onClick={() => setUser(null)} className="w-full flex items-center gap-4 p-4 rounded-2xl text-slate-400 hover:text-rose-500 transition-all hover:bg-rose-50/50">
                     <LogOut size={16} /><span className="text-[9px] font-black uppercase tracking-[0.3em] italic">{t('logout') || 'Logout'}</span>
                 </button>
             </div>
@@ -443,10 +444,11 @@ const AppContent = () => {
 
         if (!u) {
             u = (masterData.workerDocs || []).find(w => 
-                w.name.toUpperCase() === id.toUpperCase() && w.password === pass
+                (w.workerId?.toUpperCase() === id.toUpperCase() || w.name.toUpperCase() === id.toUpperCase()) && 
+                w.password === pass
             );
             if (u) {
-                u = { ...u, role: 'worker', id: u.name.toUpperCase() };
+                u = { ...u, role: 'worker', id: u.workerId || u.name.toUpperCase() };
             }
         }
 
@@ -515,43 +517,37 @@ const AppContent = () => {
                 <div className="flex min-h-screen">
                     <Sidebar activePanel={activePanel} setActivePanel={setActivePanel} user={user} setUser={setUser} isOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} t={t} isDarkMode={isDarkMode} masterData={masterData} />
                     <main className={`flex-1 p-4 md:p-20 transition-all ${isSidebarOpen ? "md:ml-[300px]" : "ml-0"}`}>
-                        <header className="flex justify-between items-center mb-16 no-print">
-                            <div className="flex items-center gap-6">
-                                <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="neu-button w-14 h-14 dark:bg-zinc-900 dark:border-zinc-800"><Menu size={20} /></button>
-                                <div className="hidden md:block">
-                                    <div className="flex items-center gap-3">
-                                        <h2 className="text-xl font-black italic uppercase tracking-tighter text-[var(--text-primary)]">{t(activePanel.toLowerCase()) || activePanel}</h2>
-                                        <div className="flex items-center gap-2 px-3 py-1 bg-slate-50 border border-slate-100 rounded-full">
-                                            <div className={`w-1.5 h-1.5 rounded-full ${isLoading ? 'bg-amber-500 animate-pulse' : 'bg-emerald-500'}`} />
-                                            <span className="text-[7px] font-black uppercase tracking-widest text-slate-500">{isLoading ? t('syncing') : t('stable')}</span>
-                                        </div>
+                        <header className="flex flex-col md:flex-row justify-between items-center mb-20 gap-8 no-print">
+                            <div className="flex items-center gap-6 w-full md:w-auto">
+                                <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="w-16 h-16 bg-[var(--bg-secondary)] border border-[var(--border)] rounded-[1.5rem] shadow-xl flex items-center justify-center hover:scale-105 active:scale-95 transition-all"><Menu size={20} /></button>
+                                <div className="space-y-1">
+                                    <h2 className="text-4xl font-black italic uppercase tracking-tighter text-[var(--text-primary)] leading-none">{t(activePanel.toLowerCase()) || activePanel}</h2>
+                                    <div className="flex items-center gap-2">
+                                        <div className={`w-1.5 h-1.5 rounded-full ${isLoading ? 'bg-amber-500 animate-pulse' : 'bg-emerald-500'}`} />
+                                        <span className="text-[8px] font-black uppercase tracking-widest text-slate-400">{isLoading ? 'Syncing Neural Link...' : 'Connection Stable'}</span>
                                     </div>
                                 </div>
                             </div>
-                            <div className="flex items-center gap-6 no-print">
-                                <div className="flex items-center gap-3 bg-white dark:bg-zinc-900 p-1 rounded-2xl border border-[var(--border)] shadow-sm">
+                            <div className="flex items-center gap-6 no-print w-full md:w-auto justify-end">
+                                <div className="flex items-center gap-3 bg-[var(--bg-secondary)] p-2 rounded-[2rem] border border-[var(--border)] shadow-xl">
                                     <button 
                                         onClick={() => setLanguage(language === 'BN' ? 'EN' : 'BN')} 
-                                        className="w-14 h-14 neu-button border-none !bg-transparent group hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-all"
-                                        title="Switch Language"
+                                        className="w-12 h-12 rounded-2xl flex flex-col items-center justify-center hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-all"
                                     >
-                                        <div className="flex flex-col items-center">
-                                            <Globe size={18} className="mb-0.5 group-hover:rotate-12 transition-transform" />
-                                            <span className="text-[7px] font-black">{language}</span>
-                                        </div>
+                                        <Globe size={16} />
+                                        <span className="text-[6px] font-black mt-0.5">{language}</span>
                                     </button>
-                                    <div className="w-[1px] h-8 bg-slate-100 dark:bg-zinc-800" />
+                                    <div className="w-px h-8 bg-[var(--border)]" />
                                     <button 
                                         onClick={() => setIsDarkMode(!isDarkMode)} 
-                                        className="w-14 h-14 neu-button border-none !bg-transparent transition-all duration-500"
-                                        title="Toggle Theme"
+                                        className="w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-500"
                                     >
                                         {isDarkMode ? <Sun size={18} className="text-amber-500" /> : <Moon size={18} className="text-indigo-600" />}
                                     </button>
                                 </div>
-                                <div className="flex items-center gap-4 neu-card-flat px-6 h-14 min-w-[200px] dark:bg-zinc-900 dark:border-zinc-800">
-                                    <div className="w-8 h-8 bg-black dark:bg-white rounded-full flex items-center justify-center text-white dark:text-black transition-all duration-500"><User size={14} /></div>
-                                    <div className="text-left"><p className="text-xs font-black uppercase italic leading-none dark:text-white">{user.name}</p><p className="text-[7px] font-black text-slate-500 uppercase tracking-widest mt-1">{user.role}</p></div>
+                                <div className="flex items-center gap-5 bg-[var(--bg-secondary)] border border-[var(--border)] px-6 py-3 rounded-[2.5rem] shadow-2xl">
+                                    <div className="w-10 h-10 bg-black dark:bg-white text-white dark:text-black rounded-full flex items-center justify-center shadow-lg"><User size={16} /></div>
+                                    <div className="text-left"><p className="text-[11px] font-black uppercase italic leading-none">{user.name}</p><p className="text-[7px] font-black text-slate-400 uppercase tracking-widest mt-1">{user.role}</p></div>
                                 </div>
                             </div>
                         </header>

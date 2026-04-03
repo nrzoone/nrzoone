@@ -15,7 +15,7 @@ const NRZLogo = ({ size = "md", white = true, customUrl = null }) => {
 
   return (
     <div className={`flex flex-col items-center justify-center ${white ? "text-white" : "text-black"}`} style={{ width: s.w }}>
-        {!imgError ? (
+        {(!imgError && logoPath) ? (
           <img 
             src={logoPath} 
             alt="Company Logo" 
@@ -25,13 +25,18 @@ const NRZLogo = ({ size = "md", white = true, customUrl = null }) => {
               height: 'auto', 
               maxHeight: s.iconSize * 0.8,
               objectFit: 'contain',
-              filter: white ? 'brightness(0) invert(1) drop-shadow(0 0 10px rgba(255,255,255,0.2))' : 'none'
+              filter: (white && !customUrl) ? 'brightness(0) invert(1) drop-shadow(0 0 10px rgba(255,255,255,0.2))' : 'none'
             }} 
             className="mb-2"
           />
         ) : (
-          <div className={`mb-4 flex items-center justify-center rounded-2xl ${white ? 'bg-white/10 text-white' : 'bg-slate-100 text-slate-400'}`} style={{ width: s.iconSize, height: s.iconSize * 0.6 }}>
-             <p className="text-[10px] font-black uppercase tracking-widest text-center px-4">Logo Error</p>
+          <div className={`mb-4 flex items-center justify-center rounded-[2rem] border-2 ${white ? 'bg-white/5 border-white/20 text-white' : 'bg-black/5 border-black/20 text-black'}`} style={{ width: s.iconSize, height: s.iconSize * 0.7 }}>
+             <div className="flex flex-col items-center gap-1">
+                <div className="w-10 h-10 rounded-full bg-current opacity-20 animate-pulse flex items-center justify-center">
+                    <span className="text-[10px] font-black">NZ</span>
+                </div>
+                <p className="text-[7px] font-black uppercase tracking-[0.3em]">NRZOONE</p>
+             </div>
           </div>
         )}
         <div className="text-center relative">

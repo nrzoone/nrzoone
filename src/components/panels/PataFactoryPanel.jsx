@@ -404,13 +404,15 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
             </p>
         </div>
       </div>
-      <button
-        onClick={() => setShowModal(true)}
-        className="px-10 py-5 bg-black text-white rounded-2xl font-black uppercase text-xs tracking-widest shadow-2xl flex items-center gap-3 hover:scale-105 active:scale-95 transition-all italic border-b-[6px] border-zinc-900 mb-6"
-      >
-        <Plus size={20} strokeWidth={3} />
-        নতুন পাতা এন্ট্রি
-      </button>
+        {(isAdmin || isManager) && (
+          <button
+            onClick={() => setShowModal(true)}
+            className="px-10 py-5 bg-black text-white rounded-2xl font-black uppercase text-xs tracking-widest shadow-2xl flex items-center gap-3 hover:scale-105 active:scale-95 transition-all italic border-b-[6px] border-zinc-900 mb-6"
+          >
+            <Plus size={20} strokeWidth={3} />
+            নতুন পাতা এন্ট্রি
+          </button>
+        )}
     </div>
       
       {/* Unified Floating Filter Bar */}
@@ -518,6 +520,8 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                                     </div>
                                     <div className="flex items-center gap-3">
                                         <span className="text-[9px] font-black uppercase tracking-widest px-3 py-1 bg-slate-50 border border-slate-100 rounded-full text-slate-500">{item.pataType}</span>
+                                    <div className="flex items-center gap-3">
+                                        <span className="text-[9px] font-black uppercase tracking-widest px-3 py-1 bg-slate-50 border border-slate-100 rounded-full text-slate-500">{item.pataType}</span>
                                         <span className="text-[9px] font-black uppercase tracking-widest text-slate-500 italic">S:{item.stonePackets || 0} Pkt • P:{item.paperRolls || 0} Roll</span>
                                     </div>
                                 </div>
@@ -534,12 +538,22 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                                             <button onClick={() => setPrintSlip(item)} className="w-12 h-12 flex items-center justify-center rounded-full bg-slate-50 text-slate-500 hover:bg-black hover:text-white transition-all shadow-sm">
                                                 <Printer size={18} />
                                             </button>
-                                            <button onClick={() => setReceiveModal(item)} className="black-button">জমা নিন (REC)</button>
+                                            {(isAdmin || isManager) && <button onClick={() => setReceiveModal(item)} className="black-button">জমা নিন (REC)</button>}
                                         </>
                                     ) : (
                                         <button onClick={() => setPrintSlip(item)} className="w-12 h-12 flex items-center justify-center rounded-full bg-slate-50 text-slate-500 hover:bg-black hover:text-white transition-all shadow-sm">
                                             <Printer size={18} />
                                         </button>
+                                    )}
+                                    {isAdmin && (
+                                        <div className="flex gap-2">
+                                            <button onClick={() => setEditPataModal(item)} className="w-12 h-12 flex items-center justify-center rounded-full bg-slate-50 text-amber-500 hover:bg-amber-500 hover:text-white transition-all shadow-sm">
+                                                <Settings size={18} />
+                                            </button>
+                                            <button onClick={() => handleDelete(item.id)} className="w-12 h-12 flex items-center justify-center rounded-full bg-rose-50 text-rose-500 hover:bg-rose-500 hover:text-white transition-all shadow-sm">
+                                                <Trash2 size={18} />
+                                            </button>
+                                        </div>
                                     )}
                                     {isAdmin && (
                                         <div className="flex gap-2">

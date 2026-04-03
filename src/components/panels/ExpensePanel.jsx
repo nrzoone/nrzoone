@@ -33,7 +33,9 @@ const ExpensePanel = ({
   setActivePanel,
   t,
 }) => {
-  const isAdmin = user?.role === "admin";
+  const role = user?.role?.toLowerCase();
+  const isAdmin = role === "admin";
+  const isManager = role === "manager";
   const [selectedCategory, setSelectedCategory] = useState("Tea/Snacks");
   const [editExpense, setEditExpense] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");

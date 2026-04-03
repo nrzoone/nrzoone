@@ -18,26 +18,26 @@ const ProductionTrend = ({ data }) => {
                 <AreaChart data={chartData}>
                     <defs>
                         <linearGradient id="colorVal" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor="#E11D48" stopOpacity={0.1}/>
-                            <stop offset="95%" stopColor="#E11D48" stopOpacity={0}/>
+                            <stop offset="5%" stopColor="#10b981" stopOpacity={0.1}/>
+                            <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
                         </linearGradient>
                     </defs>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border)" />
                     <XAxis 
                         dataKey="name" 
                         axisLine={false} 
                         tickLine={false} 
-                        tick={{fontSize: 9, fontWeight: 900, fill: '#94a3b8'}}
+                        tick={{fontSize: 9, fontWeight: 900, fill: 'var(--text-secondary)'}}
                         dy={10}
                     />
                     <Tooltip 
-                        contentStyle={{borderRadius: '16px', border: 'none', boxShadow: '0 10px 30px rgba(0,0,0,0.05)', fontSize: '10px', fontWeight: 'bold'}}
-                        cursor={{stroke: '#E11D48', strokeWidth: 1}}
+                        contentStyle={{borderRadius: '24px', border: 'none', background: 'var(--bg-secondary)', color: 'var(--text-primary)', boxShadow: 'var(--premium-shadow)', fontSize: '10px', fontWeight: 'bold'}}
+                        cursor={{stroke: '#10b981', strokeWidth: 1}}
                     />
                     <Area 
                         type="monotone" 
                         dataKey="value" 
-                        stroke="#E11D48" 
+                        stroke="#10b981" 
                         strokeWidth={3}
                         fillOpacity={1} 
                         fill="url(#colorVal)" 
@@ -176,101 +176,99 @@ const Overview = ({ masterData, setMasterData, setActivePanel, user, t }) => {
             </div>
 
             {/* Header Section */}
-            <div className="flex flex-col md:flex-row justify-between items-end gap-10 mb-16">
-                <div className="space-y-6">
-                     <h1 className="text-5xl md:text-7xl font-black tracking-tighter text-[#121212] leading-none mb-4 italic">
-                        YOUR STATISTICS
-                     </h1>
+            <div className="flex flex-col md:flex-row justify-between items-end gap-10 mb-20 animate-fade-up">
+                <div className="space-y-8">
+                     <h1 className="section-header !mb-0 italic leading-none">YOUR <span className="opacity-20 italic">STATISTICS</span></h1>
                      <div className="flex flex-wrap gap-4 items-center">
-                         <span className="pill-item pill-item-active !px-6 !py-3 !text-[11px] uppercase tracking-widest">Medical Logic Tracker</span>
-                         <span className="pill-item bg-gray-100 dark:bg-zinc-900 dark:text-zinc-400 !px-6 !py-3 !text-[11px] uppercase tracking-widest">Factory Analytics</span>
-                         <button onClick={shareEOD} className="ml-4 flex items-center gap-3 bg-black dark:bg-white text-white dark:text-black px-8 py-3 rounded-full text-[10px] font-black uppercase tracking-widest hover:scale-105 transition-all shadow-xl">
+                         <span className="px-6 py-2 bg-black text-white dark:bg-white dark:text-black rounded-full text-[9px] font-black uppercase tracking-[0.2em] shadow-xl italic">FACTORY ENGINE v2.1</span>
+                         <span className="px-6 py-2 bg-[var(--bg-secondary)] border border-[var(--border)] text-slate-400 rounded-full text-[9px] font-black uppercase tracking-[0.2em] italic">REAL-TIME ANALYTICS</span>
+                         <button onClick={shareEOD} className="ml-4 action-btn-primary flex items-center gap-3">
                             <Share2 size={16} /> Share EOD Report
                          </button>
                      </div>
                 </div>
-                <div className="flex flex-wrap gap-6 items-center bg-white/50 dark:bg-zinc-900/50 backdrop-blur-xl p-8 rounded-[40px] border border-white dark:border-zinc-800 shadow-2xl">
+                <div className="flex flex-wrap gap-10 items-center bg-[var(--bg-secondary)] p-10 rounded-[3rem] border border-[var(--border)] shadow-2xl">
                     <div className="flex items-center gap-6">
-                        <div className="w-14 h-14 bg-emerald-50 dark:bg-emerald-500/10 rounded-full flex items-center justify-center text-emerald-500 shadow-inner"><UserCheck size={24} /></div>
+                        <div className="w-14 h-14 bg-emerald-50 dark:bg-emerald-500/10 rounded-2xl flex items-center justify-center text-emerald-500 shadow-inner group hover:scale-110 transition-all"><UserCheck size={24} /></div>
                         <div>
-                             <p className="text-3xl font-black leading-none italic dark:text-white">{stats.presentCount}</p>
-                             <p className="text-[10px] uppercase font-black text-slate-500 tracking-[0.3em] mt-2">Present Today</p>
+                             <p className="text-4xl font-black leading-none italic dark:text-white tracking-tighter">{stats.presentCount}</p>
+                             <p className="text-[10px] uppercase font-black text-slate-400 tracking-[0.3em] mt-2 italic">Present Today</p>
                         </div>
                     </div>
-                    <div className="w-px h-12 bg-slate-200 dark:bg-zinc-800"></div>
+                    <div className="w-px h-16 bg-[var(--border)]"></div>
                     <div className="flex items-center gap-6">
-                        <div className="w-14 h-14 bg-rose-50 dark:bg-rose-500/10 rounded-full flex items-center justify-center text-rose-500 shadow-inner"><Activity size={24} /></div>
+                        <div className="w-14 h-14 bg-indigo-50 dark:bg-indigo-500/10 rounded-2xl flex items-center justify-center text-indigo-500 shadow-inner group hover:scale-110 transition-all"><Activity size={24} /></div>
                         <div>
-                             <p className="text-3xl font-black leading-none italic dark:text-white">{stats.totalPayable.toLocaleString()}৳</p>
-                             <p className="text-[10px] uppercase font-black text-slate-500 tracking-[0.3em] mt-2">Kajer Taka</p>
+                             <p className="text-4xl font-black leading-none italic dark:text-white tracking-tighter">{stats.totalPayable.toLocaleString()}৳</p>
+                             <p className="text-[10px] uppercase font-black text-slate-400 tracking-[0.3em] mt-2 italic">Production Load</p>
                         </div>
                     </div>
                 </div>
             </div>
             {/* Strategic Fiscal Hub */}
-            <div className="mb-16 grid grid-cols-1 md:grid-cols-4 gap-8">
-                <div className="md:col-span-3 bg-black text-white p-12 rounded-[4rem] relative overflow-hidden group shadow-3xl italic">
-                    <div className="flex flex-col md:flex-row justify-between items-center relative z-10 gap-8">
-                        <div className="space-y-4">
-                            <h3 className="text-4xl font-black italic tracking-tighter uppercase leading-none">Net Strategic Worth</h3>
-                            <p className="text-[10px] font-black uppercase text-white/70 tracking-[0.4em]">Real-time Factory Liquidity & Margin Analysis</p>
-                            <div className="flex gap-4 pt-4">
-                               <button onClick={() => setActivePanel('Accounts')} className="px-6 py-3 bg-white/10 hover:bg-white/20 rounded-full text-[9px] font-black uppercase tracking-widest border border-white/10 transition-all">Logging Expense</button>
-                               <button onClick={() => setActivePanel('Inventory')} className="px-6 py-3 bg-white/10 hover:bg-white/20 rounded-full text-[9px] font-black uppercase tracking-widest border border-white/10 transition-all">Audit Stock</button>
+            <div className="mb-20 grid grid-cols-1 md:grid-cols-4 gap-10">
+                <div className="md:col-span-3 bg-black text-white p-16 rounded-[4rem] relative overflow-hidden group shadow-[var(--premium-shadow)] italic">
+                    <div className="flex flex-col md:flex-row justify-between items-center relative z-10 gap-10">
+                        <div className="space-y-6">
+                            <h3 className="text-5xl font-black italic tracking-tighter uppercase leading-none">Net Tactical Worth</h3>
+                            <p className="text-[10px] font-black uppercase text-white/40 tracking-[0.5em] italic">Real-time Liquidity & Production Yield Analysis</p>
+                            <div className="flex gap-4 pt-6">
+                               <button onClick={() => setActivePanel('Accounts')} className="px-8 py-4 bg-white/10 hover:bg-white text-white hover:text-black rounded-full text-[9px] font-black uppercase tracking-widest border border-white/10 transition-all">Audit Expenses</button>
+                               <button onClick={() => setActivePanel('Inventory')} className="px-8 py-4 bg-white/10 hover:bg-white text-white hover:text-black rounded-full text-[9px] font-black uppercase tracking-widest border border-white/10 transition-all">Vault Stock</button>
                             </div>
                         </div>
                         <div className="text-right">
-                             <p className="text-6xl font-black italic tracking-tighter leading-none mb-3 text-emerald-500">৳{stats.financialIntel.netProfit.toLocaleString()}</p>
+                             <p className="text-8xl font-black italic tracking-tighter leading-none mb-4 text-emerald-400">৳{stats.financialIntel.netProfit.toLocaleString()}</p>
                              <div className="flex items-center gap-3 justify-end">
-                                 <div className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest ${stats.financialIntel.margin > 0 ? 'bg-emerald-500/20 text-emerald-500' : 'bg-rose-500/20 text-rose-500'}`}>
-                                     {stats.financialIntel.margin.toFixed(1)}% MARGIN
+                                 <div className={`px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-widest ${stats.financialIntel.margin > 0 ? 'bg-emerald-400/20 text-emerald-400' : 'bg-rose-500/20 text-rose-500'}`}>
+                                     {stats.financialIntel.margin.toFixed(1)}% PROFIT MARGIN
                                  </div>
                              </div>
                         </div>
                     </div>
-                    {/* Animated Profit Ticker Placeholder */}
-                    <div className="absolute bottom-[-20%] left-[-10%] text-white opacity-[0.03] rotate-12 pointer-events-none">
-                        <TrendingUp size={280} strokeWidth={3} />
+                    <div className="absolute bottom-[-10%] right-[-5%] text-white opacity-[0.05] rotate-12 pointer-events-none">
+                        <TrendingUp size={300} strokeWidth={4} />
                     </div>
                 </div>
-                <div className="bg-white p-10 rounded-[4rem] border-4 border-slate-50 flex flex-col justify-between italic shadow-2xl group hover:border-black transition-all">
+                <div className="premium-card flex flex-col justify-between italic bg-[var(--bg-secondary)] border-[var(--border)] group hover:border-black dark:hover:border-white transition-all">
                     <div>
-                        <div className="flex justify-between items-start mb-2">
-                           <p className="text-[10px] font-black uppercase text-slate-500 tracking-widest">Total Fiscal Exposure</p>
-                           <TrendingDown size={16} className="text-rose-500" />
+                        <div className="flex justify-between items-start mb-4">
+                           <p className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] italic">Operational Exposure</p>
+                           <TrendingDown size={18} className="text-rose-500" />
                         </div>
-                        <h4 className="text-3xl font-black italic tracking-tighter text-black">৳{stats.financialIntel.totalCosts.toLocaleString()}</h4>
+                        <h4 className="text-4xl font-black italic tracking-tighter text-[var(--text-primary)]">৳{stats.financialIntel.totalCosts.toLocaleString()}</h4>
                     </div>
-                    <div className="space-y-3">
-                         <div className="flex justify-between items-center text-[8px] font-black uppercase tracking-widest text-slate-500">
-                             <span>Production</span>
-                             <span className="text-black">৳{stats.financialIntel.productionCosts.toLocaleString()}</span>
+                    <div className="space-y-4">
+                         <div className="flex justify-between items-center text-[9px] font-black uppercase tracking-widest text-slate-400">
+                             <span className="italic">Production</span>
+                             <span className="text-[var(--text-primary)]">৳{stats.financialIntel.productionCosts.toLocaleString()}</span>
                          </div>
-                         <div className="w-full h-1 bg-slate-100 rounded-full overflow-hidden">
-                             <div className="h-full bg-rose-500" style={{ width: `${(stats.financialIntel.productionCosts / Math.max(1, stats.financialIntel.totalCosts)) * 100}%` }}></div>
+                         <div className="w-full h-2 bg-[var(--bg-primary)] rounded-full overflow-hidden">
+                             <div className="h-full bg-black dark:bg-white transition-all duration-1000" style={{ width: `${(stats.financialIntel.productionCosts / Math.max(1, stats.financialIntel.totalCosts)) * 100}%` }}></div>
                          </div>
                     </div>
                 </div>
             </div>
 
             {/* Rapid Command Center */}
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-6 mb-16">
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-8 mb-20">
                  {[
-                    { label: 'Issue cutting', panel: 'Cutting', icon: <Scissors size={20} />, color: 'bg-black text-white' },
-                    { label: 'Sewing Node', panel: 'Swing', icon: <Layers size={20} />, color: 'bg-slate-50' },
-                    { label: 'Stone Production', panel: 'Stone', icon: <Hammer size={20} />, color: 'bg-slate-50' },
-                    { label: 'Pata Workshop', panel: 'Pata', icon: <Activity size={20} />, color: 'bg-slate-50' },
-                    { label: 'Outside Ops', panel: 'Outside', icon: <Truck size={20} />, color: 'bg-slate-50' }
+                    { label: 'Issue cutting', panel: 'Cutting', icon: <Scissors size={20} />, color: 'bg-black text-white dark:bg-white dark:text-black shadow-2xl' },
+                    { label: 'Sewing Node', panel: 'Swing', icon: <Layers size={20} />, color: 'bg-[var(--bg-secondary)] text-[var(--text-primary)]' },
+                    { label: 'Stone Unit', panel: 'Stone', icon: <Hammer size={20} />, color: 'bg-[var(--bg-secondary)] text-[var(--text-primary)]' },
+                    { label: 'Pata Workshop', panel: 'Pata', icon: <Activity size={20} />, color: 'bg-[var(--bg-secondary)] text-[var(--text-primary)]' },
+                    { label: 'Outside Ops', panel: 'Outside', icon: <Truck size={20} />, color: 'bg-[var(--bg-secondary)] text-[var(--text-primary)]' }
                  ].map((cmd, idx) => (
                     <button 
                         key={idx}
                         onClick={() => setActivePanel(cmd.panel)}
-                        className={`p-8 rounded-[2.5rem] ${cmd.color} border-4 border-slate-50 hover:border-black transition-all shadow-xl group text-left`}
+                        className={`p-10 rounded-[3rem] ${cmd.color} border border-[var(--border)] hover:translate-y-[-5px] active:translate-y-[2px] transition-all shadow-xl group text-left relative overflow-hidden`}
                     >
-                        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-6 shadow-lg transition-transform group-hover:scale-110 ${cmd.color === 'bg-black text-white' ? 'bg-zinc-800' : 'bg-white'}`}>
+                        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-6 shadow-lg transition-transform group-hover:scale-110 ${cmd.color.includes('bg-black') ? 'bg-white/10 text-white' : 'bg-[var(--bg-primary)] text-[var(--text-primary)]'}`}>
                             {cmd.icon}
                         </div>
-                        <p className="text-[9px] font-black uppercase tracking-widest leading-tight italic">{cmd.label}</p>
+                        <p className="text-[10px] font-black uppercase tracking-[0.2em] leading-tight italic">{cmd.label}</p>
+                        <ChevronRight className="absolute bottom-10 right-10 opacity-10 group-hover:opacity-40 transition-all" size={24} />
                     </button>
                  ))}
             </div>
@@ -302,12 +300,12 @@ const Overview = ({ masterData, setMasterData, setActivePanel, user, t }) => {
                 </div>
 
                 {/* Gauge Performance Widget */}
-                <div className="md:col-span-4 premium-card flex flex-col items-center">
+                <div className="md:col-span-4 premium-card flex flex-col items-center border-[var(--border)]">
                     <div className="flex justify-between w-full mb-12">
-                        <h3 className="font-black text-xl italic uppercase tracking-tighter">Yield Performance</h3>
+                        <h3 className="font-black text-xl italic uppercase tracking-tighter">Yield Analytics</h3>
                         <div className="flex flex-col items-end">
-                             <div className="flex items-center gap-1 text-emerald-500 font-bold bg-emerald-50 px-4 py-2 rounded-full text-xs">
-                                <TrendingUp size={14} /> +12.5%
+                             <div className="flex items-center gap-1 text-emerald-500 font-black bg-emerald-500/10 px-4 py-2 rounded-full text-[10px] tracking-widest italic">
+                                <TrendingUp size={14} /> +12.5% EFFICIENCY
                              </div>
                         </div>
                     </div>
@@ -322,29 +320,29 @@ const Overview = ({ masterData, setMasterData, setActivePanel, user, t }) => {
                                     ]}
                                     startAngle={180}
                                     endAngle={0}
-                                    innerRadius={100}
-                                    outerRadius={140}
+                                    innerRadius={110}
+                                    outerRadius={150}
                                     paddingAngle={4}
                                     dataKey="value"
                                     stroke="none"
                                 >
-                                    <Cell fill="#E11D48" />
-                                    <Cell fill="#F4F6F9" />
+                                    <Cell fill="var(--text-primary)" />
+                                    <Cell fill="var(--border)" />
                                 </Pie>
                             </PieChart>
                          </ResponsiveContainer>
                          <div className="absolute inset-x-0 bottom-16 flex flex-col items-center">
-                              <p className="text-7xl font-black italic tracking-tighter leading-none">{stats.totalProduction}</p>
-                              <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.4em] mt-3">Production Point</p>
+                              <p className="text-8xl font-black italic tracking-tighter leading-none text-[var(--text-primary)]">{stats.totalProduction}</p>
+                              <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.5em] mt-4 italic">Total Points</p>
                          </div>
                     </div>
 
-                    <div className="w-full mt-6 bg-zinc-900 text-white p-10 rounded-[50px] text-left relative overflow-hidden group hover:bg-black transition-all">
+                    <div className="w-full mt-10 bg-black dark:bg-white text-white dark:text-black p-12 rounded-[4rem] text-left relative overflow-hidden group hover:scale-[1.02] transition-all shadow-2xl">
                          <div className="relative z-10">
-                            <h4 className="text-4xl font-black tracking-tighter mb-2 italic">YOUR REPORT</h4>
-                            <p className="text-white/30 text-[10px] font-black uppercase tracking-[0.4em]">85% More efficient than goal</p>
+                            <h4 className="text-4xl font-black tracking-tighter mb-2 italic uppercase">Final Audit</h4>
+                            <p className="opacity-40 text-[10px] font-black uppercase tracking-[0.4em] italic leading-relaxed">85% Optimization detected above established KPIs</p>
                          </div>
-                         <div className="absolute top-10 right-10 w-16 h-16 bg-white/10 rounded-full flex items-center justify-center group-hover:bg-rose-500 group-hover:scale-110 transition-all cursor-pointer shadow-2xl">
+                         <div className="absolute top-10 right-10 w-16 h-16 bg-white/10 rounded-full flex items-center justify-center group-hover:bg-emerald-500 group-hover:text-white group-hover:scale-110 transition-all cursor-pointer shadow-2xl">
                               <ArrowUpRight size={28} />
                          </div>
                     </div>

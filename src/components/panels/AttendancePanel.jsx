@@ -409,35 +409,45 @@ const AttendancePanel = ({
               <p className="text-[9px] font-black text-emerald-600 uppercase tracking-widest mb-1 italic">{t('present')}</p>
               <p className="text-3xl font-black tracking-tighter text-emerald-600 leading-none italic">{stats.present}</p>
             </div>
-            <button
-              onClick={() => setShowInvoice(true)}
-              className="bg-black text-white p-6 rounded-2xl shadow-xl hover:scale-[1.02] transition-all text-left group"
-            >
-              <Printer size={16} className="mb-3" />
-              <p className="text-[10px] font-black uppercase leading-tight italic text-white/50">Weekly Report</p>
-            </button>
-            <button
-              onClick={() => setShowQR(true)}
-              className="bg-indigo-600 text-white p-6 rounded-2xl shadow-xl hover:scale-[1.02] transition-all text-left group"
-            >
-              <Camera size={16} className="mb-3" />
-              <p className="text-[10px] font-black uppercase leading-tight italic text-white/50">QR Camera Scan</p>
-            </button>
-            <button
-              onClick={scanBiometricAttendance}
-              className="bg-emerald-600 text-white p-6 rounded-2xl shadow-xl hover:scale-[1.02] transition-all text-left group"
-            >
-              <Fingerprint size={16} className="mb-3" />
-              <p className="text-[10px] font-black uppercase leading-tight italic text-white/50">Fingerprint Scan</p>
-            </button>
+            {!(user?.role?.toLowerCase() !== 'admin' && user?.role?.toLowerCase() !== 'manager') && (
+              <>
+                <button
+                  onClick={() => setShowInvoice(true)}
+                  className="bg-black text-white p-6 rounded-2xl shadow-xl hover:scale-[1.02] transition-all text-left group"
+                >
+                  <Printer size={16} className="mb-3" />
+                  <p className="text-[10px] font-black uppercase leading-tight italic text-white/50">Weekly Report</p>
+                </button>
+                <button
+                  onClick={() => setShowQR(true)}
+                  className="bg-indigo-600 text-white p-6 rounded-2xl shadow-xl hover:scale-[1.02] transition-all text-left group"
+                >
+                  <Camera size={16} className="mb-3" />
+                  <p className="text-[10px] font-black uppercase leading-tight italic text-white/50">QR Camera Scan</p>
+                </button>
+                <button
+                  onClick={scanBiometricAttendance}
+                  className="bg-emerald-600 text-white p-6 rounded-2xl shadow-xl hover:scale-[1.02] transition-all text-left group"
+                >
+                  <Fingerprint size={16} className="mb-3" />
+                  <p className="text-[10px] font-black uppercase leading-tight italic text-white/50">Fingerprint Scan</p>
+                </button>
+              </>
+            )}
           </div>
           
           {showQR && <QRScanner onScanSuccess={handleQRScan} onClose={() => setShowQR(false)} />}
 
           <div className="grid grid-cols-1 gap-4">
-            {workers.map((worker, idx) => {
+            {workers.filter(w => {
+                 const role = user?.role?.toLowerCase();
+                 if (role === 'admin' || role === 'manager') return true;
+                 return w.trim().toLowerCase() === user?.name?.trim().toLowerCase();
+            }).map((worker, idx) => {
                 const status = getAttendance(worker);
-                const wage = getWorkerWage(worker);
+                const workerDoc = (masterData.workerDocs || []).find(d => d.name.toUpperCase() === worker.toUpperCase() && d.dept === selectedDepartment);
+                const workerId = workerDoc?.workerId;
+                const wage = workerDoc?.wage || getWorkerWage(worker);
                 return (
                   <div key={idx} className="item-card flex flex-col md:flex-row justify-between items-center gap-6 group">
                     <div className="flex items-center gap-6 flex-1 w-full md:w-auto">
@@ -445,7 +455,10 @@ const AttendancePanel = ({
                         {worker[0].toUpperCase()}
                       </div>
                       <div className="space-y-1">
-                        <h4 className="text-xl font-black italic uppercase leading-none tracking-tighter text-black">{worker}</h4>
+                        <div className="flex items-center gap-3">
+                            <h4 className="text-xl font-black italic uppercase leading-none tracking-tighter text-black">{worker}</h4>
+                            {workerId && <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-[8px] font-black rounded-full shadow-sm">ID: {workerId}</span>}
+                        </div>
                         <p className="text-slate-500 text-[11px] font-black uppercase italic tracking-widest leading-none mt-1">
                           • Rate: ৳{wage.toLocaleString()}
                         </p>
@@ -453,31 +466,41 @@ const AttendancePanel = ({
                     </div>
 
                     <div className="flex bg-slate-50 p-1 rounded-xl border border-slate-100 shrink-0 gap-2 overflow-x-auto">
-                      {["present", "half-day", "absent"].map((s) => (
-                         <button
-                           key={s}
-                           onClick={() => markAttendance(worker, s)}
-                           className={`px-4 py-3 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${
-                              status === s 
-                              ? (s === "present" ? "bg-emerald-500 text-white shadow-lg" : s === "half-day" ? "bg-amber-500 text-white shadow-lg" : "bg-rose-500 text-white shadow-lg") 
-                              : "text-slate-500 hover:text-black hover:bg-white"
-                           }`}
-                         >
-                           {s === "present" ? `✓ ${t('present')}` : s === "half-day" ? `½ ${t('halfDay')}` : `✗ ${t('absent')}`}
-                         </button>
-                      ))}
-                        <button 
-                            onClick={() => registerBiometric(worker)}
-                            className={`p-3 rounded-lg transition-all shadow-sm border border-slate-100 ${masterData.workerBiometrics?.[worker] ? 'bg-emerald-50 text-emerald-600' : 'bg-white text-slate-300 hover:text-black'}`}
-                            title="Register Finger"
-                        >
-                            <Fingerprint size={16} />
-                        </button>
+                      {(user?.role?.toLowerCase() === 'admin' || user?.role?.toLowerCase() === 'manager') ? (
+                        <>
+                          {["present", "half-day", "absent"].map((s) => (
+                            <button
+                              key={s}
+                              onClick={() => markAttendance(worker, s)}
+                              className={`px-4 py-3 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${
+                                  status === s 
+                                  ? (s === "present" ? "bg-emerald-500 text-white shadow-lg" : s === "half-day" ? "bg-amber-500 text-white shadow-lg" : "bg-rose-500 text-white shadow-lg") 
+                                  : "text-slate-500 hover:text-black hover:bg-white"
+                              }`}
+                            >
+                              {s === "present" ? `✓ ${t('present')}` : s === "half-day" ? `½ ${t('halfDay')}` : `✗ ${t('absent')}`}
+                            </button>
+                          ))}
+                            <button 
+                                onClick={() => registerBiometric(worker)}
+                                className={`p-3 rounded-lg transition-all shadow-sm border border-slate-100 ${masterData.workerBiometrics?.[worker] ? 'bg-emerald-50 text-emerald-600' : 'bg-white text-slate-300 hover:text-black'}`}
+                                title="Register Finger"
+                            >
+                                <Fingerprint size={16} />
+                            </button>
+                        </>
+                      ) : (
+                        <div className={`px-8 py-3 rounded-lg text-[10px] font-black uppercase tracking-widest border border-slate-200 ${status === 'present' ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'}`}>
+                            Today Status: {status.toUpperCase()}
+                        </div>
+                      )}
+                      
                       <div className="w-px h-8 bg-slate-200 mx-2 self-center hidden md:block"></div>
                       <button 
                           onClick={() => {
+                              const phone = workerDoc?.phone || "8801700000000";
                               const msg = `সালাম ${worker},\nআপনার আজকের হাজিরা [${status.toUpperCase()}] হিসেবে রেকর্ড করা হয়েছে।\nধন্যবাদ - NRZOONE`;
-                              window.open(`https://wa.me/8801700000000?text=${encodeURIComponent(msg)}`, '_blank');
+                              window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
                           }}
                           className="p-3 bg-white text-emerald-500 rounded-lg hover:bg-emerald-500 hover:text-white transition-all shadow-sm border border-slate-100"
                       >

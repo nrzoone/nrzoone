@@ -1803,6 +1803,17 @@ const SettingsPanel = ({
               </div>
               <div className="space-y-2">
                 <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-2 block">
+                  কর্মী আইডি (Worker ID / Login ID) *
+                </label>
+                <input
+                  id="wdoc-id-manual"
+                  className="form-input py-4 font-black text-base bg-emerald-50 border-emerald-100 uppercase"
+                  defaultValue={workerDocModal?.workerId || ""}
+                  placeholder="ID (E.G. 101, W-02)"
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-2 block">
                   निर्धारিত রেট (Rate / Salary)
                 </label>
                 <input
@@ -1924,11 +1935,14 @@ const SettingsPanel = ({
                       .value.trim(),
                     note: document.getElementById("wdoc-note").value.trim(),
                     password: document.getElementById("wdoc-pass").value.trim() || (workerDocModal?.password || "1234"),
+                    workerId: document.getElementById("wdoc-id-manual").value.trim().toUpperCase(),
                     photo: tempWorkerPhoto,
                     nidPhoto: tempNidPhoto,
                   };
                   if (!doc.name)
                     return showNotify("কর্মীর নাম আবশ্যক!", "error");
+                  if (!doc.workerId)
+                    return showNotify("কর্মী আইডি আবশ্যক (Login এর জন্য)!", "error");
 
                   const oldName =
                     workerDocModal && workerDocModal !== "add"

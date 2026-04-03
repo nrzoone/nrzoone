@@ -58,34 +58,57 @@ const MenuPanel = ({ setActivePanel, user, t }) => {
                 </div>
 
                 <div className="space-y-16">
-                    {categories.map((cat, i) => (
-                        <div key={i} className="animate-fade-up" style={{ animationDelay: `${i * 100}ms` }}>
-                            <div className="flex items-center gap-4 mb-4 md:mb-10 opacity-40">
-                                <h3 className="text-[10px] md:text-[12px] font-black uppercase tracking-[0.5em] italic whitespace-nowrap">{cat.title}</h3>
-                                <div className="h-px bg-black/10 flex-1"></div>
-                            </div>
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                                {cat.items.map((item, idx) => (
-                                    <button
-                                        key={idx}
-                                        onClick={() => setActivePanel(item.id)}
-                                        className="premium-card !p-10 group hover:border-black transition-all text-left flex items-center justify-between"
-                                    >
-                                        <div className="flex items-center gap-8">
-                                            <div className={`w-20 h-20 ${item.color} text-white rounded-[2rem] flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform duration-500 border-4 border-white/20`}>
-                                                {item.icon}
+                    {categories.map((cat, i) => {
+                        // Filter items based on user role
+                        const filteredItems = cat.items.filter(item => {
+                            const role = user?.role?.toLowerCase();
+                            const isSuperAdmin = role === 'admin';
+                            const isManager = role === 'manager';
+                            
+                            if (isSuperAdmin) return true; // Admins see everything
+                            
+                            if (isManager) {
+                                // Managers see everything EXCEPT Settings and Security
+                                const managerRestricted = ['Settings', 'Security'];
+                                return !managerRestricted.includes(item.id);
+                            }
+                            
+                            // Workers only see Production related items and Attendance
+                            const workerAllowed = ['Cutting', 'Swing', 'Stone', 'Pata', 'Outside', 'Attendance'];
+                            return workerAllowed.includes(item.id);
+                        });
+
+                        if (filteredItems.length === 0) return null;
+
+                        return (
+                            <div key={i} className="animate-fade-up" style={{ animationDelay: `${i * 100}ms` }}>
+                                <div className="flex items-center gap-4 mb-4 md:mb-10 opacity-40">
+                                    <h3 className="text-[10px] md:text-[12px] font-black uppercase tracking-[0.5em] italic whitespace-nowrap">{cat.title}</h3>
+                                    <div className="h-px bg-black/10 flex-1"></div>
+                                </div>
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                                    {filteredItems.map((item, idx) => (
+                                        <button
+                                            key={idx}
+                                            onClick={() => setActivePanel(item.id)}
+                                            className="premium-card !p-10 group hover:border-black transition-all text-left flex items-center justify-between"
+                                        >
+                                            <div className="flex items-center gap-8">
+                                                <div className={`w-20 h-20 ${item.color} text-white rounded-[2rem] flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform duration-500 border-4 border-white/20`}>
+                                                    {item.icon}
+                                                </div>
+                                                <div>
+                                                    <h4 className="text-2xl font-black italic uppercase tracking-tighter mb-1 text-black">{item.id}</h4>
+                                                    <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest">{item.desc}</p>
+                                                </div>
                                             </div>
-                                            <div>
-                                                <h4 className="text-2xl font-black italic uppercase tracking-tighter mb-1 text-black">{item.id}</h4>
-                                                <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest">{item.desc}</p>
-                                            </div>
-                                        </div>
-                                        <ChevronRight size={24} className="text-slate-200 group-hover:text-black group-hover:translate-x-3 transition-all" />
-                                    </button>
-                                ))}
+                                            <ChevronRight size={24} className="text-slate-200 group-hover:text-black group-hover:translate-x-3 transition-all" />
+                                        </button>
+                                    ))}
+                                </div>
                             </div>
-                        </div>
-                    ))}
+                        );
+                    })}
                 </div>
 
                 <div className="mt-32 pt-16 border-t border-slate-50 flex flex-col md:flex-row justify-between items-center opacity-30 gap-8">

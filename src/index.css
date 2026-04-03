@@ -3,65 +3,53 @@
 @tailwind utilities;
 
 :root {
-  --bg-primary: #f0f2f5;
+  --bg-primary: #fcfcfd;
   --bg-secondary: #ffffff;
-  --text-primary: #121212;
+  --text-primary: #0f172a;
   --text-secondary: #64748b;
-  --accent: #E11D48;
-  --border: #e2e8f0;
-  --shadow: 0 4px 30px rgba(0,0,0,0.02);
-  --neu-shadow: 10px 10px 20px #e2e8f0, -10px -10px 20px #ffffff;
+  --accent: #10b981;
+  --border: #f1f5f9;
+  --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --premium-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.05), 0 8px 10px -6px rgb(0 0 0 / 0.05);
 }
 
 .dark {
-  --bg-primary: #0a0a0a;
-  --bg-secondary: #121212;
-  --text-primary: #ffffff;
+  --bg-primary: #050505;
+  --bg-secondary: #0a0a0a;
+  --text-primary: #f8fafc;
   --text-secondary: #94a3b8;
-  --border: #1e1e1e;
-  --shadow: 0 10px 30px rgba(0,0,0,0.5);
-  --neu-shadow: 10px 10px 20px #050505, -10px -10px 20px #181818;
+  --border: #171717;
+  --shadow: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.5);
+  --premium-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.7);
 }
 
 @layer base {
   body {
-    @apply bg-[var(--bg-primary)] text-[var(--text-primary)] transition-all duration-500 overflow-x-hidden;
+    @apply bg-[var(--bg-primary)] text-[var(--text-primary)] transition-all duration-700 ease-in-out antialiased;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 }
 
 @layer components {
   .section-header {
-    @apply text-4xl md:text-6xl font-black tracking-tighter uppercase italic text-[var(--text-primary)] mb-4 leading-none;
+    @apply text-5xl md:text-7xl font-black tracking-tighter uppercase italic text-[var(--text-primary)] mb-6 leading-none;
+    font-family: 'serif', 'Outfit', sans-serif;
   }
   
   .premium-card {
-    @apply bg-[var(--bg-secondary)] rounded-[40px] p-8 border border-[var(--border)] shadow-[var(--shadow)] transition-all duration-500 overflow-hidden relative;
+    @apply bg-[var(--bg-secondary)] rounded-[2.5rem] p-10 border border-[var(--border)] shadow-[var(--premium-shadow)] transition-all duration-700 overflow-hidden relative;
   }
 
   .premium-input {
-    @apply bg-[var(--bg-secondary)] border-2 border-[var(--border)] rounded-2xl px-6 py-4 font-bold text-[var(--text-primary)] outline-none focus:border-black dark:focus:border-white transition-all text-sm w-full;
+    @apply bg-[var(--bg-primary)] border border-[var(--border)] rounded-2xl px-6 py-5 font-bold text-[var(--text-primary)] outline-none focus:border-black dark:focus:border-white transition-all text-sm w-full shadow-inner;
   }
 
   .neu-button {
-    @apply flex items-center justify-center rounded-2xl border-2 border-[var(--border)] bg-[var(--bg-secondary)] shadow-sm hover:scale-105 active:scale-95 transition-all text-[var(--text-primary)];
+    @apply flex items-center justify-center rounded-2xl border border-[var(--border)] bg-[var(--bg-secondary)] shadow-sm hover:translate-y-[-2px] active:translate-y-[1px] transition-all text-[var(--text-primary)] font-black uppercase text-[10px] tracking-widest;
   }
 
   .pill-nav {
-    @apply flex items-center gap-2 bg-[var(--bg-secondary)] p-2 rounded-full border border-[var(--border)] shadow-xl;
-  }
-
-  .pill-item {
-    @apply px-8 py-3 rounded-full text-[10px] font-black uppercase tracking-widest transition-all;
-    color: var(--text-secondary);
-  }
-
-  .pill-item-active {
-    @apply bg-black text-white dark:bg-white dark:text-black shadow-lg;
-  }
-
-  /* Floating Header & Navigation Toggle UI */
-  .floating-header-group {
-    @apply bg-[var(--bg-secondary)] border border-[var(--border)] rounded-[2.5rem] shadow-[var(--shadow)] backdrop-blur-xl transition-all duration-500 overflow-hidden;
+    @apply flex items-center gap-2 bg-[var(--bg-secondary)] p-2 rounded-full border border-[var(--border)] shadow-2xl;
   }
 
   .pill-tab {
@@ -76,21 +64,36 @@
   .pill-tab-inactive {
     @apply hover:bg-slate-50 dark:hover:bg-zinc-800/50 hover:text-[var(--text-primary)];
   }
+
+  .action-btn-primary {
+    @apply bg-black text-white dark:bg-white dark:text-black px-10 py-5 rounded-full font-black uppercase text-[10px] tracking-[0.2em] shadow-2xl hover:scale-105 active:scale-95 transition-all;
+  }
 }
 
 /* Animations */
 @keyframes fade-up {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(30px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 .animate-fade-up {
-  animation: fade-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: fade-up 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-.custom-scrollbar::-webkit-scrollbar { width: 4px; }
+@keyframes slow-pulse {
+  0%, 100% { opacity: 0.1; }
+  50% { opacity: 0.3; }
+}
+
+.bg-dot-pattern {
+  background-image: radial-gradient(var(--text-secondary) 1px, transparent 1px);
+  background-size: 30px 30px;
+  animation: slow-pulse 10s infinite;
+}
+
+.custom-scrollbar::-webkit-scrollbar { width: 5px; height: 5px; }
 .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-.custom-scrollbar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: var(--text-secondary); border-radius: 10px; opacity: 0.2; }
 .boot-screen {
   background: black;
   color: white;

@@ -71,7 +71,18 @@ const WorkerSummary = ({ masterData, setMasterData, showNotify }) => {
     };
 
     const filteredWorkers = getAllWorkers()
-        .filter(w => (filterDept === 'all' || w.dept === filterDept) && w.name.toLowerCase().includes(searchTerm.toLowerCase()))
+        .filter(w => {
+            const role = user?.role?.toLowerCase();
+            const isWorker = role !== 'admin' && role !== 'manager';
+            
+            // If worker, ONLY show themselves
+            if (isWorker) {
+                return w.name.trim().toLowerCase() === user?.name?.trim().toLowerCase();
+            }
+            
+            // If Admin/Manager, show based on search
+            return (filterDept === 'all' || w.dept === filterDept) && w.name.toLowerCase().includes(searchTerm.toLowerCase());
+        })
         .map(w => ({ ...w, ...getWorkerStats(w.name, w.dept) }));
 
     const handleConfirmPayment = (e) => {
@@ -171,7 +182,12 @@ const WorkerSummary = ({ masterData, setMasterData, showNotify }) => {
                             <div className="text-right">
                                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.5em] mb-2 italic">Identity</p>
                                 <h4 className="text-3xl font-black italic uppercase leading-none text-black underline decoration-black/10 group-hover:decoration-black transition-all truncate max-w-[150px]">{w.name}</h4>
-                                <span className="inline-block px-4 py-1 bg-slate-100 rounded-full text-[8px] font-black uppercase text-slate-500 tracking-widest mt-2">{w.dept}</span>
+                                <div className="flex gap-2 justify-end mt-2">
+                                    {masterData.workerDocs?.find(d => d.name.toUpperCase() === w.name.toUpperCase() && d.dept === w.dept)?.workerId && (
+                                        <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-[7px] font-black rounded-full">ID: {masterData.workerDocs?.find(d => d.name.toUpperCase() === w.name.toUpperCase() && d.dept === w.dept)?.workerId}</span>
+                                    )}
+                                    <span className="inline-block px-4 py-1 bg-slate-100 rounded-full text-[8px] font-black uppercase text-slate-500 tracking-widest">{w.dept}</span>
+                                </div>
                             </div>
                         </div>
 
@@ -208,7 +224,9 @@ const WorkerSummary = ({ masterData, setMasterData, showNotify }) => {
                                       if (doc?.phone) sendWeeklySummary(w.name, { totalQty: w.qty, totalBill: w.bill, paid: w.paid, balance: w.balance }, doc.phone);
                                       else alert("নির্ধারিত ফোন নম্বর নেই!");
                                  }} className="flex-1 bg-emerald-50 text-emerald-600 p-5 rounded-3xl flex items-center justify-center hover:bg-emerald-500 hover:text-white transition-all shadow-sm"><MessageCircle size={20} /></button>
-                                 <button onClick={() => setShowPayModal(w)} className="flex-[2] bg-emerald-500 text-white p-5 rounded-3xl flex items-center justify-center gap-3 font-black uppercase text-[10px] italic hover:bg-black transition-all shadow-xl active:scale-95 border-b-4 border-emerald-700 hover:border-black"><DollarSign size={18} /> দাদন / পেমেন্ট</button>
+                                 { (user?.role?.toLowerCase() === 'admin' || user?.role?.toLowerCase() === 'manager') && (
+                                     <button onClick={() => setShowPayModal(w)} className="flex-[2] bg-emerald-500 text-white p-5 rounded-3xl flex items-center justify-center gap-3 font-black uppercase text-[10px] italic hover:bg-black transition-all shadow-xl active:scale-95 border-b-4 border-emerald-700 hover:border-black"><DollarSign size={18} /> দাদন / পেমেন্ট</button>
+                                 )}
                             </div>
                         </div>
                     </div>
@@ -326,7 +344,7 @@ const WorkerSummary = ({ masterData, setMasterData, showNotify }) => {
                                                 </div>
                                                 <div className="text-right">
                                                     <p className="text-[11px] font-black text-slate-300 uppercase italic mb-1 font-mono">Ledger Credit</p>
-                                                    <p className="text-4xl font-black italic text-emerald-600 tracking-tighter">+ ৳{((Number(log.receivedBorka || 1) + Number(log.receivedHijab || 0)) * (log.rate || 0)).toLocaleString()}</p>
+                                                    <p className="text-4xl font-black italic text-emerald-600 tracking-tighter">+ ৳{((Number(log.receivedBorka || 0) + Number(log.receivedHijab || 0)) * (log.rate || 0)).toLocaleString()}</p>
                                                 </div>
                                             </div>
                                         ))

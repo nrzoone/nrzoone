@@ -90,8 +90,14 @@ const FactoryPanel = ({
 
   const filteredProductions = (masterData.productions || []).filter((p) => {
     if (p.type !== type) return false;
-    if (isWorker && p.worker?.toLowerCase() !== user?.name?.toLowerCase())
-      return false;
+    
+    // STRICT FILTER: Workers ONLY see their own work
+    if (isWorker) {
+        const userNameNormalized = user?.name?.trim().toLowerCase();
+        const workerNameNormalized = p.worker?.trim().toLowerCase();
+        if (userNameNormalized !== workerNameNormalized) return false;
+    }
+
     return (
       (p.worker?.toLowerCase() || '').includes(lotSearch.toLowerCase()) ||
       (p.design?.toLowerCase() || '').includes(lotSearch.toLowerCase()) ||
@@ -615,13 +621,15 @@ const FactoryPanel = ({
           </div>
         </div>
         <div className="flex items-center gap-6 w-full md:w-auto">
-          <button
-            onClick={() => setShowIssueModal(true)}
-            className="px-10 py-5 bg-black text-white rounded-2xl font-black uppercase text-xs tracking-widest shadow-2xl flex items-center gap-3 hover:scale-105 active:scale-95 transition-all italic border-b-[6px] border-zinc-900"
-          >
-            <Plus size={20} strokeWidth={3} />
-            নতুন কাজ (ISSUE)
-          </button>
+          {!isWorker && (
+            <button
+              onClick={() => setShowIssueModal(true)}
+              className="px-10 py-5 bg-black text-white rounded-2xl font-black uppercase text-xs tracking-widest shadow-2xl flex items-center gap-3 hover:scale-105 active:scale-95 transition-all italic border-b-[6px] border-zinc-900"
+            >
+              <Plus size={20} strokeWidth={3} />
+              নতুন কাজ (ISSUE)
+            </button>
+          )}
         </div>
       </div>
       {/* Unified Floating Filter Bar */}
@@ -683,6 +691,9 @@ const FactoryPanel = ({
                     <div className="flex items-center gap-4">
                       <h4 className="text-xl md:text-2xl font-black italic uppercase leading-none tracking-tighter">
                         • {p.pataType ? `পাতা ${p.pataType.toUpperCase()} ` : ""}{p.type.toUpperCase()} # {p.worker}
+                        {masterData.workerDocs?.find(d => d.name.toUpperCase() === p.worker?.toUpperCase() && d.dept === type)?.workerId && (
+                           <span className="ml-3 px-2 py-0.5 bg-emerald-100 text-emerald-700 text-[8px] font-black rounded-full shadow-sm relative -top-1">ID: {masterData.workerDocs?.find(d => d.name.toUpperCase() === p.worker?.toUpperCase() && d.dept === type)?.workerId}</span>
+                        )}
                       </h4>
                       <span className="badge-standard">#{p.lotNo}</span>
                     </div>
@@ -706,12 +717,14 @@ const FactoryPanel = ({
                     </div>
                   </div>
                   <div className="flex gap-3">
-                    <button
-                      onClick={() => setReceiveModal(p)}
-                      className="black-button"
-                    >
-                      {t('received')} (REC)
-                    </button>
+                    {!isWorker && (
+                      <button
+                        onClick={() => setReceiveModal(p)}
+                        className="black-button"
+                      >
+                        {t('received')} (REC)
+                      </button>
+                    )}
                     <button
                       onClick={() => setPrintSlip(p)}
                       className="w-12 h-12 flex items-center justify-center rounded-full bg-slate-50 text-slate-500 hover:bg-black hover:text-white transition-all"
@@ -854,8 +867,11 @@ const FactoryPanel = ({
                       <User size={30} />
                     </div>
                     <div>
-                      <h4 className="text-xl md:text-2xl font-black italic uppercase mb-2">
+                      <h4 className="text-xl md:text-2xl font-black italic uppercase leading-none tracking-tighter flex items-center gap-3">
                         {w}
+                        {masterData.workerDocs?.find(d => d.name.toUpperCase() === w.toUpperCase() && d.dept === type)?.workerId && (
+                           <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-[8px] font-black rounded-full shadow-sm">ID: {masterData.workerDocs?.find(d => d.name.toUpperCase() === w.toUpperCase() && d.dept === type)?.workerId}</span>
+                        )}
                       </h4>
                       <p className="text-xs font-black text-slate-500 uppercase tracking-[0.4em] italic opacity-60">
                         SENIOR {type.toUpperCase()} OPERATIVE
@@ -981,9 +997,14 @@ const FactoryPanel = ({
                         }}
                       >
                         <option value="">কারিগর সিলেক্ট করুন (Select Worker)</option>
-                        {workers.map((w) => (
-                          <option key={w} value={w}>{w}</option>
-                        ))}
+                        {workers.map((w) => {
+                          const doc = masterData.workerDocs?.find(d => d.name.toUpperCase() === w.toUpperCase() && d.dept === type);
+                          return (
+                            <option key={w} value={w}>
+                              {w} {doc?.workerId ? `(ID: ${doc.workerId})` : ""}
+                            </option>
+                          );
+                        })}
                       </select>
                       <ChevronRight size={20} className="absolute right-6 top-1/2 -translate-y-1/2 text-white/50 pointer-events-none" />
                     </div>

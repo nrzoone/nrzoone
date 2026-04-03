@@ -289,13 +289,15 @@ const CuttingPanel = ({
                 {uniqueLots.length} <span className="text-[10px] text-slate-500 ml-1">Lots</span>
             </p>
           </div>
-          <button
-            onClick={() => setShowModal(true)}
-            className="px-10 py-5 bg-black text-white rounded-2xl font-black uppercase text-xs tracking-widest shadow-2xl flex items-center gap-3 hover:scale-105 active:scale-95 transition-all italic border-b-[6px] border-zinc-900"
-          >
-            <Plus size={20} strokeWidth={3} />
-            নতুন কাটিং
-          </button>
+          {(isAdmin || user?.role === 'manager') && (
+            <button
+              onClick={() => setShowModal(true)}
+              className="px-10 py-5 bg-black text-white rounded-2xl font-black uppercase text-xs tracking-widest shadow-2xl flex items-center gap-3 hover:scale-105 active:scale-95 transition-all italic border-b-[6px] border-zinc-900"
+            >
+              <Plus size={20} strokeWidth={3} />
+              নতুন কাটিং
+            </button>
+          )}
         </div>
       </div>
 
@@ -550,13 +552,19 @@ const CuttingPanel = ({
             </div>
 
             <div className="space-y-4">
-              {(masterData.cuttingStock || []).length === 0 ? (
+              {(masterData.cuttingStock || []).filter(s => {
+                  if (isAdmin || user?.role === 'manager') return true;
+                  return s.cutterName?.trim().toLowerCase() === user?.name?.trim().toLowerCase();
+              }).length === 0 ? (
                 <div className="h-64 flex flex-col items-center justify-center bg-white rounded-3xl border-2 border-dashed border-slate-100 opacity-70">
                   <Box size={48} strokeWidth={1} />
                   <p className="text-[10px] font-black uppercase tracking-[0.4em] mt-6">Zero Cut Nodes</p>
                 </div>
               ) : (
-                (masterData.cuttingStock || []).map((s, idx) => (
+                (masterData.cuttingStock || []).filter(s => {
+                    if (isAdmin || user?.role === 'manager') return true;
+                    return s.cutterName?.trim().toLowerCase() === user?.name?.trim().toLowerCase();
+                }).map((s, idx) => (
                   <div
                     key={s.id || idx}
                     className="item-card flex flex-col md:flex-row justify-between items-center gap-8 group"
@@ -732,7 +740,7 @@ const CuttingPanel = ({
                 <div className="lg:col-span-8 flex flex-col bg-slate-50 p-8 rounded-[2rem] border border-slate-100">
                     <div className="flex justify-between items-center mb-6">
                         <label className="text-[10px] font-black uppercase text-black tracking-widest">Size Matrix Distribution</label>
-                        <button onClick={addSize} className="px-4 py-2 bg-black text-white rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-2 hover:scale-105 transition-all"><Plus size={14} /> Add Pattern</button>
+                        <button onClick={handleAddSizeRow} className="px-4 py-2 bg-black text-white rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-2 hover:scale-105 transition-all"><Plus size={14} /> Add Pattern</button>
                     </div>
 
                     <div className="space-y-4 max-h-[40vh] overflow-y-auto pr-2 custom-scrollbar">
@@ -753,7 +761,7 @@ const CuttingPanel = ({
                                     <input type="number" className="bg-transparent w-full font-black text-xl outline-none" placeholder="0" value={s.hijab} onChange={e => handleSizeChange(i, 'hijab', e.target.value)} />
                                 </div>
                                 <div className="col-span-1 flex justify-end">
-                                    <button onClick={() => removeSize(i)} className="p-3 text-slate-500 hover:text-rose-500 transition-colors"><Trash2 size={18} /></button>
+                                    <button onClick={() => handleRemoveSizeRow(i)} className="p-3 text-slate-500 hover:text-rose-500 transition-colors"><Trash2 size={18} /></button>
                                 </div>
                             </div>
                         ))}
@@ -772,10 +780,32 @@ const CuttingPanel = ({
                             </div>
                         </div>
                     </div>
+                    </div>
+                    
+                    <div className="flex flex-col md:flex-row gap-4 pt-8 mt-6">
+                        <button
+                          type="button"
+                          onClick={() => setShowModal(false)}
+                          className="flex-1 h-16 rounded-2xl bg-slate-50 text-slate-500 font-black uppercase text-[10px] italic"
+                        >
+                          বাতিল (Cancel)
+                        </button>
+                        <button
+                          onClick={() => handleAddCutting(true)}
+                          className="flex-1 h-16 rounded-2xl bg-slate-900 text-white font-black uppercase text-[10px] tracking-widest flex items-center justify-center gap-3 transition-all hover:bg-black"
+                        >
+                          <Printer size={18} /> প্রিন্ট ও সেভ
+                        </button>
+                        <button
+                          onClick={() => handleAddCutting(false)}
+                          className="flex-[2] h-16 rounded-2xl bg-emerald-600 text-white font-black uppercase text-sm tracking-widest shadow-2xl flex items-center justify-center gap-3 transition-all hover:scale-[1.02]"
+                        >
+                          পণ্য স্টোকে যোগ করুন (Save Job) <CheckCircle size={20} />
+                        </button>
+                    </div>
                 </div>
             </div>
           </div>
-        </div>
       )}
 
       <div className="flex justify-center pt-20">
