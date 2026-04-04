@@ -201,10 +201,10 @@ const LoginView = ({ onLogin, masterData }) => {
 
             {/* Right Section: Login Card (Soft UI Side) */}
             <div className="w-full md:w-1/2 p-6 md:p-24 flex items-center justify-center relative">
-                 <div className="w-full max-w-lg premium-card !bg-white/80 backdrop-blur-xl animate-fade-up space-y-12">
-                    <div className="space-y-3">
-                        <h3 className="text-5xl md:text-7xl font-black italic text-black tracking-tighter leading-none">Login</h3>
-                        <p className="text-[10px] font-black uppercase text-slate-400 tracking-[0.3em]">Access Authorized Personnel Only</p>
+                 <div className="w-full max-w-lg premium-card !bg-white/80 backdrop-blur-xl animate-fade-up space-y-10">
+                    <div className="space-y-4">
+                        <h3 className="text-5xl md:text-7xl font-black italic text-black tracking-tighter leading-none">Sign In</h3>
+                        <p className="text-[10px] font-bold uppercase text-slate-500 tracking-[0.4em]">Protocol Authorization Required</p>
                     </div>
 
                     <div className="space-y-8">
@@ -239,15 +239,15 @@ const LoginView = ({ onLogin, masterData }) => {
                     <div className="pt-6">
                         <button 
                             onClick={() => onLogin(id, password)}
-                            className="action-btn-primary !w-full !rounded-full !py-8 bg-black text-white hover:scale-[1.02]"
+                            className="action-btn-primary !w-full !rounded-[2rem] bg-black text-white hover:scale-[1.02]"
                         >
-                            <ShieldCheck size={20} className="mr-4" /> AUTHORIZE SIGN IN
+                            <ShieldCheck size={20} /> AUTHORIZE ACCESS
                         </button>
                     </div>
 
-                    <div className="text-center pt-4">
-                        <p className="text-[10px] font-black uppercase text-slate-300 tracking-widest">
-                            Don't have an account? <span className="text-black cursor-pointer hover:underline">Sign Up</span>
+                    <div className="text-center pt-2">
+                        <p className="text-[10px] font-bold uppercase text-slate-400 tracking-widest">
+                            NRZONE Neural Link v2.4
                         </p>
                     </div>
                  </div>
@@ -353,10 +353,13 @@ const Sidebar = ({ activePanel, setActivePanel, user, setUser, isOpen, setIsSide
                     return (
                         <button
                             key={item.id} onClick={() => navigate(item.id)}
-                            className={`w-full flex items-center gap-4 p-4 rounded-xl transition-all group ${active ? "bg-black text-white dark:bg-white dark:text-black shadow-lg" : "text-slate-400 hover:text-black dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/50"}`}
+                            className={`w-full flex items-center gap-4 px-5 py-4 rounded-2xl transition-all group ${active ? "bg-black text-white dark:bg-white dark:text-black shadow-xl" : "text-slate-500 hover:text-black dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/50"}`}
                         >
-                            <Icon size={16} strokeWidth={active ? 2.5 : 2} className="shrink-0" />
-                            <span className={`text-[10px] uppercase tracking-wider ${active ? "font-bold" : "font-semibold opacity-70"}`}>{t(item.id.toLowerCase()) || item.label}</span>
+                            <Icon size={18} strokeWidth={active ? 2.5 : 2} className="shrink-0" />
+                            <div className="flex flex-col items-start leading-tight">
+                                <span className={`text-[11px] uppercase tracking-wider ${active ? "font-bold" : "font-semibold opacity-70"}`}>{t(item.id.toLowerCase()) || item.label}</span>
+                                <span className={`text-[8px] uppercase tracking-[0.2em] font-bold opacity-40 ${active ? "text-white/60 dark:text-black/60" : "text-slate-400"}`}>{item.sub}</span>
+                            </div>
                         </button>
                     );
                 })}
@@ -580,18 +583,18 @@ const AppContent = () => {
                                 </div>
                                 <button 
                                     onClick={() => setActivePanel("Settings")}
-                                    className="w-14 h-14 md:w-20 md:h-20 rounded-[1.5rem] md:rounded-[2.5rem] bg-[var(--bg-secondary)] shadow-[var(--neu-convex)] flex items-center justify-center hover:scale-110 active:scale-95 transition-all text-black hover:bg-black hover:text-white"
+                                    className="w-12 h-12 md:w-16 md:h-16 rounded-2xl bg-[var(--bg-secondary)] shadow-[var(--neu-button)] flex items-center justify-center hover:scale-105 active:scale-95 transition-all text-slate-500 hover:text-black"
                                 >
-                                    <Settings size={22} className="md:w-8 md:h-8" />
+                                    <Settings size={20} className="md:w-6 md:h-6" />
                                 </button>
                                 <button 
                                     onClick={() => {
                                         localStorage.removeItem('nrzone_user');
                                         setUser(null);
                                     }}
-                                    className="w-14 h-14 md:w-20 md:h-20 rounded-[1.5rem] md:rounded-[2.5rem] bg-black shadow-2xl flex items-center justify-center hover:bg-rose-600 active:scale-95 transition-all text-white border-b-8 border-black/20"
+                                    className="w-12 h-12 md:w-16 md:h-16 rounded-2xl bg-black shadow-xl flex items-center justify-center hover:bg-rose-600 active:scale-95 transition-all text-white"
                                 >
-                                    <LogOut size={22} className="md:w-8 md:h-8" />
+                                    <LogOut size={20} className="md:w-6 md:h-6" />
                                 </button>
                             </div>
                         </header>

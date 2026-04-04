@@ -38,23 +38,23 @@ const MenuPanel = ({ setActivePanel, user, t }) => {
     ];
 
     return (
-        <div className="fixed inset-0 z-[300] bg-white/80 backdrop-blur-3xl p-6 md:p-20 overflow-y-auto animate-fade-in font-outfit text-black italic">
-            <div className="max-w-6xl mx-auto">
-                <div className="flex justify-between items-center mb-20">
+        <div className="fixed inset-0 z-[300] bg-[var(--bg-primary)]/95 backdrop-blur-3xl p-6 md:p-20 overflow-y-auto animate-fade-in font-outfit text-black">
+            <div className="max-w-6xl mx-auto pb-32">
+                <div className="flex justify-between items-center mb-16 md:mb-24">
                     <div className="flex items-center gap-6">
-                        <div className="w-16 h-16 bg-black text-white rounded-[2rem] flex items-center justify-center shadow-2xl">
+                        <div className="w-14 h-14 md:w-20 md:h-20 bg-black text-white rounded-3xl md:rounded-[2.5rem] flex items-center justify-center shadow-2xl">
                             <LayoutGrid size={32} />
                         </div>
-                        <div>
-                            <h1 className="text-4xl md:text-6xl font-black italic tracking-tighter uppercase leading-none">CORE HUB</h1>
-                            <p className="text-[10px] md:text-[12px] font-black text-slate-500 uppercase tracking-[0.6em] mt-3 italic">NRZO0NE ENTERPRISE INTERFACE</p>
+                        <div className="space-y-1">
+                            <h1 className="text-4xl md:text-7xl font-black italic tracking-tighter uppercase leading-none">CORE HUB</h1>
+                            <p className="text-[10px] md:text-[12px] font-bold text-slate-500 uppercase tracking-[0.4em] italic">NRZONE ENTERPRISE INTERFACE</p>
                         </div>
                     </div>
                     <button 
                         onClick={() => setActivePanel('Overview')}
-                        className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all shadow-inner border-2 border-white group"
+                        className="w-14 h-14 md:w-20 md:h-20 rounded-full bg-[var(--bg-secondary)] shadow-[var(--neu-button)] flex items-center justify-center hover:bg-black hover:text-white transition-all group border border-[var(--border)]"
                     >
-                        <X size={32} className="group-hover:rotate-90 transition-transform duration-500" />
+                        <X size={28} className="group-hover:rotate-90 transition-transform duration-500 md:w-10 md:h-10" />
                     </button>
                 </div>
 
@@ -83,27 +83,27 @@ const MenuPanel = ({ setActivePanel, user, t }) => {
 
                         return (
                             <div key={i} className="animate-fade-up" style={{ animationDelay: `${i * 100}ms` }}>
-                                <div className="flex items-center gap-4 mb-4 md:mb-10 opacity-40">
-                                    <h3 className="text-[10px] md:text-[12px] font-black uppercase tracking-[0.5em] italic whitespace-nowrap">{cat.title}</h3>
+                                <div className="flex items-center gap-6 mb-8 md:mb-12 opacity-60">
+                                    <h3 className="text-[10px] md:text-[12px] font-bold uppercase tracking-[0.5em] text-slate-500 whitespace-nowrap">{cat.title}</h3>
                                     <div className="h-px bg-black/10 flex-1"></div>
                                 </div>
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10">
                                     {filteredItems.map((item, idx) => (
                                         <button
                                             key={idx}
                                             onClick={() => setActivePanel(item.id)}
-                                            className="premium-card !p-10 group hover:border-black transition-all text-left flex items-center justify-between"
+                                            className="premium-card group hover:scale-[1.02] active:scale-[0.98] transition-all text-left flex items-center justify-between !p-8 md:!p-10"
                                         >
-                                            <div className="flex items-center gap-8">
-                                                <div className={`w-20 h-20 ${item.color} text-white rounded-[2rem] flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform duration-500 border-4 border-white/20`}>
-                                                    {item.icon}
+                                            <div className="flex items-center gap-6 md:gap-8">
+                                                <div className={`w-16 h-16 md:w-20 md:h-20 ${item.color} text-white rounded-3xl md:rounded-[2rem] flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform duration-500 border-4 border-white/10`}>
+                                                    {React.cloneElement(item.icon, { size: 28 })}
                                                 </div>
-                                                <div>
-                                                    <h4 className="text-2xl font-black italic uppercase tracking-tighter mb-1 text-black">{item.id}</h4>
-                                                    <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest">{item.desc}</p>
+                                                <div className="space-y-1">
+                                                    <h4 className="text-2xl md:text-3xl font-black italic uppercase tracking-tighter text-black leading-none">{item.id}</h4>
+                                                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest leading-none">{item.desc}</p>
                                                 </div>
                                             </div>
-                                            <ChevronRight size={24} className="text-slate-200 group-hover:text-black group-hover:translate-x-3 transition-all" />
+                                            <ChevronRight size={20} className="text-slate-300 group-hover:text-black group-hover:translate-x-2 transition-all shrink-0" />
                                         </button>
                                     ))}
                                 </div>
