@@ -27,6 +27,7 @@ const AttendancePanel = ({
   masterData,
   setMasterData,
   showNotify,
+  user,
   setActivePanel,
   t,
 }) => {

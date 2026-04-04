@@ -14,7 +14,7 @@ import WorkerSummary from "../WorkerSummary";
 import WeeklyInvoice from "../WeeklyInvoice";
 import BusinessIntel from "../BusinessIntel";
 
-const ReportsPanel = ({ masterData, user, setActivePanel, t }) => {
+const ReportsPanel = ({ masterData, user, setActivePanel, t, logAction }) => {
   const [activeTab, setActiveTab] = useState(
     user?.role === "admin" ? "intel" : "summary",
   );
@@ -27,7 +27,7 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t }) => {
 
   const filteredProductions = masterData.productions.filter((p) => {
     const matchesUser = isWorker
-      ? p.worker.toLowerCase() === user.name.toLowerCase()
+      ? p.worker?.toLowerCase() === user?.name?.toLowerCase()
       : true;
     const matchesSearch =
       p.worker.toLowerCase().includes(search.toLowerCase()) ||

@@ -3,7 +3,7 @@ import { UserCheck, Activity, Search, Download, TrendingUp, X, FileText, ArrowUp
 import { sendWeeklySummary } from '../utils/whatsappUtils';
 import NRZLogo from "./NRZLogo";
 
-const WorkerSummary = ({ masterData, setMasterData, showNotify }) => {
+const WorkerSummary = ({ masterData, setMasterData, showNotify, user }) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [filterDept, setFilterDept] = useState('all');
     const [selectedWorker, setSelectedWorker] = useState(null);

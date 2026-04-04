@@ -112,7 +112,7 @@ const Overview = ({ masterData, setMasterData, setActivePanel, user, t }) => {
                 return sewingEarnings + pataEarnings + outsideEarnings;
             };
 
-            const totalPayable = isWorker ? calculateWorkerEarnings(user.name) : (masterData?.workerCategories?.sewing || []).reduce((sum, w) => sum + calculateWorkerEarnings(w), 0);
+            const totalPayable = isWorker ? calculateWorkerEarnings(user?.name) : (masterData?.workerCategories?.sewing || []).reduce((sum, w) => sum + calculateWorkerEarnings(w), 0);
 
             const financialIntel = (() => {
                 if (isWorker) return { revenue: 0, productionCosts: 0, materialCosts: 0, totalCosts: 0, netProfit: 0, margin: 0 };
@@ -195,6 +195,46 @@ const Overview = ({ masterData, setMasterData, setActivePanel, user, t }) => {
                      <button className="pill-item dark:text-zinc-500" onClick={()=>setActivePanel('Reports')}>Reports</button>
                      <button className="pill-item dark:text-zinc-500" onClick={()=>setActivePanel('Settings')}>System</button>
                  </div>
+            </div>
+
+            {/* Quick Strategic Actions */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
+                <button 
+                    onClick={() => setActivePanel('Cutting')} 
+                    className="bg-black text-white p-8 rounded-[2.5rem] flex items-center justify-between group hover:scale-[1.02] transition-all shadow-2xl border-4 border-transparent hover:border-white/10"
+                >
+                    <div className="space-y-1">
+                        <h4 className="text-2xl font-black italic uppercase tracking-tighter leading-none">কাজ দেওয়া</h4>
+                        <p className="text-[10px] font-bold uppercase opacity-40 tracking-widest">Issue New Production</p>
+                    </div>
+                    <div className="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all shadow-lg">
+                        <Plus size={28} strokeWidth={3} />
+                    </div>
+                </button>
+                <button 
+                    onClick={() => setActivePanel('Accounts')} 
+                    className="bg-[var(--bg-secondary)] border-2 border-[var(--border)] p-8 rounded-[2.5rem] flex items-center justify-between group hover:scale-[1.02] transition-all shadow-sm"
+                >
+                    <div className="space-y-1">
+                        <h4 className="text-2xl font-black italic uppercase tracking-tighter leading-none text-[var(--text-primary)]">খরচ এন্ট্রি</h4>
+                        <p className="text-[10px] font-bold uppercase text-slate-400 tracking-widest">Register Daily Expense</p>
+                    </div>
+                    <div className="w-14 h-14 bg-rose-50 dark:bg-rose-500/10 text-rose-500 rounded-2xl flex items-center justify-center group-hover:bg-rose-500 group-hover:text-white transition-all shadow-sm">
+                        <TrendingDown size={28} />
+                    </div>
+                </button>
+                <button 
+                    onClick={() => setActivePanel('WorkerSummary')} 
+                    className="bg-[var(--bg-secondary)] border-2 border-[var(--border)] p-8 rounded-[2.5rem] flex items-center justify-between group hover:scale-[1.02] transition-all shadow-sm"
+                >
+                    <div className="space-y-1">
+                        <h4 className="text-2xl font-black italic uppercase tracking-tighter leading-none text-[var(--text-primary)]">হাজিরা ও বেতন</h4>
+                        <p className="text-[10px] font-bold uppercase text-slate-400 tracking-widest">Attendance & Ledger</p>
+                    </div>
+                    <div className="w-14 h-14 bg-emerald-50 dark:bg-emerald-500/10 text-emerald-500 rounded-2xl flex items-center justify-center group-hover:bg-emerald-500 group-hover:text-white transition-all shadow-sm">
+                        <UserCheck size={28} />
+                    </div>
+                </button>
             </div>
 
             {/* Header Section */}
