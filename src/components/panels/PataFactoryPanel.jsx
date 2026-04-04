@@ -247,7 +247,7 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
 
         setMasterData(prev => ({
             ...prev,
-            pataEntries: prev.pataEntries.map(e => e.id === item.id ? {
+            pataEntries: (prev.pataEntries || []).map(e => e.id === item.id ? {
                 ...e,
                 status: 'Received',
                 receivedQty: receivedQty,
@@ -294,7 +294,7 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
 
         setMasterData(prev => ({
             ...prev,
-            pataEntries: prev.pataEntries.map(ent => ent.id === updated.id ? updated : ent)
+            pataEntries: (prev.pataEntries || []).map(ent => ent.id === updated.id ? updated : ent)
         }));
 
         setEditPataModal(null);

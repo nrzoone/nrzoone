@@ -164,23 +164,30 @@ export const useMasterData = () => {
         };
     }, []);
 
-    // Save Logic
+    // Save Logic - Debounced & Defensive
     useEffect(() => {
         if (!db || !masterData || isLoading) return;
 
         const timer = setTimeout(async () => {
             try {
-                const saved = localStorage.getItem('nrzone_data');
-                if (JSON.stringify(masterData) === saved) return;
+                // Defensive: Ensure we don't save empty masterData if by some glitch it becomes null
+                if (!masterData.users || masterData.users.length === 0) {
+                    if (initialData.users && initialData.users.length > 0) {
+                         // Critical error prevention: Do not overwrite with empty data
+                         console.error("MasterData integrity check failed. Aborting cloud sync.");
+                         return;
+                    }
+                }
 
                 setSyncStatus('syncing');
                 await setDoc(doc(db, COLLECTION_NAME, DOC_ID), { content: masterData }, { merge: true });
                 localStorage.setItem('nrzone_data', JSON.stringify(masterData));
                 setSyncStatus('synced');
             } catch (e) {
+                console.error("MasterData sync error:", e);
                 setSyncStatus('error');
             }
-        }, 5000);
+        }, 3000); 
 
         return () => clearTimeout(timer);
     }, [masterData, isLoading]);

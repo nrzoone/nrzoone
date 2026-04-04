@@ -216,29 +216,38 @@ const SettingsPanel = ({
 
   const handleAddListItem = (category, value) => {
     if (!value.trim()) return;
-    setMasterData((prev) => ({
-      ...prev,
-      [category]: [...(prev[category] || []), value.toUpperCase()],
-    }));
+    setMasterData((prev) => {
+        const list = Array.isArray(prev[category]) ? prev[category] : [];
+        return {
+            ...prev,
+            [category]: [...list, value.toUpperCase()],
+        };
+    });
     setShowAddModal(false);
   };
 
   const handleDeleteListItem = (category, index) => {
     if (!confirm("Delete this item?")) return;
-    setMasterData((prev) => ({
-      ...prev,
-      [category]: prev[category].filter((_, i) => i !== index),
-    }));
+    setMasterData((prev) => {
+        const list = Array.isArray(prev[category]) ? prev[category] : [];
+        return {
+            ...prev,
+            [category]: list.filter((_, i) => i !== index),
+        };
+    });
   };
 
   const handleUpdateListItem = (category, index, newValue) => {
     if (!newValue.trim()) return;
-    setMasterData((prev) => ({
-      ...prev,
-      [category]: prev[category].map((item, i) =>
-        i === index ? newValue.toUpperCase() : item,
-      ),
-    }));
+    setMasterData((prev) => {
+        const list = Array.isArray(prev[category]) ? prev[category] : [];
+        return {
+            ...prev,
+            [category]: list.map((item, i) =>
+                i === index ? newValue.toUpperCase() : item,
+            ),
+        };
+    });
     setEditingItem(null);
   };
 
