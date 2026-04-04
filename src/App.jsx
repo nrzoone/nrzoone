@@ -566,7 +566,7 @@ const AppContent = () => {
                                     </h2>
                                     <div className="flex items-center gap-2">
                                         <div className={`w-2 h-2 rounded-full ${isLoading ? 'bg-amber-500 animate-pulse' : 'bg-emerald-500'}`}></div>
-                                        <span className="text-[9px] font-black uppercase tracking-[0.3em] text-slate-400">
+                                        <span className="text-[9px] font-black uppercase tracking-[0.3em] text-slate-600">
                                             {isLoading ? 'Syncing Neural' : 'Link Stable'}
                                         </span>
                                     </div>
@@ -575,7 +575,7 @@ const AppContent = () => {
 
                             <div className="flex items-center gap-4 md:gap-10">
                                 <div className="hidden md:flex flex-col items-end border-r border-black/5 pr-10">
-                                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Operator</p>
+                                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-600">Operator</p>
                                     <p className="text-lg font-black italic uppercase text-black">{user?.name || 'Authorized'}</p>
                                 </div>
                                 <button 
