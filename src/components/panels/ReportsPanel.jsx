@@ -72,7 +72,7 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t, logAction }) => {
   const allActiveJobs = [
     ...(masterData.productions || [])
       .filter((p) => p.status === "Pending")
-      .map((p) => ({ ...p, jobType: "Sewing" })),
+      .map((p) => ({ ...p, jobType: p.type ? p.type.charAt(0).toUpperCase() + p.type.slice(1) : "Sewing" })),
     ...(masterData.pataEntries || [])
       .filter((p) => (p.status || "Pending") === "Pending")
       .map((p) => ({

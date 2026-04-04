@@ -7,6 +7,14 @@ const QRScanner = ({ onScanSuccess, onClose }) => {
     const [scannedItems, setScannedItems] = React.useState([]);
     const [isBulk, setIsBulk] = React.useState(false);
 
+    const isBulkRef = useRef(isBulk);
+    const scannedItemsRef = useRef(scannedItems);
+
+    useEffect(() => {
+        isBulkRef.current = isBulk;
+        scannedItemsRef.current = scannedItems;
+    }, [isBulk, scannedItems]);
+
     useEffect(() => {
         const scanner = new Html5QrcodeScanner(
             "reader",
@@ -20,7 +28,7 @@ const QRScanner = ({ onScanSuccess, onClose }) => {
 
         scanner.render(
             (decodedText) => {
-                if (!isBulk) {
+                if (!isBulkRef.current) {
                     scanner.clear().then(() => {
                         onScanSuccess(decodedText);
                         onClose();
@@ -30,10 +38,9 @@ const QRScanner = ({ onScanSuccess, onClose }) => {
                         onClose();
                     });
                 } else {
-                    if (!scannedItems.includes(decodedText)) {
+                    if (!scannedItemsRef.current.includes(decodedText)) {
                         setScannedItems(prev => [decodedText, ...prev]);
                         onScanSuccess(decodedText); // Notify parent but keep scanning
-                        // Play a quick success beep if needed
                     }
                 }
             },

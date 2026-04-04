@@ -79,6 +79,7 @@ const initialData = {
 
 const COLLECTION_NAME = "nrzone_pro";
 const DOC_ID = "factory_data_v1";
+const LOGS_DOC_ID = "factory_logs_v1";
 
 export const useMasterData = () => {
     const [isLoading, setIsLoading] = useState(true);
@@ -97,6 +98,8 @@ export const useMasterData = () => {
     const [syncStatus, setSyncStatus] = useState('syncing'); 
     const [isOnline, setIsOnline] = useState(window.navigator.onLine);
 
+    const [logs, setLogs] = useState([]);
+
     useEffect(() => {
         const handleOnline = () => setIsOnline(true);
         const handleOffline = () => setIsOnline(false);
@@ -111,17 +114,16 @@ export const useMasterData = () => {
     // Initial Load & Auth Sync
     useEffect(() => {
         let isSubscribed = true;
-
         setSyncStatus('syncing');
 
-        // Safety check: Fallback to local mode if Firebase is blocked or uninitialized
         if (!db) {
-            console.warn("DB not initialized - Cloud sync disabled. (ডাটাবেস পাওয়া যায়নি - লোকাল মোড চালু)");
+            console.warn("DB not initialized - Cloud sync disabled.");
             setIsLoading(false);
             setSyncStatus('error');
             return;
         }
 
+        // Main Data Sync
         const unsub = onSnapshot(doc(db, COLLECTION_NAME, DOC_ID), (snap) => {
             if (!isSubscribed) return;
             try {
@@ -130,6 +132,8 @@ export const useMasterData = () => {
                     if (cloud) {
                         setMasterData(prev => {
                             const merged = { ...initialData, ...cloud };
+                            // Remove auditLogs from main state if it exists (migration)
+                            if (merged.auditLogs) delete merged.auditLogs;
                             if (JSON.stringify(merged) !== JSON.stringify(prev)) {
                                 localStorage.setItem('nrzone_data', JSON.stringify(merged));
                                 return merged;
@@ -148,9 +152,17 @@ export const useMasterData = () => {
             }
         }, (err) => {
             if (!isSubscribed) return;
-            console.warn("Firestore status:", err.message);
             setIsLoading(false);
             setSyncStatus('error');
+        });
+
+        // Logs Sync
+        const unsubLogs = onSnapshot(doc(db, COLLECTION_NAME, LOGS_DOC_ID), (snap) => {
+            if (!isSubscribed) return;
+            if (snap.exists()) {
+                const cloudLogs = snap.data()?.auditLogs || [];
+                setLogs(cloudLogs);
+            }
         });
 
         const failSafe = setTimeout(() => {
@@ -160,28 +172,24 @@ export const useMasterData = () => {
         return () => {
             isSubscribed = false;
             clearTimeout(failSafe);
-            if (typeof unsub === 'function') unsub();
+            unsub();
+            unsubLogs();
         };
     }, []);
 
-    // Save Logic - Debounced & Defensive
+    // Save Logic - Main Data
     useEffect(() => {
         if (!db || !masterData || isLoading) return;
 
         const timer = setTimeout(async () => {
             try {
-                // Defensive: Ensure we don't save empty masterData if by some glitch it becomes null
-                if (!masterData.users || masterData.users.length === 0) {
-                    if (initialData.users && initialData.users.length > 0) {
-                         // Critical error prevention: Do not overwrite with empty data
-                         console.error("MasterData integrity check failed. Aborting cloud sync.");
-                         return;
-                    }
-                }
+                if (!masterData.users || masterData.users.length === 0) return;
 
                 setSyncStatus('syncing');
-                await setDoc(doc(db, COLLECTION_NAME, DOC_ID), { content: masterData }, { merge: true });
-                localStorage.setItem('nrzone_data', JSON.stringify(masterData));
+                // Ensure we don't save logs in the main document
+                const { auditLogs, ...dataToSave } = masterData; 
+                await setDoc(doc(db, COLLECTION_NAME, DOC_ID), { content: dataToSave }, { merge: true });
+                localStorage.setItem('nrzone_data', JSON.stringify(dataToSave));
                 setSyncStatus('synced');
             } catch (e) {
                 console.error("MasterData sync error:", e);
@@ -192,21 +200,39 @@ export const useMasterData = () => {
         return () => clearTimeout(timer);
     }, [masterData, isLoading]);
 
+    // Save Logic - Logs
+    useEffect(() => {
+        if (!db || !logs || logs.length === 0) return;
+        const timer = setTimeout(async () => {
+            try {
+                await setDoc(doc(db, COLLECTION_NAME, LOGS_DOC_ID), { auditLogs: logs.slice(0, 500) }, { merge: true });
+            } catch (e) {
+                console.error("Logs sync error:", e);
+            }
+        }, 5000);
+        return () => clearTimeout(timer);
+    }, [logs]);
+
     const logAction = (user, action, details) => {
-        setMasterData(prev => ({
-            ...prev,
-            auditLogs: [
-                {
-                    timestamp: new Date().toISOString(),
-                    user: user?.name || user?.id || 'System',
-                    role: user?.role || 'Guest',
-                    action,
-                    details
-                },
-                ...(prev.auditLogs || []).slice(0, 999)
-            ]
-        }));
+        const newLog = {
+            timestamp: new Date().toISOString(),
+            user: user?.name || user?.id || 'System',
+            role: user?.role || 'Guest',
+            action,
+            details
+        };
+        setLogs(prev => [newLog, ...prev].slice(0, 499));
     };
 
-    return { masterData, setMasterData, isLoading, syncStatus, logAction };
+    const downloadBackup = () => {
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({ ...masterData, auditLogs: logs }));
+        const downloadAnchorNode = document.createElement('a');
+        downloadAnchorNode.setAttribute("href", dataStr);
+        downloadAnchorNode.setAttribute("download", `nrzone_backup_${new Date().toISOString().split('T')[0]}.json`);
+        document.body.appendChild(downloadAnchorNode);
+        downloadAnchorNode.click();
+        downloadAnchorNode.remove();
+    };
+
+    return { masterData, setMasterData, isLoading, syncStatus, logAction, logs, downloadBackup };
 };

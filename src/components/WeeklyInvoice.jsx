@@ -23,10 +23,18 @@ const WeeklyInvoice = ({ masterData }) => {
     const workers = (masterData.workerCategories?.[selectedDept] || []);
 
     const getWorkerData = (name) => {
+        const parseDate = (dStr) => {
+            if (!dStr) return new Date(0);
+            if (dStr.includes("-")) return new Date(dStr); // ISO
+            const parts = dStr.split("/");
+            if (parts.length === 3) return new Date(`${parts[2]}-${parts[1]}-${parts[0]}`); // DD/MM/YYYY
+            return new Date(dStr);
+        };
+
         const monthlySalary = masterData.workerWages?.[selectedDept]?.[name];
         if (monthlySalary) {
             const records = (masterData.attendance || []).filter(a => {
-                const aDate = new Date(a.date.split('/').reverse().join('-'));
+                const aDate = parseDate(a.date);
                 return a.worker === name && a.department === selectedDept && aDate >= range.saturday && aDate <= range.thursday;
             });
             const presentCount = records.filter(r => r.status === 'present').length;
@@ -36,13 +44,13 @@ const WeeklyInvoice = ({ masterData }) => {
         }
         if (selectedDept === 'pata') {
             const entries = (masterData.pataEntries || []).filter(e => {
-                const eDate = new Date(e.date.split('/').reverse().join('-'));
+                const eDate = parseDate(e.date);
                 return e.worker === name && eDate >= range.saturday && eDate <= range.thursday && e.status === 'Received';
             });
             return { type: 'Production', qty: entries.reduce((a, b) => a + Number(b.pataQty || 0), 0), qtyLabel: 'Pcs', bill: entries.reduce((a, b) => a + Number(b.amount || 0), 0) };
         } else {
             const items = (masterData.productions || []).filter(p => {
-                const pDate = new Date(p.date.split('/').reverse().join('-'));
+                const pDate = parseDate(p.date);
                 return p.worker === name && p.type === selectedDept && p.status === 'Received' && pDate >= range.saturday && pDate <= range.thursday;
             });
             const totalBill = items.reduce((acc, b) => {

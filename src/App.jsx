@@ -53,6 +53,7 @@ import InventoryPanel from "./components/panels/InventoryPanel";
 import ExpensePanel from "./components/panels/ExpensePanel";
 import OutsideWorkPanel from "./components/panels/OutsideWorkPanel";
 import SecurityPanel from "./components/panels/SecurityPanel";
+import DeliveryPanel from "./components/panels/DeliveryPanel";
 import MenuPanel from "./components/panels/MenuPanel";
 import { useMasterData } from "./hooks/useMasterData";
 import { Toast } from "./components/UIComponents";
@@ -179,67 +180,75 @@ const LoginView = ({ onLogin, masterData }) => {
         <div className="min-h-screen flex flex-col md:flex-row bg-[var(--bg-primary)] font-outfit overflow-hidden">
             <div className="absolute inset-0 bg-dot-pattern pointer-events-none opacity-[0.05]"></div>
             
-            {/* Left Section: Branding */}
+            {/* Left Section: Branding (Black Side) */}
             <div className="w-full md:w-1/2 bg-black flex flex-col items-center justify-center p-12 relative min-h-[40vh] md:min-h-screen">
                 <div className="relative z-10 flex flex-col items-center text-center animate-fade-up">
-                    <Logo size="xl" white={true} customUrl={masterData.settings?.logo} />
-                    <div className="mt-12 space-y-4">
-                        <h2 className="text-5xl md:text-7xl font-black italic tracking-tighter text-white uppercase leading-none">
-                            Factory <span className="opacity-30">Management</span>
+                    <div className="scale-150 mb-12">
+                        <Logo size="xl" white={true} customUrl={masterData.settings?.logo} />
+                    </div>
+                    <div className="mt-8 space-y-4">
+                        <h2 className="text-4xl md:text-6xl font-black italic tracking-tighter text-white uppercase leading-none">
+                            NRZOONE <span className="opacity-30">WOMEN'S CLOTHING</span>
                         </h2>
-                        <div className="h-2 w-32 bg-white mx-auto rounded-full"></div>
+                        <p className="text-[10px] font-black tracking-[0.5em] text-white/40 uppercase">FACTORY MANAGEMENT SYSTEM</p>
+                        <div className="h-1.5 w-24 bg-white mx-auto rounded-full mt-8"></div>
                     </div>
                 </div>
-                <p className="absolute bottom-10 left-10 text-[9px] font-black uppercase text-white/20 tracking-[0.5em] hidden md:block">
-                    PRO-GRADE ERP // NRZO0NE 2026
-                </p>
+                <div className="absolute bottom-10 left-10 text-[8px] font-black uppercase text-white/10 tracking-[0.6em] hidden md:block">
+                    PRO-GRADE ERP // DATA SECURE // 2026
+                </div>
             </div>
 
-            {/* Right Section: Login Form */}
-            <div className="w-full md:w-1/2 p-10 md:p-32 flex items-center justify-center relative">
-                 <div className="w-full max-w-md space-y-16 animate-fade-up">
-                    <div className="space-y-4">
-                        <h3 className="text-6xl md:text-8xl font-black italic text-[var(--text-primary)] tracking-tighter leading-none">Sign In</h3>
-                        <p className="text-[10px] font-black uppercase text-slate-400 tracking-[0.4em] italic mb-4">Enterprise Access Protocol</p>
+            {/* Right Section: Login Card (Soft UI Side) */}
+            <div className="w-full md:w-1/2 p-6 md:p-24 flex items-center justify-center relative">
+                 <div className="w-full max-w-lg premium-card !bg-white/80 backdrop-blur-xl animate-fade-up space-y-12">
+                    <div className="space-y-3">
+                        <h3 className="text-5xl md:text-7xl font-black italic text-black tracking-tighter leading-none">Login</h3>
+                        <p className="text-[10px] font-black uppercase text-slate-400 tracking-[0.3em]">Access Authorized Personnel Only</p>
                     </div>
 
-                    <div className="space-y-10">
+                    <div className="space-y-8">
                         <div className="space-y-3">
-                            <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest block ml-2">Identity Hub</label>
+                            <label className="text-[10px] font-black uppercase text-slate-500 tracking-widest block ml-4">Identity Hub (ID)</label>
                             <input 
                                 type="text"
                                 value={id}
                                 onChange={(e) => setId(e.target.value)}
-                                className="premium-input !bg-transparent !border-b-2 !border-t-0 !border-x-0 !rounded-none !px-2 focus:!border-black dark:focus:!border-white"
-                                placeholder="Admin ID or Identity"
+                                className="premium-input text-lg"
+                                placeholder="Admin ID..."
                             />
                         </div>
 
                         <div className="space-y-3">
-                            <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest block ml-2">Secure Pin</label>
+                            <label className="text-[10px] font-black uppercase text-slate-500 tracking-widest block ml-4">Secure Pin (Password)</label>
                             <div className="relative">
                                 <input 
                                     type={showPass ? "text" : "password"}
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    className="premium-input !bg-transparent !border-b-2 !border-t-0 !border-x-0 !rounded-none !px-2 focus:!border-black dark:focus:!border-white"
+                                    className="premium-input text-lg"
                                     placeholder="••••••••"
                                 />
-                                <button onClick={() => setShowPass(!showPass)} className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-300 hover:text-black dark:hover:text-white transition-colors">
-                                    {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
+                                <button onClick={() => setShowPass(!showPass)} className="absolute right-6 top-1/2 -translate-y-1/2 text-slate-300 hover:text-black transition-colors">
+                                    {showPass ? <EyeOff size={24} /> : <Eye size={24} />}
                                 </button>
                             </div>
                         </div>
                     </div>
 
-                    <div className="pt-8 flex flex-col md:flex-row justify-between items-center gap-10">
-                        <div className="text-[9px] font-black uppercase text-slate-300 tracking-[0.3em]">Neural Link Status: <span className="text-emerald-500 animate-pulse">Running</span></div>
+                    <div className="pt-6">
                         <button 
                             onClick={() => onLogin(id, password)}
-                            className="action-btn-primary h-24 w-full md:w-auto md:min-w-[200px]"
+                            className="action-btn-primary !w-full !rounded-full !py-8 bg-black text-white hover:scale-[1.02]"
                         >
-                            Authorize Access
+                            <ShieldCheck size={20} className="mr-4" /> AUTHORIZE SIGN IN
                         </button>
+                    </div>
+
+                    <div className="text-center pt-4">
+                        <p className="text-[10px] font-black uppercase text-slate-300 tracking-widest">
+                            Don't have an account? <span className="text-black cursor-pointer hover:underline">Sign Up</span>
+                        </p>
                     </div>
                  </div>
             </div>
@@ -305,6 +314,7 @@ const MENU_ITEMS = [
     { id: "Accounts", label: "Accounts", icon: DollarSign, sub: "Financial" },
     { id: "WorkerSummary", label: "My Ledger", icon: DollarSign, sub: "Personal" },
     { id: "Reports", label: "Reports", icon: FileText, sub: "Analytics" },
+    { id: "Delivery", label: "Dispatch", icon: Truck, sub: "Outgoing" },
     { id: "Settings", label: "Settings", icon: Settings, sub: "System" },
     { id: "Security", label: "Security", icon: Lock, sub: "Audit Log" },
 ];
@@ -312,7 +322,7 @@ const MENU_ITEMS = [
 const Sidebar = ({ activePanel, setActivePanel, user, setUser, isOpen, setIsSidebarOpen, t, isDarkMode, masterData }) => {
     const navigate = (id) => {
         setActivePanel(id);
-        if (window.innerWidth < 768) setIsSidebarOpen(false);
+        setIsSidebarOpen(false);
     };
 
     return (
@@ -352,7 +362,13 @@ const Sidebar = ({ activePanel, setActivePanel, user, setUser, isOpen, setIsSide
                 })}
             </div>
             <div className="p-10 border-t border-[var(--border)]">
-                <button onClick={() => setUser(null)} className="w-full flex items-center gap-4 p-4 rounded-2xl text-slate-400 hover:text-rose-500 transition-all hover:bg-rose-50/50">
+                <button 
+                    onClick={() => {
+                        setUser(null);
+                        localStorage.removeItem('nrzone_user');
+                    }} 
+                    className="w-full flex items-center gap-4 p-4 rounded-2xl text-slate-400 hover:text-rose-500 transition-all hover:bg-rose-50/50"
+                >
                     <LogOut size={16} /><span className="text-[9px] font-black uppercase tracking-[0.3em] italic">{t('logout') || 'Logout'}</span>
                 </button>
             </div>
@@ -363,10 +379,13 @@ const Sidebar = ({ activePanel, setActivePanel, user, setUser, isOpen, setIsSide
 
 const AppContent = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-    const [language, setLanguage] = useState("BN");
+    const [language, setLanguage] = useState(() => localStorage.getItem('nrzone_lang') || "BN");
     const [isDarkMode, setIsDarkMode] = useState(() => localStorage.getItem('nrzone_theme') === 'dark');
     const t = useTranslation(language);
-    const [user, setUser] = useState(null);
+    const [user, setUser] = useState(() => {
+        const saved = localStorage.getItem('nrzone_user');
+        return saved ? JSON.parse(saved) : null;
+    });
     const [activePanel, setActivePanel] = useState("Overview");
     const [toast, setToast] = useState(null);
     const { masterData, setMasterData, isLoading } = useMasterData();
@@ -382,6 +401,10 @@ const AppContent = () => {
             localStorage.setItem('nrzone_theme', 'light');
         }
     }, [isDarkMode]);
+
+    useEffect(() => {
+        localStorage.setItem('nrzone_lang', language);
+    }, [language]);
 
     const showNotify = (message, type = "success") => {
         playSound(type);
@@ -402,7 +425,7 @@ const AppContent = () => {
                     detail
                 },
                 ...(prev.auditLogs || [])
-            ].slice(0, 300)
+            ].slice(0, 1000)
         }));
     };
 
@@ -439,14 +462,14 @@ const AppContent = () => {
         }
 
         let u = (masterData.users || []).find(x => 
-            (x.id === id.toUpperCase() || (x.id === "NRZO0NE" && id.toUpperCase() === "NRZONE")) && 
-            x.password === pass
+            (x.id === id.trim().toUpperCase() || (x.id === "NRZO0NE" && id.trim().toUpperCase() === "NRZONE")) && 
+            x.password === pass.trim()
         );
 
         if (!u) {
             u = (masterData.workerDocs || []).find(w => 
-                (w.workerId?.toUpperCase() === id.toUpperCase() || w.name.toUpperCase() === id.toUpperCase()) && 
-                w.password === pass
+                (w.workerId?.trim().toUpperCase() === id.trim().toUpperCase() || w.name.trim().toUpperCase() === id.trim().toUpperCase()) && 
+                w.password === pass.trim()
             );
             if (u) {
                 u = { ...u, role: 'worker', id: u.workerId || u.name.toUpperCase() };
@@ -455,6 +478,7 @@ const AppContent = () => {
 
         if (u) { 
             setUser(u); 
+            localStorage.setItem('nrzone_user', JSON.stringify(u));
             showNotify(`স্বাগতম, ${u.name}!`); 
             logAction(u, 'LOGIN', 'User logged in successfully');
         }
@@ -515,63 +539,94 @@ const AppContent = () => {
             {!user ? (
                 <LoginView onLogin={handleLogin} masterData={masterData} />
             ) : (
-                <div className="flex min-h-screen">
+                <div className="flex min-h-screen relative overflow-x-hidden">
+                    {/* Mobile Sidebar Backdrop */}
+                    {isSidebarOpen && (
+                        <div 
+                            className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[140] md:hidden transition-opacity"
+                            onClick={() => setIsSidebarOpen(false)}
+                        />
+                    )}
+                    
                     <Sidebar activePanel={activePanel} setActivePanel={setActivePanel} user={user} setUser={setUser} isOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} t={t} isDarkMode={isDarkMode} masterData={masterData} />
-                    <main className={`flex-1 p-4 md:p-12 transition-all ${isSidebarOpen ? "md:ml-[300px]" : "ml-0"}`}>
-                        <header className="flex flex-col md:flex-row justify-between items-center mb-12 gap-8 no-print">
-                            <div className="flex items-center gap-5 w-full md:w-auto">
-                                <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="w-12 h-12 bg-[var(--bg-secondary)] border border-[var(--border)] rounded-xl shadow-sm flex items-center justify-center hover:bg-slate-50 transition-all"><Menu size={18} /></button>
-                                <div className="space-y-0.5">
-                                    <h2 className="text-3xl font-extrabold tracking-tight text-[var(--text-primary)] leading-none">{t(activePanel.toLowerCase()) || activePanel}</h2>
+                    
+                    <main className={`flex-1 flex flex-col min-w-0 h-screen overflow-hidden relative transition-all duration-500`}>
+                        {/* Header Section - Neumorphic Style */}
+                        <header className="h-24 md:h-32 bg-[var(--bg-primary)] border-b border-[var(--border)] flex items-center justify-between px-6 md:px-16 z-40 relative no-print">
+                            <div className="flex items-center gap-6 md:gap-10">
+                                <button 
+                                    onClick={() => setIsSidebarOpen(true)}
+                                    className="p-5 rounded-[1.5rem] bg-[var(--bg-secondary)] shadow-[var(--neu-convex)] text-black"
+                                >
+                                    <Menu size={24} />
+                                </button>
+                                <div className="space-y-1">
+                                    <h2 className="text-2xl md:text-5xl font-black italic tracking-tighter text-black uppercase leading-none">
+                                        {t?.(activePanel?.toLowerCase()) || activePanel}
+                                    </h2>
                                     <div className="flex items-center gap-2">
-                                        <div className={`w-1 h-1 rounded-full ${isLoading ? 'bg-amber-500 animate-pulse' : 'bg-emerald-500'}`} />
-                                        <span className="text-[7px] font-bold uppercase tracking-widest text-slate-400">{isLoading ? 'Syncing...' : 'System Active'}</span>
+                                        <div className={`w-2 h-2 rounded-full ${isLoading ? 'bg-amber-500 animate-pulse' : 'bg-emerald-500'}`}></div>
+                                        <span className="text-[9px] font-black uppercase tracking-[0.3em] text-slate-400">
+                                            {isLoading ? 'Syncing Neural' : 'Link Stable'}
+                                        </span>
                                     </div>
                                 </div>
                             </div>
-                            <div className="flex items-center gap-4 no-print w-full md:w-auto justify-end">
-                                <div className="flex items-center gap-2 bg-[var(--bg-secondary)] p-1.5 rounded-xl border border-[var(--border)] shadow-sm">
-                                    <button 
-                                        onClick={() => setLanguage(language === 'BN' ? 'EN' : 'BN')} 
-                                        className="w-10 h-10 rounded-lg flex flex-col items-center justify-center hover:bg-slate-50 dark:hover:bg-slate-800 transition-all"
-                                    >
-                                        <Globe size={14} />
-                                        <span className="text-[5px] font-bold mt-0.5">{language}</span>
-                                    </button>
-                                    <div className="w-px h-6 bg-[var(--border)]" />
-                                    <button 
-                                        onClick={() => setIsDarkMode(!isDarkMode)} 
-                                        className="w-10 h-10 rounded-lg flex items-center justify-center transition-all duration-500 hover:bg-slate-50 dark:hover:bg-slate-800"
-                                    >
-                                        {isDarkMode ? <Sun size={15} className="text-amber-500" /> : <Moon size={15} className="text-indigo-600" />}
-                                    </button>
+
+                            <div className="flex items-center gap-4 md:gap-10">
+                                <div className="hidden md:flex flex-col items-end border-r border-black/5 pr-10">
+                                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Operator</p>
+                                    <p className="text-lg font-black italic uppercase text-black">{user?.name || 'Authorized'}</p>
                                 </div>
-                                <div className="flex items-center gap-4 bg-[var(--bg-secondary)] border border-[var(--border)] px-5 py-2.5 rounded-xl shadow-sm">
-                                    <div className="w-8 h-8 bg-black dark:bg-white text-white dark:text-black rounded-lg flex items-center justify-center shadow-lg"><User size={14} /></div>
-                                    <div className="text-left"><p className="text-[10px] font-bold uppercase leading-none">{user.name}</p><p className="text-[6px] font-bold text-slate-400 uppercase tracking-widest mt-1">{user.role}</p></div>
-                                </div>
+                                <button 
+                                    onClick={() => setActivePanel("Settings")}
+                                    className="w-14 h-14 md:w-20 md:h-20 rounded-[1.5rem] md:rounded-[2.5rem] bg-[var(--bg-secondary)] shadow-[var(--neu-convex)] flex items-center justify-center hover:scale-110 active:scale-95 transition-all text-black hover:bg-black hover:text-white"
+                                >
+                                    <Settings size={22} className="md:w-8 md:h-8" />
+                                </button>
+                                <button 
+                                    onClick={() => {
+                                        localStorage.removeItem('nrzone_user');
+                                        setUser(null);
+                                    }}
+                                    className="w-14 h-14 md:w-20 md:h-20 rounded-[1.5rem] md:rounded-[2.5rem] bg-black shadow-2xl flex items-center justify-center hover:bg-rose-600 active:scale-95 transition-all text-white border-b-8 border-black/20"
+                                >
+                                    <LogOut size={22} className="md:w-8 md:h-8" />
+                                </button>
                             </div>
                         </header>
-                        <div className="max-w-7xl mx-auto">
-                            {activePanel === "Menu" && <MenuPanel masterData={masterData} setActivePanel={setActivePanel} user={user} t={t} />}
-                            {activePanel === "Overview" && <Overview masterData={masterData} setMasterData={setMasterData} user={user} setActivePanel={setActivePanel} t={t} logAction={logAction} />}
-                            {activePanel === "Cutting" && <CuttingPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} setActivePanel={setActivePanel} t={t} logAction={logAction} />}
-                            {activePanel === "Swing" && <FactoryPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} setActivePanel={setActivePanel} type="sewing" t={t} logAction={logAction} />}
-                            {activePanel === "Stone" && <FactoryPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} setActivePanel={setActivePanel} type="stone" t={t} logAction={logAction} />}
-                            {activePanel === "Pata" && <PataFactoryPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} setActivePanel={setActivePanel} logAction={logAction} />}
-                            {activePanel === "Outside" && <OutsideWorkPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} setActivePanel={setActivePanel} t={t} logAction={logAction} />}
-                            {activePanel === "Attendance" && <AttendancePanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} setActivePanel={setActivePanel} t={t} logAction={logAction} />}
-                            {activePanel === "Stock" && <InventoryPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} setActivePanel={setActivePanel} t={t} logAction={logAction} />}
-                            {activePanel === "Accounts" && <ExpensePanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} setActivePanel={setActivePanel} t={t} logAction={logAction} />}
-                            {activePanel === "WorkerSummary" && <WorkerSummary masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} setActivePanel={setActivePanel} logAction={logAction} />}
-                            {activePanel === "Reports" && <ReportsPanel masterData={masterData} user={user} setActivePanel={setActivePanel} t={t} logAction={logAction} />}
-                            {activePanel === "Settings" && <SettingsPanel masterData={masterData} setMasterData={setMasterData} user={user} showNotify={showNotify} setActivePanel={setActivePanel} t={t} logAction={logAction} />}
-                            {activePanel === "Security" && <SecurityPanel masterData={masterData} user={user} setActivePanel={setActivePanel} t={t} logAction={logAction} />}
+
+                        <div className="flex-1 overflow-y-auto p-4 md:p-12 bg-dot-pattern custom-scrollbar">
+                            <div className="max-w-[1700px] mx-auto animate-fade-up">
+                                {activePanel === "Menu" && <MenuPanel masterData={masterData} setActivePanel={setActivePanel} user={user} t={t} />}
+                                {activePanel === "Overview" && <Overview masterData={masterData} setMasterData={setMasterData} user={user} setActivePanel={setActivePanel} t={t} logAction={logAction} />}
+                                {activePanel === "Cutting" && <CuttingPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} setActivePanel={setActivePanel} t={t} logAction={logAction} />}
+                                {activePanel === "Swing" && <FactoryPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} setActivePanel={setActivePanel} type="sewing" t={t} logAction={logAction} />}
+                                {activePanel === "Stone" && <FactoryPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} setActivePanel={setActivePanel} type="stone" t={t} logAction={logAction} />}
+                                {activePanel === "Pata" && <PataFactoryPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} setActivePanel={setActivePanel} logAction={logAction} />}
+                                {activePanel === "Outside" && <OutsideWorkPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} setActivePanel={setActivePanel} t={t} logAction={logAction} />}
+                                {activePanel === "Attendance" && <AttendancePanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} setActivePanel={setActivePanel} t={t} logAction={logAction} />}
+                                {activePanel === "Stock" && <InventoryPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} setActivePanel={setActivePanel} t={t} logAction={logAction} />}
+                                {activePanel === "Accounts" && <ExpensePanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} setActivePanel={setActivePanel} t={t} logAction={logAction} />}
+                                {activePanel === "WorkerSummary" && <WorkerSummary masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} setActivePanel={setActivePanel} logAction={logAction} />}
+                                {activePanel === "Reports" && <ReportsPanel masterData={masterData} user={user} setActivePanel={setActivePanel} t={t} logAction={logAction} />}
+                                {activePanel === "Delivery" && <DeliveryPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} setActivePanel={setActivePanel} t={t} logAction={logAction} />}
+                                {activePanel === "Settings" && <SettingsPanel masterData={masterData} setMasterData={setMasterData} user={user} showNotify={showNotify} setActivePanel={setActivePanel} t={t} logAction={logAction} logs={logs} downloadBackup={downloadBackup} />}
+                                {activePanel === "Security" && <SecurityPanel masterData={masterData} user={user} setActivePanel={setActivePanel} t={t} logAction={logAction} />}
+                            </div>
                         </div>
+
+                        {activePanel !== "Menu" && (
+                            <button 
+                                onClick={() => setActivePanel("Menu")} 
+                                className="fixed bottom-12 right-12 w-24 h-24 bg-black text-white rounded-full shadow-3xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all z-[200] border-8 border-white p-2 no-print"
+                            >
+                                <div className="bg-white/10 w-full h-full rounded-full flex items-center justify-center">
+                                    <LayoutGrid size={32} />
+                                </div>
+                            </button>
+                        )}
                     </main>
-                    {activePanel !== "Menu" && (
-                        <button onClick={() => setActivePanel("Menu")} className="fixed bottom-12 right-12 w-20 h-20 bg-black text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all z-[200] border-4 border-white"><LayoutGrid size={32} /></button>
-                    )}
                 </div>
             )}
             {trackingId && <div className="fixed inset-0 z-[1000]"><TrackingView trackId={trackingId} masterData={masterData} onClose={() => setTrackingId(null)} isDarkMode={isDarkMode} /></div>}
@@ -581,7 +636,12 @@ const AppContent = () => {
             {/* Multi-Utility Floating Hub */}
             <div className="fixed bottom-12 left-12 z-[200] flex flex-col gap-6 no-print">
                 <button 
-                   onClick={() => window.open('https://wa.me/8801700000000', '_blank')}
+                   onClick={() => {
+                       const num = masterData.settings?.whatsappNumber || '8801700000000';
+                       const cleaned = num.replace(/\D/g, "");
+                       const intl = cleaned.startsWith("880") ? cleaned : "880" + cleaned.replace(/^0/, "");
+                       window.open(`https://wa.me/${intl}`, '_blank');
+                   }}
                    className="w-16 h-16 bg-emerald-500 text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all border-4 border-white"
                    title="WhatsApp Support"
                 >

@@ -24,6 +24,7 @@ const MenuPanel = ({ setActivePanel, user, t }) => {
             items: [
                 { id: 'Attendance', icon: <UserCheck size={28} />, color: 'bg-cyan-500', desc: 'Daily Attendance' },
                 { id: 'Accounts', icon: <DollarSign size={28} />, color: 'bg-emerald-600', desc: 'Ledger & Dadon' },
+                { id: 'Delivery', icon: <Truck size={28} />, color: 'bg-indigo-600', desc: 'Dispatch & Shipments' },
                 { id: 'Reports', icon: <BarChart2 size={28} />, color: 'bg-violet-600', desc: 'Performance Logs' }
             ]
         },

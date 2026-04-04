@@ -174,10 +174,10 @@ export const getFinishedStock = (masterData, design, color, size) => {
 
     // 3. Deduct Deliveries
     const delivered = (masterData.deliveries || [])
-        .filter(d => d.design === design && d.color === color && d.size === size)
+        .filter(d => d.design === design && (!d.color || d.color === color) && (!d.size || d.size === size))
         .reduce((acc, curr) => ({
-            borka: acc.borka + Number(curr.borka || 0),
-            hijab: acc.hijab + Number(curr.hijab || 0)
+            borka: acc.borka + Number(curr.qtyBorka || 0),
+            hijab: acc.hijab + Number(curr.qtyHijab || 0)
         }), { borka: 0, hijab: 0 });
 
     return {

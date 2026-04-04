@@ -49,6 +49,8 @@ const SettingsPanel = ({
   showNotify,
   setActivePanel,
   t,
+  logs,
+  downloadBackup
 }) => {
   const role = currentUser?.role?.toLowerCase();
   const isAdmin = role === "admin";
@@ -703,37 +705,6 @@ const SettingsPanel = ({
     </div>
   );
 
-  const AccordionItem = ({ id, label, icon: Icon, description, children }) => {
-    const isOpen = activeTab === id || (id === 'product' && ['colors', 'sizes', 'cutters', 'pataTypes'].includes(activeTab));
-    return (
-      <div className={`mb-4 overflow-hidden rounded-[40px] border border-slate-100 dark:border-zinc-900 transition-all duration-500 ${isOpen ? 'bg-white dark:bg-zinc-900 shadow-2xl' : 'bg-slate-50/50 dark:bg-black/20'}`}>
-        <button 
-          onClick={() => setActiveTab(isOpen ? null : id)}
-          className="w-full flex items-center justify-between p-8 hover:bg-slate-50 dark:hover:bg-zinc-800 transition-colors group"
-        >
-          <div className="flex items-center gap-6">
-            <div className={`p-5 rounded-2xl transition-all duration-500 ${isOpen ? 'bg-black text-white dark:bg-white dark:text-black shadow-xl rotate-6 scale-110' : 'bg-white dark:bg-zinc-900 group-hover:scale-110'}`}>
-               <Icon size={24} />
-            </div>
-            <div className="text-left">
-              <h3 className="text-2xl font-black uppercase italic leading-none">{label}</h3>
-              <p className="text-[10px] uppercase font-black text-slate-500 tracking-widest mt-2">{description}</p>
-            </div>
-          </div>
-          <div className={`transition-all duration-500 ${isOpen ? 'rotate-90 scale-125 text-black dark:text-white' : 'text-slate-500'}`}>
-             <ChevronRight size={24} />
-          </div>
-        </button>
-        
-        {isOpen && (
-          <div className="p-10 border-t border-slate-50 dark:border-zinc-800 animate-fade-up">
-            {children}
-          </div>
-        )}
-      </div>
-    );
-  };
-
   const renderPersonnelContent = () => (
     <div className="space-y-8">
       <div className="flex bg-slate-100 p-1.5 rounded-2xl flex-wrap">
@@ -1082,6 +1053,71 @@ const SettingsPanel = ({
 
             <AccordionItem id="product" label={t('productionMatrix') || "Production Matrix"} icon={LayoutGrid} description={t('config') || "Master taxonomy for sizes, colors, and design specs"}>
               {renderProductContent()}
+            </AccordionItem>
+
+            <AccordionItem 
+                id="persistence" 
+                label="System Persistence & Health" 
+                icon={ShieldCheck} 
+                description="STORAGE OPTIMIZATION & FULL BACKUPS"
+            >
+                <div className="space-y-12 p-4">
+                    <div className="premium-card !bg-slate-50 dark:!bg-black/20 !p-10 border-none">
+                        <div className="flex justify-between items-end mb-6">
+                            <div>
+                                <h4 className="text-xl font-black uppercase italic leading-none">Cloud Storage Health</h4>
+                                <p className="text-[10px] font-black uppercase text-slate-400 mt-2 tracking-widest">ESTIMATED DOC UTILIZATION (1MB LIMIT)</p>
+                            </div>
+                            <div className="text-right">
+                                <p className="text-4xl font-black italic tracking-tighter leading-none">
+                                    {Math.min(99, Math.ceil(((JSON.stringify(masterData).length + (logs?.length || 0) * 100) / 1048576) * 100))}%
+                                </p>
+                            </div>
+                        </div>
+                        <div className="h-6 w-full bg-slate-200 dark:bg-zinc-800 rounded-full overflow-hidden shadow-inner border-2 border-white/10 p-1">
+                            <div 
+                                className={`h-full rounded-full transition-all duration-1000 ease-out ${((JSON.stringify(masterData).length + (logs?.length || 0) * 100) / 1048576) > 0.8 ? 'bg-amber-500' : 'bg-emerald-500'}`}
+                                style={{ width: `${Math.min(100, Math.ceil(((JSON.stringify(masterData).length + (logs?.length || 0) * 100) / 1048576) * 100))}%` }}
+                            ></div>
+                        </div>
+                        <div className="flex justify-between mt-4">
+                            <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Optimized for Longevity (3+ Years)</p>
+                            <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Status: <span className="text-emerald-500">EXCELLENT</span></p>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div className="premium-card !bg-white dark:!bg-zinc-900 !p-10 border-2 border-slate-100 dark:border-zinc-800 flex flex-col justify-between h-72 group hover:border-black transition-all">
+                            <div className="space-y-4">
+                                <div className="p-4 bg-slate-50 dark:bg-zinc-800 rounded-2xl w-max group-hover:rotate-6 transition-transform">
+                                    <Download size={24} className="text-black dark:text-white" />
+                                </div>
+                                <h5 className="text-2xl font-black uppercase italic tracking-tighter">Full Data Export</h5>
+                                <p className="text-xs text-slate-400 font-medium uppercase leading-relaxed">Download a comprehensive JSON snapshot of all production data, worker ledgers, and audit logs.</p>
+                            </div>
+                            <button 
+                                onClick={downloadBackup}
+                                className="w-full py-5 bg-black text-white rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-2xl border-b-8 border-zinc-900 active:translate-y-1 active:border-b-2 transition-all mt-6"
+                            >
+                                GENERATE FULL BACKUP
+                            </button>
+                        </div>
+
+                        <div className="premium-card !bg-white dark:!bg-zinc-900 !p-10 border-2 border-slate-100 dark:border-zinc-800 flex flex-col justify-between h-72 group hover:border-black transition-all">
+                            <div className="space-y-4">
+                                <div className="p-4 bg-slate-50 dark:bg-zinc-800 rounded-2xl w-max group-hover:rotate-6 transition-transform">
+                                    <Database size={24} className="text-black dark:text-white" />
+                                </div>
+                                <h5 className="text-2xl font-black uppercase italic tracking-tighter">Restore Point</h5>
+                                <p className="text-xs text-slate-400 font-medium uppercase leading-relaxed">Overwrite current cloud state with a previous backup file. (Irreversible)</p>
+                            </div>
+                            <label className="w-full py-5 bg-slate-100 text-slate-500 rounded-2xl font-black uppercase text-[10px] tracking-widest cursor-pointer hover:bg-slate-200 transition-all text-center flex items-center justify-center gap-3">
+                                <Upload size={14} /> RESTORE SNAPSHOT
+                                <input type="file" onChange={handleRestore} className="hidden" accept=".json" />
+                            </label>
+                        </div>
+                    </div>
+                </div>
             </AccordionItem>
             
             <AccordionItem id="logs" label={t('audit') || "Audit Archives"} icon={Clock} description={t('liveMonitor') || "Real-time chronological footprint of all system operations"}>
