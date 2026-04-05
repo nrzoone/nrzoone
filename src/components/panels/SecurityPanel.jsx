@@ -1,7 +1,7 @@
 import React from 'react';
 import { Shield, Clock, User, Activity, AlertCircle, ArrowLeft, Search } from 'lucide-react';
 
-const SecurityPanel = ({ masterData, setActivePanel, t, logs = [] }) => {
+const SecurityPanel = ({ masterData, setActivePanel, t, logs = [], syncStatus }) => {
     return (
         <div className="space-y-12 pb-24 animate-fade-up px-4 italic font-outfit text-black">
             <div className="flex justify-between items-center mb-10">
@@ -17,8 +17,16 @@ const SecurityPanel = ({ masterData, setActivePanel, t, logs = [] }) => {
                         <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.4em] mt-2 italic">Operation Audit Trail Hub</p>
                     </div>
                 </div>
-                <div className="bg-black text-white px-8 py-3 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-3">
-                    <Shield size={16} /> Total Logs: {logs.length}
+                <div className="flex items-center gap-3">
+                    <div className="bg-white dark:bg-zinc-800 px-6 py-3 rounded-2xl flex items-center gap-3 shadow-xl border border-slate-50 dark:border-zinc-800">
+                        <div className={`w-2 h-2 rounded-full ${syncStatus === 'syncing' ? 'bg-amber-500 animate-pulse' : syncStatus === 'error' ? 'bg-rose-500' : 'bg-emerald-500'}`}></div>
+                        <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 italic">
+                            {syncStatus === 'syncing' ? 'Syncing' : syncStatus === 'error' ? 'Linked Fault' : 'Neural Link Stable'}
+                        </p>
+                    </div>
+                    <div className="bg-black text-white px-8 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest flex items-center gap-3 shadow-2xl">
+                        <Shield size={16} /> Total Logs: {logs.length}
+                    </div>
                 </div>
             </div>
 

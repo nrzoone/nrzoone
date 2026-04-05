@@ -61,28 +61,28 @@ const Overview = ({ masterData, stats: propStats, setActivePanel, t }) => {
     const kpiData = [
         { 
             label: "Total Personnel", 
-            value: stats.totalWorkers || 0, 
+            value: (masterData.workerDocs || []).length, 
             trend: "+4.2%", 
             icon: Users,
             color: "emerald"
         },
         { 
             label: "Production Load", 
-            value: stats.totalProduction || 0, 
+            value: (masterData.productions || []).length + (masterData.pataEntries || []).length, 
             trend: "+12.1%", 
             icon: Activity,
             color: "blue"
         },
         { 
             label: "Financial Yield", 
-            value: `৳${(stats.totalFinancials || 0).toLocaleString()}`, 
+            value: `৳${((masterData.expenses || []).reduce((acc, e) => acc + Number(e.amount || 0), 0) / 1000).toFixed(1)}k`, 
             trend: "+8.4%", 
             icon: DollarSign,
             color: "amber"
         },
         { 
             label: "Pending Units", 
-            value: stats.pendingUnits || 0, 
+            value: (masterData.productions || []).filter(p => p.status === 'Pending').length, 
             trend: "-2.1%", 
             icon: Package,
             color: "rose"
@@ -175,12 +175,12 @@ const Overview = ({ masterData, stats: propStats, setActivePanel, t }) => {
                             </div>
                             <div className="space-y-4">
                                 <div className="flex justify-between items-end border-b border-white/5 pb-2">
-                                    <p className="text-[9px] font-bold uppercase tracking-widest opacity-40">Labor Efficiency</p>
-                                    <p className="text-lg font-black italic tracking-tighter">94.2%</p>
+                                    <p className="text-[9px] font-bold uppercase tracking-widest opacity-40">System Architecture</p>
+                                    <p className="text-lg font-black italic tracking-tighter">Enterprise V4.5</p>
                                 </div>
                                 <div className="flex justify-between items-end border-b border-white/5 pb-2">
-                                    <p className="text-[9px] font-bold uppercase tracking-widest opacity-40">Node Latency</p>
-                                    <p className="text-lg font-black italic tracking-tighter">12ms</p>
+                                    <p className="text-[9px] font-bold uppercase tracking-widest opacity-40">Security Matrix</p>
+                                    <p className="text-lg font-black italic tracking-tighter">Encrypted</p>
                                 </div>
                             </div>
                             <button className="w-full py-4 bg-white text-black rounded-2xl font-bold uppercase text-[10px] tracking-widest hover:scale-105 transition-all shadow-xl italic">

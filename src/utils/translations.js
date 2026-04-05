@@ -162,7 +162,14 @@ export const translations = {
         active: "Active",
         history: "History",
         payments: "Payments",
-        ledger: "Ledger"
+        ledger: "Ledger",
+        nodeSyncStatus: "Neural Node Status",
+        primaryCloudOnline: "Cloud Link Active",
+        syncing: "Neural Link Syncing...",
+        fault: "Operational Fault",
+        dbLatency: "Database Latency",
+        systemCapacity: "Neural Capacity",
+        storageAllocated: "Unlimited Cloud Encrypted"
     },
     BN: {
         mainMenu: "প্রধান মেনু",
@@ -328,7 +335,14 @@ export const translations = {
         active: "চলমান",
         history: "পুরাতন",
         payments: "পেমেন্ট",
-        ledger: "লেজার"
+        ledger: "লেজার",
+        nodeSyncStatus: "সিস্টেম সিঙ্ক স্ট্যাটাস",
+        primaryCloudOnline: "ক্লাউড কানেকশন সক্রিয়",
+        syncing: "ডাটা সিঙ্ক হচ্ছে...",
+        fault: "সিস্টেম ত্রুটি ধরা পড়েছে",
+        dbLatency: "ডাটাবেস ল্যাটেন্সি",
+        systemCapacity: "সিস্টেম ক্যাপাসিটি",
+        storageAllocated: "আনলিমিটেড ক্লাউড স্টোরেজ"
     }
 };
 

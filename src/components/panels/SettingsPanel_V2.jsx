@@ -1138,8 +1138,12 @@ const SettingsPanel = ({
                 <div>
                    <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">{t("nodeSyncStatus") || "Node Sync Status"}</p>
                    <div className="flex items-center gap-2">
-                      <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></div>
-                      <p className="text-xs font-black uppercase italic">{t("primaryCloudOnline") || "Primary Cloud Online"}</p>
+                      <div className={`w-2.5 h-2.5 rounded-full ${syncStatus === 'syncing' ? 'bg-amber-500 animate-pulse' : syncStatus === 'error' ? 'bg-rose-500' : 'bg-emerald-500'}`}></div>
+                      <p className="text-xs font-black uppercase italic">
+                        {syncStatus === 'syncing' ? (t("syncing") || "Neural Link Syncing...") : 
+                         syncStatus === 'error' ? (t("fault") || "Link Fault Detected") : 
+                         (t("primaryCloudOnline") || "Primary Cloud Online")}
+                      </p>
                    </div>
                 </div>
                 <div>
@@ -1149,9 +1153,11 @@ const SettingsPanel = ({
                 <div className="pt-6 border-t border-slate-50 dark:border-zinc-800">
                    <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-3">{t("systemCapacity") || "System Capacity"}</p>
                    <div className="w-full h-1 bg-slate-50 dark:bg-black/50 rounded-full overflow-hidden">
-                      <div className="w-[84%] h-full bg-black dark:bg-white"></div>
+                      <div className="w-[100%] h-full bg-black dark:bg-white"></div>
                    </div>
-                   <p className="text-[10px] font-black uppercase mt-3 italic text-right opacity-30">{t("storageAllocated") || "8.4GB / 10GB Allocated"}</p>
+                   <p className="text-[10px] font-black uppercase mt-3 italic text-right opacity-30">
+                    {t("storageAllocated") || "Unlimited / Cloud Encrypted"}
+                   </p>
                 </div>
               </div>
             </div>

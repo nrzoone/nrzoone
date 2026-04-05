@@ -14,10 +14,10 @@
   --radius-full: 9999px;
   
   /* Refined Modern Shadows */
-  --shadow-premium: 0 20px 50px -12px rgba(0, 0, 0, 0.08);
-  --neu-convex: 12px 12px 24px #e2e8f0, -12px -12px 24px #ffffff;
-  --neu-concave: inset 4px 4px 8px #cbd5e1, inset -4px -4px 8px #ffffff;
-  --neu-button: 6px 6px 12px #e2e8f0, -6px -6px 12px #ffffff;
+  --shadow-premium: 0 30px 60px -15px rgba(0, 0, 0, 0.1);
+  --neu-convex: 16px 16px 32px #e2e8f0, -16px -16px 32px #ffffff;
+  --neu-concave: inset 6px 6px 12px #cbd5e1, inset -6px -6px 12px #ffffff;
+  --neu-button: 8px 8px 16px #e2e8f0, -8px -8px 16px #ffffff;
 }
 
 .dark {

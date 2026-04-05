@@ -156,7 +156,7 @@ const CuttingPanel = ({
     const finalColor = entryData.color || "N/A";
     const finalCutter = entryData.cutterName || "N/A";
 
-    if (user?.role === "manager") {
+    if (user?.role?.toLowerCase() === "manager") {
       if (
         !entryData.design ||
         !entryData.color ||

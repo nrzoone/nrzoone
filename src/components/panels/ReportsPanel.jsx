@@ -16,14 +16,15 @@ import BusinessIntel from "../BusinessIntel";
 
 const ReportsPanel = ({ masterData, user, setActivePanel, t, logAction }) => {
   const [activeTab, setActiveTab] = useState(
-    user?.role === "admin" ? "intel" : "summary",
+    user?.role?.toLowerCase() === "admin" ? "intel" : "summary",
   );
   const [transactionTab, setTransactionTab] = useState("productions");
   const [selectedJobIds, setSelectedJobIds] = useState([]);
   const [isBatchPrinting, setIsBatchPrinting] = useState(false);
   const [search, setSearch] = useState("");
-  const isWorker = user?.role === "worker";
-  const isAdmin = user?.role === "admin";
+  const role = user?.role?.toLowerCase();
+  const isWorker = role === "worker";
+  const isAdmin = role === "admin";
 
   const filteredProductions = masterData.productions.filter((p) => {
     const matchesUser = isWorker
