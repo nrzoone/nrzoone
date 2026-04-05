@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Printer, Calendar, Search, CreditCard, FileText, ChevronRight, ArrowLeft } from 'lucide-react';
 import NRZLogo from "./NRZLogo";
 
-const WeeklyInvoice = ({ masterData }) => {
+const WeeklyInvoice = ({ masterData, user, logAction, showNotify, setActivePanel }) => {
     const [selectedDept, setSelectedDept] = useState('sewing');
     const [showPreview, setShowPreview] = useState(false);
 
@@ -121,7 +121,7 @@ const WeeklyInvoice = ({ masterData }) => {
             <div className="flex flex-col md:flex-row justify-between items-center gap-8">
                 <div className="flex items-center gap-6 md:gap-10">
                     <button
-                        onClick={() => window.dispatchEvent(new CustomEvent('setActivePanel', { detail: 'Overview' }))}
+                        onClick={() => setActivePanel('Overview')}
                         className="p-4 md:p-6 bg-white text-black rounded-[2rem] border-4 border-slate-50 shadow-2xl hover:bg-black hover:text-white transition-all group active:scale-95"
                     >
                         <ArrowLeft size={24} strokeWidth={3} className="group-hover:-translate-x-2 transition-transform" />

@@ -3,7 +3,7 @@ import { UserCheck, Activity, Search, Download, TrendingUp, X, FileText, ArrowUp
 import { sendWeeklySummary } from '../utils/whatsappUtils';
 import NRZLogo from "./NRZLogo";
 
-const WorkerSummary = ({ masterData, setMasterData, showNotify, user }) => {
+const WorkerSummary = ({ masterData, setMasterData, showNotify, user, logAction, setActivePanel }) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [filterDept, setFilterDept] = useState('all');
     const [selectedWorker, setSelectedWorker] = useState(null);
@@ -118,6 +118,7 @@ const WorkerSummary = ({ masterData, setMasterData, showNotify, user }) => {
             expenses: [newExpense, ...(prev.expenses || [])]
         }));
 
+        logAction(user, 'WORKER_PAYMENT', `Paid ${showPayModal.name} ৳${amount} (${type}) for ${showPayModal.dept} Unit`);
         setShowPayModal(null);
         showNotify(`${showPayModal.name}-কে ৳${amount} (${type}) প্রদান করা হয়েছে!`);
     };

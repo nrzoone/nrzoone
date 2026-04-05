@@ -53,7 +53,7 @@ import InventoryPanel from "./components/panels/InventoryPanel";
 import ExpensePanel from "./components/panels/ExpensePanel";
 import OutsideWorkPanel from "./components/panels/OutsideWorkPanel";
 import SecurityPanel from "./components/panels/SecurityPanel";
-import DeliveryPanel from "./components/panels/DeliveryPanel";
+
 import MenuPanel from "./components/panels/MenuPanel";
 import { useMasterData } from "./hooks/useMasterData";
 import { Toast } from "./components/UIComponents";
@@ -314,7 +314,7 @@ const MENU_ITEMS = [
     { id: "Accounts", label: "Accounts", icon: DollarSign, sub: "Financial" },
     { id: "WorkerSummary", label: "My Ledger", icon: DollarSign, sub: "Personal" },
     { id: "Reports", label: "Reports", icon: FileText, sub: "Analytics" },
-    { id: "Delivery", label: "Dispatch", icon: Truck, sub: "Outgoing" },
+
     { id: "Settings", label: "Settings", icon: Settings, sub: "System" },
     { id: "Security", label: "Security", icon: Lock, sub: "Audit Log" },
 ];
@@ -596,7 +596,7 @@ const AppContent = () => {
                                 {activePanel === "Accounts" && <ExpensePanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} setActivePanel={setActivePanel} t={t} logAction={logAction} />}
                                 {activePanel === "WorkerSummary" && <WorkerSummary masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} setActivePanel={setActivePanel} logAction={logAction} />}
                                 {activePanel === "Reports" && <ReportsPanel masterData={masterData} user={user} setActivePanel={setActivePanel} t={t} logAction={logAction} />}
-                                {activePanel === "Delivery" && <DeliveryPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} setActivePanel={setActivePanel} t={t} logAction={logAction} />}
+
                                 {activePanel === "Settings" && <SettingsPanel masterData={masterData} setMasterData={setMasterData} user={user} showNotify={showNotify} setActivePanel={setActivePanel} t={t} logAction={logAction} logs={logs} downloadBackup={downloadBackup} syncStatus={syncStatus} />}
                                 {activePanel === "Security" && <SecurityPanel masterData={masterData} user={user} setActivePanel={setActivePanel} t={t} logAction={logAction} logs={logs} syncStatus={syncStatus} />}
                             </div>

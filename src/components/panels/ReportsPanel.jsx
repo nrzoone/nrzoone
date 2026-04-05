@@ -19,8 +19,6 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t, logAction }) => {
     user?.role?.toLowerCase() === "admin" ? "intel" : "summary",
   );
   const [transactionTab, setTransactionTab] = useState("productions");
-  const [selectedJobIds, setSelectedJobIds] = useState([]);
-  const [isBatchPrinting, setIsBatchPrinting] = useState(false);
   const [search, setSearch] = useState("");
   const role = user?.role?.toLowerCase();
   const isWorker = role === "worker";
@@ -69,138 +67,9 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t, logAction }) => {
 
   const [isPrinting, setIsPrinting] = useState(false);
 
-  // Collect all active/pending work for the Global Dispatch Hub
-  const allActiveJobs = [
-    ...(masterData.productions || [])
-      .filter((p) => p.status === "Pending")
-      .map((p) => ({ ...p, jobType: p.type ? p.type.charAt(0).toUpperCase() + p.type.slice(1) : "Sewing" })),
-    ...(masterData.pataEntries || [])
-      .filter((p) => (p.status || "Pending") === "Pending")
-      .map((p) => ({
-        ...p,
-        jobType: "Pata",
-        design: p.design || "Pata Work",
-        worker: p.worker || "Worker",
-      })),
-    ...(masterData.outsideWorkEntries || [])
-      .filter((o) => o.status === "Pending")
-      .map((o) => ({
-        ...o,
-        jobType: "Outside",
-        worker: o.worker || "Outsource",
-      })),
-  ].sort((a, b) => b.id - a.id);
 
-  if (isBatchPrinting) {
-    const jobsToPrint = allActiveJobs.filter((j) =>
-      selectedJobIds.includes(j.id),
-    );
-    return (
-      <div className="min-h-screen bg-white text-black p-4 md:p-10 italic font-outfit">
-        <style>{`
-                    @media print { 
-                        .no-print { display: none !important; } 
-                        body { background: white !important; margin: 0; padding: 0; }
-                        .grid-slip-container { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 0; height: 297mm; width: 210mm; page-break-after: always; }
-                        .grid-slip { border: 1px solid #eee; padding: 20px; box-sizing: border-box; height: 148.5mm; width: 105mm; overflow: hidden; display: flex; flex-col: column; justify-content: space-between; }
-                        @page { size: A4 portrait; margin: 0; }
-                    }
-                `}</style>
-        <div className="no-print flex justify-between items-center mb-10 bg-slate-50 p-6 rounded-[2rem] border-2 border-slate-100 italic">
-          <button
-            onClick={() => setIsBatchPrinting(false)}
-            className="px-8 py-4 bg-white text-black rounded-full font-black uppercase text-[10px] tracking-widest border border-slate-200"
-          >
-            ← Back
-          </button>
-          <p className="text-[10px] uppercase font-black text-slate-500">
-            Total: {jobsToPrint.length} Slips (Batch Grid Mode)
-          </p>
-          <button
-            onClick={() => window.print()}
-            className="px-12 py-4 bg-black text-white rounded-full font-black uppercase text-[10px] tracking-widest shadow-2xl"
-          >
-            Confirm Print
-          </button>
-        </div>
-        <div className="mx-auto w-[210mm]">
-          {Array.from({ length: Math.ceil(jobsToPrint.length / 4) }).map(
-            (_, pageIdx) => (
-              <div key={pageIdx} className="grid-slip-container">
-                {jobsToPrint
-                  .slice(pageIdx * 4, pageIdx * 4 + 4)
-                  .map((job, idx) => (
-                    <div
-                      key={idx}
-                      className="grid-slip relative border-r border-b"
-                    >
-                      <div className="absolute top-4 right-4 text-[10px] font-black uppercase text-slate-500">
-                        {job.jobType}
-                      </div>
-                      <div className="flex items-center gap-4 border-b border-black/5 pb-4 mb-4">
-                        <div className="w-16 h-16 bg-black text-white rounded-2xl flex items-center justify-center font-black italic">
-                          NZ
-                        </div>
-                        <div>
-                          <h4 className="text-xl font-black italic leading-none">
-                            {job.design || job.task}
-                          </h4>
-                          <p className="text-[10px] font-black uppercase text-slate-600 mt-1 italic tracking-widest">
-                            Lot: {job.lotNo || "N/A"} • {job.date}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="space-y-4">
-                        <div className="p-3 bg-slate-100/50 rounded-xl border border-slate-100">
-                          <p className="text-[10px] font-black uppercase text-slate-500 italic tracking-[0.2em]">
-                            Official Contractor
-                          </p>
-                          <p className="text-xl font-black uppercase italic text-black">
-                            {job.worker}
-                          </p>
-                        </div>
-                        <div className="grid grid-cols-2 gap-2">
-                          <div className="p-3 border-2 border-rose-50 text-center rounded-xl bg-rose-50/10">
-                            <p className="text-[8px] font-black uppercase text-rose-400">
-                              Items/Borka
-                            </p>
-                            <p className="text-2xl font-black">
-                              {job.issueBorka ||
-                                job.pataQty ||
-                                job.borkaQty ||
-                                0}
-                            </p>
-                          </div>
-                          <div className="p-3 border-2 border-indigo-50 text-center rounded-xl bg-indigo-50/10">
-                            <p className="text-[8px] font-black uppercase text-indigo-400">
-                              Misc/Hijab
-                            </p>
-                            <p className="text-2xl font-black">
-                              {job.issueHijab || job.hijabQty || 0}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="flex justify-between items-end mt-4 pt-4 border-t border-black/5">
-                        <div className="text-[8px] font-black uppercase text-slate-500">
-                          Verified Signature
-                          <div className="h-4 border-b border-black/10 mt-2"></div>
-                        </div>
-                        <img
-                          src={`https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(`${window.location.origin}?track=${job.id}`)}`}
-                          alt="QR"
-                          className="w-20 h-20 rounded-lg opacity-80"
-                        />
-                      </div>
-                    </div>
-                  ))}
-              </div>
-            ),
-          )}
-        </div>
-      </div>
-    );
-  }
+
+
 
   if (isPrinting) {
     const printData =
@@ -452,12 +321,7 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t, logAction }) => {
             Ledger
           </button>
         )}
-        <button
-          onClick={() => setActiveTab("dispatch")}
-          className={`px-6 md:px-10 py-4 md:py-6 rounded-[1.5rem] md:rounded-[2rem] font-black uppercase text-[10px] md:text-xs tracking-widest transition-all whitespace-nowrap ${activeTab === "dispatch" ? "bg-black text-white shadow-2xl" : "text-slate-500 hover:text-black"}`}
-        >
-          Dispatch Hub
-        </button>
+
         <button
           onClick={() => setActiveTab("invoice")}
           className={`px-6 md:px-10 py-4 md:py-6 rounded-[1.5rem] md:rounded-[2rem] font-black uppercase text-[10px] md:text-xs tracking-widest transition-all whitespace-nowrap ${activeTab === "invoice" ? "bg-black text-white shadow-2xl" : "text-slate-500 hover:text-black"}`}
@@ -475,107 +339,12 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t, logAction }) => {
       <div className="bg-white rounded-[2rem] md:rounded-[4rem] border-2 md:border-4 border-slate-50 shadow-2xl overflow-hidden min-h-[60vh]">
         {activeTab === "intel" && <BusinessIntel masterData={masterData} />}
         {activeTab === "summary" && (
-          <WorkerSummary masterData={masterData} user={user} />
+          <WorkerSummary masterData={masterData} user={user} logAction={logAction} showNotify={showNotify} setActivePanel={setActivePanel} />
         )}
         {activeTab === "invoice" && (
-          <WeeklyInvoice masterData={masterData} user={user} />
+          <WeeklyInvoice masterData={masterData} user={user} logAction={logAction} showNotify={showNotify} setActivePanel={setActivePanel} />
         )}
-        {activeTab === "dispatch" && (
-          <div className="p-6 md:p-12 space-y-12 animate-fade-up">
-            <div className="flex flex-col md:flex-row justify-between items-center gap-8 bg-slate-50 p-8 rounded-[3rem] border-2 border-white shadow-inner">
-              <div className="flex items-center gap-6">
-                <div className="p-5 bg-rose-600 text-white rounded-[2rem] shadow-2xl rotate-3">
-                  <Printer size={28} />
-                </div>
-                <div>
-                  <h3 className="text-3xl font-black uppercase italic tracking-tighter text-black">
-                    Global Dispatch Hub
-                  </h3>
-                  <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.4em] mt-2">
-                    BATCH PRINT SYSTEM • 4 SLIPS PER PAGE
-                  </p>
-                </div>
-              </div>
-              <div className="flex gap-4">
-                <button
-                  onClick={() =>
-                    setSelectedJobIds(allActiveJobs.map((j) => j.id))
-                  }
-                  className="px-8 py-4 bg-white text-slate-600 rounded-full font-black uppercase text-[10px] tracking-widest border border-slate-200"
-                >
-                  Select All
-                </button>
-                <button
-                  onClick={() => setIsBatchPrinting(true)}
-                  disabled={selectedJobIds.length === 0}
-                  className="px-12 py-4 bg-black text-white rounded-full font-black uppercase text-[10px] tracking-widest shadow-2xl border-b-[8px] border-zinc-900 disabled:opacity-30 transition-all hover:scale-105"
-                >
-                  GENERATE BATCH ({selectedJobIds.length})
-                </button>
-              </div>
-            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {allActiveJobs.map((job) => (
-                <button
-                  key={job.id}
-                  onClick={() =>
-                    setSelectedJobIds((prev) =>
-                      prev.includes(job.id)
-                        ? prev.filter((id) => id !== job.id)
-                        : [...prev, job.id],
-                    )
-                  }
-                  className={`p-8 rounded-[3rem] border-4 transition-all text-left relative overflow-hidden group ${selectedJobIds.includes(job.id) ? "bg-black border-black text-white shadow-3xl" : "bg-white border-slate-50 hover:border-slate-100"}`}
-                >
-                  <div className="flex justify-between items-start mb-6 uppercase italic">
-                    <p
-                      className={`text-[9px] font-black tracking-widest px-4 py-1.5 rounded-full border ${selectedJobIds.includes(job.id) ? "border-white/20 bg-white/10 text-white" : "border-slate-100 bg-slate-50 text-slate-500"}`}
-                    >
-                      {job.jobType}
-                    </p>
-                    <p className="text-[9px] opacity-70 font-black tracking-tighter">
-                      {job.date}
-                    </p>
-                  </div>
-                  <h4 className="text-2xl font-black italic uppercase leading-none mb-3 tracking-tighter">
-                    {job.worker}
-                  </h4>
-                  <p
-                    className={`text-xs font-black uppercase opacity-60 leading-tight ${selectedJobIds.includes(job.id) ? "text-white" : "text-slate-500"}`}
-                  >
-                    {job.design || job.task}
-                  </p>
-                  <div className="mt-8 flex justify-between items-end">
-                    <div className="flex gap-6">
-                      <div className="text-center">
-                        <p className="text-[8px] font-black uppercase opacity-75 mb-1">
-                          Borka
-                        </p>
-                        <p className="text-3xl font-black">
-                          {job.issueBorka || job.pataQty || job.borkaQty || 0}
-                        </p>
-                      </div>
-                      <div className="text-center">
-                        <p className="text-[8px] font-black uppercase opacity-75 mb-1">
-                          Hijab
-                        </p>
-                        <p className="text-3xl font-black">
-                          {job.issueHijab || job.hijabQty || 0}
-                        </p>
-                      </div>
-                    </div>
-                    <div
-                      className={`w-14 h-14 rounded-[1.5rem] flex items-center justify-center border-2 transition-all ${selectedJobIds.includes(job.id) ? "bg-emerald-500 border-emerald-400" : "bg-slate-50 border-slate-100 opacity-20 group-hover:opacity-100"}`}
-                    >
-                      <UserCheck size={24} />
-                    </div>
-                  </div>
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
         {activeTab === "transactions" && (
           <div className="p-6 md:p-12 space-y-8 md:space-y-12">
             <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-center justify-between border-b-2 border-slate-50 pb-8 md:pb-12">

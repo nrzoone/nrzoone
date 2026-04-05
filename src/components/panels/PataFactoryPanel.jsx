@@ -338,6 +338,7 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
 
         setShowManualModal(false);
         setManualForm({ design: '', color: '', pataType: 'Single', qty: '', note: '', date: new Date().toISOString().split('T')[0] });
+        logAction(user, 'PATA_MANUAL_STOCK', `Manual stock entry: ${newEntry.design}(${newEntry.pataType}) - Qty: ${newEntry.pataQty}`);
         showNotify('সরাসরি স্টক যোগ করা হয়েছে!');
     };
 
@@ -347,6 +348,7 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
             ...prev,
             pataEntries: (prev.pataEntries || []).filter(item => item.id !== id)
         }));
+        logAction(user, 'PATA_DELETE', `Deleted Pata record ID: ${id}`);
         showNotify('এন্ট্রি মুছে ফেলা হয়েছে!');
     };
 
