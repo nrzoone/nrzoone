@@ -147,7 +147,22 @@ export const translations = {
         enrollBiometric: "Enroll Biometric",
         verifyIdentity: "Verify Identity",
         biometricSuccess: "Identity Verified",
-        biometricFail: "Identity Mismatch"
+        biometricFail: "Identity Mismatch",
+        stockMatrix: "Stock Matrix",
+        inventoryHub: "Inventory Hub",
+        deduct: "Deduct",
+        addStock: "Add Stock",
+        finishedGoods: "Finished Goods",
+        sewingStock: "Sewing Stock",
+        stoneStock: "Stone Stock",
+        rawMaterials: "Raw Materials",
+        updateProtocol: "Update Protocol",
+        productionUnit: "Production Unit",
+        newTask: "New Task",
+        active: "Active",
+        history: "History",
+        payments: "Payments",
+        ledger: "Ledger"
     },
     BN: {
         mainMenu: "প্রধান মেনু",
@@ -298,7 +313,22 @@ export const translations = {
         enrollBiometric: "আঙ্গুলের ছাপ দিন",
         verifyIdentity: "পরিচয় নিশ্চিত করুন",
         biometricSuccess: "পরিচয় নিশ্চিত হয়েছে",
-        biometricFail: "পরিচয় মিলেনি"
+        biometricFail: "পরিচয় মিলেনি",
+        stockMatrix: "স্টক ম্যাট্রিক্স",
+        inventoryHub: "ইনভেন্টরি হাব",
+        deduct: "বিয়োগ",
+        addStock: "স্টক যোগ",
+        finishedGoods: "তৈরি মালামাল",
+        sewingStock: "সুইং স্টক",
+        stoneStock: "স্টোন স্টক",
+        rawMaterials: "কাঁচামাল",
+        updateProtocol: "আপডেট প্রোটোকল",
+        productionUnit: "উৎপাদন ইউনিট",
+        newTask: "নতুন কাজ",
+        active: "চলমান",
+        history: "পুরাতন",
+        payments: "পেমেন্ট",
+        ledger: "লেজার"
     }
 };
 

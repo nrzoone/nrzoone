@@ -56,8 +56,10 @@ const FactoryPanel = ({
 }) => {
   const type = initialType;
   const [view, setView] = useState("active"); // 'active', 'history', 'payments'
-  const isAdmin = user?.role === "admin";
-  const isManager = user?.role === "manager";
+  const role = user?.role?.toLowerCase();
+  const isAdmin = role === "admin";
+  const isManager = role === "manager";
+  const isWorker = role !== "admin" && role !== "manager";
 
   const [receiveModal, setReceiveModal] = useState(null);
   const [payModal, setPayModal] = useState(null);
@@ -85,7 +87,7 @@ const FactoryPanel = ({
   ]);
   const [selectedLot, setSelectedLot] = useState("");
 
-  const isWorker = user?.role !== "admin" && user?.role !== "manager";
+  // Removed redundant isWorker since it's defined above
   const workers = (masterData.workerCategories || {})[type] || [];
 
   const filteredProductions = (masterData.productions || []).filter((p) => {

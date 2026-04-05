@@ -38,9 +38,10 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
     const [editModal, setEditModal] = useState(null);
     const [showQR, setShowQR] = useState(false);
 
-    const isAdmin = user?.role === 'admin';
-    const isManager = user?.role === 'manager';
-    const isWorker = user?.role !== 'admin' && user?.role !== 'manager';
+    const role = user?.role?.toLowerCase();
+    const isAdmin = role === 'admin';
+    const isManager = role === 'manager';
+    const isWorker = role !== 'admin' && role !== 'manager';
 
 
     const [entryData, setEntryData] = useState({
@@ -88,6 +89,7 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
         if (shouldPrint) {
             setPrintSlip(newEntry);
         }
+        logAction(user, 'OUTSIDE_ISSUE', `${newEntry.worker} - ${newEntry.task}. Qty: B:${newEntry.borkaQty} H:${newEntry.hijabQty}`);
         setShowModal(false);
         setEntryData({ worker: '', task: '', borkaQty: '', hijabQty: '', rate: '', note: '', date: new Date().toISOString().split('T')[0] });
         showNotify('বাইরের কাজ সফলভাবে ইস্যু হয়েছে!');
@@ -132,6 +134,7 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
         });
 
         setReceiveModal(null);
+        logAction(user, 'OUTSIDE_RECEIVE', `Received from ${receiveModal.worker}: ${receiveModal.task}. Total Bill: ${totalAmount}৳`);
         showNotify('কাজ জমা নেওয়া হয়েছে ও বিল জেনারেট হয়েছে!');
         
         if (e.nativeEvent.submitter?.name === 'print') {
@@ -194,6 +197,7 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
 
         setPayModal(null);
         setPaymentAmount('');
+        logAction(user, 'OUTSIDE_PAYMENT', `Paid ${payModal.worker} ${paymentAmount}৳ for ${payModal.task}`);
         showNotify('পেমেন্ট সফলভাবে রেকর্ড হয়েছে!');
     };
 
@@ -204,6 +208,7 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
             ...prev,
             outsideWorkEntries: (prev.outsideWorkEntries || []).filter(item => item.id !== id)
         }));
+        logAction(user, 'OUTSIDE_DELETE', `Deleted outside entry ID: ${id}`);
         showNotify('এন্ট্রি মুছে ফেলা হয়েছে!');
     };
 

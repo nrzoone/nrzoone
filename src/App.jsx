@@ -391,7 +391,7 @@ const AppContent = () => {
     });
     const [activePanel, setActivePanel] = useState("Overview");
     const [toast, setToast] = useState(null);
-    const { masterData, setMasterData, isLoading } = useMasterData();
+    const { masterData, setMasterData, isLoading, logs, downloadBackup, logAction } = useMasterData();
     const [trackingId, setTrackingId] = useState(null);
     const [showQR, setShowQR] = useState(false);
 
@@ -413,23 +413,6 @@ const AppContent = () => {
         playSound(type);
         setToast({ message, type });
         setTimeout(() => setToast(null), 3000);
-    };
-
-    const logAction = (user, type, detail) => {
-        setMasterData(prev => ({
-            ...prev,
-            auditLogs: [
-                {
-                    id: Date.now(),
-                    date: new Date().toLocaleDateString('en-GB'),
-                    time: new Date().toLocaleTimeString(),
-                    user: user?.name || 'System',
-                    type,
-                    detail
-                },
-                ...(prev.auditLogs || [])
-            ].slice(0, 1000)
-        }));
     };
 
     const handleLogin = async (id, pass) => {
@@ -568,9 +551,9 @@ const AppContent = () => {
                                         {t?.(activePanel?.toLowerCase()) || activePanel}
                                     </h2>
                                     <div className="flex items-center gap-2">
-                                        <div className={`w-2 h-2 rounded-full ${isLoading ? 'bg-amber-500 animate-pulse' : 'bg-emerald-500'}`}></div>
+                                        <div className={`w-2 h-2 rounded-full ${syncStatus === 'syncing' ? 'bg-amber-500 animate-pulse' : syncStatus === 'error' ? 'bg-rose-500' : 'bg-emerald-500'}`}></div>
                                         <span className="text-[9px] font-black uppercase tracking-[0.3em] text-slate-600">
-                                            {isLoading ? 'Syncing Neural' : 'Link Stable'}
+                                            {syncStatus === 'syncing' ? 'Syncing Neural' : syncStatus === 'error' ? 'Link Fault' : 'Link Stable'}
                                         </span>
                                     </div>
                                 </div>
@@ -615,7 +598,7 @@ const AppContent = () => {
                                 {activePanel === "Reports" && <ReportsPanel masterData={masterData} user={user} setActivePanel={setActivePanel} t={t} logAction={logAction} />}
                                 {activePanel === "Delivery" && <DeliveryPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} setActivePanel={setActivePanel} t={t} logAction={logAction} />}
                                 {activePanel === "Settings" && <SettingsPanel masterData={masterData} setMasterData={setMasterData} user={user} showNotify={showNotify} setActivePanel={setActivePanel} t={t} logAction={logAction} logs={logs} downloadBackup={downloadBackup} />}
-                                {activePanel === "Security" && <SecurityPanel masterData={masterData} user={user} setActivePanel={setActivePanel} t={t} logAction={logAction} />}
+                                {activePanel === "Security" && <SecurityPanel masterData={masterData} user={user} setActivePanel={setActivePanel} t={t} logAction={logAction} logs={logs} />}
                             </div>
                         </div>
 

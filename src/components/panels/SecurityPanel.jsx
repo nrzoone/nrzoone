@@ -1,9 +1,7 @@
 import React from 'react';
 import { Shield, Clock, User, Activity, AlertCircle, ArrowLeft, Search } from 'lucide-react';
 
-const SecurityPanel = ({ masterData, setActivePanel, t }) => {
-    const logs = masterData.auditLogs || [];
-
+const SecurityPanel = ({ masterData, setActivePanel, t, logs = [] }) => {
     return (
         <div className="space-y-12 pb-24 animate-fade-up px-4 italic font-outfit text-black">
             <div className="flex justify-between items-center mb-10">
@@ -79,26 +77,32 @@ const SecurityPanel = ({ masterData, setActivePanel, t }) => {
                                     </td>
                                 </tr>
                             ) : (
-                                logs.map((log, i) => (
-                                    <tr key={i} className="hover:bg-slate-50/50 transition-colors group">
-                                        <td className="px-12 py-10">
-                                            <p className="text-sm font-black italic mb-1">{log.time}</p>
-                                            <p className="text-[8px] font-black uppercase text-slate-400 tracking-widest">{log.date}</p>
-                                        </td>
-                                        <td className="px-8 py-10">
-                                            <div className="flex items-center gap-4">
-                                                <div className="w-10 h-10 bg-black text-white rounded-xl flex items-center justify-center text-xs font-black italic">{log.user[0]}</div>
-                                                <p className="text-sm font-black uppercase italic tracking-tight">{log.user}</p>
-                                            </div>
-                                        </td>
-                                        <td className="px-8 py-10">
-                                            <span className="px-4 py-1.5 bg-slate-100 rounded-full text-[9px] font-black uppercase tracking-widest group-hover:bg-black group-hover:text-white transition-all">{log.type}</span>
-                                        </td>
-                                        <td className="px-8 py-10">
-                                            <p className="text-xs font-black italic text-slate-600 tracking-tight leading-relaxed lg:max-w-md">{log.detail}</p>
-                                        </td>
-                                    </tr>
-                                ))
+                                logs.map((log, i) => {
+                                    const logDate = log.timestamp ? new Date(log.timestamp) : null;
+                                    const timeStr = logDate ? logDate.toLocaleTimeString() : (log.time || 'N/A');
+                                    const dateStr = logDate ? logDate.toLocaleDateString('en-GB') : (log.date || 'N/A');
+                                    
+                                    return (
+                                        <tr key={i} className="hover:bg-slate-50/50 transition-colors group">
+                                            <td className="px-12 py-10">
+                                                <p className="text-sm font-black italic mb-1">{timeStr}</p>
+                                                <p className="text-[8px] font-black uppercase text-slate-400 tracking-widest">{dateStr}</p>
+                                            </td>
+                                            <td className="px-8 py-10">
+                                                <div className="flex items-center gap-4">
+                                                    <div className="w-10 h-10 bg-black text-white rounded-xl flex items-center justify-center text-xs font-black italic">{log.user ? log.user[0] : 'S'}</div>
+                                                    <p className="text-sm font-black uppercase italic tracking-tight">{log.user || 'System'}</p>
+                                                </div>
+                                            </td>
+                                            <td className="px-8 py-10">
+                                                <span className="px-4 py-1.5 bg-slate-100 rounded-full text-[9px] font-black uppercase tracking-widest group-hover:bg-black group-hover:text-white transition-all">{log.action || log.type}</span>
+                                            </td>
+                                            <td className="px-8 py-10">
+                                                <p className="text-xs font-black italic text-slate-600 tracking-tight leading-relaxed lg:max-w-md">{log.details || log.detail}</p>
+                                            </td>
+                                        </tr>
+                                    );
+                                })
                             )}
                         </tbody>
                     </table>

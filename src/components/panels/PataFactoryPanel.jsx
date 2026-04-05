@@ -34,8 +34,10 @@ import { syncToSheet } from '../../utils/syncUtils';
 import NRZLogo from '../NRZLogo';
 
 const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActivePanel, t, logAction }) => {
-    const isAdmin = user?.role === 'admin';
-    const isManager = user?.role === 'manager';
+    const role = user?.role?.toLowerCase();
+    const isAdmin = role === 'admin';
+    const isManager = role === 'manager';
+    const isWorker = role !== 'admin' && role !== 'manager';
 
     const [showModal, setShowModal] = useState(false);
     const [lotSearch, setLotSearch] = useState("");
@@ -348,7 +350,7 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
         showNotify('এন্ট্রি মুছে ফেলা হয়েছে!');
     };
 
-    const isWorker = user?.role !== 'admin' && user?.role !== 'manager';
+    // isWorker is already declared at the top of the component
 
     if (printSlip) {
         return (

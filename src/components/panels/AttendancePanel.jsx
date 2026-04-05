@@ -486,31 +486,40 @@ const AttendancePanel = ({
               <p className="text-[9px] font-black text-emerald-600 uppercase tracking-widest mb-1 italic">{t('present')}</p>
               <p className="text-3xl font-black tracking-tighter text-emerald-600 leading-none italic">{stats.present}</p>
             </div>
-            {!(user?.role?.toLowerCase() !== 'admin' && user?.role?.toLowerCase() !== 'manager') && (
-              <>
-                <button
-                  onClick={() => setShowInvoice(true)}
-                  className="bg-black text-white p-6 rounded-2xl shadow-xl hover:scale-[1.02] transition-all text-left group"
-                >
-                  <Printer size={16} className="mb-3" />
-                  <p className="text-[10px] font-black uppercase leading-tight italic text-white/50">Weekly Report</p>
-                </button>
-                <button
-                  onClick={() => setShowQR(true)}
-                  className="bg-indigo-600 text-white p-6 rounded-2xl shadow-xl hover:scale-[1.02] transition-all text-left group"
-                >
-                  <Camera size={16} className="mb-3" />
-                  <p className="text-[10px] font-black uppercase leading-tight italic text-white/50">QR Camera Scan</p>
-                </button>
-                <button
-                  onClick={scanBiometricAttendance}
-                  className="bg-emerald-600 text-white p-6 rounded-2xl shadow-xl hover:scale-[1.02] transition-all text-left group"
-                >
-                  <Fingerprint size={16} className="mb-3" />
-                  <p className="text-[10px] font-black uppercase leading-tight italic text-white/50">Fingerprint Scan</p>
-                </button>
-              </>
-            )}
+            {(() => {
+            const role = user?.role?.toLowerCase();
+            const isAdmin = role === 'admin';
+            const isManager = role === 'manager';
+            const isPrivileged = isAdmin || isManager;
+            if (isPrivileged) {
+              return (
+                <>
+                  <button
+                    onClick={() => setShowInvoice(true)}
+                    className="bg-black text-white p-6 rounded-2xl shadow-xl hover:scale-[1.02] transition-all text-left group"
+                  >
+                    <Printer size={16} className="mb-3" />
+                    <p className="text-[10px] font-black uppercase leading-tight italic text-white/50">Weekly Report</p>
+                  </button>
+                  <button
+                    onClick={() => setShowQR(true)}
+                    className="bg-indigo-600 text-white p-6 rounded-2xl shadow-xl hover:scale-[1.02] transition-all text-left group"
+                  >
+                    <Camera size={16} className="mb-3" />
+                    <p className="text-[10px] font-black uppercase leading-tight italic text-white/50">QR Camera Scan</p>
+                  </button>
+                  <button
+                    onClick={scanBiometricAttendance}
+                    className="bg-emerald-600 text-white p-6 rounded-2xl shadow-xl hover:scale-[1.02] transition-all text-left group"
+                  >
+                    <Fingerprint size={16} className="mb-3" />
+                    <p className="text-[10px] font-black uppercase leading-tight italic text-white/50">Fingerprint Scan</p>
+                  </button>
+                </>
+              );
+            }
+            return null;
+          })()}
           </div>
           
           {showQR && <QRScanner onScanSuccess={handleQRScan} onClose={() => setShowQR(false)} />}

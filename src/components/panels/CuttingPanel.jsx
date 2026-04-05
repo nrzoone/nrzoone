@@ -32,7 +32,10 @@ const CuttingPanel = ({
   setActivePanel,
   logAction,
 }) => {
-  const isAdmin = user?.role === "admin";
+  const role = user?.role?.toLowerCase();
+  const isAdmin = role === "admin";
+  const isManager = role === "manager";
+  const isWorker = !isAdmin && !isManager;
   const [showModal, setShowModal] = useState(false);
   const [checkMode, setCheckMode] = useState(null);
   const [checkSelection, setCheckSelection] = useState({
@@ -289,7 +292,7 @@ const CuttingPanel = ({
                 {uniqueLots.length} <span className="text-[10px] text-slate-500 ml-1">Lots</span>
             </p>
           </div>
-          {(isAdmin || user?.role === 'manager') && (
+          {(isAdmin || isManager) && (
             <button
               onClick={() => setShowModal(true)}
               className="px-10 py-5 bg-black text-white rounded-2xl font-black uppercase text-xs tracking-widest shadow-2xl flex items-center gap-3 hover:scale-105 active:scale-95 transition-all italic border-b-[6px] border-zinc-900"
@@ -553,7 +556,7 @@ const CuttingPanel = ({
 
             <div className="space-y-4">
               {(masterData.cuttingStock || []).filter(s => {
-                  if (isAdmin || user?.role === 'manager') return true;
+                  if (isAdmin || isManager) return true;
                   return s.cutterName?.trim().toLowerCase() === user?.name?.trim().toLowerCase();
               }).length === 0 ? (
                 <div className="h-64 flex flex-col items-center justify-center bg-white rounded-3xl border-2 border-dashed border-slate-100 opacity-70">
@@ -562,7 +565,7 @@ const CuttingPanel = ({
                 </div>
               ) : (
                 (masterData.cuttingStock || []).filter(s => {
-                    if (isAdmin || user?.role === 'manager') return true;
+                    if (isAdmin || isManager) return true;
                     return s.cutterName?.trim().toLowerCase() === user?.name?.trim().toLowerCase();
                 }).map((s, idx) => (
                   <div

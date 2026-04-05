@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 
 const MenuPanel = ({ setActivePanel, user, t }) => {
-    const isAdmin = user?.role === 'Admin' || user?.role === 'Manager';
+    // Role-based navigation filtering is handled dynamically inside categories.map below
 
     const categories = [
         {
