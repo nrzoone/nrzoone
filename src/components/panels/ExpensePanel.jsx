@@ -222,112 +222,113 @@ const ExpensePanel = ({
   }
 
   return (
-    <div className="space-y-4 pb-24 animate-fade-up px-1 md:px-2 italic text-black font-outfit uppercase">
-      <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-12">
-        <div className="flex items-center gap-4">
-          <button
-            onClick={() => setActivePanel("Overview")}
-            className="p-4 bg-white text-black rounded-2xl border-2 border-slate-100 shadow-xl hover:bg-black hover:text-white transition-all"
-          >
-            <ArrowLeft size={20} />
-          </button>
-          <div className="flex items-center gap-4 md:gap-6 bg-white p-4 md:p-6 rounded-xl border-2 border-slate-50 shadow-2xl">
-            <div className="p-4 md:p-5 bg-rose-600 text-white rounded-xl shadow-2xl rotate-3">
-              <Wallet size={28} />
-            </div>
-            <div>
-              <h2 className="text-xl md:text-2xl font-black tracking-tighter leading-none italic uppercase">
-                Cash <span className="text-slate-500">Nexus</span>
-              </h2>
-              <p className="text-[10px] md:text-xs font-black text-slate-500 uppercase tracking-widest mt-2 md:mt-4 italic opacity-80">
-                TREASURY MANAGEMENT SYSTEM
-              </p>
-            </div>
+    <div className="space-y-10 pb-32 animate-fade-up px-1 md:px-4">
+      {/* SaaS Financial HUD */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+        <div className="saas-card !p-8 flex items-center gap-8 group transition-all hover:border-emerald-500/30">
+          <div className="w-16 h-16 bg-emerald-500 text-white rounded-2xl flex items-center justify-center shadow-xl shadow-emerald-500/20 group-hover:scale-110 transition-transform">
+            <TrendingUp size={28} />
+          </div>
+          <div>
+            <p className="text-3xl font-black tracking-tight text-slate-900 dark:text-white leading-none mb-1">৳{currentBalance.toLocaleString()}</p>
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none italic">Available Cash</p>
           </div>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 w-full md:w-auto">
-          <div className="bg-white p-6 rounded-xl border-2 border-slate-50 shadow-lg text-center">
-            <p className="text-[9px] font-black text-slate-500 uppercase italic">
-              Cash In-Hand
-            </p>
-            <p className="text-xl md:text-2xl font-black text-emerald-600 italic">
-              ৳{currentBalance.toLocaleString()}
-            </p>
+        <div className="saas-card !p-8 flex items-center gap-8 group transition-all hover:border-rose-500/30">
+          <div className="w-16 h-16 bg-rose-600 text-white rounded-2xl flex items-center justify-center shadow-xl shadow-rose-500/20 group-hover:scale-110 transition-transform">
+            <TrendingDown size={28} />
           </div>
-          <div className="bg-white p-6 rounded-xl border-2 border-slate-50 shadow-lg text-center">
-            <p className="text-[9px] font-black text-slate-500 uppercase italic">
-              Total Outflow
-            </p>
-            <p className="text-xl md:text-2xl font-black text-rose-500 italic">
-              ৳{totalExpenses.toLocaleString()}
-            </p>
+          <div>
+            <p className="text-3xl font-black tracking-tight text-slate-900 dark:text-white leading-none mb-1">৳{totalExpenses.toLocaleString()}</p>
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none italic">Burn Rate (Total)</p>
           </div>
-          <button
-            onClick={() => setShowPrint(true)}
-            className="col-span-2 md:col-span-1 px-4 py-3 bg-black text-white rounded-full font-black uppercase text-xs tracking-widest shadow-2xl border-b-8 border-zinc-900 hover:scale-105 transition-all italic flex items-center justify-center gap-3"
-          >
-            <Printer size={18} /> Daily Report
-          </button>
+        </div>
+        <button 
+          onClick={() => setShowPrint(true)}
+          className="saas-card !p-8 flex items-center gap-8 group transition-all bg-slate-950 text-white hover:bg-black border-none shadow-2xl"
+        >
+          <div className="w-16 h-16 bg-white/10 text-white rounded-2xl flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
+            <Printer size={28} />
+          </div>
+          <div className="text-left">
+            <p className="text-2xl font-black tracking-tight leading-none mb-1 uppercase italic">Report</p>
+            <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest leading-none italic italic">Daily Ledger Transcript</p>
+          </div>
+        </button>
+      </div>
+
+      {/* Control Bar - SaaS Pill Navigation */}
+      <div className="saas-card !p-4 flex flex-col lg:flex-row items-center justify-between gap-6 mb-10 border-blue-500/10">
+        <div className="pill-nav w-full lg:w-auto overflow-x-auto no-scrollbar">
+          {[
+            { id: 'daily', label: 'ডেইলি খরচ' },
+            { id: 'new', label: 'টাকা খরচ (Out)' },
+            isAdmin && { id: 'cashIn', label: 'টাকা গ্রহণ (In)' },
+            { id: 'worker', label: 'শিল্পী বিবরণ' }
+          ].filter(Boolean).map(v => (
+            <button
+              key={v.id}
+              onClick={() => setActiveTab(v.id)}
+              className={`pill-tab ${activeTab === v.id ? 'pill-tab-active' : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'}`}
+            >
+              {v.label}
+            </button>
+          ))}
+        </div>
+
+        <div className="flex items-center gap-4 w-full lg:w-auto">
+          <div className="relative group flex-1 lg:flex-none">
+            <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+            <input
+              placeholder="সার্চ খরচ বা কারণ..."
+              className="premium-input !pl-12 !h-12 !text-[10px]"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+          {activeTab === 'daily' && (
+             <input
+                type="date"
+                className="premium-input !h-12 !w-36 !px-4 !text-[10px] !bg-slate-950 !text-white !border-none"
+                value={summaryDate}
+                onChange={(e) => setSummaryDate(e.target.value)}
+            />
+          )}
         </div>
       </div>
 
-      {/* Unified Floating Filter Bar */}
-      <div className="floating-header-group mb-12 p-3 dark:bg-zinc-900 border-none shadow-2xl">
-          <div className="flex flex-col lg:flex-row items-center gap-6 w-full">
-              <div className="flex items-center gap-2 bg-slate-100 dark:bg-black/50 p-2 rounded-2xl w-full lg:w-auto overflow-x-auto no-scrollbar">
-                  {["new", "daily", isAdmin && "cashIn", "worker", "invoice", isAdmin && "report"].filter(Boolean).map((v) => (
-                    <button
-                      key={v}
-                      onClick={() => setActiveTab(v)}
-                      className={`px-8 py-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${activeTab === v ? 'bg-black text-white dark:bg-white dark:text-black shadow-lg italic' : 'text-slate-500 hover:text-black dark:hover:text-white'}`}
-                    >
-                      {v === "new" ? "নতুন এন্ট্রি" : v === "daily" ? "ডেইলি খরচ" : v === "cashIn" ? "ক্যাশ-ইন" : v === "worker" ? "শিল্পী বিবরণ" : v === "invoice" ? "ইনভয়েস" : "হিসাব বহি"}
-                    </button>
-                  ))}
-              </div>
-              
-              <div className="flex-1 relative w-full group">
-                  <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none text-slate-500 group-focus-within:text-black dark:group-focus-within:text-white transition-colors">
-                      <Search size={16} />
-                  </div>
-                  <input
-                    placeholder="QUERY FINANCIAL RECORDS..."
-                    className="w-full bg-slate-50 dark:bg-black/20 h-16 rounded-2xl pl-16 pr-8 text-xs font-black uppercase tracking-widest italic outline-none border border-transparent focus:border-black/10 dark:focus:border-white/10 transition-all text-black dark:text-white"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                  />
-              </div>
-          </div>
-      </div>
       {activeTab === "new" && (
         <div className="flex justify-center animate-fade-up">
-           <div className="ui-card flex flex-col gap-8">
-              <div className="text-center">
-                  <h3 className="text-3xl font-black italic uppercase italic">টাকা খরচ (Expense)</h3>
-                  <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mt-2 italic">Record money going out of the business</p>
+           <div className="saas-card w-full max-w-2xl !p-12 space-y-10">
+              <div className="text-center space-y-3">
+                  <div className="mx-auto w-16 h-16 bg-rose-600 text-white rounded-2xl flex items-center justify-center shadow-2xl rotate-3 mb-6">
+                    <TrendingDown size={28} />
+                  </div>
+                  <h3 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white leading-none italic uppercase italic">টাকা খরচ (Expense)</h3>
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest italic leading-none">Record money going out of the business</p>
               </div>
-              <form onSubmit={handleAddExpense} className="space-y-6">
+              <form onSubmit={handleAddExpense} className="space-y-8">
                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-1">
-                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-4 italic">Expense Category</label>
-                        <select name="category" className="form-input italic" required>
+                    <div className="space-y-2">
+                        <label className="text-[10px] font-bold text-slate-400 ml-4 uppercase italic">Category</label>
+                        <select name="category" className="premium-input !h-14 !text-[11px] font-bold" required>
                              {["teaSnacks", "transport", "material", "utilities", "salary", "bonus", "others"].map(c => <option key={c} value={c}>{t(c)}</option>)}
                         </select>
                     </div>
-                    <div className="space-y-1">
-                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-4 italic">Date (তারিখ)</label>
-                        <input name="date" type="date" defaultValue={new Date().toISOString().split('T')[0]} className="form-input italic" required />
+                    <div className="space-y-2">
+                        <label className="text-[10px] font-bold text-slate-400 ml-4 uppercase italic">Date</label>
+                        <input name="date" type="date" defaultValue={new Date().toISOString().split('T')[0]} className="premium-input !h-14 !text-[11px] font-bold !bg-slate-950 !text-white !border-none" required />
                     </div>
                  </div>
-                 <div className="space-y-1">
-                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-4 italic">Description (কিসের খরচ)</label>
-                    <input name="description" placeholder="EXPENSE DETAILS..." className="form-input italic uppercase" required />
+                 <div className="space-y-2">
+                    <label className="text-[10px] font-bold text-slate-400 ml-4 uppercase italic">Description</label>
+                    <input name="description" placeholder="EXPENSE DETAILS..." className="premium-input !h-14 !text-[11px] font-bold italic uppercase" required />
                  </div>
-                 <div className="space-y-1">
-                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-4 italic">Amount (টাকার পরিমাণ)</label>
-                    <input name="amount" type="number" placeholder="৳ 0.00" className="form-input text-2xl font-black text-rose-600 bg-rose-50/10 border-rose-100 italic" required />
+                 <div className="bg-slate-950 p-10 rounded-2xl shadow-2xl text-center">
+                    <label className="text-[11px] font-black text-white/40 uppercase tracking-[0.5em] mb-4 block">NET AMOUNT</label>
+                    <input name="amount" type="number" placeholder="0" className="w-full text-center text-7xl font-black bg-transparent border-none text-white outline-none leading-none h-24" required />
                  </div>
-                 <button type="submit" className="issue-work-btn max-w-none mt-4 rotate-1 bg-black text-white py-6 rounded-3xl shadow-2xl hover:scale-105 active:scale-95 transition-all text-xl font-black italic">CONFIRM EXPENSE</button>
+                 <button type="submit" className="w-full py-7 bg-rose-600 text-white rounded-2xl shadow-2xl border-b-[10px] border-rose-900 hover:scale-[1.02] active:scale-95 transition-all text-xl font-black uppercase italic italic">Confirm Transaction</button>
               </form>
            </div>
         </div>
@@ -335,84 +336,68 @@ const ExpensePanel = ({
 
       {activeTab === "cashIn" && (
         <div className="flex justify-center animate-fade-up">
-           <div className="ui-card flex flex-col gap-8">
-              <div className="text-center">
-                  <h3 className="text-3xl font-black italic uppercase italic">টাকা আসা (Cash In)</h3>
-                  <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mt-2 italic">Record money coming into the business</p>
+           <div className="saas-card w-full max-w-2xl !p-12 space-y-10">
+              <div className="text-center space-y-3">
+                  <div className="mx-auto w-16 h-16 bg-emerald-600 text-white rounded-2xl flex items-center justify-center shadow-2xl -rotate-3 mb-6">
+                    <TrendingUp size={28} />
+                  </div>
+                  <h3 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white leading-none italic uppercase italic">টাকা আসা (Cash In)</h3>
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest italic leading-none">Record money coming into the business</p>
               </div>
-              <form onSubmit={handleAddCash} className="space-y-6">
-                 <div className="space-y-1">
-                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-4 italic">Date (তারিখ)</label>
-                    <input name="date" type="date" defaultValue={new Date().toISOString().split('T')[0]} className="form-input italic" required />
+              <form onSubmit={handleAddCash} className="space-y-8">
+                 <div className="space-y-2">
+                    <label className="text-[10px] font-bold text-slate-400 ml-4 uppercase italic">Date</label>
+                    <input name="date" type="date" defaultValue={new Date().toISOString().split('T')[0]} className="premium-input !h-14 !text-[11px] font-bold !bg-slate-950 !text-white !border-none" required />
                  </div>
-                 <div className="space-y-1">
-                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-4 italic">Source / Details (টাকার উৎস)</label>
-                    <input name="description" placeholder="CASH SOURCE DETAILS..." className="form-input italic uppercase" required />
+                 <div className="space-y-2">
+                    <label className="text-[10px] font-bold text-slate-400 ml-4 uppercase italic">Source / Details</label>
+                    <input name="description" placeholder="CASH SOURCE DETAILS..." className="premium-input !h-14 !text-[11px] font-bold italic uppercase" required />
                  </div>
-                 <div className="space-y-1">
-                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-4 italic">Amount (টাকার পরিমাণ)</label>
-                    <input name="amount" type="number" placeholder="৳ 0.00" className="form-input text-2xl font-black text-emerald-600 bg-emerald-50/10 border-emerald-100 italic" required />
+                 <div className="bg-slate-950 p-10 rounded-2xl shadow-2xl text-center">
+                    <label className="text-[11px] font-black text-white/40 uppercase tracking-[0.5em] mb-4 block">RECEIVE AMOUNT</label>
+                    <input name="amount" type="number" placeholder="0" className="w-full text-center text-7xl font-black bg-transparent border-none text-white outline-none leading-none h-24" required />
                  </div>
-                 <button type="submit" className="issue-work-btn max-w-none mt-4 -rotate-1 bg-emerald-600 text-white py-6 rounded-3xl shadow-2xl hover:bg-black hover:scale-105 active:scale-95 transition-all text-xl font-black italic">RECEIVE CASH</button>
+                 <button type="submit" className="w-full py-7 bg-emerald-600 text-white rounded-2xl shadow-2xl border-b-[10px] border-emerald-900 hover:scale-[1.02] active:scale-95 transition-all text-xl font-black uppercase italic italic">Receive Cash</button>
               </form>
            </div>
         </div>
       )}
+
       {activeTab === "daily" && (
-        <div className="space-y-8">
-          <div className="flex justify-between items-center px-10">
-            <h4 className="text-xl font-black italic text-slate-500">
-              Entry List
-            </h4>
-            <input
-              type="date"
-              className="bg-white px-4 py-2 rounded-2xl border-2 border-slate-50 font-black italic"
-              value={summaryDate}
-              onChange={(e) => setSummaryDate(e.target.value)}
-            />
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
+        <div className="space-y-8 animate-fade-up">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredExpenses.length === 0 ? (
-              <div className="col-span-full h-[400px] flex flex-col items-center justify-center bg-white rounded-[5rem] border-4 border-dashed border-slate-50 text-slate-100 gap-10">
-                <TrendingDown size={100} strokeWidth={1} />
-                <p className="text-[12px] font-black tracking-[0.8em] opacity-70">
-                  No Leakage Found For This Date
-                </p>
+              <div className="col-span-full h-80 flex flex-col items-center justify-center saas-card border-2 border-dashed border-slate-200">
+                <TrendingDown size={64} strokeWidth={1} className="text-slate-200 mb-6" />
+                <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest italic">No Consumption Records Audited For This Date</p>
               </div>
             ) : (
               filteredExpenses.map((exp, idx) => (
-                <div
-                  key={exp.id || idx}
-                  className="bg-white p-6 md:p-6 rounded-3xl border-2 border-slate-50 shadow-2xl hover:border-black transition-all group relative overflow-hidden flex flex-col justify-between h-[350px]"
-                >
-                  <div className="absolute top-0 right-0 p-12 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity">
-                    <DollarSign size={200} />
+                <div key={exp.id || idx} className="saas-card !p-8 flex flex-col justify-between h-80 group hover:border-slate-900 transition-all relative overflow-hidden">
+                  <div className="absolute top-0 right-0 p-10 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity">
+                    <DollarSign size={160} className="text-slate-900 dark:text-white" />
                   </div>
                   <div className="relative z-10">
-                    <div className="flex justify-between mb-8">
-                      <span className="px-5 py-2 bg-slate-50 rounded-full text-[9px] font-black text-slate-500 tracking-widest border border-slate-100 shadow-sm">
+                    <div className="flex justify-between items-start mb-6">
+                      <span className="px-3 py-1 bg-slate-100 dark:bg-slate-800 rounded-lg text-[9px] font-bold text-slate-500 uppercase tracking-widest border border-slate-200 dark:border-slate-700">
                         {exp.category}
                       </span>
-                      <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button
-                          onClick={() => setEditExpense(exp)}
-                          className="p-3 bg-slate-50 rounded-full hover:bg-black hover:text-white transition-all"
-                        >
-                          <Edit2 size={14} />
-                        </button>
-                      </div>
+                      <button onClick={() => setEditExpense(exp)} className="w-10 h-10 bg-slate-50 dark:bg-slate-800 rounded-xl flex items-center justify-center text-slate-400 hover:bg-slate-950 hover:text-white transition-all shadow-sm">
+                        <Edit2 size={14} />
+                      </button>
                     </div>
-                    <h5 className="text-3xl md:text-2xl font-black tracking-tighter italic leading-none uppercase mb-2">
+                    <h5 className="text-2xl font-black tracking-tight text-slate-900 dark:text-white uppercase leading-tight italic mb-2">
                       {exp.description}
                     </h5>
-                    <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.5em]">
-                      {exp.date}
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2 italic">
+                      <Calendar size={12} /> {exp.date}
                     </p>
                   </div>
                   <div className="relative z-10 flex justify-between items-end">
-                    <p className="text-3xl font-black italic text-black">
+                    <p className="text-4xl font-black text-slate-950 dark:text-white italic">
                       ৳{exp.amount.toLocaleString()}
                     </p>
+                    <div className="w-10 h-1 bg-slate-200 dark:bg-slate-800 rounded-full"></div>
                   </div>
                 </div>
               ))
@@ -421,24 +406,64 @@ const ExpensePanel = ({
         </div>
       )}
 
-      {/* Other tabs would follow similar card patterns if expanded */}
       {activeTab === "worker" && <WorkerSummary masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} />}
 
-      <div className="pt-24 pb-16 flex justify-center">
+      <div className="flex justify-center pt-24 pb-12">
         <button
           onClick={() => setActivePanel("Overview")}
-          className="group relative flex items-center gap-10 bg-white px-20 py-10 rounded-full border-4 border-slate-50 shadow-3xl hover:border-black transition-all duration-700 ease-out"
+          className="group relative flex items-center gap-10 bg-white dark:bg-slate-900 px-12 md:px-16 py-7 md:py-9 rounded-full border-4 border-slate-100 dark:border-slate-800 shadow-3xl hover:border-slate-950 transition-all duration-500"
         >
-          <div className="p-5 bg-black text-white rounded-lg group-hover:rotate-[-15deg] transition-transform shadow-2xl">
-            <ArrowLeft size={32} strokeWidth={3} />
+          <div className="p-4 bg-slate-950 text-white rounded-2xl group-hover:rotate-[-15deg] transition-transform shadow-xl">
+            <ArrowLeft size={24} strokeWidth={4} />
           </div>
-          <span className="text-xl md:text-2xl font-black uppercase italic tracking-[0.2em] text-black">
-            Nexus Return
+          <span className="text-xl font-black uppercase italic tracking-[0.2em] text-slate-950 dark:text-white">
+            Return to Core
           </span>
         </button>
       </div>
+
+      {editExpense && (
+        <div className="fixed inset-0 bg-slate-950/40 backdrop-blur-3xl z-[300] flex items-center justify-center p-4">
+           <div className="bg-white w-full max-w-lg rounded-3xl border-4 border-slate-50 shadow-3xl p-8 md:p-12 space-y-12 animate-fade-up text-black italic italic">
+                <div className="text-center space-y-3">
+                   <div className="mx-auto w-16 h-16 bg-slate-950 text-white rounded-2xl flex items-center justify-center shadow-2xl rotate-3 mb-6">
+                    <Edit2 size={28} />
+                  </div>
+                  <h3 className="text-3xl font-black uppercase italic leading-none">Modify Record</h3>
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.4em]">Audit Trail Correction</p>
+                </div>
+                <form onSubmit={handleUpdateExpense} className="space-y-8">
+                   <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-bold text-slate-400 ml-4 uppercase tracking-widest italic">Date</label>
+                        <input name="date" type="date" defaultValue={editExpense.date} className="premium-input !h-14 font-black !bg-slate-950 text-white border-none" required />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-bold text-slate-400 ml-4 uppercase tracking-widest italic">Category</label>
+                        <select name="category" defaultValue={editExpense.category} className="premium-input !h-14 font-black uppercase italic !bg-slate-50 border-slate-100" required>
+                             {["teaSnacks", "transport", "material", "utilities", "salary", "bonus", "others"].map(c => <option key={c} value={c}>{t(c)}</option>)}
+                        </select>
+                      </div>
+                   </div>
+                   <div className="space-y-2">
+                      <label className="text-[10px] font-bold text-slate-400 ml-4 uppercase tracking-widest italic">Description</label>
+                      <input name="description" defaultValue={editExpense.description} className="premium-input !h-14 font-black uppercase italic !bg-slate-50 border-slate-100" required />
+                   </div>
+                   <div className="bg-slate-950 p-10 rounded-2xl shadow-2xl text-center">
+                    <label className="text-[11px] font-black text-white/40 uppercase tracking-[0.5em] mb-4 block">ADJUSTED AMOUNT</label>
+                    <input name="amount" type="number" defaultValue={editExpense.amount} className="w-full text-center text-7xl font-black bg-transparent border-none text-white outline-none leading-none h-24" required />
+                  </div>
+                   <div className="flex gap-4">
+                      <button type="button" onClick={() => setEditExpense(null)} className="flex-1 py-6 rounded-full font-black text-[10px] uppercase tracking-[0.2em] bg-slate-50 text-slate-400 hover:text-black transition-all">Cancel</button>
+                      <button type="submit" className="flex-[2] py-6 rounded-full font-black text-[10px] uppercase tracking-[0.2em] bg-blue-600 text-white shadow-2xl border-b-[10px] border-blue-900 transition-all active:scale-95">Update Ledger</button>
+                   </div>
+                </form>
+           </div>
+        </div>
+      )}
     </div>
   );
 };
 
 export default ExpensePanel;
+

@@ -1,12 +1,4 @@
 import React, { useState, useMemo } from "react";
-import { Card, Row, Col, Typography, Divider, QRCode, Tag, ConfigProvider } from 'antd';
-const { Title, Text } = Typography;
-
-const QR_Slip_Theme = {
-  token: { fontFamily: 'Inter, sans-serif', borderRadius: 8, fontSize: 12, colorTextBase: '#000000' },
-  components: { Card: { paddingLG: 16 }, Typography: { fontSizeHeading4: 18, fontSizeHeading5: 14 } }
-};
-
 import {
   Scissors,
   Database,
@@ -30,7 +22,8 @@ import {
   Settings,
   ChevronRight,
   Share2,
-  MessageCircle
+  MessageCircle,
+  AlertCircle as AlertIcon
 } from "lucide-react";
 import QRScanner from "../QRScanner";
 import UniversalSlip from "../UniversalSlip";
@@ -87,23 +80,22 @@ const FactoryPanel = ({
   ]);
   const [selectedLot, setSelectedLot] = useState("");
 
-  // Removed redundant isWorker since it's defined above
   const workers = (masterData.workerCategories || {})[type] || [];
 
   const filteredProductions = (masterData.productions || []).filter((p) => {
     if (p.type !== type) return false;
     
-    // STRICT FILTER: Workers ONLY see their own work
     if (isWorker) {
         const userNameNormalized = user?.name?.trim().toLowerCase();
         const workerNameNormalized = p.worker?.trim().toLowerCase();
         if (userNameNormalized !== workerNameNormalized) return false;
     }
 
+    const searchLower = lotSearch.toLowerCase();
     return (
-      (p.worker?.toLowerCase() || '').includes(lotSearch.toLowerCase()) ||
-      (p.design?.toLowerCase() || '').includes(lotSearch.toLowerCase()) ||
-      (p.lotNo?.toLowerCase() || '').includes(lotSearch.toLowerCase())
+      (p.worker?.toLowerCase() || '').includes(searchLower) ||
+      (p.design?.toLowerCase() || '').includes(searchLower) ||
+      (p.lotNo?.toLowerCase() || '').includes(searchLower)
     );
   });
 
@@ -114,7 +106,7 @@ const FactoryPanel = ({
     (p) => p.status === "Received",
   );
 
-  const availableLots = React.useMemo(() => {
+  const availableLots = useMemo(() => {
     const productions = masterData.productions || [];
     const cutting = masterData.cuttingStock || [];
     const lots = [];
@@ -604,16 +596,16 @@ const FactoryPanel = ({
   }
 
   return (
-    <div className="space-y-4 pb-24 animate-fade-up px-1 md:px-2 italic text-black font-outfit uppercase">
+    <div className="space-y-6 pb-24 animate-fade-up px-1 md:px-2 text-slate-950">
       {/* QR Scanner Modal */}
       {showQR && (
-        <div className="fixed inset-0 z-[1000] bg-black/90 backdrop-blur-3xl flex items-center justify-center p-4">
-             <div className="bg-white rounded-[4rem] p-12 w-full max-w-sm relative">
-                  <button onClick={() => setShowQR(false)} className="absolute top-8 right-8 p-3 bg-slate-100 rounded-full hover:bg-black hover:text-white transition-all">
-                      <X size={24} />
+        <div className="fixed inset-0 z-[1000] bg-slate-950/40 backdrop-blur-3xl flex items-center justify-center p-4">
+             <div className="bg-white dark:bg-slate-900 rounded-xl p-10 w-full max-w-sm relative shadow-2xl border border-slate-100 dark:border-slate-800">
+                  <button onClick={() => setShowQR(false)} className="absolute top-6 right-6 p-2.5 bg-slate-50 dark:bg-slate-800 rounded-xl hover:bg-slate-950 hover:text-white transition-all">
+                      <X size={20} />
                   </button>
-                  <h3 className="text-2xl font-black italic mb-8 text-center">{type === 'sewing' ? 'সেলাই' : 'স্টোন'} স্লিপ স্ক্যান</h3>
-                  <div className="rounded-[3rem] overflow-hidden border-4 border-black">
+                  <h3 className="text-xl font-bold italic mb-8 text-center uppercase tracking-tight">স্লিপ স্ক্যান (QR SCAN)</h3>
+                  <div className="rounded-xl overflow-hidden border-2 border-slate-950 dark:border-slate-700 shadow-xl">
                       <QRScanner onScan={(data) => {
                           if (data) {
                               setLotSearch(data);
@@ -623,255 +615,201 @@ const FactoryPanel = ({
                           }
                       }} />
                   </div>
-                  <p className="text-[10px] font-black text-center mt-8 text-slate-400 italic">লট স্লিপের QR কোডটি সামনে ধরুন</p>
+                  <p className="text-[10px] font-bold text-center mt-8 text-slate-400 uppercase tracking-widest italic">স্লিপের কিউআর কোড সামনে ধরুন</p>
              </div>
         </div>
       )}
 
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
-        <div className="flex items-center gap-6">
+      {/* Header HUD */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8">
+        <div className="flex items-center gap-4">
           <button
             onClick={() => setActivePanel("Overview")}
-            className="w-12 h-12 flex items-center justify-center bg-white border border-slate-200 rounded-xl hover:bg-black hover:text-white transition-all shadow-sm"
+            className="w-10 h-10 flex items-center justify-center bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl hover:bg-slate-950 hover:text-white transition-all shadow-sm"
           >
-            <ArrowLeft size={20} />
+            <ArrowLeft size={18} />
           </button>
-          <div>
-            <h1 className="section-header">
-              {type === "sewing" ? 'সেলাই' : 'স্টোন'} <span className="text-slate-500">ইউনিট প্রোডাকশন</span>
+          <div className="space-y-1">
+            <h1 className="text-3xl font-bold tracking-tight text-slate-950 dark:text-white uppercase leading-none">
+              {type === "sewing" ? 'সেলাই' : 'স্টোন'} <span className="text-blue-600">উৎপাদন ইউনিট</span>
             </h1>
-            <p className="text-[11px] font-black text-slate-500 uppercase tracking-[0.4em] mt-2 italic">
-               সিস্টেম সচল V4.2 — {type === 'sewing' ? 'SEWING' : 'STONE'} DIVISION
+            <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest italic leading-none mt-1">
+               সিস্টেম সচল V5.0 — {type.toUpperCase()} PRODUCTION HUB
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-6 w-full md:w-auto">
+        <div className="flex items-center gap-3 w-full md:w-auto">
           {!isWorker && (
             <button
               onClick={() => setShowIssueModal(true)}
-              className="px-10 py-5 bg-black text-white rounded-2xl font-black uppercase text-xs tracking-widest shadow-2xl flex items-center gap-3 hover:scale-105 active:scale-95 transition-all italic border-b-[6px] border-zinc-900"
+              className="action-btn-primary !px-6 !py-3.5 shadow-lg flex items-center gap-2"
             >
-              <Plus size={20} strokeWidth={3} />
-              নতুন কাজ প্রদান (ISSUE)
+              <Plus size={16} strokeWidth={3} />
+              নতুন কাজ দিন (Issue Job)
             </button>
           )}
         </div>
       </div>
-      {/* Unified Floating Filter Bar */}
-      <div className="floating-header-group mb-12 p-3 dark:bg-zinc-900 border-none shadow-2xl">
-          <div className="flex flex-col lg:flex-row items-center gap-6 w-full">
-              <div className="flex items-center gap-2 bg-slate-100 dark:bg-black/50 p-2 rounded-2xl w-full lg:w-auto overflow-x-auto no-scrollbar">
-                  {["active", "history", (isAdmin || isManager) && "payments"].filter(Boolean).map((v) => (
-                    <button
-                      key={v}
-                      onClick={() => setView(v)}
-                      className={`px-10 py-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${view === v ? 'bg-black text-white dark:bg-white dark:text-black shadow-lg italic' : 'text-slate-500 hover:text-black dark:hover:text-white'}`}
-                    >
-                      {v === 'active' ? 'চলমান প্রজেক্ট' : v === 'history' ? 'পুরাতন হিসেব' : 'পেমেন্ট ও লেজার'}
-                    </button>
-                  ))}
-              </div>
-              
-              <div className="flex-1 relative w-full group">
-                  <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none text-slate-500 group-focus-within:text-black dark:group-focus-within:text-white transition-colors">
-                      <Search size={16} />
-                  </div>
-                  <input
-                      placeholder="লট, ডিজাইন বা কারিগর দিয়ে খুঁজুন..."
-                      className="w-full bg-slate-50 dark:bg-black/20 h-16 rounded-2xl pl-16 pr-8 text-xs font-black uppercase tracking-widest italic outline-none border border-transparent focus:border-black/10 dark:focus:border-white/10 transition-all text-black dark:text-white"
-                      value={lotSearch}
-                      onChange={(e) => setLotSearch(e.target.value)}
-                  />
-                  <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
-                      <button 
-                        onClick={() => setShowQR(true)}
-                        className="w-10 h-10 bg-black text-white rounded-xl flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-lg"
-                        title="Scan QR Code"
-                      >
-                         <Camera size={16} />
-                      </button>
-                  </div>
+
+      {/* Filter & Navigation Bar */}
+      <div className="bg-white dark:bg-slate-900 p-1.5 flex flex-col xl:flex-row items-center gap-4 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm">
+          <div className="pill-nav !p-1 w-full xl:w-auto overflow-x-auto no-scrollbar flex gap-1">
+              {["active", "history", (isAdmin || isManager) && "payments"].filter(Boolean).map((v) => (
+                <button
+                  key={v}
+                  onClick={() => setView(v)}
+                  className={`pill-tab !px-6 !py-2.5 !text-[10px] ${view === v ? 'pill-tab-active' : 'text-slate-400 hover:text-slate-950 dark:hover:text-white'}`}
+                >
+                  {v === 'active' ? 'চলমান প্রজেক্ট' : v === 'history' ? 'পুরাতন হিসেব' : 'পেমেন্ট ও লেজার'}
+                </button>
+              ))}
+          </div>
+          
+          <div className="flex-1 relative w-full group">
+              <Search size={14} className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors" />
+              <input
+                  placeholder="লট, ডিজাইন বা কারিগর দিয়ে খুঁজুন (Search)..."
+                  className="premium-input !pl-12 !h-11 !text-[11px] !bg-slate-50 dark:!bg-slate-800/50"
+                  value={lotSearch}
+                  onChange={(e) => setLotSearch(e.target.value)}
+              />
+              <div className="absolute right-2 top-1/2 -translate-y-1/2">
+                  <button 
+                    onClick={() => setShowQR(true)}
+                    className="w-8 h-8 bg-slate-950 text-white rounded-lg flex items-center justify-center hover:bg-slate-900 transition-all active:scale-90 shadow-lg"
+                    title="Scan QR"
+                  >
+                     <Camera size={14} />
+                  </button>
               </div>
           </div>
       </div>
 
-      {view === "active" && (
-        <div className="space-y-4">
+      {/* Section Content */}
+      <div className="min-h-[60vh]">
+        {view === "active" && (
+          <div className="grid grid-cols-1 gap-4">
+            {activeProductions.length === 0 ? (
+              <div className="h-64 flex flex-col items-center justify-center bg-white dark:bg-slate-900 rounded-xl border border-dashed border-slate-200 dark:border-slate-800 opacity-60">
+                <Box size={40} strokeWidth={1} className="text-slate-400 mb-4" />
+                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500">কোন চলমান প্রজেক্ট নেই (Empty)</p>
+              </div>
+            ) : (
+              activeProductions.map((p, idx) => (
+                <div
+                  key={p.id || idx}
+                  className="saas-card flex flex-col md:flex-row justify-between items-center gap-6 group hover:border-slate-950 dark:hover:border-white transition-all animate-fade-up"
+                >
+                  <div className="flex items-center gap-6 flex-1 w-full">
+                    <div className="w-14 h-14 bg-slate-950 text-white flex items-center justify-center text-xl font-bold italic rounded-xl shadow-lg group-hover:rotate-3 transition-transform shrink-0">
+                      {p.size}
+                    </div>
+                    <div className="space-y-1 overflow-hidden">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <h4 className="text-xl font-bold tracking-tight text-slate-950 dark:text-white uppercase leading-none truncate max-w-[200px]">
+                          {p.worker}
+                        </h4>
+                        <span className="px-2 py-0.5 bg-blue-600/10 text-blue-600 text-[9px] font-bold rounded border border-blue-600/20">#{p.lotNo}</span>
+                      </div>
+                      <div className="flex items-center gap-3 text-slate-500 text-[10px] font-bold uppercase tracking-widest italic overflow-hidden">
+                        <span className="flex items-center gap-1 shrink-0"><Scissors size={10} /> {p.design}</span>
+                        <span className="opacity-20">•</span>
+                        <span className="truncate">{p.date}</span>
+                      </div>
+                    </div>
+                  </div>
 
-          {activeProductions.length === 0 ? (
-            <div className="h-64 flex flex-col items-center justify-center bg-white rounded-3xl border-2 border-dashed border-slate-100 opacity-70">
-              <Box size={48} strokeWidth={1} />
-              <p className="text-[10px] font-black uppercase tracking-[0.4em] mt-6">Zero Active Nodes</p>
-            </div>
-          ) : (
-            activeProductions.map((p, idx) => (
-              <div
-                key={p.id || idx}
-                className="item-card flex flex-col md:flex-row justify-between items-center gap-8 group"
-              >
-                <div className="flex items-center gap-8 flex-1 w-full md:w-auto">
-                  <div className="w-14 h-14 bg-slate-50 flex items-center justify-center text-3xl font-black italic rounded-xl border border-slate-100 shadow-inner group-hover:bg-black group-hover:text-white transition-all transform group-hover:rotate-6">
-                    {p.size}
-                  </div>
-                  <div className="space-y-2 flex-1">
-                    <div className="flex items-center gap-4">
-                      <h4 className="text-xl md:text-2xl font-black italic uppercase leading-none tracking-tighter">
-                        • {p.pataType ? `পাতা ${p.pataType.toUpperCase()} ` : ""}{p.type.toUpperCase()} # {p.worker}
-                        {masterData.workerDocs?.find(d => d.name.toUpperCase() === p.worker?.toUpperCase() && d.dept === type)?.workerId && (
-                           <span className="ml-3 px-2 py-0.5 bg-emerald-100 text-emerald-700 text-[8px] font-black rounded-full shadow-sm relative -top-1">ID: {masterData.workerDocs?.find(d => d.name.toUpperCase() === p.worker?.toUpperCase() && d.dept === type)?.workerId}</span>
-                        )}
-                      </h4>
-                      <span className="badge-standard">#{p.lotNo}</span>
+                  <div className="flex items-center gap-8 w-full md:w-auto justify-between border-t md:border-t-0 border-slate-50 dark:border-slate-800 pt-5 md:pt-0">
+                    <div className="flex gap-6">
+                      <div className="text-center">
+                        <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1 leading-none">BORKA</p>
+                        <p className="text-2xl font-bold text-slate-950 dark:text-white leading-none">{p.issueBorka}</p>
+                      </div>
+                      <div className="text-center">
+                        <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1 leading-none">HIJAB</p>
+                        <p className="text-2xl font-bold text-slate-400 leading-none">{p.issueHijab}</p>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-4 text-slate-500 text-[11px] font-black uppercase italic tracking-widest">
-                      <span>• {p.design}</span>
-                      <span>• {p.date}</span>
-                      {p.pataQty > 0 && <span className="text-black">PATA: {p.pataQty}</span>}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-12 w-full md:w-auto justify-between border-t md:border-t-0 pt-6 md:pt-0">
-                  <div className="flex gap-12">
-                    <div className="text-center">
-                      <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1 italic">Borka</p>
-                      <p className="text-4xl font-black italic tracking-tighter leading-none">{p.issueBorka}</p>
-                    </div>
-                    <div className="text-center">
-                      <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1 italic">Hijab</p>
-                      <p className="text-4xl font-black italic tracking-tighter leading-none">{p.issueHijab}</p>
-                    </div>
-                  </div>
-                  <div className="flex gap-3">
-                    {!isWorker && (
+                    <div className="flex gap-2">
+                      {!isWorker && (
+                        <button
+                          onClick={() => setReceiveModal(p)}
+                          className="bg-slate-950 text-white px-5 py-2.5 rounded-xl text-[10px] font-bold uppercase shadow-lg hover:bg-slate-900 active:scale-95 transition-all"
+                        >
+                           জমা নিন (REC)
+                        </button>
+                      )}
                       <button
-                        onClick={() => setReceiveModal(p)}
-                        className="black-button"
+                        onClick={() => setPrintSlip(p)}
+                        className="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-500 hover:bg-slate-950 hover:text-white transition-all border border-slate-100 dark:border-slate-800"
                       >
-                        {t('received')} (REC)
+                        <Printer size={16} />
                       </button>
-                    )}
-                    <button
-                      onClick={() => setPrintSlip(p)}
-                      className="w-12 h-12 flex items-center justify-center rounded-full bg-slate-50 text-slate-500 hover:bg-black hover:text-white transition-all"
-                    >
-                      <Printer size={18} />
-                    </button>
-                    {isAdmin && (
-                      <div className="flex gap-2">
+                      {isAdmin && (
                         <button
                           onClick={() => setEditModal(p)}
-                          className="w-12 h-12 flex items-center justify-center rounded-full bg-slate-50 text-amber-500 hover:bg-amber-500 hover:text-white transition-all shadow-sm"
+                          className="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-500 hover:bg-blue-600 hover:text-white transition-all border border-slate-100 dark:border-slate-800"
                         >
-                          <Settings size={18} />
+                          <Settings size={16} />
                         </button>
-                        <button
-                          onClick={() => {
-                            if (window.confirm("আপনি কি নিশ্চিত যে এটি ডিলিট করতে চান?")) {
-                              setMasterData(prev => ({ ...prev, productions: (prev.productions || []).filter(prod => prod.id !== p.id) }));
-                            }
-                          }}
-                          className="w-12 h-12 flex items-center justify-center rounded-full bg-rose-50 text-rose-500 hover:bg-rose-500 hover:text-white transition-all shadow-sm"
-                        >
-                          <Trash2 size={18} />
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            ))
-          )}
-        </div>
-      )}
-
-      {view === "history" && (
-        <div className="space-y-4">
-          {historyProductions.length === 0 ? (
-            <div className="h-64 flex items-center justify-center bg-white rounded-3xl border-2 border-dashed border-slate-100 opacity-30 italic font-black uppercase tracking-widest">
-              Archive Zero
-            </div>
-          ) : (
-            historyProductions.map((p, idx) => (
-              <div
-                key={p.id || idx}
-                className="item-card flex flex-col md:flex-row justify-between items-center gap-8 group"
-              >
-                <div className="flex items-center gap-8 flex-1 w-full md:w-auto">
-                  <div className="w-14 h-14 bg-black text-white flex items-center justify-center text-3xl font-black italic rounded-xl shadow-xl transform group-hover:rotate-6 transition-all">
-                    {p.size}
-                  </div>
-                  <div className="space-y-2 flex-1">
-                    <div className="flex items-center gap-4">
-                      <h4 className="text-xl md:text-2xl font-black italic uppercase leading-none tracking-tighter">
-                        • {p.design} # {p.worker}
-                      </h4>
-                      <span className="badge-standard">#{p.lotNo}</span>
-                    </div>
-                    <div className="flex items-center gap-4 text-slate-500 text-[11px] font-black uppercase italic tracking-widest">
-                      <span>• {p.date}</span>
-                      <span className="text-emerald-500 font-black">• DONE {p.receiveDate}</span>
-                      {(p.wasteBorka > 0 || p.wasteHijab > 0) && (
-                        <span className="text-rose-500 font-black tracking-widest border-l border-slate-100 pl-4 ml-2">
-                          {(p.wasteBorka || 0) + (p.wasteHijab || 0)} WASTED
-                        </span>
                       )}
                     </div>
                   </div>
                 </div>
+              ))
+            )}
+          </div>
+        )}
 
-                <div className="flex gap-12 text-center w-full md:w-auto justify-between border-t md:border-t-0 pt-6 md:pt-0">
-                  <div className="flex gap-12">
-                    <div>
-                      <p className="text-[9px] font-black text-slate-500 mb-1 uppercase tracking-widest">Borka</p>
-                      <p className="text-4xl font-black italic tracking-tighter leading-none">{p.receivedBorka || 0}</p>
+        {view === "history" && (
+          <div className="grid grid-cols-1 gap-4">
+            {historyProductions.length === 0 ? (
+              <div className="h-64 flex flex-col items-center justify-center bg-white dark:bg-slate-900 rounded-xl border border-dashed border-slate-200 dark:border-slate-800 opacity-60">
+                <Archive size={40} strokeWidth={1} className="text-slate-400 mb-4" />
+                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500">আর্কাইভ খালি (Empty Archive)</p>
+              </div>
+            ) : (
+              historyProductions.map((p, idx) => (
+                <div
+                  key={p.id || idx}
+                  className="saas-card flex flex-col md:flex-row justify-between items-center gap-6 group hover:border-slate-950 dark:hover:border-white transition-all opacity-80 hover:opacity-100 italic"
+                >
+                  <div className="flex items-center gap-6 flex-1 w-full">
+                    <div className="w-14 h-14 bg-slate-100 dark:bg-slate-800 text-slate-400 flex items-center justify-center text-xl font-bold rounded-xl border border-slate-200 dark:border-slate-700">
+                      {p.size}
                     </div>
-                    <div>
-                      <p className="text-[9px] font-black text-slate-500 mb-1 uppercase tracking-widest">Hijab</p>
-                      <p className="text-4xl font-black italic tracking-tighter leading-none">{p.receivedHijab || 0}</p>
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <h4 className="text-xl font-bold text-slate-950 dark:text-white line-through opacity-50">{p.worker}</h4>
+                        <span className="text-[10px] text-emerald-600 font-bold bg-emerald-50 px-2 py-0.5 rounded leading-none">সফল (DONE)</span>
+                      </div>
+                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{p.design} • {p.receiveDate}</p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-4 ml-6">
-                    <div className="text-right">
-                      <p className="text-[9px] font-black text-slate-500 mb-1 uppercase tracking-widest">Wage</p>
-                      <p className="text-3xl font-black text-emerald-500 italic">৳{p.rate}</p>
+                  <div className="flex items-center gap-10">
+                    <div className="flex gap-8">
+                       <div className="text-right">
+                          <p className="text-[9px] font-bold text-slate-400 uppercase leading-none mb-1">RECEIVED</p>
+                          <p className="text-xl font-bold">{p.receivedBorka + p.receivedHijab}</p>
+                       </div>
+                       <div className="text-right">
+                          <p className="text-[9px] font-bold text-slate-400 uppercase leading-none mb-1">WAGE</p>
+                          <p className="text-xl font-bold text-emerald-600">৳{p.rate}</p>
+                       </div>
                     </div>
                     <button
-                      onClick={() => setPrintSlip(p)}
-                      className="w-12 h-12 flex items-center justify-center rounded-full bg-slate-50 text-slate-500 hover:bg-black hover:text-white transition-all shadow-sm"
-                    >
-                      <Printer size={18} />
-                    </button>
-                    {isAdmin && (
-                      <div className="flex gap-2">
-                        <button
-                          onClick={() => setEditModal(p)}
-                          className="w-12 h-12 flex items-center justify-center rounded-full bg-slate-50 text-amber-500 hover:bg-amber-500 hover:text-white transition-all shadow-sm"
-                        >
-                          <Settings size={18} />
-                        </button>
-                        <button
-                          onClick={() => {
-                            if (confirm('মুছে ফেলবেন?')) {
-                              setMasterData(prev => ({
-                                ...prev,
-                                productions: (prev.productions || []).filter(x => x.id !== p.id)
-                              }));
-                            }
-                          }}
-                          className="w-12 h-12 flex items-center justify-center rounded-full bg-rose-50 text-rose-500 hover:bg-rose-500 hover:text-white transition-all shadow-sm"
-                        >
-                          <Trash2 size={18} />
-                        </button>
-                      </div>
-                    )}
+                        onClick={() => setPrintSlip(p)}
+                        className="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-400 hover:bg-slate-950 hover:text-white transition-all"
+                      >
+                        <Printer size={16} />
+                      </button>
                   </div>
                 </div>
-              </div>
-            ))
-          )}
-        </div>
-      )}
+              ))
+            )}
+          </div>
+        )}
+      </div>
 
       {view === "payments" && (
         <div className="space-y-6">
@@ -886,46 +824,46 @@ const FactoryPanel = ({
               return (
                 <div
                   key={w}
-                  className="item-card flex flex-col md:flex-row justify-between items-center gap-10 group"
+                  className="saas-card flex flex-col md:flex-row justify-between items-center gap-10 group animate-fade-up"
                 >
                   <div className="flex items-center gap-8 flex-1">
-                    <div className="w-12 h-12 md:w-16 md:h-16 bg-black text-white rounded-full flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform">
-                      <User size={30} />
+                    <div className="w-12 h-12 md:w-16 md:h-16 bg-slate-950 text-white rounded-xl flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform">
+                      <User size={28} />
                     </div>
-                    <div>
-                      <h4 className="text-xl md:text-2xl font-black italic uppercase leading-none tracking-tighter flex items-center gap-3">
+                    <div className="space-y-1">
+                      <h4 className="text-xl md:text-2xl font-black tracking-tight text-slate-900 dark:text-white uppercase leading-none flex items-center gap-3">
                         {w}
                         {masterData.workerDocs?.find(d => d.name.toUpperCase() === w.toUpperCase() && d.dept === type)?.workerId && (
-                           <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-[8px] font-black rounded-full shadow-sm">ID: {masterData.workerDocs?.find(d => d.name.toUpperCase() === w.toUpperCase() && d.dept === type)?.workerId}</span>
+                           <span className="px-2 py-1 bg-emerald-500/10 text-emerald-600 text-[10px] font-bold rounded-md border border-emerald-500/20">ID: {masterData.workerDocs?.find(d => d.name.toUpperCase() === w.toUpperCase() && d.dept === type)?.workerId}</span>
                         )}
                       </h4>
-                      <p className="text-xs font-black text-slate-500 uppercase tracking-[0.4em] italic opacity-60">
-                        SENIOR {type.toUpperCase()} OPERATIVE
+                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest italic opacity-60">
+                        Senior Operator // {type.toUpperCase()} UNIT
                       </p>
                     </div>
                   </div>
                   <div className="flex gap-16 text-center">
-                    <div className="bg-emerald-50/50 px-10 py-6 rounded-3xl border border-emerald-50">
-                      <p className="text-[10px] font-black text-emerald-400 uppercase mb-2">
-                        Pending Balance
+                    <div className="bg-emerald-500/5 px-8 md:px-12 py-4 md:py-6 rounded-xl border border-emerald-500/10">
+                      <p className="text-[10px] font-black text-emerald-500 uppercase mb-2 tracking-widest leading-none">
+                        Pending Wage
                       </p>
-                      <p className="text-xl md:text-2xl font-black italic text-emerald-600">
+                      <p className="text-xl md:text-3xl font-black text-emerald-600 leading-none">
                         ৳{due.toLocaleString()}
                       </p>
                     </div>
                   </div>
-                  <div className="flex gap-4 w-full md:w-auto">
+                  <div className="flex gap-3 w-full md:w-auto">
                     <button
                       onClick={() => setPayModal(w)}
-                      className="flex-1 md:flex-none px-6 py-3 bg-black text-white rounded-full font-black uppercase text-xs tracking-widest shadow-2xl border-b-8 border-zinc-900 hover:scale-105 active:scale-95 transition-all"
+                      className="action-btn-primary flex-1 md:flex-none !px-8 !py-4 !text-xs !rounded-xl"
                     >
-                      DISBURSE PAY
+                      DISBURSE
                     </button>
                     <button
                       onClick={() => setLedgerModal(w)}
-                      className="p-6 bg-white border-4 border-slate-50 text-slate-500 rounded-full hover:border-black hover:text-black transition-all"
+                      className="w-12 h-12 flex items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-500 hover:bg-slate-900 hover:text-white transition-all border border-slate-200 dark:border-slate-700"
                     >
-                      <DollarSign size={24} />
+                      <DollarSign size={20} />
                     </button>
                   </div>
                 </div>
@@ -937,7 +875,7 @@ const FactoryPanel = ({
 
       {showIssueModal && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-3xl z-[250] flex items-start md:items-center justify-center p-2 md:p-4 overflow-y-auto">
-          <div className="bg-white w-full max-w-4xl my-auto rounded-3xl border-2 border-black shadow-3xl p-6 md:p-16 space-y-12 animate-fade-up text-black italic relative font-outfit uppercase">
+          <div className="bg-white w-full max-w-4xl my-auto rounded-xl border-2 border-slate-950 shadow-3xl p-6 md:p-16 space-y-12 animate-fade-up text-slate-950 italic relative font-outfit uppercase">
             <button
               onClick={() => setShowIssueModal(false)}
               className="absolute top-8 right-8 p-4 bg-slate-50 hover:bg-black hover:text-white rounded-full transition-all z-10 border border-slate-100 shadow-sm"
@@ -949,10 +887,10 @@ const FactoryPanel = ({
                 <Plus size={32} strokeWidth={3} />
               </div>
               <h3 className="text-3xl md:text-4xl font-black italic tracking-tighter uppercase leading-none">
-                <span className="text-black">Job</span> <span className="text-transparent" style={{ WebkitTextStroke: "1px #cbd5e1" }}>Assignment</span>
+                <span className="text-slate-950">জব</span> <span className="text-transparent" style={{ WebkitTextStroke: "1px #cbd5e1" }}>অ্যাসাইনমেন্ট</span>
               </h3>
               <p className="inline-block px-4 py-1.5 bg-slate-100 text-slate-600 rounded-full text-[10px] font-black uppercase tracking-widest italic">
-                {type.toUpperCase()} UNIT MODE
+                {type === 'sewing' ? 'মাশিন সেলাই' : 'স্টোন ওয়ার্ক'} ইউনিট
               </p>
             </div>
 
@@ -972,26 +910,26 @@ const FactoryPanel = ({
               <div className="lg:col-span-6 space-y-8">
                 
                 {/* Lot Selection Box */}
-                <div className="bg-slate-50 p-6 md:p-8 rounded-[2rem] border border-slate-100 relative group transition-all hover:border-black">
+                <div className="bg-slate-50 p-6 md:p-8 rounded-xl border border-slate-100 relative group transition-all hover:border-slate-950">
                   <div className="flex items-center gap-3 mb-4">
                     <Search size={18} className="text-slate-500" />
-                    <label className="text-xs font-black text-black uppercase tracking-widest">
-                      Select Available Lot <span className="text-slate-500 text-[10px] ml-1">(লট পছন্দ করুন)</span>
+                    <label className="text-xs font-black text-slate-950 uppercase tracking-widest">
+                      প্রাপ্য লট নির্বাচন করুন <span className="text-slate-500 text-[10px] ml-1">(Select Available Lot)</span>
                     </label>
                   </div>
                   <div className="relative">
                     <select
-                      className="w-full bg-white px-6 py-4 border-2 border-slate-200 rounded-2xl font-black text-sm uppercase outline-none focus:border-black transition-all appearance-none cursor-pointer"
+                      className="w-full bg-white px-6 py-4 border-2 border-slate-200 rounded-xl font-black text-sm uppercase outline-none focus:border-slate-950 transition-all appearance-none cursor-pointer"
                       value={selectedLot}
                       onChange={(e) => handleLotSelect(e.target.value)}
                     >
-                      <option value="">-- LOT NO / DESIGN... --</option>
+                      <option value="">-- লট নং / ডিজাইন... --</option>
                       {availableLots.map((l) => (
                         <option
                           key={`${l.design}|${l.color}|${l.lotNo}`}
                           value={`${l.design}|${l.color}|${l.lotNo}`}
                         >
-                          {l.design} | {l.color} | #{l.lotNo} ({l.totalAvailable} Pcs)
+                          {l.design} | {l.color} | #{l.lotNo} ({l.totalAvailable} পিস)
                         </option>
                       ))}
                     </select>
@@ -999,19 +937,19 @@ const FactoryPanel = ({
                   </div>
                   {availableLots.length === 0 && (
                     <div className="mt-4 p-4 bg-white border-2 border-dashed border-slate-200 rounded-xl flex items-center justify-center gap-2 text-slate-500">
-                       <Box size={16} /> <span className="text-[10px] font-black tracking-widest uppercase">No Matching Lots Found</span>
+                       <Box size={16} /> <span className="text-[10px] font-black tracking-widest uppercase">কোন লট পাওয়া যায়নি</span>
                     </div>
                   )}
                 </div>
 
                 <div className="bg-white space-y-6">
-                  <div>
-                    <label className="flex items-center gap-2 text-xs font-black text-black uppercase tracking-widest mb-3">
-                      <User size={16} className="text-slate-500" /> Select Worker <span className="text-slate-500 text-[10px]">(কারিগর নির্বাচন করুন)</span>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-bold text-slate-500 uppercase flex items-center gap-2 mb-2 tracking-widest">
+                      <User size={16} className="text-blue-600" /> কারিগর নির্বাচন করুন (Select Worker)
                     </label>
                     <div className="relative">
                       <select
-                        className="w-full bg-black text-white px-6 py-4 rounded-2xl font-black text-sm uppercase outline-none appearance-none cursor-pointer"
+                        className="w-full bg-black text-white px-6 py-4 rounded-xl font-black text-sm uppercase outline-none appearance-none cursor-pointer"
                         value={selection.worker}
                         onChange={(e) => {
                           const w = e.target.value;
@@ -1022,7 +960,7 @@ const FactoryPanel = ({
                           }));
                         }}
                       >
-                        <option value="">কারিগর সিলেক্ট করুন (Select Worker)</option>
+                        <option value="">কারিগর সিলেক্ট করুন...</option>
                         {workers.map((w) => {
                           const doc = masterData.workerDocs?.find(d => d.name.toUpperCase() === w.toUpperCase() && d.dept === type);
                           return (
@@ -1037,9 +975,9 @@ const FactoryPanel = ({
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-slate-50 p-4 shrink-0 rounded-2xl border border-slate-100 flex flex-col justify-center">
-                      <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Rate (রেট)</p>
-                      <div className="flex items-center gap-1 font-black text-emerald-600 text-2xl">
+                    <div className="bg-slate-50 dark:bg-slate-800 p-4 rounded-xl border border-slate-100 dark:border-slate-700 flex flex-col justify-center">
+                      <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">মজুরি রেট (Rate)</p>
+                      <div className="flex items-center gap-1 font-bold text-blue-600 text-2xl">
                          ৳
                          <input
                            type="number"
@@ -1050,38 +988,40 @@ const FactoryPanel = ({
                          />
                       </div>
                     </div>
-                    <div className="bg-slate-50 p-4 shrink-0 rounded-2xl border border-slate-100 flex flex-col justify-center">
-                      <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Date (তারিখ)</p>
+                    <div className="bg-slate-50 dark:bg-slate-800 p-4 rounded-xl border border-slate-100 dark:border-slate-700 flex flex-col justify-center">
+                      <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">তারিখ (Date)</p>
                       <input 
                         type="date"
-                        className="w-full bg-transparent text-sm font-black text-black outline-none p-0"
+                        className="w-full bg-transparent text-sm font-bold text-slate-900 dark:text-white outline-none p-0"
                         value={selection.date}
                         onChange={(e) => setSelection(p => ({ ...p, date: e.target.value }))}
                       />
                     </div>
-                    <div className="bg-slate-50 p-4 shrink-0 rounded-2xl border border-slate-100 flex flex-col justify-center">
-                      <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Design</p>
-                      <p className="text-sm font-black truncate">{selection.design || "---"}</p>
+                    <div className="bg-slate-50 dark:bg-slate-800 p-4 rounded-xl border border-slate-100 dark:border-slate-700 flex flex-col justify-center">
+                      <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">ডিজাইন (Design)</p>
+                      <p className="text-sm font-bold truncate text-slate-900 dark:text-white">{selection.design || "---"}</p>
                     </div>
-                    <div className="bg-slate-50 p-4 shrink-0 rounded-2xl border border-slate-100 flex flex-col justify-center">
-                      <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Color</p>
-                      <p className="text-sm font-black truncate">{selection.color || "---"}</p>
+                    <div className="bg-slate-50 dark:bg-slate-800 p-4 rounded-xl border border-slate-100 dark:border-slate-700 flex flex-col justify-center">
+                      <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">রঙ (Color)</p>
+                      <p className="text-sm font-bold truncate text-slate-900 dark:text-white">{selection.color || "---"}</p>
                     </div>
                   </div>
 
+
                   <div>
-                     <label className="text-[10px] font-black text-slate-500 uppercase block mb-2 tracking-widest">Optional Note (ঐচ্ছিক)</label>
+                     <label className="text-[10px] font-bold text-slate-500 uppercase block mb-2 tracking-widest">বিশেষ দ্রষ্টব্য (Optional Note)</label>
                      <input
                        type="text"
-                       className="w-full bg-slate-50 border border-slate-100 px-5 py-4 rounded-xl font-bold text-sm italic outline-none focus:border-black transition-all placeholder:text-slate-500"
-                       placeholder="Type Remarks..."
+                       className="premium-input !h-12 !bg-slate-50 dark:!bg-slate-800 text-sm font-medium"
+                       placeholder="কিছু মন্তব্য লিখুন..."
                        value={selection.note || ""}
                        onChange={(e) => setSelection(p => ({ ...p, note: e.target.value }))}
                      />
                   </div>
 
+
                   {type === "stone" && (
-                    <div className="bg-indigo-50/50 p-6 rounded-[2rem] border border-indigo-100 space-y-4">
+                    <div className="bg-indigo-50/50 p-6 rounded-xl border border-indigo-100 space-y-4">
                       <div className="flex justify-between items-center">
                         <label className="text-[10px] font-black text-indigo-400 uppercase tracking-widest italic">Pata Stock Control</label>
                         <span className="px-4 py-1.5 bg-white border border-indigo-100 rounded-full text-[10px] font-black text-indigo-600 shadow-sm animate-pulse">
@@ -1090,7 +1030,7 @@ const FactoryPanel = ({
                       </div>
                       <div className="relative">
                         <select
-                          className="w-full bg-white border-2 border-indigo-100 px-6 py-4 rounded-2xl font-black text-sm uppercase outline-none focus:border-indigo-500 transition-all appearance-none cursor-pointer"
+                          className="w-full bg-white border-2 border-indigo-100 px-6 py-4 rounded-xl font-black text-sm uppercase outline-none focus:border-indigo-500 transition-all appearance-none cursor-pointer"
                           value={selection.pataType}
                           onChange={(e) => setSelection(p => ({ ...p, pataType: e.target.value }))}
                         >
@@ -1107,11 +1047,11 @@ const FactoryPanel = ({
               </div>
 
               <div className="lg:col-span-6">
-                <div className="bg-slate-50 p-6 md:p-8 rounded-[2rem] border border-slate-100 h-full flex flex-col">
+                <div className="bg-slate-50 p-6 md:p-8 rounded-xl border border-slate-100 h-full flex flex-col">
                   <div className="flex items-center gap-3 mb-6">
                     <Layers size={18} className="text-slate-500" />
-                    <label className="text-xs font-black text-black uppercase tracking-widest">
-                       {t('qty')} & {t('category')}
+                    <label className="text-xs font-black text-slate-950 uppercase tracking-widest">
+                       পরিমাণ এবং ক্যাটাগরি <span className="text-slate-400 text-[9px] ml-1">(Qty & Size)</span>
                     </label>
                   </div>
 
@@ -1126,7 +1066,7 @@ const FactoryPanel = ({
                            const maxBorka = lotDetails?.sizes?.[row.size]?.remB || 0;
                            const maxHijab = lotDetails?.sizes?.[row.size]?.remH || 0;
                            return (
-                             <div key={idx} className="bg-white p-4 md:p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col gap-4 group hover:border-black transition-all">
+                             <div key={idx} className="bg-white p-4 md:p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col gap-4 group hover:border-slate-950 transition-all">
                                <div className="flex items-center gap-2">
                                    <select
                                      className="px-4 py-2 bg-black text-white rounded-lg text-sm font-black outline-none appearance-none"
@@ -1223,16 +1163,16 @@ const FactoryPanel = ({
                      <button
                        type="button"
                        onClick={() => setIssueSizes([...issueSizes, { size: "", borka: "", hijab: "", pataQty: "" }])}
-                       className="w-full py-4 border-2 border-dashed border-slate-200 rounded-2xl flex items-center justify-center gap-2 text-slate-500 hover:border-black hover:text-black transition-all text-[10px] font-black uppercase tracking-widest mt-4"
+                       className="w-full py-4 border-2 border-dashed border-slate-200 rounded-xl flex items-center justify-center gap-2 text-slate-500 hover:border-slate-950 hover:text-slate-950 transition-all text-[10px] font-black uppercase tracking-widest mt-4"
                      >
-                       <Plus size={14} /> Add Another Size
+                       <Plus size={14} /> আরও সাইজ যোগ করুন (Add Size)
                      </button>
                   </div>
                   
                   {/* Selection Summary Counter */}
                   {issueSizes.some(s => Number(s.borka || 0) > 0 || Number(s.hijab || 0) > 0) && (
                     <div className="mt-4 pt-4 border-t border-slate-100 flex justify-between items-center px-4">
-                        <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest italic leading-none">Selected Volume</p>
+                        <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest italic leading-none">নির্বাচিত মোট পরিমাণ (Total Volume)</p>
                         <div className="flex gap-6 items-baseline text-black">
                            <div className="flex items-baseline gap-1">
                                <span className="text-[10px] text-slate-500">BORKA:</span>
@@ -1248,96 +1188,97 @@ const FactoryPanel = ({
                 </div>
               </div>
             </div>
-            <div className="flex flex-col md:flex-row gap-4 pt-8 border-t border-slate-100">
+            <div className="flex flex-col md:flex-row gap-4 pt-8 border-t border-slate-100 dark:border-slate-800">
               <button
                 type="button"
                 onClick={() => setShowIssueModal(false)}
-                className="py-4 md:py-6 px-8 rounded-full bg-slate-50 border-2 border-slate-200 text-slate-500 font-black uppercase text-xs tracking-widest hover:bg-slate-200 transition-all font-outfit"
+                className="py-4 md:py-5 px-8 rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-500 font-bold uppercase text-[10px] tracking-widest hover:bg-slate-200 transition-all font-outfit"
               >
-                {t('cancel')}
+                বাতিল করুন
               </button>
               <button
                 type="submit"
                 name="print"
                 onClick={handleIssue}
-                className="py-4 md:py-6 px-10 rounded-full bg-slate-900 text-white font-black uppercase text-xs tracking-[0.2em] shadow-xl hover:bg-black transition-all flex items-center justify-center gap-3 font-outfit"
+                className="py-4 md:py-5 px-10 rounded-xl bg-blue-600 text-white font-bold uppercase text-[10px] tracking-widest shadow-xl hover:bg-blue-700 transition-all flex items-center justify-center gap-3 font-outfit"
               >
-                <Printer size={18} /> {t('printNote')}
+                <Printer size={16} /> প্রিন্ট ও সেভ
               </button>
               <button
                 type="submit"
                 onClick={handleIssue}
-                className="flex-[2] py-4 md:py-6 rounded-full bg-emerald-600 text-white font-black uppercase text-sm tracking-[0.2em] shadow-emerald-600/30 shadow-2xl hover:scale-[1.02] active:scale-95 transition-all text-center flex items-center justify-center gap-3 font-outfit"
+                className="flex-[2] py-4 md:py-5 rounded-xl bg-slate-950 text-white font-bold uppercase text-xs tracking-widest shadow-2xl hover:scale-[1.02] active:scale-95 transition-all text-center flex items-center justify-center gap-3 font-outfit"
               >
-                {t('issueWork')} <span className="text-[10px] hidden md:inline">(নিশ্চিত করুন)</span> <CheckCircle size={18} />
+                নিশ্চিত করুন <CheckCircle size={18} />
               </button>
             </div>
+
           </div>
         </div>
       )}
 
       {receiveModal && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-3xl z-[300] flex items-center justify-center p-4">
-          <div className="bg-white w-full max-w-sm rounded-2xl md:rounded-[4.5rem] border-4 border-slate-50 shadow-3xl p-5 md:p-6 space-y-10 animate-fade-up text-black italic">
-            <div className="text-center space-y-2">
-              <h3 className="text-3xl font-black uppercase italic tracking-tighter leading-none">
-                {t('receive')}
+        <div className="fixed inset-0 bg-slate-950/20 backdrop-blur-md z-[300] flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-slate-900 w-full max-w-sm rounded-xl shadow-2xl p-8 space-y-8 animate-fade-up">
+            <div className="text-center space-y-1">
+              <h3 className="text-2xl font-bold text-slate-950 dark:text-white uppercase">
+                উৎপাদন গ্রহণ (Receive)
               </h3>
-              <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">
                 {receiveModal.worker} • {receiveModal.design}
               </p>
             </div>
             <form
               onSubmit={handleConfirmReceive}
-              className="space-y-10 uppercase italic"
+              className="space-y-6"
             >
-              <div className="grid grid-cols-2 gap-6 bg-slate-50 p-8 rounded-2xl border border-slate-100 shadow-inner">
-                <div className="text-center">
-                  <label className="text-[8px] font-black text-slate-500 uppercase mb-3 block">
-                    Rec Borka
+              <div className="grid grid-cols-2 gap-4 bg-slate-50 dark:bg-slate-800 p-6 rounded-xl border border-slate-100 dark:border-slate-700">
+                <div className="text-center space-y-1">
+                  <label className="text-[10px] font-bold text-slate-500 uppercase block">
+                    বোরকা (Rec)
                   </label>
                   <input
                     name="rBorka"
                     type="number"
                     defaultValue={receiveModal.issueBorka}
-                    className="w-full text-center text-2xl font-black bg-transparent border-none outline-none leading-none h-16"
+                    className="w-full text-center text-3xl font-black bg-transparent border-none outline-none text-slate-950 dark:text-white"
                     autoFocus
                   />
                 </div>
-                <div className="text-center">
-                  <label className="text-[8px] font-black text-slate-500 uppercase mb-3 block">
-                    Rec Hijab
+                <div className="text-center space-y-1">
+                  <label className="text-[10px] font-bold text-slate-500 uppercase block">
+                    হিজাব (Rec)
                   </label>
                   <input
                     name="rHijab"
                     type="number"
                     defaultValue={receiveModal.issueHijab}
-                    className="w-full text-center text-2xl font-black bg-transparent border-none outline-none leading-none h-16"
+                    className="w-full text-center text-3xl font-black bg-transparent border-none outline-none text-slate-950 dark:text-white"
                   />
                 </div>
               </div>
-              <div className="bg-rose-50 p-6 rounded-2xl border border-rose-100">
-                <label className="text-[9px] font-black text-rose-400 uppercase mb-2 block tracking-widest text-center">Batch Waste (কাপড়/পাথর অপচয়)</label>
+              <div className="bg-rose-50 dark:bg-rose-900/10 p-5 rounded-xl border border-rose-100 dark:border-rose-800">
+                <label className="text-[10px] font-bold text-rose-500 uppercase mb-2 block tracking-widest text-center">Batch Waste (অপচয়)</label>
                 <input
                   name="wasteMaterial"
                   type="number"
-                  placeholder="Material Waste Pcs/Grams..."
-                  className="w-full text-center text-xl font-black bg-transparent outline-none border-b-2 border-rose-100 focus:border-rose-300 transition-all uppercase italic"
+                  placeholder="পিছ বা গ্রাম..."
+                  className="w-full text-center text-xl font-bold bg-transparent outline-none border-b border-rose-200 dark:border-rose-900 focus:border-rose-500 transition-all text-slate-950 dark:text-white"
                 />
               </div>
-              <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-3">
                 <button
                   type="button"
                   onClick={() => setReceiveModal(null)}
-                  className="py-5 bg-slate-50 text-slate-500 rounded-full font-black uppercase text-[10px] tracking-widest hover:text-black transition-all"
+                  className="py-4 bg-slate-50 dark:bg-slate-800 text-slate-500 rounded-xl font-bold uppercase text-[10px] tracking-widest hover:text-rose-500 transition-all"
                 >
-                  {t('cancel')}
+                  বাতিল করুন
                 </button>
                 <button
                   type="submit"
-                  className="py-6 bg-black text-white rounded-full font-black uppercase text-xs tracking-widest shadow-2xl border-b-8 border-zinc-900 transition-all hover:scale-105 active:scale-95"
+                  className="py-4 bg-slate-950 text-white rounded-xl font-bold uppercase text-xs tracking-widest shadow-xl hover:scale-105 active:scale-95 transition-all"
                 >
-                  {t('confirmOnly')}
+                  জমা নিন (Confirm)
                 </button>
               </div>
             </form>
@@ -1345,143 +1286,163 @@ const FactoryPanel = ({
         </div>
       )}
 
+
       {editModal && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-3xl z-[300] flex items-start md:items-center justify-center p-2 md:p-4 text-black italic">
-          <div className="bg-white rounded-[2rem] md:rounded-[3rem] w-full max-w-2xl border-2 border-amber-500 shadow-3xl p-6 md:p-10 space-y-8 animate-fade-up max-h-[96vh] overflow-y-auto italic font-outfit my-auto">
-            <div className="flex justify-between items-center">
+        <div className="fixed inset-0 bg-slate-950/20 backdrop-blur-md z-[300] flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-slate-900 rounded-xl w-full max-w-2xl shadow-2xl p-8 space-y-8 animate-fade-up max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center pb-4 border-b border-slate-100 dark:border-slate-800">
               <div className="flex items-center gap-4">
-                <div className="p-4 bg-amber-500 text-white rounded-[1.2rem] shadow-xl rotate-3">
-                  <Settings size={28} strokeWidth={2.5} />
+                <div className="p-3 bg-blue-600 text-white rounded-lg shadow-lg">
+                  <Settings size={22} />
                 </div>
                 <div>
-                  <h3 className="text-3xl font-black uppercase tracking-tighter leading-none">{t('designOverride')}</h3>
-                  <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mt-1">Industrial Data Correction</p>
+                  <h3 className="text-xl font-bold text-slate-950 dark:text-white">ডেটা সংশোধন (Edit Data)</h3>
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Industrial Protocol Override</p>
                 </div>
               </div>
-              <button onClick={() => setEditModal(null)} className="p-4 bg-slate-50 rounded-full hover:bg-black hover:text-white transition-all"><X size={24} /></button>
+              <button 
+                onClick={() => setEditModal(null)} 
+                className="p-2 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-full transition-all text-slate-400"
+              >
+                <X size={20} />
+              </button>
             </div>
 
-            <form onSubmit={handleEditSave} className="grid grid-cols-1 md:grid-cols-2 gap-6 font-black uppercase italic">
+            <form onSubmit={handleEditSave} className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-1">
-                <label className="text-[10px] text-slate-500 ml-4 mb-2 block tracking-widest">Worker (কারিগর)</label>
-                <select name="worker" defaultValue={editModal.worker} className="form-input italic" required>
+                <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">কারিগর (Worker)</label>
+                <select name="worker" defaultValue={editModal.worker} className="premium-input !h-12 text-sm" required>
                   {workers.map(w => <option key={w} value={w}>{w}</option>)}
                 </select>
               </div>
               <div className="space-y-1">
-                <label className="text-[10px] text-slate-500 ml-4 mb-2 block tracking-widest">Design (ডিজাইন)</label>
-                <select name="design" defaultValue={editModal.design} className="form-input italic" required>
+                <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">ডিজাইন (Design)</label>
+                <select name="design" defaultValue={editModal.design} className="premium-input !h-12 text-sm" required>
                   {(masterData.designs || []).map(d => <option key={d.name} value={d.name}>{d.name}</option>)}
                 </select>
               </div>
               <div className="space-y-1">
-                <label className="text-[10px] text-slate-500 ml-4 mb-2 block tracking-widest">Color & Lot</label>
-                <div className="grid grid-cols-2 gap-4">
-                  <select name="color" defaultValue={editModal.color} className="form-input italic" required>
+                <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">রঙ ও লট (Color & Lot)</label>
+                <div className="grid grid-cols-2 gap-3">
+                  <select name="color" defaultValue={editModal.color} className="premium-input !h-12 text-sm" required>
                     {(masterData.colors || []).map(c => <option key={c} value={c}>{c}</option>)}
                   </select>
-                  <input name="lotNo" defaultValue={editModal.lotNo} className="form-input italic" placeholder="LOT..." required />
+                  <input name="lotNo" defaultValue={editModal.lotNo} className="premium-input !h-12 text-sm" placeholder="LOT..." required />
                 </div>
               </div>
               <div className="space-y-1">
-                <label className="text-[10px] text-slate-500 ml-4 mb-2 block tracking-widest">Status & Date</label>
-                <div className="grid grid-cols-2 gap-4">
-                  <select name="status" defaultValue={editModal.status} className="form-input bg-black text-white italic" required>
+                <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">স্ট্যাটাস ও তারিখ (Status & Date)</label>
+                <div className="grid grid-cols-2 gap-3">
+                  <select name="status" defaultValue={editModal.status} className="premium-input !h-12 !bg-slate-950 !text-white text-sm" required>
                     <option value="Pending">PENDING</option>
                     <option value="Received">RECEIVED</option>
                   </select>
-                  <input name="date" type="date" defaultValue={editModal.date} className="form-input italic" required />
+                  <input name="date" type="date" defaultValue={editModal.date} className="premium-input !h-12 text-sm" required />
                 </div>
               </div>
 
-              <div className="md:col-span-2 bg-slate-50 p-6 rounded-[2rem] border border-slate-100 grid grid-cols-2 gap-8">
+              <div className="md:col-span-2 bg-slate-50 dark:bg-slate-800/50 p-6 rounded-xl border border-slate-100 dark:border-slate-800 grid grid-cols-2 gap-6">
                 <div className="space-y-4">
-                   <p className="text-[10px] font-black text-slate-500 text-center uppercase tracking-widest">Issue (দেওয়া কাজ)</p>
-                   <div className="grid grid-cols-2 gap-4">
+                   <p className="text-[10px] font-bold text-slate-400 text-center uppercase tracking-widest">Issue (চালান)</p>
+                   <div className="grid grid-cols-2 gap-3">
                       <div>
-                        <label className="text-[8px] text-slate-500 text-center block mb-1">Borka</label>
-                        <input name="iBorka" type="number" defaultValue={editModal.issueBorka} className="w-full text-center text-3xl bg-white border border-slate-100 rounded-xl py-3 outline-none font-black italic focus:border-black transition-all" />
+                        <label className="text-[8px] font-bold text-slate-400 text-center block mb-1">Bork</label>
+                        <input name="iBorka" type="number" defaultValue={editModal.issueBorka} className="premium-input !h-12 text-center text-xl" />
                       </div>
                       <div>
-                        <label className="text-[8px] text-slate-500 text-center block mb-1">Hijab</label>
-                        <input name="iHijab" type="number" defaultValue={editModal.issueHijab} className="w-full text-center text-3xl bg-white border border-slate-100 rounded-xl py-3 outline-none font-black italic focus:border-black transition-all" />
+                        <label className="text-[8px] font-bold text-slate-400 text-center block mb-1">Hijab</label>
+                        <input name="iHijab" type="number" defaultValue={editModal.issueHijab} className="premium-input !h-12 text-center text-xl" />
                       </div>
                    </div>
                 </div>
-                <div className="space-y-4 border-l border-slate-200 pl-8">
-                   <p className="text-[10px] font-black text-emerald-500 text-center uppercase tracking-widest">Received (জমা কাজ)</p>
-                   <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-4 border-l border-slate-200 dark:border-slate-700 pl-6">
+                   <p className="text-[10px] font-bold text-emerald-500 text-center uppercase tracking-widest">Received (জমা)</p>
+                   <div className="grid grid-cols-2 gap-3">
                       <div>
-                        <label className="text-[8px] text-emerald-400 text-center block mb-1">Borka</label>
-                        <input name="rBorka" type="number" defaultValue={editModal.receivedBorka} className="w-full text-center text-3xl bg-emerald-50/50 border border-emerald-100 rounded-xl py-3 outline-none font-black italic focus:border-emerald-500 transition-all" />
+                        <label className="text-[8px] font-bold text-emerald-400 text-center block mb-1">Borka</label>
+                        <input name="rBorka" type="number" defaultValue={editModal.receivedBorka} className="premium-input !h-12 text-center text-xl !bg-emerald-500/5 !border-emerald-500/20" />
                       </div>
                       <div>
-                        <label className="text-[8px] text-emerald-400 text-center block mb-1">Hijab</label>
-                        <input name="rHijab" type="number" defaultValue={editModal.receivedHijab} className="w-full text-center text-3xl bg-emerald-50/50 border border-emerald-100 rounded-xl py-3 outline-none font-black italic focus:border-emerald-500 transition-all" />
+                        <label className="text-[8px] font-bold text-emerald-400 text-center block mb-1">Hijab</label>
+                        <input name="rHijab" type="number" defaultValue={editModal.receivedHijab} className="premium-input !h-12 text-center text-xl !bg-emerald-500/5 !border-emerald-500/20" />
                       </div>
                    </div>
                 </div>
               </div>
 
-              <div className="space-y-1 md:col-span-1">
-                <label className="text-[10px] text-slate-500 ml-4 mb-2 block tracking-widest">Wage Rate (মজুরি)</label>
-                <input name="rate" type="number" defaultValue={editModal.rate} className="form-input text-2xl font-black text-rose-600 italic" required />
+              <div className="space-y-1">
+                <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">মজুরি রেট (Wage Rate)</label>
+                <input name="rate" type="number" defaultValue={editModal.rate} className="premium-input !h-12 text-xl font-bold !text-blue-600" required />
               </div>
 
               <div className="md:col-span-2">
-                <label className="text-[10px] text-slate-500 ml-4 mb-2 block tracking-widest">Worker Note (বিশেষ দ্রষ্টব্য)</label>
-                <textarea name="note" defaultValue={editModal.note} className="form-input h-24 italic py-4" placeholder="ADD NOTES..." />
+                <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">বিশেষ দ্রষ্টব্য (Note)</label>
+                <textarea name="note" defaultValue={editModal.note} className="premium-input min-h-[80px] py-3 text-sm" placeholder="কিছু লিখুন..." />
               </div>
 
-              <button type="submit" className="md:col-span-2 py-6 bg-amber-500 text-white rounded-full font-black text-xl uppercase tracking-[0.2em] shadow-2xl border-b-[10px] border-amber-900 active:translate-y-2 transition-all mt-4">{t('saveOverride')}</button>
+              <div className="md:col-span-2 pt-4 flex gap-4">
+                <button 
+                  type="button" 
+                  onClick={() => setEditModal(null)}
+                  className="flex-1 py-4 rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-400 font-bold uppercase text-xs tracking-widest hover:text-rose-500 transition-all"
+                >
+                  বাতিল
+                </button>
+                <button 
+                  type="submit" 
+                  className="flex-[2] py-4 bg-blue-600 text-white rounded-xl font-bold uppercase text-xs tracking-widest shadow-xl hover:scale-105 active:scale-95 transition-all"
+                >
+                  তথ্য আপডেট করুন (Save)
+                </button>
+              </div>
             </form>
           </div>
         </div>
       )}
 
       {payModal && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-3xl z-[300] flex items-center justify-center p-4">
-          <div className="bg-white w-full max-w-lg rounded-3xl border-4 border-slate-50 shadow-3xl p-6 md:p-8 space-y-12 animate-fade-up text-black italic">
-            <div className="text-center space-y-3">
-              <h3 className="text-3xl md:text-3xl font-black uppercase italic tracking-tighter leading-none">
-                {t('pataSettlement')}
+        <div className="fixed inset-0 bg-slate-950/20 backdrop-blur-md z-[300] flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-slate-900 w-full max-w-lg rounded-xl shadow-2xl p-8 space-y-8 animate-fade-up">
+            <div className="text-center space-y-2">
+              <h3 className="text-2xl font-bold text-slate-950 dark:text-white uppercase">
+                মজুরি প্রদান (Disbursement)
               </h3>
-              <p className="text-sm font-black text-slate-500 italic uppercase">
-                Payment for: {payModal}
+              <p className="text-xs font-bold text-slate-400 uppercase tracking-widest italic leading-none">
+                কারিগর: {payModal}
               </p>
             </div>
-            <form onSubmit={handleConfirmPayment} className="space-y-12">
-              <div className="bg-black p-10 rounded-2xl shadow-2xl text-center">
-                <label className="text-[10px] font-black text-white/70 uppercase tracking-[0.5em] mb-4 block">
-                  Amount to Disburse
+            <form onSubmit={handleConfirmPayment} className="space-y-8">
+              <div className="bg-slate-950 p-10 rounded-xl shadow-2xl text-center border-b-4 border-blue-600">
+                <label className="text-[10px] font-bold text-blue-400 uppercase tracking-widest mb-4 block">
+                  পরিশোধের পরিমাণ (Amount ৳)
                 </label>
                 <input
                   name="amount"
                   type="number"
-                  className="w-full text-center text-3xl md:text-[10rem] font-black bg-transparent border-none text-white outline-none leading-none h-32 md:h-44"
-                  placeholder="৳"
+                  className="w-full text-center text-6xl md:text-8xl font-black bg-transparent border-none text-white outline-none leading-none h-24 md:h-32 placeholder:text-white/10"
+                  placeholder="0"
                   autoFocus
                   required
                 />
               </div>
               <input
                 name="note"
-                className="w-full py-6 text-sm font-black bg-slate-50 border-slate-100 text-black placeholder:text-slate-500 px-10 rounded-2xl italic uppercase"
-                placeholder="Internal Memo..."
+                className="premium-input !h-14 text-sm font-bold placeholder:text-slate-400 px-6 rounded-xl"
+                placeholder="রেফারেন্স বা বিশেষ নোট..."
               />
-              <div className="flex flex-col md:flex-row gap-6">
+              <div className="flex flex-col md:flex-row gap-4">
                 <button
                   type="button"
                   onClick={() => setPayModal(null)}
-                  className="flex-1 py-8 rounded-full font-black text-sm uppercase bg-slate-50 text-slate-500 hover:text-black transition-all"
+                  className="flex-1 py-4 rounded-xl font-bold uppercase text-xs bg-slate-50 dark:bg-slate-800 text-slate-500 hover:text-rose-500 transition-all border border-slate-100 dark:border-slate-800"
                 >
-                  {t('cancel')}
+                  বাতিল করুন
                 </button>
                 <button
                   type="submit"
-                  className="flex-[2] py-8 rounded-full font-black text-sm uppercase bg-emerald-600 text-white shadow-2xl border-b-[12px] border-emerald-900 hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-3"
+                  className="flex-[2] py-4 rounded-xl font-bold uppercase text-xs bg-blue-600 text-white shadow-xl hover:bg-blue-700 transition-all flex items-center justify-center gap-2"
                 >
-                  <CheckCircle size={20} /> SYNC PAYMENT
+                  <CheckCircle size={18} /> পেমেন্ট কনফার্ম
                 </button>
                 <button
                   type="button"
@@ -1490,9 +1451,9 @@ const FactoryPanel = ({
                     const msg = `*NRZO0NE PAYMENT CONFIRMATION*\n--------------------------\nWorker: ${payModal}\nAmount: ৳${amount}\nDate: ${new Date().toLocaleDateString('en-GB')}\nStatus: DISBURSED\n--------------------------\nIndustrial Grade Management`;
                     window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
                   }}
-                  className="p-8 rounded-full bg-[#25D366] text-white shadow-xl hover:scale-110 active:scale-95 transition-all flex items-center justify-center"
+                  className="p-3 w-14 h-14 rounded-xl bg-emerald-500 text-white shadow-xl hover:scale-110 transition-all flex items-center justify-center shrink-0"
                 >
-                  <MessageCircle size={32} />
+                  <MessageCircle size={24} />
                 </button>
               </div>
             </form>
@@ -1500,17 +1461,17 @@ const FactoryPanel = ({
         </div>
       )}
 
-      <div className="pt-20 pb-10 flex justify-center">
+      <div className="pt-24 pb-12 flex justify-center">
         <button
           onClick={() => setActivePanel("Overview")}
-          className="group relative flex items-center gap-8 bg-white px-16 py-8 rounded-full border-4 border-slate-100 shadow-3xl hover:border-black transition-all duration-500"
+          className="group relative flex items-center gap-6 bg-white dark:bg-slate-900 px-12 md:px-16 py-7 md:py-8 rounded-[var(--radius-saas)] border-2 border-slate-100 dark:border-slate-800 shadow-xl hover:border-slate-950 transition-all duration-500"
         >
-          <div className="p-4 bg-black text-white rounded-2xl group-hover:rotate-[-12deg] transition-transform">
-            <ArrowLeft size={24} strokeWidth={3} />
-          </div>
-          <span className="text-xl font-black uppercase italic tracking-widest text-black">
-            Back to Nexus
-          </span>
+            <div className="p-3 bg-slate-950 text-white rounded-xl transition-transform shadow-lg group-hover:scale-110">
+                <ArrowLeft size={20} strokeWidth={3} />
+            </div>
+            <span className="text-lg font-bold tracking-tight text-slate-950 dark:text-white uppercase leading-none">
+                ড্যাশবোর্ডে ফিরে যান
+            </span>
         </button>
       </div>
     </div>

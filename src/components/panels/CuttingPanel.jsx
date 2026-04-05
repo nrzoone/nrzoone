@@ -161,394 +161,398 @@ const CuttingPanel = ({
   }
 
   return (
-    <div className="min-h-screen bg-[var(--bg-primary)] font-outfit italic uppercase text-[#0f172a] pb-24">
-      {/* Header Section */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-10 mb-16 animate-fade-up">
-        <div className="space-y-4">
-          <h1 className="section-header !mb-0 text-7xl md:text-8xl">Cutting <span className="text-slate-400">Panel</span></h1>
-          <div className="flex items-center gap-4">
-            <div className="h-1 w-12 bg-black rounded-full"></div>
-            <p className="text-[11px] font-black tracking-[0.6em] text-slate-500 uppercase">Production Protocol Stable V4.0.2</p>
-          </div>
+    <div className="space-y-10 pb-32 animate-fade-up px-1 md:px-4 text-slate-900">
+      {/* SaaS Operational HUD */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="bg-slate-950 p-6 rounded-xl text-white shadow-xl flex flex-col justify-between group overflow-hidden relative">
+            <div className="flex justify-between items-start mb-6 relative z-10">
+                <div className="w-14 h-14 bg-white/10 text-white rounded-xl flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
+                    <Package size={24} />
+                </div>
+                <div className="text-right">
+                    <p className="text-3xl font-bold tracking-tight leading-none">{stats.totalIssued.toLocaleString()}</p>
+                    <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest mt-1 uppercase leading-none">মোট ইস্যু (Total Issued)</p>
+                </div>
+            </div>
+            <div className="flex items-center gap-3 text-white/30 border-t border-white/10 pt-4 relative z-10">
+                <div className="flex gap-1">
+                    {[1,2,3].map(i => <div key={i} className="w-2 h-1 bg-white/20 rounded-full animate-pulse" style={{ animationDelay: `${i*0.2}s` }}></div>)}
+                </div>
+                <p className="text-[8px] font-bold tracking-widest uppercase whitespace-nowrap">Production Stream Active</p>
+            </div>
         </div>
-        <div className="flex gap-6">
+
+        <div className="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm flex items-center gap-6 group">
+            <div className="w-14 h-14 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
+                <Activity size={24} />
+            </div>
+            <div>
+                <p className="text-3xl font-bold tracking-tight text-slate-950 dark:text-white leading-none mb-1">{stats.inProduction.toLocaleString()}</p>
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">উৎপাদনে আছে (In-Production)</p>
+            </div>
+        </div>
+
+        <div className="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm flex items-center gap-6 group">
+            <div className="w-14 h-14 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
+                <CheckCircle size={24} />
+            </div>
+            <div>
+                <p className="text-3xl font-bold tracking-tight text-slate-950 dark:text-white leading-none mb-1">{stats.received.toLocaleString()}</p>
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">মোট জমা হয়েছে (Received)</p>
+            </div>
+        </div>
+
+        <div className="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm flex items-center gap-6 group">
+            <div className="w-14 h-14 bg-rose-50 text-rose-600 rounded-xl flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
+                <Clock size={24} />
+            </div>
+            <div>
+                <p className="text-3xl font-bold tracking-tight text-slate-950 dark:text-white leading-none mb-1">{stats.pending.toLocaleString()}</p>
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">বাকি লট (Lots Pending)</p>
+            </div>
+        </div>
+      </div>
+
+
+      {/* Control Bar - SaaS Pill Navigation */}
+      <div className="bg-white dark:bg-slate-900 !p-1.5 flex flex-col lg:flex-row items-center justify-between gap-6 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm mb-6">
+        <div className="flex flex-wrap gap-1 w-full lg:w-auto overflow-x-auto no-scrollbar">
+          {[
+            { id: "Design Registration", label: "ডিজাইন এন্ট্রি (Registration)" },
+            { id: "Cutting Queue", label: "কাটিং কিউ (Queue)" },
+            { id: "Production Status", label: "প্রোডাকশন স্ট্যাটাস (Stats)" }
+          ].map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`px-6 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all ${activeTab === tab.id ? 'bg-slate-950 text-white shadow-lg' : 'text-slate-400 hover:text-slate-950 dark:hover:text-white'}`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        <div className="flex items-center gap-3 w-full lg:w-auto">
+          <div className="relative group flex-1 lg:flex-none">
+            <Search size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+            <input
+              placeholder="ডিজাইন বা লট..."
+              className="premium-input !pl-11 !h-11 !text-[10px] !bg-slate-50 dark:!bg-slate-800/50"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
           <button 
              onClick={() => setShowModal(true)}
-             className="action-btn-primary !py-7 !px-12 flex items-center gap-4 shadow-black/10"
+             className="w-11 h-11 bg-slate-950 text-white rounded-xl shadow-lg flex items-center justify-center hover:bg-black transition-all"
           >
-            <Plus size={24} strokeWidth={3} /> INITIALIZE CUTTING
+            <Plus size={18} />
           </button>
         </div>
       </div>
 
-      {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16 animate-fade-up">
-        {[
-          { label: "Total Issued", value: stats.totalIssued, icon: Package, color: "text-black" },
-          { label: "In-Production", value: stats.inProduction, icon: Activity, color: "text-blue-600" },
-          { label: "Total Received", value: stats.received, icon: CheckCircle, color: "text-emerald-600" },
-          { label: "Pending Items", value: stats.pending, icon: Clock, color: stats.pending > 0 ? "text-rose-600" : "text-slate-400" },
-        ].map((s, i) => (
-          <div key={i} className="premium-card group hover:scale-[1.02] transition-all cursor-default border-none shadow-[var(--neu-convex)]">
-            <div className="flex justify-between items-start mb-8">
-              <div className="p-5 bg-slate-50 dark:bg-black/20 rounded-3xl group-hover:bg-black group-hover:text-white transition-all shadow-inner">
-                <s.icon size={28} strokeWidth={2.5} />
-              </div>
-              <div className="text-right">
-                <p className="text-[10px] font-black text-slate-500 tracking-[0.2em] mb-2">{s.label}</p>
-                <h2 className={`text-6xl font-black italic tracking-tighter leading-none ${s.color}`}>{s.value.toLocaleString()}</h2>
-              </div>
-            </div>
-            <div className="flex items-center gap-4 text-slate-400">
-               <TrendingDown size={14} className="opacity-20" />
-               <p className="text-[8px] font-bold tracking-widest">Real-Time Core Metrics</p>
-            </div>
-          </div>
-        ))}
-      </div>
 
-      {/* Navigation Tabs */}
-      <div className="pill-nav mb-16 p-4 animate-fade-up bg-white/50 backdrop-blur-3xl border border-white/20">
-        {["Design Registration", "Cutting Queue", "Production Status"].map(tab => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab)}
-            className={`pill-tab !px-14 !py-6 ${activeTab === tab ? 'pill-tab-active shadow-2xl scale-105' : 'pill-tab-inactive'}`}
-          >
-            {tab}
-          </button>
-        ))}
-      </div>
-
-      {/* Tab Content */}
+      {/* Main Tab Content */}
       <div className="animate-fade-up">
         {activeTab === "Cutting Queue" && (
-          <div className="premium-card !p-12 !rounded-[4rem]">
-            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-10 mb-16">
-              <div className="space-y-4">
-                <h3 className="text-4xl font-black italic tracking-tighter uppercase">Cutting <span className="text-slate-400">Queue Flow</span></h3>
-                <p className="text-[10px] font-bold tracking-[0.5em] text-slate-400">Active Material Pipeline</p>
-              </div>
-              <div className="relative w-full lg:w-[32rem] group">
-                <div className="absolute inset-y-0 left-8 flex items-center pointer-events-none text-slate-400 group-focus-within:text-black transition-colors">
-                  <Search size={22} />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {(masterData.cuttingStock || [])
+              .filter(item => 
+                item.lotNo?.toString().includes(searchTerm) || 
+                item.design?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                item.color?.toLowerCase().includes(searchTerm.toLowerCase())
+              ).length === 0 ? (
+                <div className="col-span-full h-80 flex flex-col items-center justify-center bg-white dark:bg-slate-900 rounded-xl border-2 border-dashed border-slate-100 dark:border-slate-800 italic">
+                    <Box size={40} className="text-slate-200 mb-4" />
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">কোনো রেকর্ড পাওয়া যায়নি (No Records)</p>
                 </div>
-                <input 
-                  type="text" 
-                  placeholder="Scan Lot or Design Sequence..." 
-                  className="premium-input !pl-20 !py-8 !rounded-[2.5rem] !text-xl"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-              </div>
-            </div>
-
-                            <div className="overflow-x-auto no-scrollbar">
-                              <table className="w-full text-left border-separate border-spacing-y-6">
-                                <thead>
-                                  <tr className="text-[11px] font-black text-slate-500 tracking-[0.4em] uppercase">
-                                    <th className="px-10 py-4">সিরিয়াল</th>
-                                    <th className="px-10 py-4">লট নম্বর</th>
-                                    <th className="px-10 py-4">ডিজাইন</th>
-                                    <th className="px-10 py-4">রঙ</th>
-                                    <th className="px-10 py-4">পরিমাণ (QTY)</th>
-                                    <th className="px-10 py-4 text-center">অ্যাকশন</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  {(masterData.cuttingStock || [])
-                                    .filter(item => 
-                                      item.lotNo?.toString().includes(searchTerm) || 
-                                      item.design?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                                      item.color?.toLowerCase().includes(searchTerm.toLowerCase())
-                                    )
-                                    .map((item, index) => (
-                                    <tr key={item.id} className="group hover:scale-[1.005] transition-all">
-                                      <td className="px-10 py-10 bg-slate-50/50 rounded-l-[3rem] font-black text-2xl text-slate-300">
-                                        {(index + 1).toString().padStart(2, '0')}
-                                      </td>
-                                      <td className="px-10 py-10 bg-slate-50/50 font-black italic">
-                                        <span className="badge-standard !px-6 !py-3 !text-lg !rounded-2xl shadow-sm">#{item.lotNo}</span>
-                                      </td>
-                                      <td className="px-10 py-10 bg-slate-50/50">
-                                        <h4 className="text-3xl font-black italic leading-none">{item.design}</h4>
-                                        <p className="text-[9px] font-bold text-slate-400 tracking-widest mt-2">ডিজাইন মডেল ভেক্টর</p>
-                                      </td>
-                                      <td className="px-10 py-10 bg-slate-50/50 font-black text-xl text-slate-500 opacity-80">{item.color}</td>
-                                      <td className="px-10 py-10 bg-slate-50/50">
-                                        <div className="flex gap-10">
-                                          <div className="text-center">
-                                            <p className="text-[10px] font-black text-slate-400 mb-2">বোরকা</p>
-                                            <p className="font-black text-4xl leading-none italic">{item.borka}</p>
-                                          </div>
-                                          <div className="w-0.5 h-12 bg-slate-200 self-center"></div>
-                                          <div className="text-center">
-                                            <p className="text-[10px] font-black text-slate-400 mb-2">হিজাব</p>
-                                            <p className="font-black text-4xl leading-none italic text-slate-400">{item.hijab}</p>
-                                          </div>
-                                        </div>
-                                      </td>
-                                      <td className="px-10 py-10 bg-slate-50/50 rounded-r-[3rem] text-center">
-                                         <div className="flex items-center justify-center gap-6">
-                                            <button 
-                                              onClick={() => setActivePanel('Swing')}
-                                              className="px-10 py-4 bg-black text-white rounded-2xl text-[10px] font-black tracking-[0.2em] hover:bg-emerald-600 transition-all shadow-xl shadow-black/5 active:scale-95"
-                                            >কাজে পাঠান</button>
-                                            <button 
-                                              onClick={() => setPrintSlip(item)}
-                                              className="px-10 py-4 bg-white text-black border border-black/10 rounded-2xl text-[10px] font-black tracking-[0.2em] hover:bg-black hover:text-white transition-all shadow-sm active:scale-95"
-                                            >স্লিপ প্রিন্ট</button>
-                                            <button 
-                                               onClick={() => handleDelete(item.id)}
-                                               className="p-4 bg-white text-rose-500 rounded-2xl hover:bg-rose-500 hover:text-white transition-all shadow-sm active:scale-90"
-                                            >
-                                              <Trash2 size={20} />
-                                            </button>
-                                         </div>
-                                      </td>
-                                    </tr>
-                                  ))}
-                                  {(masterData.cuttingStock || []).length === 0 && (
-                                    <tr>
-                                      <td colSpan="6" className="py-32 text-center text-slate-200 font-black uppercase tracking-[0.8em] italic text-xl">ম্যাটেরিয়াল কিউ খালি</td>
-                                    </tr>
-                                  )}
-                                </tbody>
-                              </table>
+              ) : (
+                (masterData.cuttingStock || [])
+                  .filter(item => 
+                    item.lotNo?.toString().includes(searchTerm) || 
+                    item.design?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    item.color?.toLowerCase().includes(searchTerm.toLowerCase())
+                  ).map((item, idx) => (
+                    <div key={item.id || idx} className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl shadow-sm hover:border-slate-950 transition-all flex flex-col group animate-fade-up">
+                        <div className="p-6 space-y-6 flex-1">
+                            <div className="flex justify-between items-start">
+                                <div className="space-y-1">
+                                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none">ডিজাইন আইডি (Design)</p>
+                                    <h4 className="text-2xl font-bold tracking-tight text-slate-950 dark:text-white uppercase leading-none">{item.design}</h4>
+                                </div>
+                                <div className="w-12 h-12 bg-slate-950 text-white rounded-xl flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform font-bold text-xs">
+                                    #{item.lotNo}
+                                </div>
                             </div>
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-xl border border-slate-100 dark:border-slate-800">
+                                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1 italic">রঙ (Color)</p>
+                                    <p className="text-sm font-bold text-slate-900 dark:text-white truncate uppercase">{item.color}</p>
+                                </div>
+                                <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-xl border border-slate-100 dark:border-slate-800">
+                                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1 italic">ইস্যুর তারিখ</p>
+                                    <p className="text-sm font-bold text-slate-900 dark:text-white truncate italic">{item.date}</p>
+                                </div>
+                            </div>
+                            
+                            <div className="flex justify-between items-center py-5 border-y border-slate-100 dark:border-slate-800 border-dashed">
+                                <div className="flex flex-col">
+                                     <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1 leading-none">বোরকা (Borka)</span>
+                                     <span className="text-3xl font-bold text-slate-950 dark:text-white leading-none">{item.borka}</span>
+                                </div>
+                                <div className="w-px h-10 bg-slate-100 dark:bg-slate-800"></div>
+                                <div className="text-right">
+                                     <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1 leading-none">হিজাব (Hijab)</span>
+                                     <span className="text-3xl font-bold text-slate-400 leading-none">{item.hijab}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Action Footer */}
+                        <div className="flex gap-3 p-6 bg-slate-50 dark:bg-slate-800/20 border-t border-slate-100 dark:border-slate-800">
+                            <button onClick={() => setPrintSlip(item)} className="w-11 h-11 bg-white dark:bg-slate-900 rounded-xl flex items-center justify-center text-slate-400 hover:bg-slate-950 hover:text-white transition-all shadow-sm border border-slate-200 dark:border-slate-700" title="স্লিপ প্রিন্ট">
+                                <Printer size={16} />
+                            </button>
+                            <button 
+                                onClick={() => setActivePanel('Swing')} 
+                                className="flex-1 bg-slate-950 text-white rounded-xl text-[10px] font-bold uppercase tracking-widest shadow-lg hover:bg-slate-800 transition-all font-bold"
+                            >
+                                সুইং এ পাঠান (Swing)
+                            </button>
+                            <button 
+                                onClick={() => handleDelete(item.id)} 
+                                className="w-11 h-11 bg-white dark:bg-slate-900 rounded-xl flex items-center justify-center text-rose-500 hover:bg-rose-500 hover:text-white transition-all shadow-sm border border-slate-200 dark:border-slate-700" title="ডিলিট">
+                                <Trash2 size={16} />
+                            </button>
+                        </div>
+                    </div>
+                  ))
+              )}
           </div>
+
         )}
 
-        {/* Tab 2 Content */}
         {activeTab === "Design Registration" && (
-           <div className="premium-card flex flex-col items-center justify-center py-48 !rounded-[5rem] space-y-12">
-              <div className="p-12 bg-slate-50 rounded-[3rem] animate-pulse">
-                <Box size={80} className="text-slate-300" strokeWidth={1} />
+           <div className="bg-slate-50 dark:bg-slate-800/30 flex flex-col items-center justify-center py-32 space-y-8 rounded-xl border-2 border-dashed border-slate-100 dark:border-slate-800">
+              <div className="w-20 h-20 bg-white dark:bg-slate-900 shadow-2xl rounded-2xl flex items-center justify-center animate-bounce text-slate-200">
+                <Box size={40} strokeWidth={1} />
               </div>
-              <div className="text-center space-y-4">
-                <h2 className="text-5xl font-black italic tracking-tighter uppercase">Ready to <span className="text-slate-400">Initialize</span></h2>
-                <p className="text-[11px] font-black tracking-[0.6em] text-slate-400 max-w-sm leading-relaxed">
-                  Design Management Hub is operational. Select parameters to begin material injection.
+              <div className="text-center space-y-3">
+                <h2 className="text-3xl font-bold uppercase tracking-tight text-slate-950 dark:text-white">নতুন কাটিং <span className="text-blue-600">আইডি যুক্ত করুন</span></h2>
+                <p className="text-[10px] font-bold tracking-[0.4em] text-slate-400 max-w-sm mx-auto uppercase italic">
+                  Launch the registration protocol to initialize a new cutting lot. 
                 </p>
               </div>
               <button 
                 onClick={() => setShowModal(true)}
-                className="action-btn-primary !py-8 !px-20 text-lg"
+                className="px-12 py-5 bg-slate-950 text-white rounded-xl font-bold text-[10px] uppercase tracking-widest shadow-xl hover:bg-slate-800 transition-all"
               >
-                Launch Registration Terminal
+                প্রোটোকল চালু করুন (Launch)
               </button>
            </div>
+
         )}
 
-        {/* Tab 3 Content */}
         {activeTab === "Production Status" && (
-           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-              <div className="lg:col-span-2 premium-card !p-12 space-y-12">
+           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              <div className="lg:col-span-2 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl p-8 md:p-12 space-y-12">
                 <div className="flex justify-between items-end">
                    <div>
-                      <h3 className="text-4xl font-black italic tracking-tighter uppercase mb-2">Yield <span className="text-slate-400">Optimizer V2</span></h3>
-                      <p className="text-[10px] font-black tracking-[0.4em] text-slate-400">Advanced Pattern Utilization Analytics</p>
+                      <h3 className="text-3xl font-bold tracking-tight text-slate-950 dark:text-white uppercase mb-2">Yield <span className="text-blue-600">Optimizer</span></h3>
+                      <p className="text-[10px] font-bold tracking-widest text-slate-400 uppercase italic">Advanced Pattern Utilization Analytics</p>
                    </div>
-                   <TrendingDown className="text-emerald-500 opacity-20" size={64} />
+                   <Activity className="text-blue-500 opacity-20" size={56} />
                 </div>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                    {[
-                     { label: "Global Utilization", value: "96.4%", sub: "Above Standard", icon: Layers, color: "text-emerald-500" },
-                     { label: "Fabric Waste Factor", value: "3.6%", sub: "Minimal Loss", icon: Scissors, color: "text-black" },
-                     { label: "Production Velocity", value: "142 U/H", sub: "Operational Peak", icon: Activity, color: "text-blue-500" },
-                     { label: "Queue Latency", value: "0.0s", sub: "Instant Process", icon: Clock, color: "text-rose-500" }
+                     { label: "Fabric Usage", value: "96.4%", icon: Layers, color: "text-emerald-500" },
+                     { label: "Waste Factor", value: "3.6%", icon: Scissors, color: "text-slate-950 dark:text-white" },
+                     { label: "Velocity", value: "142 U/H", icon: Activity, color: "text-blue-500" },
+                     { label: "Queue Sync", value: "0.0s", icon: Clock, color: "text-rose-500" }
                    ].map((a, i) => (
-                     <div key={i} className="p-8 bg-slate-50/50 rounded-[3rem] border border-black/5 group hover:bg-white hover:shadow-2xl transition-all duration-500">
-                        <div className="flex justify-between items-start mb-6">
-                           <div className="p-4 bg-white rounded-2xl shadow-sm text-slate-400 group-hover:bg-black group-hover:text-white transition-all">
-                              <a.icon size={20} />
+                     <div key={i} className="p-6 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-800">
+                        <div className="flex justify-between items-start mb-4">
+                           <div className="w-10 h-10 bg-white dark:bg-slate-900 rounded-lg shadow-sm flex items-center justify-center text-slate-400">
+                              <a.icon size={16} />
                            </div>
-                           <span className="text-[9px] font-black uppercase tracking-widest text-slate-400 opacity-50">Node 0{i+1}</span>
+                           <span className="text-[8px] font-bold uppercase tracking-widest text-slate-300">NODE 0{i+1}</span>
                         </div>
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">{a.label}</p>
-                        <h4 className={`text-5xl font-black italic mb-3 ${a.color}`}>{a.value}</h4>
-                        <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-slate-300">{a.sub}</p>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 italic leading-none">{a.label}</p>
+                        <h4 className={`text-3xl font-bold italic leading-none ${a.color}`}>{a.value}</h4>
                      </div>
                    ))}
                 </div>
               </div>
 
-              <div className="premium-card !bg-black !text-white !p-12 flex flex-col justify-between items-center text-center group">
+              <div className="bg-slate-950 p-10 rounded-xl text-white flex flex-col justify-between items-center text-center group relative overflow-hidden">
                   <div className="relative">
-                    <div className="w-48 h-48 rounded-full border-[10px] border-white/5 border-t-white animate-spin"></div>
+                    <div className="w-40 h-40 rounded-full border-[10px] border-white/5 border-t-blue-500 animate-[spin_3s_linear_infinite]"></div>
                     <div className="absolute inset-0 flex items-center justify-center">
-                       <Activity size={40} className="animate-pulse" />
+                       <Activity size={32} className="animate-pulse text-blue-500" />
                     </div>
                   </div>
-                  <div className="space-y-6">
-                    <div className="space-y-2">
-                       <h4 className="text-4xl font-black italic tracking-tighter uppercase">Live Matrix</h4>
-                       <p className="text-[10px] font-black text-white/30 uppercase tracking-[0.5em] leading-relaxed">
-                         Synchronizing with Factory Ground Nodes...
-                       </p>
-                    </div>
-                    <div className="flex justify-center gap-2">
-                       {[1,2,3].map(i => <div key={i} className="w-1.5 h-1.5 bg-white/20 rounded-full animate-bounce" style={{ animationDelay: `${i*0.2}s` }}></div>)}
-                    </div>
+                  <div className="space-y-4">
+                     <div className="space-y-1">
+                        <h4 className="text-3xl font-bold uppercase tracking-tight">Live Matrix</h4>
+                        <p className="text-[10px] font-bold text-white/30 uppercase tracking-[0.3em] italic">
+                          Synchronizing Ground Nodes...
+                        </p>
+                     </div>
                   </div>
-                  <div className="w-full pt-12 border-t border-white/10 flex justify-between items-center font-black italic">
-                     <span className="text-[10px] tracking-widest opacity-40">AUTO-SYNC: ON</span>
-                     <span className="text-emerald-500 text-[10px] tracking-widest">ENCRYPTED</span>
+                  <div className="w-full pt-8 border-t border-white/10 flex justify-between items-center">
+                     <span className="text-[9px] font-bold tracking-widest opacity-40">AUTO-SYNC: ON</span>
+                     <span className="text-emerald-500 text-[9px] font-bold tracking-widest">SYSTEM CLEAR</span>
                   </div>
               </div>
            </div>
+
         )}
+      </div>
+
+      {/* Return Home Link */}
+      <div className="flex justify-center pt-24 pb-12">
+        <button
+            onClick={() => setActivePanel("Overview")}
+            className="group relative flex items-center gap-4 bg-white dark:bg-slate-900 px-10 py-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm hover:border-slate-950 transition-all duration-300"
+        >
+            <div className="p-2.5 bg-slate-950 text-white rounded-xl transition-transform shadow-lg group-hover:scale-110">
+                <ArrowLeft size={18} />
+            </div>
+            <span className="text-sm font-bold tracking-tight text-slate-950 dark:text-white uppercase">
+                ড্যাশবোর্ডে ফিরে যান (Return)
+            </span>
+        </button>
       </div>
 
       {/* Entry Modal */}
       <AnimatePresence>
         {showModal && (
-          <motion.div 
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[1000] bg-black/70 backdrop-blur-3xl flex items-center justify-center p-4"
-          >
-            <motion.div 
-              initial={{ scale: 0.9, y: 30 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.9, y: 30 }}
-              className="w-full max-w-6xl bg-white rounded-[4rem] shadow-[0_100px_150px_-50px_rgba(0,0,0,0.5)] p-16 relative overflow-hidden font-outfit uppercase italic"
-            >
+          <div className="fixed inset-0 z-[1000] bg-slate-950/40 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+            <div className="w-full max-w-4xl my-auto bg-white dark:bg-slate-900 rounded-xl shadow-2xl p-8 md:p-12 relative overflow-hidden border border-slate-100 dark:border-slate-800 animate-fade-up">
               <button 
-                onClick={() => setShowModal(false)}
-                className="absolute top-12 right-12 p-5 hover:bg-slate-50 rounded-full transition-all text-slate-300 hover:text-black"
+                onClick={() => setShowModal(false)} 
+                className="absolute top-6 right-6 p-2.5 bg-slate-50 dark:bg-slate-800 rounded-xl hover:bg-slate-950 hover:text-white transition-all text-slate-400"
               >
-                <X size={32} />
+                <X size={20} />
               </button>
 
-              <div className="space-y-16">
-                <div className="text-center space-y-6">
-                  <div className="mx-auto w-24 h-24 bg-black text-white rounded-[2.5rem] flex items-center justify-center shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)] rotate-6">
-                    <Scissors size={48} strokeWidth={2} />
-                  </div>
+              <div className="space-y-10">
+                <div className="text-center space-y-3">
+                  <div className="mx-auto w-14 h-14 bg-slate-950 text-white rounded-xl flex items-center justify-center shadow-lg"><Scissors size={24} /></div>
                   <div>
-                    <h2 className="text-6xl font-black italic tracking-tighter">Initialize <span className="text-slate-400">Cut Hub</span></h2>
-                    <p className="text-[11px] font-black text-slate-400 tracking-[0.8em] mt-2">Primary Material Registration Protocol</p>
+                    <h2 className="text-2xl font-bold tracking-tight text-slate-950 dark:text-white uppercase leading-none">নতুন কাটিং <span className="text-blue-600">এন্ট্রি করুন</span></h2>
+                    <p className="text-[10px] font-bold text-slate-400 tracking-widest mt-2 uppercase italic leading-none">Primary Material Injection Protocol</p>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
-                  <div className="lg:col-span-5 space-y-8">
-                    <div className="space-y-3">
-                      <label className="text-[10px] font-black uppercase text-slate-500 tracking-widest ml-6 flex items-center gap-3">
-                        <Package size={12} /> Design Model Identifier
-                      </label>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                  <div className="space-y-6">
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] font-bold uppercase text-slate-500 tracking-widest ml-1">ডিজাইন (Design)</label>
                       <select 
-                        className="premium-input !bg-slate-50 !py-7 !px-10 !text-xl font-black uppercase"
-                        value={entryData.design}
+                        className="premium-input !h-12 text-sm font-bold uppercase" 
+                        value={entryData.design} 
                         onChange={(e) => setEntryData(p => ({ ...p, design: e.target.value }))}
                       >
-                        <option value="">Select Master Design...</option>
-                        {(masterData.designs || []).map(d => (
-                          <option key={d.name} value={d.name}>{d.name}</option>
-                        ))}
+                        <option value="">ডিজাইন নির্বাচন করুন...</option>
+                        {(masterData.designs || []).map(d => <option key={d.name} value={d.name}>{d.name}</option>)}
                       </select>
                     </div>
                     
-                    <div className="space-y-3">
-                      <label className="text-[10px] font-black uppercase text-slate-500 tracking-widest ml-6 flex items-center gap-3">
-                        <Activity size={12} /> Fabric Color Spectrum
-                      </label>
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] font-bold uppercase text-slate-500 tracking-widest ml-1">রঙ (Color Mapping)</label>
                       <select 
-                        className="premium-input !bg-slate-50 !py-7 !px-10 !text-xl font-black uppercase"
-                        value={entryData.color}
+                        className="premium-input !h-12 text-sm font-bold uppercase" 
+                        value={entryData.color} 
                         onChange={(e) => setEntryData(p => ({ ...p, color: e.target.value }))}
                       >
-                        <option value="">Mapping Color Node...</option>
-                        {(masterData.colors || []).map(c => (
-                          <option key={c} value={c}>{c}</option>
-                        ))}
+                        <option value="">রঙ নির্বাচন করুন...</option>
+                        {(masterData.colors || []).map(c => <option key={c} value={c}>{c}</option>)}
                       </select>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-8">
-                        <div className="space-y-3">
-                        <label className="text-[10px] font-black uppercase text-slate-500 tracking-widest ml-6">Lot Identifier</label>
-                        <input 
-                            className="premium-input !bg-black text-white !py-7 !px-10 !text-2xl font-black text-center shadow-2xl"
-                            value={entryData.lotNo}
-                            onChange={(e) => setEntryData(p => ({ ...p, lotNo: e.target.value }))}
-                        />
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-1.5">
+                            <label className="text-[10px] font-bold uppercase text-slate-500 tracking-widest ml-1">লট নম্বর (Lot)</label>
+                            <input 
+                                className="premium-input !bg-slate-950 !text-white !h-12 text-lg font-bold text-center border-none" 
+                                value={entryData.lotNo} 
+                                onChange={(e) => setEntryData(p => ({ ...p, lotNo: e.target.value }))} 
+                            />
                         </div>
-                        <div className="space-y-3">
-                        <label className="text-[10px] font-black uppercase text-slate-500 tracking-widest ml-6">Injection Date</label>
-                        <input 
-                            type="date"
-                            className="premium-input !bg-slate-50 !py-7 !px-10 !text-xs font-black text-center"
-                            value={entryData.date}
-                            onChange={(e) => setEntryData(p => ({ ...p, date: e.target.value }))}
-                        />
+                        <div className="space-y-1.5">
+                            <label className="text-[10px] font-bold uppercase text-slate-500 tracking-widest ml-1">তারিখ (Date)</label>
+                            <input 
+                                type="date" 
+                                className="premium-input !h-12 text-xs font-bold text-center !bg-slate-50 dark:!bg-slate-800/50 border-slate-200 dark:border-slate-700" 
+                                value={entryData.date} 
+                                onChange={(e) => setEntryData(p => ({ ...p, date: e.target.value }))} 
+                            />
                         </div>
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] font-bold uppercase text-slate-500 tracking-widest ml-1">কাটার এর নাম (Cutter Name)</label>
+                      <input 
+                        className="premium-input !h-12 text-sm font-bold uppercase" 
+                        placeholder="কাটার এর নাম লিখুন..."
+                        value={entryData.cutterName} 
+                        onChange={(e) => setEntryData(p => ({ ...p, cutterName: e.target.value }))}
+                      />
                     </div>
                   </div>
 
-                  <div className="lg:col-span-7 bg-slate-50/50 p-12 rounded-[4rem] border border-black/5 group flex flex-col">
-                     <div className="flex justify-between items-center mb-10">
-                        <div className="space-y-2">
-                           <h4 className="text-[10px] font-black uppercase tracking-widest text-black">Size Matrix Distribution</h4>
-                           <p className="text-[8px] font-bold text-slate-300 tracking-widest uppercase">Multi-Pattern Multipliers</p>
-                        </div>
+                  <div className="bg-slate-50 dark:bg-slate-800/50 p-6 rounded-xl border border-slate-100 dark:border-slate-800 flex flex-col shadow-inner">
+                     <div className="flex justify-between items-center mb-6">
+                        <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400">সাইজ লিস্ট (Size Matrix)</label>
                         <button 
-                          onClick={() => setEntryData(p => ({ ...p, sizes: [...p.sizes, { size: "", borka: "", hijab: "" }] }))}
-                          className="w-16 h-16 bg-black text-white rounded-3xl flex items-center justify-center hover:scale-110 hover:shadow-2xl transition-all active:scale-95"
+                            onClick={() => setEntryData(p => ({ ...p, sizes: [...p.sizes, { size: "", borka: "", hijab: "" }] }))} 
+                            className="w-10 h-10 bg-slate-950 text-white rounded-xl flex items-center justify-center hover:scale-110 shadow-lg transition-all"
                         >
-                          <Plus size={24} strokeWidth={3} />
+                            <Plus size={18} />
                         </button>
                      </div>
                      
-                     <div className="flex-1 max-h-[30rem] overflow-y-auto pr-6 custom-scrollbar space-y-6">
+                     <div className="flex-1 max-h-[20rem] overflow-y-auto pr-2 space-y-3 no-scrollbar">
                         {entryData.sizes.map((s, idx) => (
-                          <div key={idx} className="grid grid-cols-12 gap-6 items-center animate-fade-up">
+                          <div key={idx} className="grid grid-cols-12 gap-3 items-center bg-white dark:bg-slate-900 p-2 rounded-xl border border-slate-100 dark:border-slate-800">
                              <div className="col-span-3">
                                 <select 
-                                    className="premium-input !py-6 !px-6 w-full !rounded-2xl font-black uppercase text-xs"
-                                    value={s.size}
-                                    onChange={(e) => {
-                                    const newSizes = [...entryData.sizes];
-                                    newSizes[idx].size = e.target.value;
-                                    setEntryData(p => ({ ...p, sizes: newSizes }));
-                                    }}
+                                    className="w-full bg-transparent h-10 text-[10px] font-black uppercase outline-none" 
+                                    value={s.size} 
+                                    onChange={(e) => { const newSizes = [...entryData.sizes]; newSizes[idx].size = e.target.value; setEntryData(p => ({ ...p, sizes: newSizes })); }}
                                 >
-                                    <option value="">Size</option>
+                                    <option value="">SIZE</option>
                                     {(masterData.sizes || []).map(sz => <option key={sz} value={sz}>{sz}</option>)}
                                 </select>
                              </div>
-                             <div className="col-span-4 relative group/input">
-                                <span className="absolute left-6 top-1/2 -translate-y-1/2 text-[9px] font-black text-slate-300 group-focus-within/input:text-black transition-colors">B</span>
+                             <div className="col-span-4 relative border-l border-slate-100 dark:border-slate-800 px-3">
+                                <span className="absolute left-1 top-1/2 -translate-y-1/2 text-[8px] font-bold text-slate-300 uppercase">B</span>
                                 <input 
-                                    placeholder="0" type="number"
-                                    className="premium-input !py-6 !pl-12 !pr-6 !rounded-2xl font-black text-2xl text-center"
-                                    value={s.borka}
-                                    onChange={(e) => {
-                                        const newSizes = [...entryData.sizes];
-                                        newSizes[idx].borka = e.target.value;
-                                        setEntryData(p => ({ ...p, sizes: newSizes }));
-                                    }}
+                                    placeholder="0" type="number" 
+                                    className="w-full bg-transparent h-10 text-xl font-bold text-center outline-none" 
+                                    value={s.borka} 
+                                    onChange={(e) => { const newSizes = [...entryData.sizes]; newSizes[idx].borka = e.target.value; setEntryData(p => ({ ...p, sizes: newSizes })); }} 
                                 />
                              </div>
-                             <div className="col-span-4 relative group/input">
-                                <span className="absolute left-6 top-1/2 -translate-y-1/2 text-[9px] font-black text-slate-300 group-focus-within/input:text-black transition-colors">H</span>
+                             <div className="col-span-4 relative border-l border-slate-100 dark:border-slate-800 px-3">
+                                <span className="absolute left-1 top-1/2 -translate-y-1/2 text-[8px] font-bold text-slate-300 uppercase">H</span>
                                 <input 
-                                    placeholder="0" type="number"
-                                    className="premium-input !py-6 !pl-12 !pr-6 !rounded-2xl font-black text-2xl text-center text-slate-400"
-                                    value={s.hijab}
-                                    onChange={(e) => {
-                                        const newSizes = [...entryData.sizes];
-                                        newSizes[idx].hijab = e.target.value;
-                                        setEntryData(p => ({ ...p, sizes: newSizes }));
-                                    }}
+                                    placeholder="0" type="number" 
+                                    className="w-full bg-transparent h-10 text-xl font-bold text-center text-slate-400 outline-none" 
+                                    value={s.hijab} 
+                                    onChange={(e) => { const newSizes = [...entryData.sizes]; newSizes[idx].hijab = e.target.value; setEntryData(p => ({ ...p, sizes: newSizes })); }} 
                                 />
                              </div>
                              <div className="col-span-1 flex justify-end">
                                 {entryData.sizes.length > 1 && (
                                     <button 
-                                        onClick={() => setEntryData(p => ({ ...p, sizes: p.sizes.filter((_, i) => i !== idx) }))}
-                                        className="p-4 text-slate-300 hover:text-rose-500 hover:bg-white rounded-2xl transition-all"
+                                        onClick={() => setEntryData(p => ({ ...p, sizes: p.sizes.filter((_, i) => i !== idx) }))} 
+                                        className="w-8 h-8 flex items-center justify-center text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/10 rounded-lg transition-all"
                                     >
-                                    <Trash2 size={24} />
+                                        <Trash2 size={14} />
                                     </button>
                                 )}
                              </div>
@@ -558,23 +562,23 @@ const CuttingPanel = ({
                   </div>
                 </div>
 
-                <div className="flex gap-8 pt-8">
+                <div className="flex flex-col md:flex-row gap-4">
                    <button 
-                     onClick={() => setShowModal(false)}
-                     className="flex-1 py-10 rounded-[2.5rem] bg-slate-50 text-slate-400 font-black uppercase text-[12px] tracking-[0.4em] hover:bg-rose-500 hover:text-white transition-all shadow-sm active:scale-[0.98]"
+                    onClick={() => setShowModal(false)} 
+                    className="flex-1 py-4 rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-400 font-bold uppercase text-[10px] tracking-widest hover:text-rose-500 transition-all border border-slate-100 dark:border-slate-800"
                    >
-                     Void Operation
+                    বাতিল (Close)
                    </button>
                    <button 
-                     onClick={() => handleAddCutting(true)}
-                     className="action-btn-primary flex-1 !rounded-[2.5rem] !py-10 text-xl shadow-[0_30px_100px_-20px_rgba(0,0,0,0.3)] active:scale-[0.98]"
+                    onClick={() => handleAddCutting(true)} 
+                    className="flex-[2] py-4 bg-slate-950 text-white rounded-xl font-bold text-[10px] uppercase tracking-widest shadow-xl hover:bg-black transition-all flex items-center justify-center gap-2"
                    >
-                     Finalize Protocol & Print
+                     <Printer size={16} /> সংরক্ষণ ও প্রিন্ট (Commit & Print)
                    </button>
                 </div>
               </div>
-            </motion.div>
-          </motion.div>
+            </div>
+          </div>
         )}
       </AnimatePresence>
     </div>
@@ -582,3 +586,4 @@ const CuttingPanel = ({
 };
 
 export default CuttingPanel;
+

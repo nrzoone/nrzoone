@@ -236,7 +236,7 @@ const AttendancePanel = ({
       "ডিসেম্বর",
     ];
     const date = new Date(dateStr);
-    return `${date.getDate()} ${months[date.getMonth()]}`;
+    return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
   };
 
   const getWeeklySummary = () => {
@@ -293,7 +293,7 @@ const AttendancePanel = ({
           return (
             <div
               key={worker}
-              className={`premium-card !p-6 border-l-[6px] transition-all group ${status === 'present' ? 'border-emerald-500 bg-emerald-50/10' : status === 'half-day' ? 'border-amber-400 bg-amber-50/10' : 'border-slate-100 bg-white dark:bg-slate-900/50'}`}
+              className={`saas-card !p-6 border-l-[6px] transition-all group ${status === 'present' ? 'border-emerald-500 bg-emerald-50/10' : status === 'half-day' ? 'border-amber-400 bg-amber-50/10' : 'border-slate-100 bg-white dark:bg-slate-900/50'}`}
             >
               <div className="flex justify-between items-start mb-6">
                 <div>
@@ -353,7 +353,7 @@ const AttendancePanel = ({
             প্রিন্ট ইনভয়েস (A4)
           </button>
         </div>
-        <div className="w-[210mm] min-h-[297mm] mx-auto border-[12px] border-slate-50 p-10 md:p-14 rounded-3xl shadow-3xl relative overflow-hidden bg-white print:w-full print:min-h-[100vh] print:shadow-none print:border-none">
+        <div className="w-[210mm] min-h-[297mm] mx-auto border-[12px] border-slate-50 p-10 md:p-14 rounded-xl shadow-3xl relative overflow-hidden bg-white print:w-full print:min-h-[100vh] print:shadow-none print:border-none">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-[0.03] -rotate-12 pointer-events-none">
             <NRZLogo size="xl" white={false} />
           </div>
@@ -416,213 +416,193 @@ const AttendancePanel = ({
   }
 
   return (
-    <div className="space-y-8 pb-32 animate-fade-up font-sans">
-      {/* Header Section */}
-      <div className="flex flex-col md:flex-row justify-between items-end gap-10 mb-16 px-2">
-        <div className="space-y-4">
-          <h1 className="section-header !mb-0 tracking-tightest">কর্মীবাহিনীর <span className="text-slate-300 dark:text-slate-700 font-light">হাজিরা রিপোর্ট</span></h1>
-          <div className="flex flex-wrap gap-3 items-center">
-            <span className="px-5 py-1.5 bg-black text-white dark:bg-white dark:text-black rounded-lg text-[9px] font-bold uppercase tracking-widest shadow-lg">ভার্সন ২.৫ বায়োমেট্রিক</span>
-            <span className="px-5 py-1.5 bg-[var(--bg-secondary)] border border-[var(--border)] text-slate-500 rounded-lg text-[9px] font-bold uppercase tracking-widest italic">{selectedDepartment === 'sewing' ? 'সেলাই' : selectedDepartment === 'stone' ? 'স্টোন' : selectedDepartment === 'pata' ? 'পাতা' : selectedDepartment === 'cutting' ? 'কাটিং' : 'অফিস'} ইউনিট</span>
+    <div className="space-y-6 pb-24 animate-fade-up px-1 md:px-2 text-slate-950 border-t-0">
+      {/* SaaS Stat Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm flex items-center gap-6 group">
+          <div className="w-14 h-14 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
+            <Users size={24} />
+          </div>
+          <div>
+            <p className="text-3xl font-bold tracking-tight text-slate-950 dark:text-white leading-none mb-1">{workers.length}</p>
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">মোট কর্মী (Workforce)</p>
           </div>
         </div>
-        <div className="flex flex-wrap gap-8 items-center bg-[var(--bg-secondary)] p-8 rounded-3xl border border-[var(--border)] shadow-sm">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-emerald-50 dark:bg-emerald-500/10 rounded-xl flex items-center justify-center text-emerald-500 shadow-inner group hover:scale-110 transition-all"><UserCheck size={20} /></div>
-            <div>
-              <p className="text-3xl font-bold leading-none dark:text-white tracking-tight">{stats.present}</p>
-              <p className="text-[9px] uppercase font-bold text-slate-400 tracking-wider mt-1.5">কর্মরত কর্মী</p>
-            </div>
+        <div className="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm flex items-center gap-6 group">
+          <div className="w-14 h-14 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
+            <UserCheck size={24} />
           </div>
-          <div className="w-px h-10 bg-[var(--border)]"></div>
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-indigo-50 dark:bg-indigo-500/10 rounded-xl flex items-center justify-center text-indigo-500 shadow-inner group hover:scale-110 transition-all"><DollarSign size={20} /></div>
-            <div>
-              <p className="text-3xl font-bold leading-none dark:text-white tracking-tight">{stats.wages.toLocaleString()}৳</p>
-              <p className="text-[9px] uppercase font-bold text-slate-400 tracking-wider mt-1.5">আজকের মজুরি</p>
-            </div>
+          <div>
+            <p className="text-3xl font-bold tracking-tight text-emerald-600 leading-none mb-1">{stats.present}</p>
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">আজ উপস্থিত (Present Today)</p>
+          </div>
+        </div>
+        <div className="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm flex items-center gap-6 group">
+          <div className="w-14 h-14 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
+            <DollarSign size={24} />
+          </div>
+          <div>
+            <p className="text-3xl font-bold tracking-tight text-slate-950 dark:text-white leading-none mb-1">৳{stats.wages.toLocaleString()}</p>
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">দৈনিক পেমেন্ট (Payments)</p>
           </div>
         </div>
       </div>
 
-      {/* Control Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-8 mb-16 no-print bg-[var(--bg-secondary)] p-4 rounded-2xl border border-[var(--border)] shadow-sm">
-        <div className="flex items-center gap-3">
-          <div className="pill-nav !p-1 shadow-none !bg-slate-100/50 dark:!bg-slate-900/50">
-             {[
-                { id: 'sewing', label: 'সেলাই' },
-                { id: 'cutting', label: 'কাটিং' },
-                { id: 'stone', label: 'স্টোন' },
-                { id: 'pata', label: 'পাতা' },
-                { id: 'office', label: 'অফিস' }
-             ].map(dept => (
-              <button
-                key={dept.id}
-                onClick={() => setSelectedDepartment(dept.id)}
-                className={`px-6 py-2.5 rounded-xl text-[9px] font-bold uppercase tracking-widest transition-all ${selectedDepartment === dept.id ? 'bg-black text-white dark:bg-white dark:text-black shadow-md' : 'text-slate-400 hover:text-black dark:hover:text-white'}`}
-              >
-                {dept.label}
-              </button>
-            ))}
-          </div>
+
+
+      {/* Control Bar - Standardized Pill Nav */}
+      <div className="bg-white dark:bg-slate-900 !p-1.5 flex flex-col lg:flex-row items-center justify-between gap-6 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm my-4">
+        <div className="flex flex-wrap gap-1 w-full lg:w-auto overflow-x-auto no-scrollbar">
+          {[
+            { id: 'sewing', label: 'সেলাই (Sewing)' },
+            { id: 'cutting', label: 'কাটিং (Cutting)' },
+            { id: 'stone', label: 'স্টোন (Stone)' },
+            { id: 'pata', label: 'পাতা (Pata)' },
+            { id: 'office', label: 'অফিস (Office)' }
+          ].map(dept => (
+            <button
+              key={dept.id}
+              onClick={() => setSelectedDepartment(dept.id)}
+              className={`px-6 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all ${selectedDepartment === dept.id ? 'bg-slate-950 text-white shadow-lg' : 'text-slate-400 hover:text-slate-950 dark:hover:text-white'}`}
+            >
+              {dept.label}
+            </button>
+          ))}
         </div>
 
-        <div className="flex items-center gap-4">
-          <div className="relative group">
-            <Calendar size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" />
+        <div className="flex items-center gap-3 w-full lg:w-auto">
+          <div className="relative group flex-1 lg:flex-none">
+            <Calendar size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
             <input
               type="date"
-              className="bg-slate-50 dark:bg-slate-800 border border-[var(--border)] rounded-xl py-3 pl-12 pr-4 text-xs font-bold uppercase tracking-widest outline-none focus:ring-1 focus:ring-black/10 transition-all"
+              className="premium-input !pl-11 !h-11 !text-[10px] !bg-slate-50 dark:!bg-slate-800/50"
               value={selectedDate}
               onChange={(e) => setSelectedDate(e.target.value)}
             />
           </div>
-          <button onClick={() => setShowQR(true)} title="QR স্ক্যান" className="p-3.5 bg-black text-white dark:bg-white dark:text-black rounded-xl shadow-lg hover:scale-105 active:scale-95 transition-all"><Fingerprint size={18} /></button>
+          
+          {(user?.role?.toLowerCase() === 'admin' || user?.role?.toLowerCase() === 'manager') && (
+            <div className="flex gap-2">
+              <button 
+                onClick={() => setShowInvoice(true)} 
+                className="w-11 h-11 bg-slate-950 text-white rounded-xl shadow-lg flex items-center justify-center hover:bg-slate-800 transition-all"
+                title="সাপ্তাহিক রিপোর্ট"
+              >
+                <Printer size={16} />
+              </button>
+              <button 
+                onClick={() => setShowQR(true)} 
+                className="w-11 h-11 bg-blue-600 text-white rounded-xl shadow-lg border border-blue-500 flex items-center justify-center hover:bg-blue-700 transition-all"
+                title="কিউআর স্ক্যান"
+              >
+                <Camera size={16} />
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
-      {viewMode === "attendance" ? (
-        <div className="space-y-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
-              <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1 italic">মোট কারিগর</p>
-              <p className="text-3xl font-black tracking-tighter text-black leading-none italic">{workers.length}</p>
-            </div>
-            <div className="bg-emerald-50 p-6 rounded-2xl border border-emerald-100 shadow-sm">
-              <p className="text-[9px] font-black text-emerald-600 uppercase tracking-widest mb-1 italic">উপস্থিত</p>
-              <p className="text-3xl font-black tracking-tighter text-emerald-600 leading-none italic">{stats.present}</p>
-            </div>
-            {(() => {
-            const role = user?.role?.toLowerCase();
-            const isAdmin = role === 'admin';
-            const isManager = role === 'manager';
-            const isPrivileged = isAdmin || isManager;
-            if (isPrivileged) {
-              return (
-                <>
-                  <button
-                    onClick={() => setShowInvoice(true)}
-                    className="bg-black text-white p-6 rounded-2xl shadow-xl hover:scale-[1.02] transition-all text-left group"
-                  >
-                    <Printer size={16} className="mb-3" />
-                    <p className="text-[10px] font-black uppercase leading-tight italic text-white/50">সাপ্তাহিক রিপোর্ট</p>
-                  </button>
-                  <button
-                    onClick={() => setShowQR(true)}
-                    className="bg-indigo-600 text-white p-6 rounded-2xl shadow-xl hover:scale-[1.02] transition-all text-left group"
-                  >
-                    <Camera size={16} className="mb-3" />
-                    <p className="text-[10px] font-black uppercase leading-tight italic text-white/50">কিউ-আর ক্যামেরা স্ক্যান</p>
-                  </button>
-                </>
-              );
-            }
-            return null;
-          })()}
-          </div>
-          
-          {showQR && <QRScanner onScanSuccess={handleQRScan} onClose={() => setShowQR(false)} />}
 
-          <div className="grid grid-cols-1 gap-4">
-            {workers.filter(w => {
-                 const role = user?.role?.toLowerCase();
-                 if (role === 'admin' || role === 'manager') return true;
-                 return w.trim().toLowerCase() === user?.name?.trim().toLowerCase();
-            }).map((worker, idx) => {
-                const status = getAttendance(worker);
-                const workerDoc = (masterData.workerDocs || []).find(d => d.name.toUpperCase() === worker.toUpperCase() && d.dept === selectedDepartment);
-                const workerId = workerDoc?.workerId;
-                const wage = workerDoc?.wage || getWorkerWage(worker);
-                return (
-                  <div key={idx} className="item-card flex flex-col md:flex-row justify-between items-center gap-6 group">
-                    <div className="flex items-center gap-6 flex-1 w-full md:w-auto">
-                      <div className="w-14 h-14 bg-slate-50 flex items-center justify-center text-2xl font-black italic rounded-xl border border-slate-100 shadow-inner group-hover:bg-black group-hover:text-white transition-all transform group-hover:rotate-6">
-                        {worker[0].toUpperCase()}
-                      </div>
-                      <div className="space-y-1">
-                        <div className="flex items-center gap-3">
-                            <h4 className="text-xl font-black italic uppercase leading-none tracking-tighter text-black">{worker}</h4>
-                            {workerId && <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-[8px] font-black rounded-full shadow-sm">আইডি: {workerId}</span>}
-                        </div>
-                        <p className="text-slate-500 text-[11px] font-black uppercase italic tracking-widest leading-none mt-1">
-                          • দৈনিক মজুরি: ৳{wage.toLocaleString()}
-                        </p>
-                      </div>
-                    </div>
 
-                    <div className="flex bg-slate-50 p-1 rounded-xl border border-slate-100 shrink-0 gap-2 overflow-x-auto">
-                      {(user?.role?.toLowerCase() === 'admin' || user?.role?.toLowerCase() === 'manager') ? (
-                        <>
-                          {[
-                            { id: "present", label: "উপস্থিত" },
-                            { id: "half-day", label: "অর্ধ-দিবস" },
-                            { id: "absent", label: "অনুপস্থিত" }
-                          ].map((s) => (
-                            <button
-                              key={s.id}
-                              onClick={() => markAttendance(worker, s.id)}
-                              className={`px-4 py-3 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${
-                                  status === s.id 
-                                  ? (s.id === "present" ? "bg-emerald-500 text-white shadow-lg" : s.id === "half-day" ? "bg-amber-500 text-white shadow-lg" : "bg-rose-500 text-white shadow-lg") 
-                                  : "text-slate-500 hover:text-black hover:bg-white"
-                              }`}
-                            >
-                              {s.label}
-                            </button>
-                          ))}
-                            <button 
-                                onClick={() => registerBiometric(worker)}
-                                className={`p-3 rounded-lg transition-all shadow-sm border border-slate-100 ${masterData.workerBiometrics?.[worker] ? 'bg-emerald-50 text-emerald-600' : 'bg-white text-slate-300 hover:text-black'}`}
-                                title="যাচাই করুন"
-                            >
-                                <Fingerprint size={16} />
-                            </button>
-                        </>
-                      ) : (
-                        <div className={`px-8 py-3 rounded-lg text-[10px] font-black uppercase tracking-widest border border-slate-200 ${status === 'present' ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'}`}>
-                            আজকের স্ট্যাটাস: {status === 'present' ? 'উপস্থিত' : status === 'half-day' ? 'অর্ধ-দিবস' : 'অনুপস্থিত'}
-                        </div>
-                      )}
-                      
-                      <div className="w-px h-8 bg-slate-200 mx-2 self-center hidden md:block"></div>
-                      <button 
-                          onClick={() => {
-                              const phone = workerDoc?.phone || "8801700000000";
-                              const msg = `সালাম ${worker},\nআপনার আজকের হাজিরা [${status.toUpperCase()}] হিসেবে রেকর্ড করা হয়েছে।\nধন্যবাদ - NRZOONE`;
-                              window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
-                          }}
-                          className="p-3 bg-white text-emerald-500 rounded-lg hover:bg-emerald-500 hover:text-white transition-all shadow-sm border border-slate-100"
-                      >
-                          <MessageCircle size={16} />
-                      </button>
-                    </div>
+      {showQR && <QRScanner onScanSuccess={handleQRScan} onClose={() => setShowQR(false)} />}
+
+      {/* Main Attendance List */}
+      <div className="grid grid-cols-1 gap-4">
+        {workers.filter(w => {
+             const role = user?.role?.toLowerCase();
+             if (role === 'admin' || role === 'manager') return true;
+             return w.trim().toLowerCase() === user?.name?.trim().toLowerCase();
+        }).map((worker, idx) => {
+            const status = getAttendance(worker);
+            const workerDoc = (masterData.workerDocs || []).find(d => d.name.toUpperCase() === worker.toUpperCase() && d.dept === selectedDepartment);
+            const workerId = workerDoc?.workerId;
+            const wage = workerDoc?.wage || getWorkerWage(worker);
+            
+            return (
+              <div key={idx} className="saas-card flex flex-col md:flex-row justify-between items-center gap-6 group hover:border-slate-950 dark:hover:border-white transition-all animate-fade-up">
+                <div className="flex items-center gap-5 flex-1 w-full md:w-auto">
+                  <div className="w-14 h-14 bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-2xl font-bold rounded-xl border border-slate-100 dark:border-slate-700 transition-transform group-hover:scale-105">
+                    {worker[0].toUpperCase()}
                   </div>
-                );
-              })}
-          </div>
-        </div>
-      ) : (
-        <div className="space-y-6">
-            {/* Minimal Duty Log Placeholder */}
-            {(masterData.productions || []).filter(p => p.status === 'Pending').map((prod, idx) => (
-               <div key={idx} className="bg-white p-6 rounded-3xl border border-slate-100 flex justify-between items-center italic">
-                   <div>
-                       <h4 className="text-xl font-black italic uppercase leading-none mb-2">{prod.design}</h4>
-                       <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{prod.worker} • {prod.size}</p>
-                   </div>
-                   <div className="text-right">
-                       <p className="text-2xl font-black italic">B:{prod.issueBorka}</p>
-                       <p className="text-[8px] font-black uppercase text-emerald-600 tracking-widest">সংগ্রহের অপেক্ষায়</p>
-                   </div>
-               </div>
-            ))}
-        </div>
-      )}
-      
-      <div className="pt-20 pb-10 flex justify-center">
-        <button onClick={() => setActivePanel("Overview")} className="flex items-center gap-6 bg-white px-8 py-4 rounded-full border-4 border-slate-50 shadow-2xl hover:border-black transition-all">
-          <ArrowLeft size={20} />
-          <span className="text-lg font-black uppercase italic tracking-widest text-black">মূল ড্যাশবোর্ডে ফিরে যান</span>
+                  <div className="space-y-0.5">
+                    <div className="flex items-center gap-3">
+                        <h4 className="text-xl font-bold tracking-tight text-slate-950 dark:text-white uppercase leading-none">{worker}</h4>
+                        {workerId && <span className="px-2 py-0.5 bg-emerald-50 dark:bg-emerald-900/10 text-emerald-600 text-[9px] font-bold rounded-md border border-emerald-100 dark:border-emerald-800">ID: {workerId}</span>}
+                    </div>
+                    <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest leading-none mt-1 flex items-center gap-1.5 italic">
+                       <DollarSign size={10} /> দৈনিক মজুরি: ৳{wage.toLocaleString()} (Daily Wage)
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end">
+                  <div className="flex p-1 bg-slate-50 dark:bg-slate-800/50 rounded-xl gap-1">
+                    {(user?.role?.toLowerCase() === 'admin' || user?.role?.toLowerCase() === 'manager') ? (
+                      <>
+                        {[
+                          { id: "present", label: "FULL" },
+                          { id: "half-day", label: "HALF" },
+                          { id: "absent", label: "ABSENT" }
+                        ].map((s) => (
+                          <button
+                            key={s.id}
+                            onClick={() => markAttendance(worker, s.id)}
+                            className={`px-4 py-2 rounded-lg text-[9px] font-bold uppercase tracking-widest transition-all ${
+                                status === s.id 
+                                ? (s.id === "present" ? "bg-slate-950 text-white shadow-lg" : s.id === "half-day" ? "bg-amber-500 text-white shadow-lg" : "bg-rose-500 text-white shadow-lg") 
+                                : "text-slate-400 hover:text-slate-950 dark:hover:text-white"
+                            }`}
+                          >
+                            {s.label}
+                          </button>
+                        ))}
+                      </>
+                    ) : (
+                      <div className={`px-6 py-2 rounded-lg text-[9px] font-bold uppercase tracking-widest ${status === 'present' ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'}`}>
+                          স্ট্যাটাস: {status === 'present' ? 'PRESENT' : status === 'half-day' ? 'HALF-DAY' : 'ABSENT'}
+                      </div>
+                    )}
+                  </div>
+                  
+                  <div className="flex gap-2">
+                    {(user?.role?.toLowerCase() === 'admin' || user?.role?.toLowerCase() === 'manager') && (
+                       <button 
+                          onClick={() => registerBiometric(worker)}
+                          className={`w-10 h-10 flex items-center justify-center rounded-xl transition-all border border-slate-200 dark:border-slate-800 ${masterData.workerBiometrics?.[worker] ? 'bg-emerald-500 text-white shadow-lg border-none' : 'bg-white dark:bg-slate-800 text-slate-300 hover:text-slate-950 dark:hover:text-white'}`}
+                          title="ফিঙ্গারপ্রিন্ট রেজিস্টার"
+                      >
+                          <Fingerprint size={16} />
+                      </button>
+                    )}
+                    <button 
+                        onClick={() => {
+                            const phone = workerDoc?.phone || "8801700000000";
+                            const msg = `সালাম ${worker},\nআপনার আজকের হাজিরা [${status.toUpperCase()}] হিসেবে রেকর্ড করা হয়েছে।\nধন্যবাদ - NRZOONE`;
+                            window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
+                        }}
+                        className="w-10 h-10 flex items-center justify-center rounded-xl bg-white dark:bg-slate-800 text-emerald-500 hover:bg-emerald-500 hover:text-white transition-all border border-slate-200 dark:border-slate-800 shadow-sm"
+                    >
+                        <MessageCircle size={16} />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            );
+
+        })}
+      </div>
+
+      <div className="pt-24 pb-12 flex justify-center">
+        <button
+          onClick={() => setActivePanel("Overview")}
+          className="group relative flex items-center gap-6 bg-white dark:bg-slate-900 px-12 md:px-16 py-7 md:py-8 rounded-[var(--radius-saas)] border-2 border-slate-100 dark:border-slate-800 shadow-xl hover:border-slate-950 transition-all duration-500"
+        >
+            <div className="p-3 bg-slate-950 text-white rounded-xl transition-transform shadow-lg group-hover:scale-110">
+                <ArrowLeft size={20} strokeWidth={3} />
+            </div>
+            <span className="text-lg font-bold tracking-tight text-slate-950 dark:text-white uppercase leading-none">
+                ড্যাশবোর্ডে ফিরে যান
+            </span>
         </button>
       </div>
     </div>

@@ -102,30 +102,30 @@ class ErrorBoundary extends React.Component {
     render() {
         if (this.state.hasError) {
             return (
-                <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center p-12 text-center font-outfit">
+                <div className="min-h-screen bg-slate-950 text-white flex flex-col items-center justify-center p-12 text-center font-outfit">
                     <div className="relative mb-12">
-                        <AlertTriangle size={80} className="text-amber-500 animate-pulse" />
+                        <AlertTriangle size={64} className="text-amber-500 animate-pulse" />
                         <div className="absolute inset-0 blur-3xl bg-amber-500 opacity-20 animate-pulse"></div>
                     </div>
-                    <h1 className="text-4xl font-black uppercase italic tracking-tighter mb-4">Engine Protection Mode</h1>
-                    <p className="text-slate-500 text-sm max-w-md mb-12 uppercase tracking-widest leading-relaxed">
-                        A critical runtime discrepancy was detected. The system has paused to prevent data corruption.
+                    <h1 className="text-3xl font-black uppercase tracking-tighter mb-4">রিমোট সিস্টেম প্রটেকশন</h1>
+                    <p className="text-slate-400 text-sm max-w-md mb-12 uppercase tracking-widest leading-relaxed">
+                        সিস্টেমে একটি গুরুতর ত্রুটি পাওয়া গেছে। ডাটা সুরক্ষিত রাখতে অপারেশন সাময়িকভাবে বন্ধ করা হয়েছে।
                     </p>
-                    <div className="bg-zinc-900 border border-zinc-800 p-6 rounded-3xl mb-12 w-full max-w-lg text-left overflow-auto max-h-40">
-                        <p className="text-rose-500 text-[10px] font-mono leading-relaxed line-clamp-4">{this.state.error?.toString()}</p>
+                    <div className="bg-slate-900 border border-slate-800 p-6 rounded-2xl mb-12 w-full max-w-lg text-left overflow-auto max-h-40">
+                        <p className="text-rose-500 text-xs font-mono leading-relaxed">{this.state.error?.toString()}</p>
                     </div>
-                    <div className="flex gap-4">
+                    <div className="flex flex-wrap justify-center gap-4">
                         <button
                             onClick={() => window.location.reload()}
-                            className="bg-white text-black px-12 py-5 rounded-full font-black uppercase text-xs tracking-widest hover:scale-105 active:scale-95 transition-all"
+                            className="bg-white text-black px-10 py-4 rounded-xl font-bold uppercase text-xs tracking-widest hover:scale-105 active:scale-95 transition-all"
                         >
-                            Emergency Reboot
+                            রিবুট করুন
                         </button>
                         <button
                             onClick={this.handleRecover}
-                            className="bg-zinc-800 text-white px-12 py-5 rounded-full font-black uppercase text-xs tracking-widest hover:bg-rose-600 transition-all"
+                            className="bg-slate-800 text-white px-10 py-4 rounded-xl font-bold uppercase text-xs tracking-widest hover:bg-rose-600 transition-all"
                         >
-                            Full System Purge
+                            ডাটা ক্লিন ও রিস্টার্ট
                         </button>
                     </div>
                 </div>
@@ -180,77 +180,82 @@ const LoginView = ({ onLogin, masterData }) => {
     const [showPass, setShowPass] = useState(false);
 
     return (
-        <div className="min-h-screen flex flex-col md:flex-row bg-[var(--bg-primary)] font-outfit overflow-hidden">
-            <div className="absolute inset-0 bg-dot-pattern pointer-events-none opacity-[0.05]"></div>
+        <div className="min-h-screen flex flex-col md:flex-row bg-[var(--bg-primary)] font-outfit overflow-hidden mesh-bg">
+            <div className="absolute inset-x-0 top-0 h-64 bg-gradient-to-b from-white/50 to-transparent pointer-events-none"></div>
             
-            {/* Left Section: Branding (Black Side) */}
-            <div className="w-full md:w-1/2 bg-black flex flex-col items-center justify-center p-12 relative min-h-[40vh] md:min-h-screen">
+            {/* Left Section: Branding */}
+            <div className="w-full md:w-1/2 bg-slate-950 flex flex-col items-center justify-center p-12 relative min-h-[40vh] md:min-h-screen">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-900/20 via-slate-950 to-slate-950 opacity-60"></div>
+                
                 <div className="relative z-10 flex flex-col items-center text-center animate-fade-up">
-                    <div className="scale-150 mb-12">
+                    <div className="mb-12 relative">
+                        <div className="absolute inset-0 blur-3xl bg-blue-500/20 animate-pulse"></div>
                         <Logo size="xl" white={true} customUrl={masterData.settings?.logo} />
                     </div>
-                    <div className="mt-8 space-y-4">
-                        <h2 className="text-4xl md:text-6xl font-black italic tracking-tighter text-white uppercase leading-none">
-                            NRZOONE <span className="opacity-30">WOMEN'S CLOTHING</span>
+                    <div className="space-y-6">
+                        <h2 className="text-5xl md:text-7xl font-black tracking-tight text-white uppercase leading-tight">
+                            NRZOONE<br/><span className="text-blue-500">FACTORY ERP</span>
                         </h2>
-                        <p className="text-[10px] font-black tracking-[0.5em] text-white/40 uppercase">FACTORY MANAGEMENT SYSTEM</p>
-                        <div className="h-1.5 w-24 bg-white mx-auto rounded-full mt-8"></div>
+                        <p className="text-[11px] font-bold tracking-[0.6em] text-slate-500 uppercase">প্রফেশনাল ম্যানুফ্যাকচারিং সিস্টেম</p>
+                        <div className="h-1.5 w-24 bg-white/10 mx-auto rounded-full mt-10 overflow-hidden">
+                           <div className="h-full bg-blue-500 w-1/2 animate-[shimmer_2s_infinite]"></div>
+                        </div>
                     </div>
                 </div>
-                <div className="absolute bottom-10 left-10 text-[8px] font-black uppercase text-white/10 tracking-[0.6em] hidden md:block">
-                    PRO-GRADE ERP // DATA SECURE // 2026
+                <div className="absolute bottom-10 left-10 text-[9px] font-bold uppercase text-white/10 tracking-[0.4em] hidden md:block">
+                    INDUSTRIAL GRADE ERP // v5.2 // 2026
                 </div>
             </div>
 
-            {/* Right Section: Login Card (Soft UI Side) */}
+            {/* Right Section: Login */}
             <div className="w-full md:w-1/2 p-6 md:p-24 flex items-center justify-center relative">
-                 <div className="w-full max-w-lg premium-card !bg-white/80 backdrop-blur-xl animate-fade-up space-y-10">
-                    <div className="space-y-4">
-                        <h3 className="text-5xl md:text-7xl font-black italic text-black tracking-tighter leading-none">Sign In</h3>
-                        <p className="text-[10px] font-bold uppercase text-slate-500 tracking-[0.4em]">Protocol Authorization Required</p>
+                 <div className="w-full max-w-md bg-white rounded-3xl p-10 md:p-14 shadow-2xl space-y-10 border border-slate-100">
+                    <div className="space-y-2">
+                        <h3 className="text-3xl font-black text-slate-900 tracking-tight">লগইন করুন</h3>
+                        <p className="text-xs font-bold uppercase text-slate-400 tracking-widest">Secure Access Required</p>
                     </div>
 
                     <div className="space-y-8">
                         <div className="space-y-3">
-                            <label className="text-[10px] font-black uppercase text-slate-500 tracking-widest block ml-4">Identity Hub (ID)</label>
+                            <label className="text-[11px] font-bold uppercase text-slate-500 tracking-wider block ml-1">ইউজার আইডি (ID)</label>
                             <input 
                                 type="text"
                                 value={id}
                                 onChange={(e) => setId(e.target.value)}
-                                className="premium-input text-lg"
-                                placeholder="Admin ID..."
+                                className="premium-input !py-4"
+                                placeholder="ADMIN-ID"
                             />
                         </div>
 
                         <div className="space-y-3">
-                            <label className="text-[10px] font-black uppercase text-slate-500 tracking-widest block ml-4">Secure Pin (Password)</label>
+                            <label className="text-[11px] font-bold uppercase text-slate-500 tracking-wider block ml-1">পাসওয়ার্ড (Password)</label>
                             <div className="relative">
                                 <input 
                                     type={showPass ? "text" : "password"}
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    className="premium-input text-lg"
+                                    className="premium-input !py-4"
                                     placeholder="••••••••"
                                 />
-                                <button onClick={() => setShowPass(!showPass)} className="absolute right-6 top-1/2 -translate-y-1/2 text-slate-300 hover:text-black transition-colors">
-                                    {showPass ? <EyeOff size={24} /> : <Eye size={24} />}
+                                <button onClick={() => setShowPass(!showPass)} className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-900 transition-colors">
+                                    {showPass ? <EyeOff size={20} /> : <Eye size={20} />}
                                 </button>
                             </div>
                         </div>
                     </div>
 
-                    <div className="pt-6">
+                    <div className="pt-4">
                         <button 
                             onClick={() => onLogin(id, password)}
-                            className="action-btn-primary !w-full !rounded-[2rem] bg-black text-white hover:scale-[1.02]"
+                            className="action-btn-primary !w-full !py-4 bg-slate-950 hover:bg-black text-white rounded-2xl shadow-xl"
                         >
-                            <ShieldCheck size={20} /> AUTHORIZE ACCESS
+                            <ShieldCheck size={20} /> সিস্টেম এক্সেস
                         </button>
                     </div>
 
-                    <div className="text-center pt-2">
-                        <p className="text-[10px] font-bold uppercase text-slate-400 tracking-widest">
-                            NRZONE Neural Link v2.4
+                    <div className="text-center pt-4">
+                        <p className="text-[10px] font-bold uppercase text-slate-300 tracking-widest">
+                            NRZOONE INTEGRATED v5.2
                         </p>
                     </div>
                  </div>
@@ -358,62 +363,64 @@ const Sidebar = ({ activePanel, setActivePanel, user, setUser, isOpen, setIsSide
     };
 
     return (
-        <aside className={`fixed inset-y-0 left-0 z-[150] w-[300px] flex flex-col bg-[var(--bg-secondary)] border-r border-[var(--border)] transition-all duration-700 ease-in-out font-outfit shadow-2xl ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-            <div className="p-12 flex flex-col items-center">
-                <Logo size="sm" white={false} customUrl={masterData.settings?.logo} />
-                <div className="mt-6 h-1 w-12 bg-black dark:bg-white rounded-full opacity-10"></div>
+        <aside className={`fixed inset-y-0 left-0 z-[200] w-[280px] md:w-[320px] flex flex-col bg-slate-950 border-r border-white/5 transition-all duration-700 cubic-bezier(0.19, 1, 0.22, 1) font-inter ${isOpen ? 'translate-x-0' : '-translate-x-full shadow-none'} lg:translate-x-0`}>
+            {/* Dark Sidebar Brand */}
+            <div className="p-12 md:p-16 flex flex-col items-center relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-b from-blue-500/10 to-transparent pointer-events-none"></div>
+                <Logo size="sm" white={true} customUrl={masterData.settings?.logo} />
+                <div className="mt-8 h-1 w-12 bg-white/20 rounded-full"></div>
             </div>
-            <div className="flex-1 overflow-y-auto px-6 space-y-8 no-scrollbar pb-12">
+            
+            <div className="flex-1 overflow-y-auto px-6 md:px-8 space-y-10 no-scrollbar pb-12">
                 {MENU_CATEGORIES.map(category => {
                     const filteredItems = category.items.filter(item => {
                         const role = user?.role?.toLowerCase();
-                        const isSuperAdmin = role === 'admin';
-                        const isManager = role === 'manager';
-                        if (isSuperAdmin) return true;
-                        if (isManager) {
-                            const managerRestricted = ['Settings', 'Security'];
-                            return !managerRestricted.includes(item.id);
-                        }
-                        const workerAllowed = ['Menu', 'Overview', 'Cutting', 'Swing', 'Stone', 'Pata', 'Outside', 'Attendance', 'WorkerSummary'];
-                        return workerAllowed.includes(item.id);
+                        if (role === 'admin') return true;
+                        if (role === 'manager') return !['Settings', 'Security'].includes(item.id);
+                        return ['Menu', 'Overview', 'Cutting', 'Swing', 'Stone', 'Pata', 'Outside', 'Attendance', 'WorkerSummary'].includes(item.id);
                     });
 
                     if (filteredItems.length === 0) return null;
 
                     return (
-                        <div key={category.id} className="space-y-2">
-                            <p className="px-5 text-[8px] font-black text-slate-400 dark:text-slate-600 tracking-[0.4em] mb-4">{category.label}</p>
+                        <nav key={category.id} className="space-y-2">
+                            <p className="px-5 text-[10px] font-black text-slate-500 tracking-[0.3em] mb-4 uppercase">{category.label}</p>
                             {filteredItems.map(item => {
                                 const Icon = item.icon;
                                 const active = activePanel === item.id;
                                 return (
                                     <button
                                         key={item.id} onClick={() => navigate(item.id)}
-                                        className={`w-full flex items-center gap-4 px-5 py-4 rounded-2xl transition-all group ${active ? "bg-black text-white dark:bg-white dark:text-black shadow-xl scale-[1.02]" : "text-slate-500 hover:text-black dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/50"}`}
+                                        className={`w-full flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all group relative ${active ? "bg-blue-600 text-white shadow-xl shadow-blue-900/20" : "text-slate-400 hover:text-white hover:bg-white/[0.05]"}`}
                                     >
-                                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${active ? "bg-white/10 dark:bg-black/10" : "bg-slate-50 dark:bg-black/20 group-hover:bg-white dark:group-hover:bg-slate-800"}`}>
+                                        <div className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all ${active ? "bg-white/20" : "bg-white/5 group-hover:bg-white/10"}`}>
                                             <Icon size={18} strokeWidth={active ? 2.5 : 2} className="shrink-0" />
                                         </div>
-                                        <div className="flex flex-col items-start leading-tight">
-                                            <span className={`text-[11px] uppercase tracking-wider ${active ? "font-black" : "font-semibold opacity-70"}`}>{t?.(item.id.toLowerCase()) || item.label}</span>
-                                            <span className={`text-[8px] uppercase tracking-[0.2em] font-bold opacity-40 ${active ? "text-white/60 dark:text-black/60" : "text-slate-400"}`}>{item.sub}</span>
+                                        <div className="flex flex-col items-start leading-none space-y-1">
+                                            <span className={`text-[0.75rem] tracking-wide font-bold`}>{t?.(item.id.toLowerCase()) || item.label}</span>
+                                            <span className={`text-[0.625rem] uppercase tracking-widest font-medium opacity-50`}>{item.sub}</span>
                                         </div>
+                                        {active && <div className="absolute right-4 w-1 h-1 bg-white rounded-full animate-pulse"></div>}
                                     </button>
                                 );
                             })}
-                        </div>
+                        </nav>
                     );
                 })}
             </div>
-            <div className="p-10 border-t border-[var(--border)]">
+            
+            <div className="p-8 border-t border-white/5 bg-slate-900/50">
                 <button 
                     onClick={() => {
                         setUser(null);
                         localStorage.removeItem('nrzone_user');
                     }} 
-                    className="w-full flex items-center gap-4 p-4 rounded-2xl text-slate-400 hover:text-rose-500 transition-all hover:bg-rose-50/50"
+                    className="w-full flex items-center gap-4 p-4 rounded-xl text-slate-400 hover:text-rose-500 transition-all hover:bg-rose-500/10 group"
                 >
-                    <LogOut size={16} /><span className="text-[9px] font-black uppercase tracking-[0.3em] italic">লগ-আউট (Logout)</span>
+                    <div className="w-9 h-9 rounded-xl bg-white/5 flex items-center justify-center group-hover:bg-rose-500/20">
+                        <LogOut size={18} />
+                    </div>
+                    <span className="text-[0.7rem] font-bold uppercase tracking-wider">সিস্টেম বন্ধ করুন</span>
                 </button>
             </div>
         </aside>
@@ -576,88 +583,93 @@ const AppContent = () => {
                     
                     <Sidebar activePanel={activePanel} setActivePanel={setActivePanel} user={user} setUser={setUser} isOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} t={t} isDarkMode={isDarkMode} masterData={masterData} />
                     
-                    <main className={`flex-1 flex flex-col min-w-0 h-screen overflow-hidden relative transition-all duration-500`}>
-                        {/* Header Section - Neumorphic Style */}
-                        <header className="h-24 md:h-32 bg-[var(--bg-primary)] border-b border-[var(--border)] flex items-center justify-between px-6 md:px-16 z-40 relative no-print">
-                            <div className="flex items-center gap-6 md:gap-10">
+                    <main className={`flex-1 flex flex-col min-w-0 h-screen overflow-hidden relative transition-all duration-700 mesh-bg lg:ml-[320px]`}>
+                        {/* Header Section - Modern SaaS Style */}
+                        <header className="h-20 md:h-24 flex items-center justify-between px-6 md:px-10 z-40 relative no-print bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl border-b border-slate-100 dark:border-slate-800 shadow-sm">
+                            <div className="flex items-center gap-4 md:gap-6">
                                 <button 
                                     onClick={() => setIsSidebarOpen(true)}
-                                    className="p-5 rounded-[1.5rem] bg-[var(--bg-secondary)] shadow-[var(--neu-convex)] text-black"
+                                    className="w-10 h-10 rounded-xl bg-slate-950 text-white flex items-center justify-center hover:scale-105 active:scale-95 transition-all lg:hidden"
                                 >
-                                    <Menu size={24} />
+                                    <Menu size={20} />
                                 </button>
-                                <div className="space-y-1">
-                                    <h2 className="text-2xl md:text-5xl font-black italic tracking-tighter text-black uppercase leading-none">
+                                <div className="space-y-0.5">
+                                    <h2 className="text-xl md:text-2xl font-bold tracking-tight text-slate-950 dark:text-white uppercase leading-none">
                                         {t?.(activePanel?.toLowerCase()) || activePanel}
                                     </h2>
                                     <div className="flex items-center gap-2">
-                                        <div className={`w-2 h-2 rounded-full ${syncStatus === 'syncing' ? 'bg-amber-500 animate-pulse' : syncStatus === 'error' ? 'bg-rose-500' : 'bg-emerald-500'}`}></div>
-                                        <span className="text-[9px] font-black uppercase tracking-[0.3em] text-slate-600">
-                                            {syncStatus === 'syncing' ? 'Syncing Neural' : syncStatus === 'error' ? 'Link Fault' : 'Link Stable'}
+                                        <div className={`w-1.5 h-1.5 rounded-full ${syncStatus === 'syncing' ? 'bg-amber-500 animate-pulse' : syncStatus === 'error' ? 'bg-rose-500' : 'bg-emerald-500'}`}></div>
+                                        <span className="text-[9px] font-bold uppercase tracking-widest text-slate-400">
+                                            {syncStatus === 'syncing' ? 'সিঙ্কিং হচ্ছে...' : syncStatus === 'error' ? 'ত্রুটি' : 'সিস্টেম সুরক্ষিত (V5.0)'}
                                         </span>
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="flex items-center gap-4 md:gap-10">
-                                <div className="hidden md:flex flex-col items-end border-r border-black/5 pr-10">
-                                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-600">অপারেটর</p>
-                                    <p className="text-lg font-black italic uppercase text-black">{user?.name || 'অনুমোদিত'}</p>
+                            <div className="flex items-center gap-3 md:gap-6">
+                                <div className="hidden sm:flex flex-col items-end pr-5 border-r border-slate-100 dark:border-slate-800">
+                                    <p className="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-0.5">অনুমোদিত ইউজার</p>
+                                    <p className="text-sm font-bold uppercase text-slate-950 dark:text-white leading-none">{user?.name || 'অпераটর'}</p>
                                 </div>
-                                <button 
-                                    onClick={() => setActivePanel("Settings")}
-                                    className="w-12 h-12 md:w-16 md:h-16 rounded-2xl bg-[var(--bg-secondary)] shadow-[var(--neu-button)] flex items-center justify-center hover:scale-105 active:scale-95 transition-all text-slate-500 hover:text-black"
-                                >
-                                    <Settings size={20} className="md:w-6 md:h-6" />
-                                </button>
-                                <button 
-                                    onClick={() => {
-                                        localStorage.removeItem('nrzone_user');
-                                        setUser(null);
-                                    }}
-                                    className="w-12 h-12 md:w-16 md:h-16 rounded-2xl bg-black shadow-xl flex items-center justify-center hover:bg-rose-600 active:scale-95 transition-all text-white"
-                                >
-                                    <LogOut size={20} className="md:w-6 md:h-6" />
-                                </button>
+                                <div className="flex gap-2">
+                                    <button 
+                                        onClick={() => setActivePanel("Settings")}
+                                        className="w-10 h-10 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-center hover:bg-slate-50 dark:hover:bg-slate-700 transition-all group"
+                                        title="সেটিংস"
+                                    >
+                                        <Settings size={18} className="group-hover:rotate-45 transition-transform text-slate-600 dark:text-slate-300" />
+                                    </button>
+                                    <button 
+                                        onClick={() => setIsDarkMode(!isDarkMode)}
+                                        className="w-10 h-10 rounded-xl bg-slate-950 text-white shadow-lg flex items-center justify-center hover:bg-black transition-all"
+                                        title="থিম পরিবর্তন"
+                                    >
+                                        {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
+                                    </button>
+                                </div>
                             </div>
                         </header>
 
-                        <div className="flex-1 overflow-y-auto p-4 md:p-12 bg-dot-pattern custom-scrollbar">
-                            <div className="max-w-[1700px] mx-auto animate-fade-up">
+                        <div className="flex-1 overflow-y-auto px-4 md:px-8 py-6 md:py-8 relative custom-scrollbar">
+                            <div className="max-w-[1400px] mx-auto space-y-8 animate-fade-up">
                                 {activePanel === "Menu" && <MenuPanel masterData={masterData} setActivePanel={setActivePanel} user={user} t={t} />}
-                                {activePanel === "Overview" && <Overview masterData={masterData} setMasterData={setMasterData} user={user} setActivePanel={setActivePanel} t={t} logAction={logAction} />}
-                                {activePanel === "Cutting" && <CuttingPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} setActivePanel={setActivePanel} t={t} logAction={logAction} />}
-                                {activePanel === "Swing" && <FactoryPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} setActivePanel={setActivePanel} type="sewing" t={t} logAction={logAction} />}
-                                {activePanel === "Stone" && <FactoryPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} setActivePanel={setActivePanel} type="stone" t={t} logAction={logAction} />}
-                                {activePanel === "Pata" && <PataFactoryPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} setActivePanel={setActivePanel} logAction={logAction} />}
-                                {activePanel === "Outside" && <OutsideWorkPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} setActivePanel={setActivePanel} t={t} logAction={logAction} />}
-                                {activePanel === "Attendance" && <AttendancePanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} setActivePanel={setActivePanel} t={t} logAction={logAction} />}
-                                {activePanel === "Stock" && <InventoryPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} setActivePanel={setActivePanel} t={t} logAction={logAction} />}
-                                {activePanel === "Accounts" && <ExpensePanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} setActivePanel={setActivePanel} t={t} logAction={logAction} />}
-                                {activePanel === "WorkerSummary" && <WorkerSummary masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} setActivePanel={setActivePanel} logAction={logAction} />}
-                                {activePanel === "Reports" && <ReportsPanel masterData={masterData} user={user} setActivePanel={setActivePanel} t={t} logAction={logAction} />}
-
-                                {activePanel === "Settings" && <SettingsPanel masterData={masterData} setMasterData={setMasterData} user={user} showNotify={showNotify} setActivePanel={setActivePanel} t={t} logAction={logAction} logs={logs} downloadBackup={downloadBackup} syncStatus={syncStatus} />}
-                                {activePanel === "Security" && <SecurityPanel masterData={masterData} setActivePanel={setActivePanel} t={t} logs={masterData.auditLogs || []} syncStatus={syncStatus} />}
+                                {activePanel === "Overview" && <Overview masterData={masterData} user={user} setActivePanel={setActivePanel} t={t} syncStatus={syncStatus} />}
+                                {activePanel === "Cutting" && <CuttingPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} logAction={logAction} setActivePanel={setActivePanel} />}
+                                {activePanel === "Swing" && <FactoryPanel type="sewing" masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} setActivePanel={setActivePanel} />}
+                                {activePanel === "Stone" && <FactoryPanel type="stone" masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} setActivePanel={setActivePanel} />}
+                                {activePanel === "Pata" && <PataFactoryPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} setActivePanel={setActivePanel} />}
+                                {activePanel === "Outside" && <OutsideWorkPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} />}
+                                {activePanel === "Stock" && <InventoryPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} />}
+                                {activePanel === "Accounts" && <ExpensePanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} setActivePanel={setActivePanel} />}
+                                {activePanel === "Attendance" && <AttendancePanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} />}
+                                {activePanel === "WorkerSummary" && <WorkerSummary masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} />}
+                                {activePanel === "Reports" && <ReportsPanel masterData={masterData} t={t} />}
+                                {activePanel === "Settings" && <SettingsPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} syncStatus={syncStatus} user={user} />}
+                                {activePanel === "Security" && <SecurityPanel logs={logs} downloadBackup={downloadBackup} user={user} t={t} />}
                                 {activePanel === "Notifications" && (
-                                    <div className="space-y-12 pb-24 animate-fade-up px-4 italic font-outfit text-black">
+                                    <div className="space-y-8 pb-24 animate-fade-up px-2">
                                          <div className="flex justify-between items-center mb-10">
-                                            <h1 className="section-header">NOTIFICATIONS <span className="text-slate-500">SYSTEM ALERTS</span></h1>
-                                            <button onClick={() => setMasterData(p => ({ ...p, notifications: (p.notifications || []).map(n => ({ ...n, read: true })) }))} className="px-6 py-3 bg-slate-100 rounded-full text-[9px] font-black uppercase tracking-widest hover:bg-black hover:text-white transition-all">Mark All Read</button>
+                                            <h1 className="text-3xl font-bold tracking-tight text-slate-950 dark:text-white uppercase leading-none">নোটিফিকেশন <span className="text-blue-600">প্যানেল</span></h1>
+                                            <button 
+                                                onClick={() => setMasterData(p => ({ ...p, notifications: (p.notifications || []).map(n => ({ ...n, read: true })) }))} 
+                                                className="px-5 py-2.5 bg-slate-100 dark:bg-slate-800 rounded-xl text-[10px] font-bold uppercase tracking-widest hover:bg-slate-950 hover:text-white transition-all border border-slate-200 dark:border-slate-700 shadow-sm"
+                                            >
+                                                সব পড়া হয়েছে (Mark Read)
+                                            </button>
                                          </div>
-                                         <div className="space-y-6">
+                                         <div className="space-y-4">
                                             {(masterData.notifications || []).length === 0 ? (
-                                                <div className="py-32 text-center bg-white rounded-[3rem] border-2 border-dashed border-slate-100 italic opacity-40">Zero Alerts Recorded</div>
+                                                <div className="py-24 text-center saas-card border-dashed opacity-50 text-[10px] uppercase font-bold tracking-[0.2em]">কোন এলার্ট পাওয়া যায়নি (Empty)</div>
                                             ) : (
                                                 (masterData.notifications || []).map((n, i) => (
-                                                    <div key={i} className={`p-10 rounded-[3rem] border-2 flex items-center gap-10 group transition-all ${n.read ? 'bg-white border-slate-50' : 'bg-black text-white border-black shadow-2xl scale-[1.02]'}`}>
-                                                        <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 ${n.read ? 'bg-slate-100 text-slate-400' : 'bg-white text-black'}`}>
-                                                            {n.type === 'task' ? <Activity size={24} /> : <Shield size={24} />}
+                                                    <div key={i} className={`saas-card flex items-center gap-6 group transition-all ${n.read ? 'opacity-80 grayscale-[0.5]' : 'border-blue-600/30 bg-blue-600/5'}`}>
+                                                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 shadow-lg ${n.read ? 'bg-slate-100 dark:bg-slate-800 text-slate-400' : 'bg-blue-600 text-white'}`}>
+                                                            {n.type === 'task' ? <Activity size={20} /> : <Shield size={20} />}
                                                         </div>
-                                                        <div className="flex-1">
-                                                            <h4 className="text-xl font-black uppercase italic italic leading-none mb-1">{n.title}</h4>
-                                                            <p className="text-xs font-black opacity-60 italic mb-4">{n.message}</p>
-                                                            <p className="text-[9px] font-black uppercase tracking-widest opacity-40">{new Date(n.timestamp).toLocaleString()}</p>
+                                                        <div className="flex-1 space-y-1">
+                                                            <h4 className="text-lg font-bold text-slate-950 dark:text-white uppercase leading-none">{n.title}</h4>
+                                                            <p className="text-[11px] font-medium text-slate-500 dark:text-slate-400">{n.message}</p>
+                                                            <p className="text-[9px] font-bold uppercase tracking-widest opacity-40">{new Date(n.timestamp).toLocaleString()}</p>
                                                         </div>
                                                     </div>
                                                 ))
@@ -671,11 +683,10 @@ const AppContent = () => {
                         {activePanel !== "Menu" && (
                             <button 
                                 onClick={() => setActivePanel("Menu")} 
-                                className="fixed bottom-12 right-12 w-24 h-24 bg-black text-white rounded-full shadow-3xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all z-[200] border-8 border-white p-2 no-print"
+                                className="fixed bottom-10 right-10 w-20 h-20 bg-slate-950 text-white rounded-2xl shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all z-[200] border-4 border-white dark:border-slate-900 group no-print"
+                                title="মেনু ওপেন করুন"
                             >
-                                <div className="bg-white/10 w-full h-full rounded-full flex items-center justify-center">
-                                    <LayoutGrid size={32} />
-                                </div>
+                                <LayoutGrid size={28} className="group-hover:rotate-12 transition-transform" />
                             </button>
                         )}
                     </main>
@@ -685,8 +696,8 @@ const AppContent = () => {
             {showQR && <QRScanner onScanSuccess={(data) => setTrackingId(data)} onClose={() => setShowQR(false)} />}
             {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
             
-            {/* Multi-Utility Floating Hub */}
-            <div className="fixed bottom-12 left-12 z-[200] flex flex-col gap-6 no-print">
+            {/* Multi-Utility Global Hub */}
+            <div className="fixed bottom-10 left-10 z-[200] flex flex-col gap-4 no-print">
                 <button 
                    onClick={() => {
                        const num = masterData.settings?.whatsappNumber || '8801700000000';
@@ -694,18 +705,19 @@ const AppContent = () => {
                        const intl = cleaned.startsWith("880") ? cleaned : "880" + cleaned.replace(/^0/, "");
                        window.open(`https://wa.me/${intl}`, '_blank');
                    }}
-                   className="w-16 h-16 bg-emerald-500 text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all border-4 border-white"
-                   title="WhatsApp Support"
+                   className="w-14 h-14 bg-emerald-500 text-white rounded-2xl shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all border-4 border-white dark:border-slate-900"
+                   title="ওয়াটসঅ্যাপ সাপোর্ট"
                 >
-                    <MessageCircle size={28} />
+                    <MessageCircle size={24} />
                 </button>
                    <button 
                        onClick={() => setActivePanel('Notifications')}
-                       className="w-16 h-16 rounded-full bg-white shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all text-slate-500 relative border-4 border-white"
+                       className="w-14 h-14 rounded-2xl bg-white dark:bg-slate-800 shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all text-slate-500 dark:text-slate-400 relative border-4 border-white dark:border-slate-900"
+                       title="নোটিফিকেশন"
                    >
                        <Bell size={24} />
                        {(masterData.notifications || []).filter(n => !n.read).length > 0 && (
-                           <span className="absolute top-0 right-0 w-6 h-6 bg-rose-500 text-white rounded-full flex items-center justify-center text-[10px] font-black animate-bounce border-2 border-white">
+                           <span className="absolute -top-2 -right-2 w-6 h-6 bg-rose-600 text-white rounded-xl flex items-center justify-center text-[10px] font-black animate-bounce border-2 border-white dark:border-slate-900 shadow-lg">
                                {(masterData.notifications || []).filter(n => !n.read).length}
                            </span>
                        )}
@@ -713,10 +725,10 @@ const AppContent = () => {
 
                    <button 
                        onClick={() => { setIsListening(!isListening); playSound(); }}
-                   className={`w-16 h-16 rounded-full shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all border-4 border-white ${isListening ? 'bg-rose-500 animate-pulse text-white' : 'bg-white text-slate-500'}`}
-                   title="Voice Command"
+                   className={`w-14 h-14 rounded-xl shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all border-4 border-white dark:border-slate-900 ${isListening ? 'bg-rose-600 animate-pulse text-white' : 'bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400'}`}
+                   title="ভয়েস কমান্ড"
                 >
-                    <Activity size={28} />
+                    <Activity size={24} />
                 </button>
             </div>
         </div>
