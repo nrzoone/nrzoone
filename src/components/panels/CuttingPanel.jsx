@@ -129,6 +129,10 @@ const CuttingPanel = ({
   };
 
   const handleDelete = (id) => {
+    if (user?.role?.toLowerCase() === 'worker') {
+      showNotify("আপনার তথ্য ডিলিট করার অনুমতি নেই!", "error");
+      return;
+    }
     if (!window.confirm("Are you sure? This node will be purged.")) return;
     setMasterData(prev => ({
       ...prev,

@@ -80,7 +80,8 @@ const SettingsPanel = ({
   setActivePanel,
   t,
   logs,
-  downloadBackup
+  downloadBackup,
+  syncStatus
 }) => {
   const role = currentUser?.role?.toLowerCase();
   const isAdmin = role === "admin";
