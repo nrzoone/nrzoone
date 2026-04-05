@@ -134,19 +134,19 @@ const WorkerSummary = ({ masterData, setMasterData, showNotify, user, logAction,
                         <NRZLogo size="sm" white />
                     </div>
                     <div>
-                        <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.6em] mb-2 px-1 italic">Enterprise Intelligence</p>
+                        <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.6em] mb-2 px-1 italic">সিস্টেম ইন্টেলিজেন্ট</p>
                         <h2 className="text-5xl md:text-6xl font-black uppercase tracking-tighter leading-none text-black italic">
-                            Worker <span className="text-slate-500">Ledger</span>
+                            কারিগর <span className="text-slate-500">লেজার বুক</span>
                         </h2>
                     </div>
                 </div>
                 <div className="flex flex-col md:flex-row gap-6 w-full lg:w-auto">
                     <div className="bg-white p-8 rounded-[3rem] border-2 border-slate-50 shadow-2xl text-right flex-1 lg:min-w-[220px]">
-                        <p className="text-[9px] font-black text-slate-500 uppercase tracking-[0.4em] mb-3">Gross Total</p>
+                        <p className="text-[9px] font-black text-slate-500 uppercase tracking-[0.4em] mb-3">মোট পাওনা</p>
                         <p className="text-3xl font-black italic tracking-tighter text-emerald-500">৳{totalBillAll.toLocaleString()}</p>
                     </div>
                     <div className="bg-black text-white p-8 rounded-[3rem] shadow-3xl text-right flex-1 lg:min-w-[220px]">
-                        <p className="text-[9px] font-black text-white/50 uppercase tracking-[0.4em] mb-3 font-mono">Net Payable</p>
+                        <p className="text-[9px] font-black text-white/50 uppercase tracking-[0.4em] mb-3 font-mono">নিট প্রদেয়</p>
                         <p className="text-3xl font-black italic tracking-tighter text-white">৳{totalBalanceAll.toLocaleString()}</p>
                     </div>
                 </div>
@@ -155,15 +155,15 @@ const WorkerSummary = ({ masterData, setMasterData, showNotify, user, logAction,
             <div className="bg-white p-4 rounded-[3rem] border-4 border-slate-50 shadow-inner flex flex-col md:flex-row gap-6">
                 <div className="flex-1 bg-slate-50 px-10 py-6 rounded-[2rem] flex items-center gap-6 border border-white shadow-sm">
                     <Search size={22} className="text-slate-500" />
-                    <input type="text" placeholder="Search Worker / Identity (কারিগর খুঁজিুন)..." className="bg-transparent font-black italic border-none outline-none w-full uppercase text-xl text-black placeholder:text-slate-300" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+                    <input type="text" placeholder="কারিগর বা আইডি নম্বর দিয়ে খুঁজুন..." className="bg-transparent font-black italic border-none outline-none w-full uppercase text-xl text-black placeholder:text-slate-300" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
                 </div>
                 <select className="bg-black text-white px-12 py-6 rounded-[2rem] font-black uppercase text-[11px] tracking-[0.2em] cursor-pointer hover:bg-zinc-800 transition-all shadow-xl" value={filterDept} onChange={(e) => setFilterDept(e.target.value)}>
-                    <option value="all">Global Workspace</option>
-                    <option value="sewing">Sewing Dept</option>
-                    <option value="stone">Stone Dept</option>
-                    <option value="pata">Pata Dept</option>
-                    <option value="cutting">Cutting/Master</option>
-                    <option value="monthly">Monthly Staff</option>
+                    <option value="all">সব বিভাগ (Global)</option>
+                    <option value="sewing">সেলাই বিভাগ</option>
+                    <option value="stone">স্টোন বিভাগ</option>
+                    <option value="pata">পাতা বিভাগ</option>
+                    <option value="cutting">কাটিং / মাস্টার</option>
+                    <option value="monthly">মাসিক স্টাফ</option>
                 </select>
             </div>
 
@@ -181,13 +181,13 @@ const WorkerSummary = ({ masterData, setMasterData, showNotify, user, logAction,
                                  {w.photo ? <img src={w.photo} className="w-full h-full object-cover" /> : <div className="text-slate-300 text-3xl font-black italic uppercase">{w.name.charAt(0)}</div>}
                             </div>
                             <div className="text-right">
-                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.5em] mb-2 italic">Identity</p>
+                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.5em] mb-2 italic">পরিচয়</p>
                                 <h4 className="text-3xl font-black italic uppercase leading-none text-black underline decoration-black/10 group-hover:decoration-black transition-all truncate max-w-[150px]">{w.name}</h4>
                                 <div className="flex gap-2 justify-end mt-2">
                                     {masterData.workerDocs?.find(d => d.name.toUpperCase() === w.name.toUpperCase() && d.dept === w.dept)?.workerId && (
-                                        <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-[7px] font-black rounded-full">ID: {masterData.workerDocs?.find(d => d.name.toUpperCase() === w.name.toUpperCase() && d.dept === w.dept)?.workerId}</span>
+                                        <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-[7px] font-black rounded-full">আইডি: {masterData.workerDocs?.find(d => d.name.toUpperCase() === w.name.toUpperCase() && d.dept === w.dept)?.workerId}</span>
                                     )}
-                                    <span className="inline-block px-4 py-1 bg-slate-100 rounded-full text-[8px] font-black uppercase text-slate-500 tracking-widest">{w.dept}</span>
+                                    <span className="inline-block px-4 py-1 bg-slate-100 rounded-full text-[8px] font-black uppercase text-slate-500 tracking-widest">{w.dept === 'sewing' ? 'সেলাই' : w.dept === 'stone' ? 'স্টোন' : w.dept === 'pata' ? 'পাতা' : w.dept === 'cutting' ? 'কাটিং' : 'মাসিক'}</span>
                                 </div>
                             </div>
                         </div>
@@ -195,13 +195,13 @@ const WorkerSummary = ({ masterData, setMasterData, showNotify, user, logAction,
                         <div className="space-y-6 mt-auto relative z-10">
                             <div className="bg-slate-50/80 p-8 rounded-[3rem] border border-white shadow-inner flex flex-col gap-4">
                                 <div className="flex justify-between items-center">
-                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest font-mono">Performance</p>
-                                    <p className="text-xl font-black italic text-black">{w.qty} <span className="text-[10px] text-slate-500">{w.label.includes('DAYS') ? 'DAYS' : 'PCS'}</span></p>
+                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest font-mono">কাজের বিবরণ</p>
+                                    <p className="text-xl font-black italic text-black">{w.qty} <span className="text-[10px] text-slate-500">{w.label.includes('DAYS') ? 'দিন' : 'পিস'}</span></p>
                                 </div>
                                 <div className="flex justify-between items-center group/p">
-                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest font-mono">Access Key</p>
+                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest font-mono">পিন কোড</p>
                                     <div className="flex items-center gap-2">
-                                         <p className="text-lg font-black italic text-black font-mono tracking-tighter bg-white px-3 py-1 rounded-lg border border-slate-100 shadow-sm opacity-0 group-hover/p:opacity-100 transition-opacity">{w.password}</p>
+                                         <p className="text-lg font-black italic text-black font-mono tracking-tighter bg-white px-3 py-1 rounded-lg border border-slate-100 shadow-sm opacity-0 group-hover/p:opacity-100 transition-opacity">{w.password || 'N/A'}</p>
                                          <Eye size={16} className="text-slate-200 group-hover/p:text-emerald-500 transition-colors" />
                                     </div>
                                 </div>
@@ -209,11 +209,11 @@ const WorkerSummary = ({ masterData, setMasterData, showNotify, user, logAction,
 
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="bg-emerald-50 text-emerald-600 p-8 rounded-[3.5rem] border border-emerald-100 flex flex-col justify-center">
-                                    <p className="text-[9px] font-black uppercase tracking-widest mb-1 opacity-60">Total Paid</p>
+                                    <p className="text-[9px] font-black uppercase tracking-widest mb-1 opacity-60">মোট পেমেন্ট</p>
                                     <p className="text-2xl font-black italic tracking-tighter font-mono">৳{w.paid.toLocaleString()}</p>
                                 </div>
                                 <div className={`${w.balance > 0 ? 'bg-rose-50 text-rose-600 border-rose-100' : 'bg-slate-50 text-slate-400 border-slate-100'} p-8 rounded-[3.5rem] border flex flex-col justify-center`}>
-                                    <p className="text-[9px] font-black uppercase tracking-widest mb-1 opacity-60">Balance</p>
+                                    <p className="text-[9px] font-black uppercase tracking-widest mb-1 opacity-60">বকেয়া</p>
                                     <p className="text-2xl font-black italic tracking-tighter font-mono">৳{w.balance.toLocaleString()}</p>
                                 </div>
                             </div>

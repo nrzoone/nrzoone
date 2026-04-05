@@ -257,10 +257,10 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
       {/* Header Section */}
             <div className="flex flex-col md:flex-row justify-between items-end gap-10 mb-16 animate-fade-up px-2">
                 <div className="space-y-4">
-                     <h1 className="section-header !mb-0 tracking-tightest">Outside <span className="text-slate-300 dark:text-slate-700 font-light">Work Management</span></h1>
+                     <h1 className="section-header !mb-0 tracking-tightest">বাইরের <span className="text-slate-300 dark:text-slate-700 font-light">কাজের ম্যানেজমেন্ট</span></h1>
                      <div className="flex flex-wrap gap-3 items-center">
-                         <span className="px-5 py-1.5 bg-black text-white dark:bg-white dark:text-black rounded-lg text-[9px] font-bold uppercase tracking-widest shadow-lg">OUTSIDE FACTORY v2.0</span>
-                         <span className="px-5 py-1.5 bg-[var(--bg-secondary)] border border-[var(--border)] text-slate-500 rounded-lg text-[9px] font-bold uppercase tracking-widest">Global Logistics</span>
+                         <span className="px-5 py-1.5 bg-black text-white dark:bg-white dark:text-black rounded-lg text-[9px] font-bold uppercase tracking-widest shadow-lg">আউটসাইড ফ্যাক্টরি ভার্সন ২.০</span>
+                         <span className="px-5 py-1.5 bg-[var(--bg-secondary)] border border-[var(--border)] text-slate-500 rounded-lg text-[9px] font-bold uppercase tracking-widest italic">গ্লোবাল লজিস্টিকস</span>
                      </div>
                 </div>
                 <div className="flex flex-wrap gap-8 items-center bg-[var(--bg-secondary)] p-8 rounded-3xl border border-[var(--border)] shadow-sm">
@@ -268,7 +268,7 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
                         <div className="w-12 h-12 bg-emerald-50 dark:bg-emerald-500/10 rounded-xl flex items-center justify-center text-emerald-500 shadow-inner group hover:scale-110 transition-all"><CheckCircle size={20} /></div>
                         <div>
                              <p className="text-3xl font-bold leading-none dark:text-white tracking-tight">{activeEntries.length}</p>
-                             <p className="text-[9px] uppercase font-bold text-slate-400 tracking-wider mt-1.5">Active Tasks</p>
+                             <p className="text-[9px] uppercase font-bold text-slate-400 tracking-wider mt-1.5">চলমান কাজ</p>
                         </div>
                     </div>
                     <div className="w-px h-10 bg-[var(--border)]"></div>
@@ -276,7 +276,7 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
                         <div className="w-12 h-12 bg-indigo-50 dark:bg-indigo-500/10 rounded-xl flex items-center justify-center text-indigo-500 shadow-inner group hover:scale-110 transition-all"><DollarSign size={20} /></div>
                         <div>
                              <p className="text-3xl font-bold leading-none dark:text-white tracking-tight">{historyEntries.reduce((acc, curr) => acc + (curr.totalAmount - (curr.paidAmount || 0)), 0).toLocaleString()}৳</p>
-                             <p className="text-[9px] uppercase font-bold text-slate-400 tracking-wider mt-1.5">Total Payable</p>
+                             <p className="text-[9px] uppercase font-bold text-slate-400 tracking-wider mt-1.5">মোট বকেয়া বিল</p>
                         </div>
                     </div>
                 </div>
@@ -299,8 +299,8 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
 
             <div className="flex flex-wrap items-center justify-between gap-8 mb-16 no-print">
                 <div className="pill-nav shadow-sm">
-                    <button onClick={() => setView('active')} className={`pill-tab ${view === 'active' ? 'pill-tab-active' : 'pill-tab-inactive'}`}>Active Operations ({activeEntries.length})</button>
-                    <button onClick={() => setView('history')} className={`pill-tab ${view === 'history' ? 'pill-tab-active' : 'pill-tab-inactive'}`}>Activity Logs ({historyEntries.length})</button>
+                    <button onClick={() => setView('active')} className={`pill-tab ${view === 'active' ? 'pill-tab-active' : 'pill-tab-inactive'}`}>চলমান কাজ ({activeEntries.length})</button>
+                    <button onClick={() => setView('history')} className={`pill-tab ${view === 'history' ? 'pill-tab-active' : 'pill-tab-inactive'}`}>পূর্বের রেকর্ডস ({historyEntries.length})</button>
                 </div>
 
                 <div className="flex items-center gap-4 w-full md:w-auto">
@@ -308,7 +308,7 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
                         <Search size={16} className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-black transition-all" />
                         <input
                             type="text"
-                            placeholder="Find Task or Worker..."
+                            placeholder="কাজ বা কারিগর খুঁজুন..."
                             className="premium-input !py-4 !pl-14 !rounded-2xl"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
@@ -319,7 +319,7 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
                             onClick={() => setShowModal(true)}
                             className="action-btn-primary flex items-center gap-2"
                         >
-                            <Plus size={18} strokeWidth={3} /> Issue Task
+                            <Plus size={18} strokeWidth={3} /> নতুন কাজ দিন
                         </button>
                     )}
                 </div>
@@ -337,35 +337,35 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
                         <div className="flex flex-col h-full">
                             {/* Top Banner */}
                             <div className="bg-slate-50 dark:bg-slate-800/50 p-8 border-b border-[var(--border)] flex justify-between items-start">
-                                <div>
-                                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Issue Reference</p>
-                                    <h3 className="text-2xl font-bold tracking-tight text-[var(--text-primary)]">{item.worker}</h3>
-                                </div>
-                                <div className={`px-4 py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-wider ${item.status === 'Completed' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-amber-500/10 text-amber-500'}`}>
-                                    {item.status}
-                                </div>
+                                 <div>
+                                     <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">কারিগর বা ডাইং হাউস</p>
+                                     <h3 className="text-2xl font-bold tracking-tight text-[var(--text-primary)]">{item.worker}</h3>
+                                 </div>
+                                 <div className={`px-4 py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-wider ${item.status === 'Received' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-amber-500/10 text-amber-500'}`}>
+                                     {item.status === 'Pending' ? 'চলমান' : 'জমা নেওয়া হয়েছে'}
+                                 </div>
                             </div>
 
                             {/* Details Content */}
                             <div className="p-8 space-y-6 flex-1">
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="bg-slate-50/50 dark:bg-slate-900/30 p-4 rounded-xl border border-slate-100/50 dark:border-white/5">
-                                        <p className="text-[8px] font-bold text-slate-400 uppercase tracking-widest mb-1">Operations</p>
+                                        <p className="text-[8px] font-bold text-slate-400 uppercase tracking-widest mb-1">কাজের ধরন</p>
                                         <p className="text-sm font-bold truncate">{item.task}</p>
                                     </div>
                                     <div className="bg-slate-50/50 dark:bg-slate-900/30 p-4 rounded-xl border border-slate-100/50 dark:border-white/5">
-                                        <p className="text-[8px] font-bold text-slate-400 uppercase tracking-widest mb-1">Lot Size</p>
-                                        <p className="text-sm font-bold truncate">B:{item.borkaQty} | H:{item.hijabQty}</p>
+                                        <p className="text-[8px] font-bold text-slate-400 uppercase tracking-widest mb-1">পরিমাণ (Lot)</p>
+                                        <p className="text-sm font-bold truncate">বোরকা:{item.borkaQty} | হিজাব:{item.hijabQty}</p>
                                     </div>
                                 </div>
                                 
                                 <div className="flex justify-between items-center py-4 border-y border-[var(--border)] border-dashed">
                                     <div className="flex flex-col">
-                                         <span className="text-[8px] font-bold text-slate-400 uppercase tracking-widest">Financial Yield</span>
+                                         <span className="text-[8px] font-bold text-slate-400 uppercase tracking-widest">মোট বিল</span>
                                          <span className="text-xl font-bold text-[var(--text-primary)]">৳{((item.borkaQty + item.hijabQty) * item.rate).toLocaleString()}</span>
                                     </div>
                                     <div className="text-right">
-                                         <span className="text-[8px] font-bold text-slate-400 uppercase tracking-widest">Assigned</span>
+                                         <span className="text-[8px] font-bold text-slate-400 uppercase tracking-widest">ইস্যু তারিখ</span>
                                          <p className="text-[10px] font-semibold text-slate-500">{item.date}</p>
                                     </div>
                                 </div>
@@ -428,10 +428,10 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
                                 <Plus size={32} strokeWidth={3} />
                             </div>
                             <h3 className="text-3xl md:text-4xl font-black italic tracking-tighter uppercase leading-none">
-                                <span className="text-black">External</span> <span className="text-transparent" style={{ WebkitTextStroke: "1px #cbd5e1" }}>Task</span>
+                                <span className="text-black">নতুন</span> <span className="text-transparent" style={{ WebkitTextStroke: "1px #cbd5e1" }}>কাজ দিন</span>
                             </h3>
                             <p className="inline-block px-4 py-1.5 bg-slate-100 text-slate-600 rounded-full text-[10px] font-black uppercase tracking-widest italic">
-                                OUTSOURCE UNIT MODE
+                                আউটসোর্স ইউনিট মোড
                             </p>
                         </div>
 
@@ -481,10 +481,10 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
 
                         <div className="flex gap-4 pt-12 border-t border-slate-100">
                             <button onClick={() => handleSaveIssue(false)} className="flex-1 py-6 bg-black text-white rounded-full font-black text-xl uppercase tracking-widest shadow-2xl hover:scale-105 active:scale-95 transition-all outline-none">
-                                CONFIRM ISSUE
+                                ইস্যু নিশ্চিত করুন
                             </button>
                             <button onClick={() => handleSaveIssue(true)} className="flex-1 py-6 bg-indigo-600 text-white rounded-full font-black text-xl uppercase tracking-widest shadow-2xl hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-3 outline-none">
-                                <Printer size={24} /> & PRINT
+                                <Printer size={24} /> ইস্যু ও প্রিন্ট
                             </button>
                         </div>
                     </div>
@@ -499,22 +499,22 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
                                 <DollarSign size={40} />
                             </div>
                             <div>
-                                <h3 className="text-3xl font-black uppercase italic tracking-tighter">Pay {payModal.worker}</h3>
-                                <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest mt-2">{payModal.task} Bill</p>
+                                <h3 className="text-3xl font-black uppercase italic tracking-tighter">পেমেন্ট: {payModal.worker}</h3>
+                                <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest mt-2">{payModal.task} বিল</p>
                             </div>
                             <div className="bg-slate-50 p-6 md:p-10 rounded-[2.5rem] md:rounded-[3rem] border border-slate-100 space-y-4">
                                 <div className="space-y-1">
-                                    <p className="text-[10px] font-black text-slate-500 uppercase">Payment Date</p>
+                                    <p className="text-[10px] font-black text-slate-500 uppercase">পেমেন্ট তারিখ</p>
                                     <input type="date" className="w-full text-center text-sm font-black bg-transparent border-none outline-none" value={paymentDate} onChange={(e) => setPaymentDate(e.target.value)} />
                                 </div>
                                 <div className="space-y-1">
-                                    <p className="text-[10px] font-black text-slate-500 uppercase">Enter Amount</p>
-                                    <input type="number" autoFocus className="w-full text-center text-4xl font-black bg-transparent border-none outline-none tracking-tighter" placeholder="৳0" value={paymentAmount} onChange={(e) => setPaymentAmount(e.target.value)} />
+                                    <p className="text-[10px] font-black text-slate-500 uppercase">টাকার পরিমাণ</p>
+                                    <input type="number" autoFocus className="w-full text-center text-4xl font-black bg-transparent border-none outline-none tracking-tighter" placeholder="৳০" value={paymentAmount} onChange={(e) => setPaymentAmount(e.target.value)} />
                                 </div>
                             </div>
                             <div className="flex gap-4">
-                                <button onClick={() => setPayModal(null)} className="flex-1 py-6 bg-slate-100 rounded-2xl font-black uppercase text-xs">Cancel</button>
-                                <button onClick={handlePayment} className="flex-1 py-6 bg-black text-white rounded-2xl font-black uppercase text-xs shadow-xl">Confirm Pay</button>
+                                <button onClick={() => setPayModal(null)} className="flex-1 py-6 bg-slate-100 rounded-2xl font-black uppercase text-xs">বাতিল</button>
+                                <button onClick={handlePayment} className="flex-1 py-6 bg-black text-white rounded-2xl font-black uppercase text-xs shadow-xl">পেমেন্ট নিশ্চিত করুন</button>
                             </div>
                         </div>
                     </div>

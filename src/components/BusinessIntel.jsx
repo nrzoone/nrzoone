@@ -82,8 +82,8 @@ const BusinessIntel = ({ masterData }) => {
                            <NRZLogo size="md" white />
                         </div>
                         <div>
-                            <p className="text-xs md:text-sm font-black text-slate-500 uppercase tracking-[0.4em] mb-3 italic">STRATEGIC ANALYTICS</p>
-                            <h2 className="text-4xl md:text-7xl lg:text-8xl font-black uppercase italic tracking-tighter leading-none text-black">Business <span className="text-slate-500">Intel</span></h2>
+                            <p className="text-xs md:text-sm font-black text-slate-500 uppercase tracking-[0.4em] mb-3 italic">ব্যবসা বিশ্লেষণ (Strategic Analytics)</p>
+                            <h2 className="text-4xl md:text-7xl lg:text-8xl font-black uppercase italic tracking-tighter leading-none text-black">বিজনেস <span className="text-slate-500">ইন্টেল</span></h2>
                         </div>
                     </div>
                 </div>
@@ -92,14 +92,14 @@ const BusinessIntel = ({ masterData }) => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 
                 <div className="bg-white p-10 rounded-[4rem] border-4 border-slate-50 shadow-xl relative overflow-hidden group">
-                    <p className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-500 mb-4">Production Output</p>
+                    <p className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-500 mb-4">উৎপাদন আউটপুট</p>
                     <h3 className="text-5xl font-black italic tracking-tighter text-black mb-2">{(stats.totalProduced + stats.totalPata).toLocaleString()}</h3>
-                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">Total Finished Units</p>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">সর্বমোট তৈরি ইউনিট (পিস)</p>
                     <TrendingUp className="absolute bottom-[-10%] right-[-5%] text-slate-100 opacity-75" size={120} />
                 </div>
 
                 <div className="bg-white p-10 rounded-[4rem] border-4 border-slate-50 shadow-xl relative overflow-hidden">
-                    <p className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-500 mb-4">Work Efficiency</p>
+                    <p className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-500 mb-4">কাজের দক্ষতা (Efficiency)</p>
                     <div className="flex items-end gap-4">
                         <h3 className="text-7xl font-black italic tracking-tighter text-black">{stats.efficiency}%</h3>
                         <div className="mb-4 space-y-1">
@@ -108,13 +108,13 @@ const BusinessIntel = ({ masterData }) => {
                             </div>
                         </div>
                     </div>
-                    <p className="text-[10px] font-black uppercase tracking-widest text-emerald-500 mt-2">Active Completion Rate</p>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-emerald-500 mt-2">সচল অর্ডার সম্পন্ন করার হার</p>
                 </div>
 
                 <div className={`p-10 rounded-[4rem] border-4 shadow-xl relative overflow-hidden transition-all ${stats.lowStockItems.length > 0 ? 'bg-rose-50 border-rose-100' : 'bg-emerald-50 border-emerald-100'}`}>
-                    <p className={`text-[10px] font-black uppercase tracking-[0.4em] mb-4 ${stats.lowStockItems.length > 0 ? 'text-rose-400' : 'text-emerald-400'}`}>Material Status</p>
-                    <h3 className={`text-5xl font-black italic tracking-tighter mb-2 ${stats.lowStockItems.length > 0 ? 'text-rose-600' : 'text-emerald-600'}`}>{stats.lowStockItems.length > 0 ? 'CRITICAL' : 'OPTIMAL'}</h3>
-                    <p className="text-[10px] font-black uppercase tracking-widest opacity-75">{stats.lowStockItems.length} Items needing restock</p>
+                    <p className={`text-[10px] font-black uppercase tracking-[0.4em] mb-4 ${stats.lowStockItems.length > 0 ? 'text-rose-400' : 'text-emerald-400'}`}>কাঁচামালের অবস্থা</p>
+                    <h3 className={`text-5xl font-black italic tracking-tighter mb-2 ${stats.lowStockItems.length > 0 ? 'text-rose-600' : 'text-emerald-600'}`}>{stats.lowStockItems.length > 0 ? 'ঝুঁকিপূর্ণ' : 'স্বাভাবিক (Safe)'}</h3>
+                    <p className="text-[10px] font-black uppercase tracking-widest opacity-75">{stats.lowStockItems.length}টি মাল দ্রুত কিনতে হবে</p>
                     <AlertTriangle className={`absolute bottom-[-10%] right-[-5%] opacity-10 ${stats.lowStockItems.length > 0 ? 'text-rose-500' : 'text-emerald-500'}`} size={120} />
                 </div>
             </div>
@@ -123,7 +123,7 @@ const BusinessIntel = ({ masterData }) => {
                 <div className="bg-white rounded-[4rem] border-4 border-slate-50 shadow-2xl overflow-hidden p-12">
                     <div className="flex justify-between items-center mb-10">
                         <h4 className="text-2xl font-black uppercase italic tracking-tighter flex items-center gap-4 text-black">
-                            <Star className="text-amber-500" fill="currentColor" /> Top Performing Designs
+                            <Star className="text-amber-500" fill="currentColor" /> সেরা পারফর্মিং ডিজাইন সমূহ
                         </h4>
                     </div>
                     <div className="space-y-6">
@@ -135,11 +135,11 @@ const BusinessIntel = ({ masterData }) => {
                                 </div>
                                 <div className="text-right">
                                     <p className="text-2xl font-black italic tracking-tighter">+{qty.toLocaleString()}</p>
-                                    <p className="text-[9px] font-black uppercase opacity-70">Total Yield</p>
+                                    <p className="text-[9px] font-black uppercase opacity-70">মোট উৎপাদন (Pcs)</p>
                                 </div>
                             </div>
                         ))}
-                        {stats.topDesigns.length === 0 && <p className="text-center py-20 text-slate-500 font-black uppercase tracking-[0.5em] italic">No production data yet</p>}
+                        {stats.topDesigns.length === 0 && <p className="text-center py-20 text-slate-500 font-black uppercase tracking-[0.5em] italic">কোনো প্রোডাকশন ডেটা নেই</p>}
                     </div>
                 </div>
 
@@ -147,9 +147,9 @@ const BusinessIntel = ({ masterData }) => {
                     <div className="bg-white rounded-[4rem] border-4 border-slate-50 shadow-2xl p-12 h-full">
                         <div className="flex justify-between items-center mb-10">
                             <h4 className="text-2xl font-black uppercase italic tracking-tighter flex items-center gap-4 text-black">
-                                <Grid size={24} className="text-amber-500" /> Prepared Pata Stock
+                                <Grid size={24} className="text-amber-500" /> পাটা স্টকের বর্তমান মজুত
                             </h4>
-                            <span className="px-6 py-2 bg-emerald-50 text-emerald-500 rounded-full text-[10px] font-black uppercase tracking-widest">{stats.pataSummary.length} Varieties</span>
+                            <span className="px-6 py-2 bg-emerald-50 text-emerald-500 rounded-full text-[10px] font-black uppercase tracking-widest">{stats.pataSummary.length} পদের কাটিং পাটা</span>
                         </div>
                         <div className="grid grid-cols-1 gap-4 overflow-y-auto max-h-[400px] pr-2 custom-scrollbar">
                             {stats.pataSummary.map((item, idx) => (
@@ -160,7 +160,7 @@ const BusinessIntel = ({ masterData }) => {
                                     </div>
                                     <div className="flex items-center gap-6">
                                         <div className="text-right">
-                                            <p className="text-xs font-black text-slate-500 uppercase">Balance</p>
+                                            <p className="text-xs font-black text-slate-500 uppercase">ব্যালেন্স পিস</p>
                                             <p className={`text-4xl font-black italic tracking-tighter leading-none ${item.balance > 0 ? 'text-black' : 'text-rose-500'}`}>{item.balance}</p>
                                         </div>
                                     </div>
@@ -169,7 +169,7 @@ const BusinessIntel = ({ masterData }) => {
                             {stats.pataSummary.length === 0 && (
                                 <div className="py-20 flex flex-col items-center justify-center text-slate-100 gap-6">
                                     <Database size={80} strokeWidth={1} />
-                                    <p className="text-[10px] font-black uppercase tracking-[0.6em]">No Pata Stock Data</p>
+                                    <p className="text-[10px] font-black uppercase tracking-[0.6em]">পাটা স্টকে কোনো মাল নেই</p>
                                 </div>
                             )}
                         </div>
@@ -178,21 +178,21 @@ const BusinessIntel = ({ masterData }) => {
                     <div className="bg-white rounded-[4rem] border-4 border-slate-50 shadow-2xl p-12 h-full">
                         <div className="flex justify-between items-center mb-10">
                             <h4 className="text-2xl font-black uppercase italic tracking-tighter flex items-center gap-4 text-black">
-                                <TrendingUp className="text-emerald-500" /> Depletion Trend Intel
+                                <TrendingUp className="text-emerald-500" /> ফুরিয়ে যাওয়ার পূর্বাভাস (Intel)
                             </h4>
-                            <span className="px-6 py-2 bg-slate-50 text-slate-500 rounded-full text-[10px] font-black uppercase tracking-widest">Predictive Monitoring</span>
+                            <span className="px-6 py-2 bg-slate-50 text-slate-500 rounded-full text-[10px] font-black uppercase tracking-widest">ট্রেকিং হচ্ছে</span>
                         </div>
                         <div className="grid grid-cols-1 gap-4 overflow-y-auto max-h-[400px] pr-2 custom-scrollbar">
                             {stats.depletionTrends.sort((a,b) => (a.daysLeft === 'INF' ? 999 : a.daysLeft) - (b.daysLeft === 'INF' ? 999 : b.daysLeft)).map((item, idx) => (
                                 <div key={idx} className="flex items-center justify-between p-6 border-2 border-slate-50 rounded-3xl bg-slate-50/50 italic group hover:border-black transition-all">
                                     <div className="flex-1">
                                         <p className="text-xl font-black text-black uppercase">{item.name}</p>
-                                        <p className="text-[10px] font-black text-slate-500 uppercase mt-1">Avg Cons: {item.dailyBurn} / day</p>
+                                        <p className="text-[10px] font-black text-slate-500 uppercase mt-1">গড় ব্যবহার: {item.dailyBurn} / দিন</p>
                                     </div>
                                     <div className="text-right">
-                                        <p className="text-[9px] font-black uppercase text-slate-500">EST. DEPLETION</p>
+                                        <p className="text-[9px] font-black uppercase text-slate-500">ফুরিয়ে যাবে প্রায়</p>
                                         <p className={`text-4xl font-black italic tracking-tighter leading-none ${item.daysLeft < 3 ? 'text-rose-500' : item.daysLeft < 7 ? 'text-amber-500' : 'text-emerald-500'}`}>
-                                            {item.daysLeft === 'INF' ? '∞' : `${item.daysLeft}d`}
+                                            {item.daysLeft === 'INF' ? '∞' : `${item.daysLeft} দিন`}
                                         </p>
                                     </div>
                                 </div>
@@ -203,9 +203,9 @@ const BusinessIntel = ({ masterData }) => {
                     <div className="bg-black rounded-[4rem] shadow-3xl p-12 h-full text-white relative overflow-hidden group">
                         <div className="flex justify-between items-center mb-10 relative z-10">
                             <h4 className="text-2xl font-black uppercase italic tracking-tighter flex items-center gap-4">
-                                <Star className="text-amber-500" fill="currentColor" /> Staff Performance Hub
+                                <Star className="text-amber-500" fill="currentColor" /> সেরা পারফর্মিং কারিগর (Top 10)
                             </h4>
-                            <span className="px-6 py-2 bg-white/10 text-white rounded-full text-[10px] font-black uppercase tracking-widest">Global Top 10</span>
+                            <span className="px-6 py-2 bg-white/10 text-white rounded-full text-[10px] font-black uppercase tracking-widest">গ্লোবাল র‍্যাঙ্কিং</span>
                         </div>
                         <div className="grid grid-cols-1 gap-4 overflow-y-auto max-h-[400px] pr-2 custom-scrollbar relative z-10">
                             {stats.topWorkers.map((w, idx) => (
@@ -216,12 +216,12 @@ const BusinessIntel = ({ masterData }) => {
                                         </div>
                                         <div>
                                             <p className="text-xl font-black uppercase">{w.name}</p>
-                                            <p className="text-[10px] font-black text-white/70 uppercase group-hover/row:text-black/40">Yield: {w.received} Units</p>
+                                            <p className="text-[10px] font-black text-white/70 uppercase group-hover/row:text-black/40">আউটপুট: {w.received} পিস</p>
                                         </div>
                                     </div>
                                     <div className="text-right">
                                         <p className="text-3xl font-black italic tracking-tighter leading-none">{Math.round((w.received / (w.total || 1)) * 100)}%</p>
-                                        <p className="text-[9px] font-black uppercase opacity-70">Efficiency</p>
+                                        <p className="text-[9px] font-black uppercase opacity-70">কাজের দক্ষতা</p>
                                     </div>
                                 </div>
                             ))}

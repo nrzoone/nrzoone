@@ -171,10 +171,10 @@ const InventoryPanel = ({
           </button>
           <div>
             <h2 className="section-header">
-              {t('stockMatrix')} <span className="text-slate-500">Matrix</span>
+              স্টক <span className="text-slate-500">ম্যাট্রিক্স</span>
             </h2>
             <p className="text-[11px] font-black text-slate-500 uppercase tracking-[0.4em] mt-2 italic">
-               {t('inventoryHub')}
+               ইনভেন্টরি হাব (INVENTORY HUB)
             </p>
           </div>
         </div>
@@ -183,15 +183,15 @@ const InventoryPanel = ({
           <button 
             onClick={() => { setShowAIScan(true); setIdentifying(true); setTimeout(()=>setIdentifying(false), 2000); }}
             className="neu-button w-14 h-14 bg-indigo-600 text-white hover:scale-110 transition-all shadow-xl"
-            title="AI Visual Identity Probe"
+            title="এআই ভিজ্যুয়াল আইডি"
           >
             <Camera size={20} />
           </button>
           <div className="bg-white px-6 py-3 rounded-2xl border border-slate-100 shadow-sm hidden md:block">
-            <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1 italic">Finished Assets</p>
+            <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1 italic">তৈরি মাল (পিস)</p>
             <p className="text-2xl font-black italic text-black leading-none uppercase">
                 {(masterData.productions || []).filter((p) => p.status === "Received").length.toLocaleString()}{" "}
-                <span className="text-[10px] text-slate-500 ml-1">BATCHES</span>
+                <span className="text-[10px] text-slate-500 ml-1">ব্যাচ</span>
             </p>
           </div>
           <div className="flex gap-3 w-full md:w-auto">
@@ -199,13 +199,13 @@ const InventoryPanel = ({
               onClick={() => { setTransactionType("out"); setShowModal(true); }}
               className="px-6 py-4 bg-rose-50 text-rose-600 rounded-full font-black uppercase text-[10px] tracking-widest hover:bg-rose-600 hover:text-white transition-all shadow-sm flex items-center justify-center flex-1 md:flex-none"
             >
-              <Minus size={14} strokeWidth={3} className="mr-2" /> {t('deduct')}
+              <Minus size={14} strokeWidth={3} className="mr-2" /> স্টক কমান (OUT)
             </button>
             <button
               onClick={() => { setTransactionType("in"); setShowModal(true); }}
               className="black-button px-8 py-4 text-[11px] flex-1 md:flex-none justify-center"
             >
-              <Plus size={16} strokeWidth={4} className="mr-2" /> {t('addStock')}
+              <Plus size={16} strokeWidth={4} className="mr-2" /> নতুন স্টক যোগ (IN)
             </button>
           </div>
         </div>
@@ -250,13 +250,19 @@ const InventoryPanel = ({
       )}
 
       <div className="flex bg-white p-2 rounded-2xl border border-slate-100 shadow-sm overflow-x-auto mb-10">
-        {["overview", "sewing", "stone", "raw", "requisitions", "add"].map((v) => (
+        {[
+            { id: "overview", label: "তৈরি মাল" },
+            { id: "sewing", label: "সেলাই মজুত" },
+            { id: "stone", label: "স্টোন মজুত" },
+            { id: "raw", label: "কাঁচামাল (Raw)" },
+            { id: "requisitions", label: "রিকুইজিশন" }
+        ].map((v) => (
           <button
-            key={v}
-            onClick={() => setView(v)}
-            className={`pill-tab flex-1 whitespace-nowrap px-4 ${view === v ? "pill-tab-active" : "pill-tab-inactive hover:text-black"}`}
+            key={v.id}
+            onClick={() => setView(v.id)}
+            className={`pill-tab flex-1 whitespace-nowrap px-4 ${view === v.id ? "pill-tab-active" : "pill-tab-inactive hover:text-black"}`}
           >
-            {v === "overview" ? t('finishedGoods') : v === "sewing" ? t('sewingStock') : v === "stone" ? t('stoneStock') : v === "raw" ? t('rawMaterials') : v === "requisitions" ? "Requisitions" : t('addStock')}
+            {v.label}
           </button>
         ))}
       </div>
@@ -265,32 +271,22 @@ const InventoryPanel = ({
         <div className="space-y-10">
              <div className="flex justify-between items-center px-6">
                 <h3 className="text-2xl font-black uppercase italic tracking-tighter text-black">
-                    Incoming <span className="text-slate-500">Requisitions</span>
+                    নতুন <span className="text-slate-500">রিকুইজিশন রিকোয়েস্ট</span>
                 </h3>
-                <button 
-                   onClick={() => {
-                       const mock = { id: Date.now(), worker: "SABBIR", item: "Stone Packet", qty: "5", date: new Date().toLocaleTimeString(), status: "Incoming" };
-                       setMasterData(prev => ({ ...prev, whatsappRequests: [mock, ...(prev.whatsappRequests || [])] }));
-                       showNotify("MOCK WhatsApp Request Received!");
-                   }}
-                   className="px-4 py-2 bg-black text-white text-[9px] font-black uppercase tracking-widest rounded-full opacity-50 hover:opacity-100 transition-all border-none italic"
-                >
-                    Simulate WhatsApp Request (#StoneRequest 5pkt)
-                </button>
              </div>
 
              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {(masterData.whatsappRequests || []).length === 0 ? (
                     <div className="lg:col-span-3 h-64 flex flex-col items-center justify-center bg-white rounded-3xl border-2 border-dashed border-slate-100 opacity-70">
                         <MessageSquare size={48} strokeWidth={1} />
-                        <p className="text-[10px] font-black uppercase tracking-[0.4em] mt-6">Zero Active Requests Detected</p>
+                        <p className="text-[10px] font-black uppercase tracking-[0.4em] mt-6">কোনো রিকোয়েস্ট পাওয়া যায়নি</p>
                     </div>
                 ) : (
                     masterData.whatsappRequests.map((req, idx) => (
                         <div key={idx} className="bg-white p-10 rounded-[3rem] border-4 border-slate-50 shadow-2xl relative overflow-hidden group hover:border-indigo-600 transition-all italic">
                             <div className="flex justify-between items-start mb-8 relative z-10">
                                 <div>
-                                    <p className="text-[8px] font-black text-slate-500 uppercase tracking-widest mb-1 italic">Source Identity</p>
+                                    <p className="text-[8px] font-black text-slate-500 uppercase tracking-widest mb-1 italic">প্রেরক (Worker)</p>
                                     <h4 className="text-xl font-black italic uppercase leading-none">{req.worker}</h4>
                                 </div>
                                 <div className="p-3 bg-indigo-50 text-indigo-600 rounded-xl group-hover:scale-110 transition-transform"><MessageSquare size={16} /></div>
@@ -298,7 +294,7 @@ const InventoryPanel = ({
                             
                             <div className="space-y-6 relative z-10">
                                 <div className="bg-slate-50 p-6 rounded-[2rem] border border-white shadow-inner">
-                                    <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-2 italic">Requested Resource</p>
+                                    <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-2 italic">প্রয়োজনীয় মালামাল</p>
                                     <p className="text-xl font-black italic">{req.item} <span className="text-sm opacity-50 ml-2">x {req.qty}</span></p>
                                 </div>
                                 
@@ -309,18 +305,18 @@ const InventoryPanel = ({
                                     </div>
                                     <button 
                                         onClick={() => {
-                                            if (confirm("Confirm dispatch for this requisition?")) {
+                                            if (confirm("আপনি কি এই সরবরাহ নিশ্চিত করতে চান?")) {
                                                 setMasterData(prev => ({ 
                                                     ...prev, 
                                                     whatsappRequests: prev.whatsappRequests.filter(r => r.id !== req.id),
                                                     rawInventory: [{ id: Date.now(), item: req.item, qty: Number(req.qty), type: 'out', date: new Date().toLocaleDateString(), note: `WA DISPATCH: ${req.worker}` }, ...(prev.rawInventory || [])]
                                                 }));
-                                                showNotify("Material Dispatched & Stock Updated!");
+                                                showNotify("মালামাল সরবরাহ করা হয়েছে!");
                                             }
                                         }}
                                         className="h-10 px-6 bg-black text-white rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-indigo-600 transition-all flex items-center gap-2 italic"
                                     >
-                                        <ConfirmIcon size={12} strokeWidth={3} /> Dispatch
+                                        <ConfirmIcon size={12} strokeWidth={3} /> সরবরাহ (Dispatch)
                                     </button>
                                 </div>
                             </div>
@@ -335,10 +331,10 @@ const InventoryPanel = ({
         <div className="space-y-8">
           <div className="flex items-center justify-between px-6">
             <h3 className="text-2xl font-black uppercase italic tracking-tighter text-black">
-              Finished <span className="text-slate-500">Goods</span>
+              তৈরি মালের <span className="text-slate-500">মজুত (Finished)</span>
             </h3>
             <div className="px-5 py-2 bg-slate-50 border border-slate-100 rounded-full text-[9px] font-black uppercase tracking-widest italic text-slate-500">
-              {summary.length} Items
+              {summary.length} আইটেম
             </div>
           </div>
 
@@ -632,7 +628,7 @@ const InventoryPanel = ({
 
               <div className="bg-slate-50 border border-slate-100 p-8 md:p-12 rounded-[2.5rem] text-center shadow-inner">
                 <label className="bg-black text-white px-4 py-1.5 rounded-full text-[10px] font-black uppercase italic tracking-widest inline-block mb-6 shadow-lg">
-                  Quantity
+                  পরিমাণ (Quantity)
                 </label>
                 <input
                   name="qty"
@@ -643,11 +639,11 @@ const InventoryPanel = ({
               </div>
 
               <div className="space-y-2">
-                  <label className="text-[10px] text-slate-600 ml-4 font-black">Reference Note</label>
+                  <label className="text-[10px] text-slate-600 ml-4 font-black">রেফারেন্স বা বিশেষ নোট</label>
                   <input
                     name="note"
                     className="form-input py-4 md:py-5 text-sm font-black bg-slate-50 border-slate-100 placeholder:text-slate-500"
-                    placeholder="Log details..."
+                    placeholder="মন্তব্য লিখুন..."
                   />
               </div>
 
@@ -663,7 +659,7 @@ const InventoryPanel = ({
                   type="submit"
                   className="black-button py-5 md:py-6 text-sm flex-[2] order-1 md:order-2 justify-center"
                 >
-                   {t('updateProtocol')}
+                   স্টক আপডেট করুন
                 </button>
               </div>
             </form>
@@ -671,14 +667,14 @@ const InventoryPanel = ({
         </div>
       )}
       <datalist id="items-list">
-        <option value="Stone Packet" />
-        <option value="Paper Roll" />
-        <option value="Fabric Roll" />
-        <option value="Elastic Pkt" />
-        <option value="Lace Meter" />
-        <option value="Label Pkt" />
-        <option value="Poly Pkt" />
-        <option value="Carton" />
+        <option value="পাথর প্যাকেট (Stone)" />
+        <option value="পেপার রোল (Paper)" />
+        <option value="ফেব্রিক রোল (Fabric)" />
+        <option value="ইলাস্টিক প্যাকেট" />
+        <option value="লেস মিটার" />
+        <option value="লেবেল প্যাকেট" />
+        <option value="পলি প্যাকেট" />
+        <option value="কার্টন (Carton)" />
       </datalist>
 
       <div className="pt-20 pb-10 flex justify-center">
@@ -689,7 +685,7 @@ const InventoryPanel = ({
           <div className="p-3 bg-black text-white rounded-2xl group-hover:rotate-[-12deg] transition-transform">
             <ArrowLeft size={20} strokeWidth={3} />
           </div>
-          <span className="text-lg font-black uppercase italic tracking-widest text-black">{t('backToDashboard')}</span>
+          <span className="text-lg font-black uppercase italic tracking-widest text-black">মূল ড্যাশবোর্ডে ফিরে যান</span>
           <div className="absolute -inset-1 bg-black/5 blur-2xl rounded-full -z-10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
         </button>
       </div>

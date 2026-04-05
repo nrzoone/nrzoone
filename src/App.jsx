@@ -307,46 +307,46 @@ const TrackingView = ({ trackId, masterData, onClose, isDarkMode }) => {
 const MENU_CATEGORIES = [
     {
         id: "core",
-        label: "CORE SYSTEMS",
+        label: "মূল সিস্টেম (CORE)",
         items: [
-            { id: "Overview", label: "Dashboard", icon: Activity, sub: "Live Monitor" },
-            { id: "Menu", label: "Main Menu", icon: LayoutGrid, sub: "All Depts" },
+            { id: "Overview", label: "ড্যাশবোর্ড", icon: Activity, sub: "লাইভ মনিটর" },
+            { id: "Menu", label: "মুখ্য মেনু", icon: LayoutGrid, sub: "সব বিভাগ" },
         ]
     },
     {
         id: "production",
-        label: "PRODUCTION UNIT",
+        label: "উৎপাদন ইউনিট (PRODUCTION)",
         items: [
-            { id: "Cutting", label: "Cutting", icon: Scissors, sub: "Raw" },
-            { id: "Swing", label: "Sewing", icon: Layers, sub: "Factory" },
-            { id: "Stone", label: "Stone", icon: Hammer, sub: "Factory" },
-            { id: "Pata", label: "Pata Hub", icon: Package, sub: "Logistics" },
+            { id: "Cutting", label: "কাটিং", icon: Scissors, sub: "মাস্টার" },
+            { id: "Swing", label: "সেলাই", icon: Layers, sub: "ফ্যাক্টরি" },
+            { id: "Stone", label: "স্টোন", icon: Hammer, sub: "ফ্যাক্টরি" },
+            { id: "Pata", label: "পাতা হাব", icon: Package, sub: "লজিস্টিকস" },
         ]
     },
     {
         id: "operations",
-        label: "OPERATIONS",
+        label: "অপারেশনস (OPERATIONS)",
         items: [
-            { id: "Outside", label: "Outside Work", icon: Truck, sub: "External" },
-            { id: "Attendance", label: "Attendance", icon: Users, sub: "Staff" },
-            { id: "Stock", label: "Inventory", icon: Database, sub: "Vault" },
+            { id: "Outside", label: "বাইরের কাজ", icon: Truck, sub: "এক্সটার্নাল" },
+            { id: "Attendance", label: "হাজিরা", icon: Users, sub: "স্টাফ" },
+            { id: "Stock", label: "ইনভেন্টরি", icon: Database, sub: "মজুদ" },
         ]
     },
     {
         id: "finance",
-        label: "FINANCE & ECO",
+        label: "আর্থিক ও লেজার (FINANCE)",
         items: [
-            { id: "Accounts", label: "Accounts", icon: DollarSign, sub: "Financial" },
-            { id: "WorkerSummary", label: "My Ledger", icon: DollarSign, sub: "Personal" },
-            { id: "Reports", label: "Reports", icon: FileText, sub: "Analytics" },
+            { id: "Accounts", label: "অ্যাকাউন্টস", icon: DollarSign, sub: "ফাইন্যান্স" },
+            { id: "WorkerSummary", label: "কারিগর লেজার", icon: DollarSign, sub: "ব্যক্তিগত" },
+            { id: "Reports", label: "রিপোর্টস", icon: FileText, sub: "অ্যানালিটিক্স" },
         ]
     },
     {
         id: "system",
-        label: "SECURITY & LOGS",
+        label: "নিরাপত্তা ও সিস্টেম (SYSTEM)",
         items: [
-            { id: "Settings", label: "Settings", icon: Settings, sub: "System" },
-            { id: "Security", label: "Security", icon: Lock, sub: "Audit Log" },
+            { id: "Settings", label: "সেটিংস", icon: Settings, sub: "সিস্টেম" },
+            { id: "Security", label: "নিরাপত্তা", icon: Lock, sub: "অডিট লগ" },
         ]
     }
 ];
@@ -413,7 +413,7 @@ const Sidebar = ({ activePanel, setActivePanel, user, setUser, isOpen, setIsSide
                     }} 
                     className="w-full flex items-center gap-4 p-4 rounded-2xl text-slate-400 hover:text-rose-500 transition-all hover:bg-rose-50/50"
                 >
-                    <LogOut size={16} /><span className="text-[9px] font-black uppercase tracking-[0.3em] italic">{t('logout') || 'Logout'}</span>
+                    <LogOut size={16} /><span className="text-[9px] font-black uppercase tracking-[0.3em] italic">লগ-আউট (Logout)</span>
                 </button>
             </div>
         </aside>
@@ -601,8 +601,8 @@ const AppContent = () => {
 
                             <div className="flex items-center gap-4 md:gap-10">
                                 <div className="hidden md:flex flex-col items-end border-r border-black/5 pr-10">
-                                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-600">Operator</p>
-                                    <p className="text-lg font-black italic uppercase text-black">{user?.name || 'Authorized'}</p>
+                                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-600">অপারেটর</p>
+                                    <p className="text-lg font-black italic uppercase text-black">{user?.name || 'অনুমোদিত'}</p>
                                 </div>
                                 <button 
                                     onClick={() => setActivePanel("Settings")}

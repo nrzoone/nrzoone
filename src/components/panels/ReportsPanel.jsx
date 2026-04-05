@@ -294,10 +294,10 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t, logAction }) => {
             </div>
             <div>
               <h2 className="text-xl md:text-3xl font-black uppercase italic tracking-tighter leading-none text-black">
-                Data <span className="text-slate-500">Vault</span>
+                তথ্য <span className="text-slate-500">ভাণ্ডার</span>
               </h2>
               <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mt-0.5">
-                Official Intelligence Hub
+                অফিসিয়াল ইন্টেলিজেন্স হাব
               </p>
             </div>
           </div>
@@ -310,7 +310,7 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t, logAction }) => {
             onClick={() => setActiveTab("intel")}
             className={`px-6 md:px-10 py-4 md:py-6 rounded-[1.5rem] md:rounded-[2rem] font-black uppercase text-[10px] md:text-xs tracking-widest transition-all whitespace-nowrap ${activeTab === "intel" ? "bg-black text-white shadow-2xl" : "text-slate-500 hover:text-black"}`}
           >
-            Intelligence
+            বিজনেস ইন্টেল
           </button>
         )}
         {!isAdmin && (
@@ -318,7 +318,7 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t, logAction }) => {
             onClick={() => setActiveTab("summary")}
             className={`px-6 md:px-10 py-4 md:py-6 rounded-[1.5rem] md:rounded-[2rem] font-black uppercase text-[10px] md:text-xs tracking-widest transition-all whitespace-nowrap ${activeTab === "summary" ? "bg-black text-white shadow-2xl" : "text-slate-500 hover:text-black"}`}
           >
-            Ledger
+            লেজার সামারি
           </button>
         )}
 
@@ -326,13 +326,13 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t, logAction }) => {
           onClick={() => setActiveTab("invoice")}
           className={`px-6 md:px-10 py-4 md:py-6 rounded-[1.5rem] md:rounded-[2rem] font-black uppercase text-[10px] md:text-xs tracking-widest transition-all whitespace-nowrap ${activeTab === "invoice" ? "bg-black text-white shadow-2xl" : "text-slate-500 hover:text-black"}`}
         >
-          Invoice Matrix
+          ইনভয়েস ম্যাট্রিক্স
         </button>
         <button
           onClick={() => setActiveTab("transactions")}
           className={`px-6 md:px-10 py-4 md:py-6 rounded-[1.5rem] md:rounded-[2rem] font-black uppercase text-[10px] md:text-xs tracking-widest transition-all whitespace-nowrap ${activeTab === "transactions" ? "bg-black text-white shadow-2xl" : "text-slate-500 hover:text-black"}`}
         >
-          Audit Log
+          অডিট লগ (Audit)
         </button>
       </div>
 
@@ -350,19 +350,19 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t, logAction }) => {
             <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-center justify-between border-b-2 border-slate-50 pb-8 md:pb-12">
               <div className="flex flex-wrap gap-2 md:gap-4 overflow-x-auto w-full md:w-auto no-scrollbar pb-2 md:pb-0">
                 {[
-                  "productions",
-                  "cutting",
-                  "pata",
-                  "outside",
-                  "attendance",
-                  "expense",
+                  { id: "productions", label: "প্রোডাকশন" },
+                  { id: "cutting", label: "কাটিং স্টক" },
+                  { id: "pata", label: "পাটা ফ্যাক্টরি" },
+                  { id: "outside", label: "বাইরের কাজ" },
+                  { id: "attendance", label: "উপস্থিতি" },
+                  { id: "expense", label: "খরচ (Expense)" },
                 ].map((t) => (
                   <button
-                    key={t}
-                    onClick={() => setTransactionTab(t)}
-                    className={`px-4 md:px-8 py-3 md:py-4 rounded-full text-[8px] md:text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${transactionTab === t ? "bg-black text-white shadow-xl" : "bg-slate-50 text-slate-500 hover:text-black"}`}
+                    key={t.id}
+                    onClick={() => setTransactionTab(t.id)}
+                    className={`px-4 md:px-8 py-3 md:py-4 rounded-full text-[8px] md:text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${transactionTab === t.id ? "bg-black text-white shadow-xl" : "bg-slate-50 text-slate-500 hover:text-black"}`}
                   >
-                    {t}
+                    {t.label}
                   </button>
                 ))}
               </div>
@@ -371,7 +371,7 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t, logAction }) => {
                   <Search size={20} className="text-slate-500" />
                   <input
                     type="text"
-                    placeholder="Scanning..."
+                    placeholder="খুঁজুন..."
                     className="bg-transparent font-black italic border-none outline-none leading-none h-auto w-full uppercase text-[10px] md:text-sm text-black placeholder:text-slate-100"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
@@ -390,13 +390,13 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t, logAction }) => {
               <table className="w-full text-left">
                 <thead className="border-b-2 border-slate-50 text-[8px] md:text-[10px] font-black uppercase tracking-widest text-slate-500 italic">
                   <tr>
-                    <th className="py-4 md:py-6 px-2 md:px-4">Date</th>
-                    <th className="py-4 md:py-6 px-2 md:px-4">Details</th>
+                    <th className="py-4 md:py-6 px-2 md:px-4">তারিখ</th>
+                    <th className="py-4 md:py-6 px-2 md:px-4">বিস্তারিত</th>
                     <th className="py-4 md:py-6 px-2 md:px-4 text-center">
-                      Operation
+                      বিভাগ (Activity)
                     </th>
                     <th className="py-4 md:py-6 px-2 md:px-4 text-right">
-                      Value
+                      পরিমাণ/ভ্যালু
                     </th>
                   </tr>
                 </thead>
@@ -648,7 +648,7 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t, logAction }) => {
             <ArrowLeft size={20} strokeWidth={3} />
           </div>
           <span className="text-lg font-black uppercase italic tracking-widest text-black">
-            Back to Dashboard
+            মূল ড্যাশবোর্ডে ফিরে যান
           </span>
           <div className="absolute -inset-1 bg-black/5 blur-2xl rounded-full -z-10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
         </button>
