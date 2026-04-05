@@ -391,7 +391,7 @@ const AppContent = () => {
     });
     const [activePanel, setActivePanel] = useState("Overview");
     const [toast, setToast] = useState(null);
-    const { masterData, setMasterData, isLoading, logs, downloadBackup, logAction } = useMasterData();
+    const { masterData, setMasterData, isLoading, logs, downloadBackup, logAction, syncStatus } = useMasterData();
     const [trackingId, setTrackingId] = useState(null);
     const [showQR, setShowQR] = useState(false);
 
