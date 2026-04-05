@@ -39,6 +39,9 @@ import {
     ShieldAlert,
     Trash2,
     ChevronRight,
+    UserCheck,
+    BarChart2,
+    Shield,
 } from "lucide-react";
 import Overview from "./components/Overview";
 import CuttingPanel from "./components/panels/CuttingPanel";
@@ -301,22 +304,51 @@ const TrackingView = ({ trackId, masterData, onClose, isDarkMode }) => {
     );
 };
 
-const MENU_ITEMS = [
-    { id: "Menu", label: "Main Menu", icon: LayoutGrid, sub: "All Depts" },
-    { id: "Overview", label: "Dashboard", icon: Activity, sub: "Live Monitor" },
-    { id: "Cutting", label: "Cutting", icon: Scissors, sub: "Raw" },
-    { id: "Swing", label: "Sewing", icon: Layers, sub: "Factory" },
-    { id: "Stone", label: "Stone", icon: Hammer, sub: "Factory" },
-    { id: "Pata", label: "Pata Hub", icon: Package, sub: "Logistics" },
-    { id: "Outside", label: "Outside Work", icon: Truck, sub: "External" },
-    { id: "Attendance", label: "Attendance", icon: Users, sub: "Staff" },
-    { id: "Stock", label: "Inventory", icon: Database, sub: "Vault" },
-    { id: "Accounts", label: "Accounts", icon: DollarSign, sub: "Financial" },
-    { id: "WorkerSummary", label: "My Ledger", icon: DollarSign, sub: "Personal" },
-    { id: "Reports", label: "Reports", icon: FileText, sub: "Analytics" },
-
-    { id: "Settings", label: "Settings", icon: Settings, sub: "System" },
-    { id: "Security", label: "Security", icon: Lock, sub: "Audit Log" },
+const MENU_CATEGORIES = [
+    {
+        id: "core",
+        label: "CORE SYSTEMS",
+        items: [
+            { id: "Overview", label: "Dashboard", icon: Activity, sub: "Live Monitor" },
+            { id: "Menu", label: "Main Menu", icon: LayoutGrid, sub: "All Depts" },
+        ]
+    },
+    {
+        id: "production",
+        label: "PRODUCTION UNIT",
+        items: [
+            { id: "Cutting", label: "Cutting", icon: Scissors, sub: "Raw" },
+            { id: "Swing", label: "Sewing", icon: Layers, sub: "Factory" },
+            { id: "Stone", label: "Stone", icon: Hammer, sub: "Factory" },
+            { id: "Pata", label: "Pata Hub", icon: Package, sub: "Logistics" },
+        ]
+    },
+    {
+        id: "operations",
+        label: "OPERATIONS",
+        items: [
+            { id: "Outside", label: "Outside Work", icon: Truck, sub: "External" },
+            { id: "Attendance", label: "Attendance", icon: Users, sub: "Staff" },
+            { id: "Stock", label: "Inventory", icon: Database, sub: "Vault" },
+        ]
+    },
+    {
+        id: "finance",
+        label: "FINANCE & ECO",
+        items: [
+            { id: "Accounts", label: "Accounts", icon: DollarSign, sub: "Financial" },
+            { id: "WorkerSummary", label: "My Ledger", icon: DollarSign, sub: "Personal" },
+            { id: "Reports", label: "Reports", icon: FileText, sub: "Analytics" },
+        ]
+    },
+    {
+        id: "system",
+        label: "SECURITY & LOGS",
+        items: [
+            { id: "Settings", label: "Settings", icon: Settings, sub: "System" },
+            { id: "Security", label: "Security", icon: Lock, sub: "Audit Log" },
+        ]
+    }
 ];
 
 const Sidebar = ({ activePanel, setActivePanel, user, setUser, isOpen, setIsSidebarOpen, t, isDarkMode, masterData }) => {
@@ -331,36 +363,45 @@ const Sidebar = ({ activePanel, setActivePanel, user, setUser, isOpen, setIsSide
                 <Logo size="sm" white={false} customUrl={masterData.settings?.logo} />
                 <div className="mt-6 h-1 w-12 bg-black dark:bg-white rounded-full opacity-10"></div>
             </div>
-            <div className="flex-1 overflow-y-auto px-6 space-y-2 no-scrollbar">
-                {MENU_ITEMS.filter(item => {
-                    const role = user?.role?.toLowerCase();
-                    const isSuperAdmin = role === 'admin';
-                    const isManager = role === 'manager';
-                    
-                    if (isSuperAdmin) return true;
-                    
-                    if (isManager) {
-                        const managerRestricted = ['Settings', 'Security'];
-                        return !managerRestricted.includes(item.id);
-                    }
-                    
-                    // Specific allowed items for workers in Sidebar
-                    const workerAllowed = ['Menu', 'Overview', 'Cutting', 'Swing', 'Stone', 'Pata', 'Outside', 'Attendance', 'WorkerSummary'];
-                    return workerAllowed.includes(item.id);
-                }).map(item => {
-                    const Icon = item.icon;
-                    const active = activePanel === item.id;
+            <div className="flex-1 overflow-y-auto px-6 space-y-8 no-scrollbar pb-12">
+                {MENU_CATEGORIES.map(category => {
+                    const filteredItems = category.items.filter(item => {
+                        const role = user?.role?.toLowerCase();
+                        const isSuperAdmin = role === 'admin';
+                        const isManager = role === 'manager';
+                        if (isSuperAdmin) return true;
+                        if (isManager) {
+                            const managerRestricted = ['Settings', 'Security'];
+                            return !managerRestricted.includes(item.id);
+                        }
+                        const workerAllowed = ['Menu', 'Overview', 'Cutting', 'Swing', 'Stone', 'Pata', 'Outside', 'Attendance', 'WorkerSummary'];
+                        return workerAllowed.includes(item.id);
+                    });
+
+                    if (filteredItems.length === 0) return null;
+
                     return (
-                        <button
-                            key={item.id} onClick={() => navigate(item.id)}
-                            className={`w-full flex items-center gap-4 px-5 py-4 rounded-2xl transition-all group ${active ? "bg-black text-white dark:bg-white dark:text-black shadow-xl" : "text-slate-500 hover:text-black dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/50"}`}
-                        >
-                            <Icon size={18} strokeWidth={active ? 2.5 : 2} className="shrink-0" />
-                            <div className="flex flex-col items-start leading-tight">
-                                <span className={`text-[11px] uppercase tracking-wider ${active ? "font-bold" : "font-semibold opacity-70"}`}>{t(item.id.toLowerCase()) || item.label}</span>
-                                <span className={`text-[8px] uppercase tracking-[0.2em] font-bold opacity-40 ${active ? "text-white/60 dark:text-black/60" : "text-slate-400"}`}>{item.sub}</span>
-                            </div>
-                        </button>
+                        <div key={category.id} className="space-y-2">
+                            <p className="px-5 text-[8px] font-black text-slate-400 dark:text-slate-600 tracking-[0.4em] mb-4">{category.label}</p>
+                            {filteredItems.map(item => {
+                                const Icon = item.icon;
+                                const active = activePanel === item.id;
+                                return (
+                                    <button
+                                        key={item.id} onClick={() => navigate(item.id)}
+                                        className={`w-full flex items-center gap-4 px-5 py-4 rounded-2xl transition-all group ${active ? "bg-black text-white dark:bg-white dark:text-black shadow-xl scale-[1.02]" : "text-slate-500 hover:text-black dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/50"}`}
+                                    >
+                                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${active ? "bg-white/10 dark:bg-black/10" : "bg-slate-50 dark:bg-black/20 group-hover:bg-white dark:group-hover:bg-slate-800"}`}>
+                                            <Icon size={18} strokeWidth={active ? 2.5 : 2} className="shrink-0" />
+                                        </div>
+                                        <div className="flex flex-col items-start leading-tight">
+                                            <span className={`text-[11px] uppercase tracking-wider ${active ? "font-black" : "font-semibold opacity-70"}`}>{t?.(item.id.toLowerCase()) || item.label}</span>
+                                            <span className={`text-[8px] uppercase tracking-[0.2em] font-bold opacity-40 ${active ? "text-white/60 dark:text-black/60" : "text-slate-400"}`}>{item.sub}</span>
+                                        </div>
+                                    </button>
+                                );
+                            })}
+                        </div>
                     );
                 })}
             </div>
@@ -392,6 +433,7 @@ const AppContent = () => {
     const [activePanel, setActivePanel] = useState("Overview");
     const [toast, setToast] = useState(null);
     const { masterData, setMasterData, isLoading, logs, downloadBackup, logAction, syncStatus } = useMasterData();
+    const [isListening, setIsListening] = useState(false);
     const [trackingId, setTrackingId] = useState(null);
     const [showQR, setShowQR] = useState(false);
 
@@ -470,8 +512,6 @@ const AppContent = () => {
         }
         else showNotify("ভুল আইডি বা পাসওয়ার্ড!", "error");
     };
-
-    const [isListening, setIsListening] = useState(false);
 
     // Voice Command Hub
     useEffect(() => {
@@ -598,7 +638,33 @@ const AppContent = () => {
                                 {activePanel === "Reports" && <ReportsPanel masterData={masterData} user={user} setActivePanel={setActivePanel} t={t} logAction={logAction} />}
 
                                 {activePanel === "Settings" && <SettingsPanel masterData={masterData} setMasterData={setMasterData} user={user} showNotify={showNotify} setActivePanel={setActivePanel} t={t} logAction={logAction} logs={logs} downloadBackup={downloadBackup} syncStatus={syncStatus} />}
-                                {activePanel === "Security" && <SecurityPanel masterData={masterData} user={user} setActivePanel={setActivePanel} t={t} logAction={logAction} logs={logs} syncStatus={syncStatus} />}
+                                {activePanel === "Security" && <SecurityPanel masterData={masterData} setActivePanel={setActivePanel} t={t} logs={masterData.auditLogs || []} syncStatus={syncStatus} />}
+                                {activePanel === "Notifications" && (
+                                    <div className="space-y-12 pb-24 animate-fade-up px-4 italic font-outfit text-black">
+                                         <div className="flex justify-between items-center mb-10">
+                                            <h1 className="section-header">NOTIFICATIONS <span className="text-slate-500">SYSTEM ALERTS</span></h1>
+                                            <button onClick={() => setMasterData(p => ({ ...p, notifications: (p.notifications || []).map(n => ({ ...n, read: true })) }))} className="px-6 py-3 bg-slate-100 rounded-full text-[9px] font-black uppercase tracking-widest hover:bg-black hover:text-white transition-all">Mark All Read</button>
+                                         </div>
+                                         <div className="space-y-6">
+                                            {(masterData.notifications || []).length === 0 ? (
+                                                <div className="py-32 text-center bg-white rounded-[3rem] border-2 border-dashed border-slate-100 italic opacity-40">Zero Alerts Recorded</div>
+                                            ) : (
+                                                (masterData.notifications || []).map((n, i) => (
+                                                    <div key={i} className={`p-10 rounded-[3rem] border-2 flex items-center gap-10 group transition-all ${n.read ? 'bg-white border-slate-50' : 'bg-black text-white border-black shadow-2xl scale-[1.02]'}`}>
+                                                        <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 ${n.read ? 'bg-slate-100 text-slate-400' : 'bg-white text-black'}`}>
+                                                            {n.type === 'task' ? <Activity size={24} /> : <Shield size={24} />}
+                                                        </div>
+                                                        <div className="flex-1">
+                                                            <h4 className="text-xl font-black uppercase italic italic leading-none mb-1">{n.title}</h4>
+                                                            <p className="text-xs font-black opacity-60 italic mb-4">{n.message}</p>
+                                                            <p className="text-[9px] font-black uppercase tracking-widest opacity-40">{new Date(n.timestamp).toLocaleString()}</p>
+                                                        </div>
+                                                    </div>
+                                                ))
+                                            )}
+                                         </div>
+                                    </div>
+                                )}
                             </div>
                         </div>
 
@@ -633,8 +699,20 @@ const AppContent = () => {
                 >
                     <MessageCircle size={28} />
                 </button>
-                <button 
-                   onClick={() => { setIsListening(!isListening); playSound(); }}
+                   <button 
+                       onClick={() => setActivePanel('Notifications')}
+                       className="w-16 h-16 rounded-full bg-white shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all text-slate-500 relative border-4 border-white"
+                   >
+                       <Bell size={24} />
+                       {(masterData.notifications || []).filter(n => !n.read).length > 0 && (
+                           <span className="absolute top-0 right-0 w-6 h-6 bg-rose-500 text-white rounded-full flex items-center justify-center text-[10px] font-black animate-bounce border-2 border-white">
+                               {(masterData.notifications || []).filter(n => !n.read).length}
+                           </span>
+                       )}
+                   </button>
+
+                   <button 
+                       onClick={() => { setIsListening(!isListening); playSound(); }}
                    className={`w-16 h-16 rounded-full shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all border-4 border-white ${isListening ? 'bg-rose-500 animate-pulse text-white' : 'bg-white text-slate-500'}`}
                    title="Voice Command"
                 >

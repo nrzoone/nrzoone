@@ -42,6 +42,36 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { generateWorkerPaySlip } from "../../services/pdfService";
 import NRZLogo from "../NRZLogo";
 
+const AccordionItem = ({ id, label, icon: Icon, description, children, activeTab, setActiveTab }) => {
+  const isOpen = activeTab === id;
+  return (
+    <div className={`mb-4 transition-all duration-500 rounded-[3rem] border-2 overflow-hidden ${isOpen ? 'bg-white border-black shadow-2xl scale-[1.01]' : 'bg-slate-50 border-slate-100 hover:border-slate-300'}`}>
+      <button 
+        onClick={() => setActiveTab(isOpen ? "" : id)}
+        className="w-full px-10 py-8 flex items-center justify-between text-left group"
+      >
+        <div className="flex items-center gap-8">
+          <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all ${isOpen ? 'bg-black text-white rotate-6' : 'bg-white text-slate-400 group-hover:scale-110 shadow-sm'}`}>
+            <Icon size={24} />
+          </div>
+          <div>
+            <h3 className={`text-xl font-black uppercase italic tracking-tighter leading-none transition-colors ${isOpen ? 'text-black' : 'text-slate-500'}`}>{label}</h3>
+            <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest mt-2 italic">{description}</p>
+          </div>
+        </div>
+        <div className={`w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all ${isOpen ? 'bg-black border-black text-white rotate-180' : 'bg-white border-slate-100 text-slate-300 group-hover:border-black group-hover:text-black'}`}>
+          <ChevronRight size={16} />
+        </div>
+      </button>
+      {isOpen && (
+        <div className="px-10 pb-10 pt-4 border-t border-slate-50 animate-fade-down">
+          {children}
+        </div>
+      )}
+    </div>
+  );
+};
+
 const SettingsPanel = ({
   masterData,
   setMasterData,
@@ -1039,19 +1069,19 @@ const SettingsPanel = ({
                   </div>
                </div>
             </AccordionItem>
-            <AccordionItem id="branding" label="System Branding" icon={ImageIcon} description="Personalize dashboard and print slip logo">
+            <AccordionItem id="branding" label="System Branding" icon={ImageIcon} description="Personalize dashboard and print slip logo" activeTab={activeTab} setActiveTab={setActiveTab}>
                {renderBrandingContent()}
             </AccordionItem>
 
-            <AccordionItem id="users" label={t('systemSecurity') || "System Access"} icon={ShieldCheck} description={t('authProtocol') || "Manage administrative credentials and roles"}>
+            <AccordionItem id="users" label={t('systemSecurity') || "System Access"} icon={ShieldCheck} description={t('authProtocol') || "Manage administrative credentials and roles"} activeTab={activeTab} setActiveTab={setActiveTab}>
               {renderUsersContent()}
             </AccordionItem>
 
-            <AccordionItem id="personnel" label={t('personnel') || "Personnel Matrix"} icon={Users} description={t('staff') || "Consolidated staff and production operative directory"}>
+            <AccordionItem id="personnel" label={t('personnel') || "Personnel Matrix"} icon={Users} description={t('staff') || "Consolidated staff and production operative directory"} activeTab={activeTab} setActiveTab={setActiveTab}>
               {renderPersonnelContent()}
             </AccordionItem>
 
-            <AccordionItem id="product" label={t('productionMatrix') || "Production Matrix"} icon={LayoutGrid} description={t('config') || "Master taxonomy for sizes, colors, and design specs"}>
+            <AccordionItem id="product" label={t('productionMatrix') || "Production Matrix"} icon={LayoutGrid} description={t('config') || "Master taxonomy for sizes, colors, and design specs"} activeTab={activeTab} setActiveTab={setActiveTab}>
               {renderProductContent()}
             </AccordionItem>
 

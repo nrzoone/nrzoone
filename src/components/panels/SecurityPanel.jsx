@@ -2,6 +2,7 @@ import React from 'react';
 import { Shield, Clock, User, Activity, AlertCircle, ArrowLeft, Search } from 'lucide-react';
 
 const SecurityPanel = ({ masterData, setActivePanel, t, logs = [], syncStatus }) => {
+    const [searchTerm, setSearchTerm] = React.useState("");
     return (
         <div className="space-y-12 pb-24 animate-fade-up px-4 italic font-outfit text-black">
             <div className="flex justify-between items-center mb-10">
@@ -59,6 +60,8 @@ const SecurityPanel = ({ masterData, setActivePanel, t, logs = [], syncStatus })
                         <input 
                             type="text" 
                             placeholder="SEARCH LOGS..." 
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
                             className="bg-white pl-16 pr-8 py-4 rounded-full text-[10px] font-black uppercase tracking-widest border border-slate-100 focus:border-black outline-none w-full md:w-80 shadow-inner"
                         />
                     </div>
@@ -75,17 +78,29 @@ const SecurityPanel = ({ masterData, setActivePanel, t, logs = [], syncStatus })
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-50">
-                            {logs.length === 0 ? (
+                            {(logs || []).filter(log => {
+                                if(!searchTerm) return true;
+                                const s = searchTerm.toLowerCase();
+                                return (log.user || "").toLowerCase().includes(s) || 
+                                       (log.action || "").toLowerCase().includes(s) || 
+                                       (log.details || "").toLowerCase().includes(s);
+                            }).length === 0 ? (
                                 <tr>
                                     <td colSpan="4" className="py-24 text-center">
                                         <div className="flex flex-col items-center opacity-20">
-                                            <AlertCircle size={64} strokeWidth={1} />
-                                            <p className="text-[10px] font-black uppercase tracking-widest mt-6">Zero Logs Recorded</p>
+                                             <AlertCircle size={64} strokeWidth={1} />
+                                             <p className="text-[10px] font-black uppercase tracking-widest mt-6">Zero Logs Match Search</p>
                                         </div>
                                     </td>
                                 </tr>
                             ) : (
-                                logs.map((log, i) => {
+                                (logs || []).filter(log => {
+                                    if(!searchTerm) return true;
+                                    const s = searchTerm.toLowerCase();
+                                    return (log.user || "").toLowerCase().includes(s) || 
+                                           (log.action || "").toLowerCase().includes(s) || 
+                                           (log.details || "").toLowerCase().includes(s);
+                                }).map((log, i) => {
                                     const logDate = log.timestamp ? new Date(log.timestamp) : null;
                                     const timeStr = logDate ? logDate.toLocaleTimeString() : (log.time || 'N/A');
                                     const dateStr = logDate ? logDate.toLocaleDateString('en-GB') : (log.date || 'N/A');

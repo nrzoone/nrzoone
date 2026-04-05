@@ -605,6 +605,29 @@ const FactoryPanel = ({
 
   return (
     <div className="space-y-4 pb-24 animate-fade-up px-1 md:px-2 italic text-black font-outfit uppercase">
+      {/* QR Scanner Modal */}
+      {showQR && (
+        <div className="fixed inset-0 z-[1000] bg-black/90 backdrop-blur-3xl flex items-center justify-center p-4">
+             <div className="bg-white rounded-[4rem] p-12 w-full max-w-sm relative">
+                  <button onClick={() => setShowQR(false)} className="absolute top-8 right-8 p-3 bg-slate-100 rounded-full hover:bg-black hover:text-white transition-all">
+                      <X size={24} />
+                  </button>
+                  <h3 className="text-2xl font-black italic mb-8 text-center">{type === 'sewing' ? 'সেলাই' : 'স্টোন'} স্লিপ স্ক্যান</h3>
+                  <div className="rounded-[3rem] overflow-hidden border-4 border-black">
+                      <QRScanner onScan={(data) => {
+                          if (data) {
+                              setLotSearch(data);
+                              handleLotSelect(data); 
+                              setShowQR(false);
+                              showNotify("লট স্ক্যান করা হয়েছে!");
+                          }
+                      }} />
+                  </div>
+                  <p className="text-[10px] font-black text-center mt-8 text-slate-400 italic">লট স্লিপের QR কোডটি সামনে ধরুন</p>
+             </div>
+        </div>
+      )}
+
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
         <div className="flex items-center gap-6">
           <button
@@ -615,10 +638,10 @@ const FactoryPanel = ({
           </button>
           <div>
             <h1 className="section-header">
-              {type === "sewing" ? t('sewing') : t('stone')} <span className="text-slate-500">{t('productionUnit') || "Unit"}</span>
+              {type === "sewing" ? 'সেলাই' : 'স্টোন'} <span className="text-slate-500">ইউনিট প্রোডাকশন</span>
             </h1>
             <p className="text-[11px] font-black text-slate-500 uppercase tracking-[0.4em] mt-2 italic">
-               {t('fullSystemHub') || "Production Division"} {type.toUpperCase()}
+               সিস্টেম সচল V4.2 — {type === 'sewing' ? 'SEWING' : 'STONE'} DIVISION
             </p>
           </div>
         </div>
@@ -629,7 +652,7 @@ const FactoryPanel = ({
               className="px-10 py-5 bg-black text-white rounded-2xl font-black uppercase text-xs tracking-widest shadow-2xl flex items-center gap-3 hover:scale-105 active:scale-95 transition-all italic border-b-[6px] border-zinc-900"
             >
               <Plus size={20} strokeWidth={3} />
-              নতুন কাজ (ISSUE)
+              নতুন কাজ প্রদান (ISSUE)
             </button>
           )}
         </div>
@@ -644,7 +667,7 @@ const FactoryPanel = ({
                       onClick={() => setView(v)}
                       className={`px-10 py-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${view === v ? 'bg-black text-white dark:bg-white dark:text-black shadow-lg italic' : 'text-slate-500 hover:text-black dark:hover:text-white'}`}
                     >
-                      {t(v)}
+                      {v === 'active' ? 'চলমান প্রজেক্ট' : v === 'history' ? 'পুরাতন হিসেব' : 'পেমেন্ট ও লেজার'}
                     </button>
                   ))}
               </div>
@@ -654,7 +677,7 @@ const FactoryPanel = ({
                       <Search size={16} />
                   </div>
                   <input
-                      placeholder={t('searchPlaceholder')}
+                      placeholder="লট, ডিজাইন বা কারিগর দিয়ে খুঁজুন..."
                       className="w-full bg-slate-50 dark:bg-black/20 h-16 rounded-2xl pl-16 pr-8 text-xs font-black uppercase tracking-widest italic outline-none border border-transparent focus:border-black/10 dark:focus:border-white/10 transition-all text-black dark:text-white"
                       value={lotSearch}
                       onChange={(e) => setLotSearch(e.target.value)}
@@ -663,6 +686,7 @@ const FactoryPanel = ({
                       <button 
                         onClick={() => setShowQR(true)}
                         className="w-10 h-10 bg-black text-white rounded-xl flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-lg"
+                        title="Scan QR Code"
                       >
                          <Camera size={16} />
                       </button>

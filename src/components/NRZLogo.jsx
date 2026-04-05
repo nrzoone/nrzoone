@@ -11,7 +11,7 @@ const NRZLogo = ({ size = "md", white = true, customUrl = null }) => {
   };
 
   const s = sizes[size] || sizes.md;
-  const logoPath = customUrl || "/logo_main.jpg";
+  const logoPath = customUrl || "/logo_main.png";
 
   return (
     <div className={`flex flex-col items-center justify-center ${white ? "text-white" : "text-black"}`} style={{ width: s.w }}>

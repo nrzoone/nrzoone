@@ -54,45 +54,50 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
         date: new Date().toISOString().split('T')[0]
     });
 
-    const handleSaveIssue = (shouldPrint) => {
+    const handleSaveIssue = async (shouldPrint) => {
         if (!entryData.worker || !entryData.task || (!entryData.borkaQty && !entryData.hijabQty)) {
             return showNotify('কারিগর, কাজ এবং পরিমাণ আবশ্যক!', 'error');
         }
 
-        const newEntry = {
-            id: Date.now() + Math.random(),
-            date: entryData.date ? new Date(entryData.date).toLocaleDateString('en-GB') : new Date().toLocaleDateString('en-GB'),
-            worker: entryData.worker,
-            task: entryData.task,
-            borkaQty: Number(entryData.borkaQty || 0),
-            hijabQty: Number(entryData.hijabQty || 0),
-            rate: Number(entryData.rate || 0),
-            note: entryData.note,
-            status: 'Pending',
-            receivedDate: null,
-            totalAmount: 0,
-            paidAmount: 0
-        };
+        try {
+            const newEntry = {
+                id: `outside_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+                date: entryData.date ? new Date(entryData.date).toLocaleDateString('en-GB') : new Date().toLocaleDateString('en-GB'),
+                worker: entryData.worker,
+                task: entryData.task,
+                borkaQty: Number(entryData.borkaQty || 0),
+                hijabQty: Number(entryData.hijabQty || 0),
+                rate: Number(entryData.rate || 0),
+                note: entryData.note,
+                status: 'Pending',
+                receivedDate: null,
+                totalAmount: 0,
+                paidAmount: 0
+            };
 
-        setMasterData(prev => ({
-            ...prev,
-            outsideWorkEntries: [newEntry, ...(prev.outsideWorkEntries || [])]
-        }));
+            setMasterData(prev => ({
+                ...prev,
+                outsideWorkEntries: [newEntry, ...(prev.outsideWorkEntries || [])]
+            }));
 
-        syncToSheet({
-            type: "OUTSIDE_ISSUE",
-            worker: newEntry.worker,
-            detail: `${newEntry.task} - B:${newEntry.borkaQty} H:${newEntry.hijabQty}`,
-            amount: 0
-        });
+            await syncToSheet({
+                type: "OUTSIDE_ISSUE",
+                worker: newEntry.worker,
+                detail: `${newEntry.task} - B:${newEntry.borkaQty} H:${newEntry.hijabQty}`,
+                amount: 0
+            }).catch(e => console.warn("Sync deferred:", e));
 
-        if (shouldPrint) {
-            setPrintSlip(newEntry);
+            if (shouldPrint) {
+                setPrintSlip(newEntry);
+            }
+            logAction(user, 'OUTSIDE_ISSUE', `${newEntry.worker} - ${newEntry.task}. Qty: B:${newEntry.borkaQty} H:${newEntry.hijabQty}`);
+            setShowModal(false);
+            setEntryData({ worker: '', task: '', borkaQty: '', hijabQty: '', rate: '', note: '', date: new Date().toISOString().split('T')[0] });
+            showNotify('বাইরের কাজ সফলভাবে ইস্যু হয়েছে!');
+        } catch (error) {
+            console.error("Save error:", error);
+            showNotify("সংরক্ষণ করা সম্ভব হয়নি। পুনরায় চেষ্টা করুন।", "error");
         }
-        logAction(user, 'OUTSIDE_ISSUE', `${newEntry.worker} - ${newEntry.task}. Qty: B:${newEntry.borkaQty} H:${newEntry.hijabQty}`);
-        setShowModal(false);
-        setEntryData({ worker: '', task: '', borkaQty: '', hijabQty: '', rate: '', note: '', date: new Date().toISOString().split('T')[0] });
-        showNotify('বাইরের কাজ সফলভাবে ইস্যু হয়েছে!');
     };
 
     const handleReceive = (item) => {

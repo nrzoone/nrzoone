@@ -64,28 +64,32 @@ const Overview = ({ masterData, stats: propStats, setActivePanel, t }) => {
             value: (masterData.workerDocs || []).length, 
             trend: "+4.2%", 
             icon: Users,
-            color: "emerald"
+            color: "emerald",
+            id: "Settings"
         },
         { 
             label: "Production Load", 
             value: (masterData.productions || []).length + (masterData.pataEntries || []).length, 
             trend: "+12.1%", 
             icon: Activity,
-            color: "blue"
+            color: "blue",
+            id: "Cutting"
         },
         { 
             label: "Financial Yield", 
             value: `৳${((masterData.expenses || []).reduce((acc, e) => acc + Number(e.amount || 0), 0) / 1000).toFixed(1)}k`, 
             trend: "+8.4%", 
             icon: DollarSign,
-            color: "amber"
+            color: "amber",
+            id: "Accounts"
         },
         { 
             label: "Pending Units", 
             value: (masterData.productions || []).filter(p => p.status === 'Pending').length, 
             trend: "-2.1%", 
             icon: Package,
-            color: "rose"
+            color: "rose",
+            id: "Cutting"
         }
     ];    return (
         <div className="space-y-10 animate-fade-up pb-24 px-2">
@@ -94,20 +98,24 @@ const Overview = ({ masterData, stats: propStats, setActivePanel, t }) => {
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10 px-4">
                 <div>
                      <h1 className="section-header !mb-1 uppercase">
-                        NRZONE <span className="text-slate-400">OPERATIONAL</span> HUB
+                        এনআরজোন <span className="text-slate-400">অপারেশনাল</span> হাব
                     </h1>
                     <p className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.3em]">
-                        Neural Dashboard v2.4 // Synchronized Primary Node
+                        নিউরাল ড্যাশবোর্ড v2.4 // সিনক্রোনাইজড প্রাইমারি নোড
                     </p>
                 </div>
                 <div className="flex items-center bg-[var(--bg-secondary)] shadow-[var(--neu-button)] p-1.5 rounded-2xl border border-[var(--border)]">
-                    {["Daily", "Weekly", "Monthly"].map((tf) => (
+                    {[
+                        { id: "Daily", label: "দৈনিক" },
+                        { id: "Weekly", label: "সাপ্তাহিক" },
+                        { id: "Monthly", label: "মাসিক" }
+                    ].map((tf) => (
                         <button 
-                            key={tf}
-                            onClick={() => setTimeframe(tf)}
-                            className={`px-6 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all ${timeframe === tf ? 'bg-black text-white shadow-lg' : 'text-slate-500 hover:text-black'}`}
+                            key={tf.id}
+                            onClick={() => setTimeframe(tf.id)}
+                            className={`px-6 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all ${timeframe === tf.id ? 'bg-black text-white shadow-lg' : 'text-slate-500 hover:text-black'}`}
                         >
-                            {tf}
+                            {tf.label}
                         </button>
                     ))}
                 </div>
@@ -115,9 +123,17 @@ const Overview = ({ masterData, stats: propStats, setActivePanel, t }) => {
 
             {/* KPI Grid: Neural Nodes */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                {kpiData.map((kpi, idx) => (
+                {[
+                    { label: "মোট কর্মী", value: (masterData.workerDocs || []).length, trend: "+4.2%", icon: Users, id: "Settings" },
+                    { label: "উৎপাদন লোড", value: (masterData.productions || []).length + (masterData.pataEntries || []).length, trend: "+12.1%", icon: Activity, id: "Cutting" },
+                    { label: "আর্থিক হিসাব", value: `৳${((masterData.expenses || []).reduce((acc, e) => acc + Number(e.amount || 0), 0) / 1000).toFixed(1)}k`, trend: "+8.4%", icon: DollarSign, id: "Accounts" },
+                    { label: "পেন্ডিং কাজ", value: (masterData.productions || []).filter(p => p.status === 'Pending').length, trend: "-2.1%", icon: Package, id: "Cutting" }
+                ].map((kpi, idx) => (
                     <div key={idx} className="premium-card group hover:shadow-premium transition-all duration-500 !p-8">
-                        <div className="flex justify-between items-start mb-6">
+                        <div 
+                            className="flex justify-between items-start mb-6 cursor-pointer"
+                            onClick={() => setActivePanel(kpi.id)}
+                        >
                             <div className="p-3 bg-[var(--bg-primary)] rounded-2xl shadow-[var(--neu-button)] group-hover:bg-black group-hover:text-white transition-all duration-500">
                                 <kpi.icon size={20} />
                             </div>
@@ -126,7 +142,7 @@ const Overview = ({ masterData, stats: propStats, setActivePanel, t }) => {
                                 {kpi.trend}
                             </div>
                         </div>
-                        <div className="space-y-1">
+                        <div className="space-y-1 cursor-pointer" onClick={() => setActivePanel(kpi.id)}>
                             <p className="text-[10px] font-bold uppercase text-slate-500 tracking-wider font-outfit">{kpi.label}</p>
                             <h3 className="text-3xl font-black italic tracking-tighter text-[var(--text-primary)] leading-none">{kpi.value}</h3>
                         </div>
@@ -141,7 +157,7 @@ const Overview = ({ masterData, stats: propStats, setActivePanel, t }) => {
                     <div className="premium-card !p-8 bg-[var(--bg-secondary)]">
                         <h3 className="text-sm font-bold uppercase mb-8 tracking-widest flex items-center gap-3 text-[var(--text-primary)]">
                             <TrendingUp size={18} />
-                            Production Velocity
+                            উৎপাদন গতি (Velocity)
                         </h3>
                         <div className="h-40 w-full">
                             <ResponsiveContainer width="100%" height="100%">
@@ -158,8 +174,8 @@ const Overview = ({ masterData, stats: propStats, setActivePanel, t }) => {
                         </div>
                         <div className="mt-6 pt-6 border-t border-[var(--border)]">
                             <div className="flex justify-between items-center mb-3">
-                                <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">7-Day Projection</span>
-                                <span className="text-[9px] font-bold text-emerald-600 uppercase">+18.2% Growth</span>
+                                <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">৭-দিনের প্রজেকশন</span>
+                                <span className="text-[9px] font-bold text-emerald-600 uppercase">+১৮.২% উন্নতি</span>
                             </div>
                             <div className="h-1.5 w-full bg-[var(--bg-primary)] rounded-full overflow-hidden shadow-[var(--neu-concave)]">
                                 <div className="h-full bg-black w-[72%] rounded-full"></div>
@@ -170,21 +186,21 @@ const Overview = ({ masterData, stats: propStats, setActivePanel, t }) => {
                     <div className="premium-card !p-8 bg-black text-white relative overflow-hidden group">
                         <div className="relative z-10 space-y-8">
                             <div className="space-y-1">
-                                <p className="text-[9px] font-bold opacity-40 uppercase tracking-[0.3em]">Strategic Metrics</p>
-                                <h4 className="text-xl font-black italic tracking-tighter uppercase leading-tight">Fiscal Stability & <br/> Resource Allocation</h4>
+                                <p className="text-[9px] font-bold opacity-40 uppercase tracking-[0.3em]">অ্যানালিটিক্স মেট্রিক্স</p>
+                                <h4 className="text-xl font-black italic tracking-tighter uppercase leading-tight">স্থায়িত্ব এবং <br/> সম্পদ বরাদ্দ</h4>
                             </div>
                             <div className="space-y-4">
                                 <div className="flex justify-between items-end border-b border-white/5 pb-2">
-                                    <p className="text-[9px] font-bold uppercase tracking-widest opacity-40">System Architecture</p>
+                                    <p className="text-[9px] font-bold uppercase tracking-widest opacity-40">সিস্টেম আর্কিটেকচার</p>
                                     <p className="text-lg font-black italic tracking-tighter">Enterprise V4.5</p>
                                 </div>
                                 <div className="flex justify-between items-end border-b border-white/5 pb-2">
-                                    <p className="text-[9px] font-bold uppercase tracking-widest opacity-40">Security Matrix</p>
-                                    <p className="text-lg font-black italic tracking-tighter">Encrypted</p>
+                                    <p className="text-[9px] font-bold uppercase tracking-widest opacity-40">সিকিউরিটি ম্যাট্রিক্স</p>
+                                    <p className="text-lg font-black italic tracking-tighter">এনক্রিপ্টেড</p>
                                 </div>
                             </div>
                             <button className="w-full py-4 bg-white text-black rounded-2xl font-bold uppercase text-[10px] tracking-widest hover:scale-105 transition-all shadow-xl italic">
-                                DOWNLOAD ANALYTICS
+                                রিপোর্ট ডাউনলোড করুন
                             </button>
                         </div>
                         <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-3xl -mr-10 -mt-10"></div>
@@ -196,21 +212,21 @@ const Overview = ({ masterData, stats: propStats, setActivePanel, t }) => {
                     <div className="p-8 md:p-10 flex justify-between items-center border-b border-[var(--border)]">
                         <div className="flex items-center gap-4">
                             <div className="w-2 h-8 bg-black rounded-full"></div>
-                            <h3 className="text-xl font-black uppercase italic tracking-tighter text-[var(--text-primary)]">Operational Node Activity</h3>
+                            <h3 className="text-xl font-black uppercase italic tracking-tighter text-[var(--text-primary)]">সরাসরি কাজের বিবরণ (Live)</h3>
                         </div>
                         <div className="flex items-center gap-2 px-4 py-1.5 bg-emerald-500/10 rounded-full border border-emerald-500/20">
                             <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></div>
-                            <span className="text-[8px] font-bold uppercase tracking-widest text-emerald-600">Live Feedback</span>
+                            <span className="text-[8px] font-bold uppercase tracking-widest text-emerald-600">লাইভ ফিডব্যাক</span>
                         </div>
                     </div>
                     <div className="flex-1 overflow-x-auto">
                         <table className="w-full text-left border-collapse">
                             <thead>
                                 <tr className="text-[9px] text-slate-500 uppercase tracking-[0.2em] font-bold">
-                                    <th className="px-10 py-6 border-b border-[var(--border)]">Identity</th>
-                                    <th className="px-10 py-6 border-b border-[var(--border)]">Process Hub</th>
-                                    <th className="px-10 py-6 border-b border-[var(--border)] text-center">Load</th>
-                                    <th className="px-10 py-6 border-b border-[var(--border)] text-right">Link</th>
+                                    <th className="px-10 py-6 border-b border-[var(--border)]">লট নম্বর / কারিগর</th>
+                                    <th className="px-10 py-6 border-b border-[var(--border)]">প্রসেস হাব</th>
+                                    <th className="px-10 py-6 border-b border-[var(--border)] text-center">পরিমাণ</th>
+                                    <th className="px-10 py-6 border-b border-[var(--border)] text-right">লিঙ্ক</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-[var(--border)]">
@@ -221,16 +237,16 @@ const Overview = ({ masterData, stats: propStats, setActivePanel, t }) => {
                                                 <div className="w-9 h-9 bg-[var(--bg-primary)] shadow-[var(--neu-button)] text-slate-600 rounded-xl flex items-center justify-center font-bold text-[10px] group-hover:bg-black group-hover:text-white transition-all">
                                                     #{job.lotNo}
                                                 </div>
-                                                <span className="text-xs font-bold text-slate-400 uppercase">/ {job.worker || 'System'}</span>
+                                                <span className="text-xs font-bold text-slate-400 uppercase">/ {job.worker || 'সিস্টেম'}</span>
                                             </div>
                                         </td>
                                         <td className="px-10 py-6">
                                             <p className="text-sm font-bold text-[var(--text-primary)] uppercase">{job.design}</p>
-                                            <p className="text-[8px] text-slate-500 uppercase tracking-widest mt-1 font-bold">{job.activityType} Sector</p>
+                                            <p className="text-[8px] text-slate-500 uppercase tracking-widest mt-1 font-bold">{job.activityType === 'Pata' ? 'পাতা' : job.activityType === 'Sewing' ? 'সেলাই' : 'স্টোন'} বিভাগ</p>
                                         </td>
                                         <td className="px-10 py-6 text-center">
                                             <span className="text-sm font-black italic">{job.issueBorka || job.pataQty || 0}</span>
-                                            <span className="text-[8px] text-slate-400 ml-2 font-bold uppercase">Units</span>
+                                            <span className="text-[8px] text-slate-400 ml-2 font-bold uppercase">পিস (Units)</span>
                                         </td>
                                         <td className="px-10 py-6 text-right">
                                             <button 

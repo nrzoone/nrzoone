@@ -1,5 +1,5 @@
-// DEPLOYMENT TRIGGER: 2026-02-26 05:13
-import React, { useState } from "react";
+// DEPLOYMENT TRIGGER: 2026-04-05 11:39
+import React, { useState, useMemo } from "react";
 import {
   Plus,
   Trash2,
@@ -13,16 +13,21 @@ import {
   Minus,
   Printer,
   ArrowLeft,
+  LayoutGrid,
+  Activity,
+  Package,
+  Layers,
+  ChevronRight,
+  TrendingDown,
+  Clock,
+  Check,
+  Calendar
 } from "lucide-react";
-import { QRCode, ConfigProvider } from 'antd';
+import { motion, AnimatePresence } from "framer-motion";
 import { getStock, getSewingStock } from "../../utils/calculations";
 import { syncToSheet } from "../../utils/syncUtils";
 import NRZLogo from "../NRZLogo";
 import UniversalSlip from "../UniversalSlip";
-
-const QR_Slip_Theme = {
-  token: { fontFamily: 'Inter, sans-serif', borderRadius: 4, fontSize: 12, colorTextBase: '#000000' },
-};
 
 const CuttingPanel = ({
   masterData,
@@ -32,19 +37,28 @@ const CuttingPanel = ({
   setActivePanel,
   logAction,
 }) => {
-  const role = user?.role?.toLowerCase();
-  const isAdmin = role === "admin";
-  const isManager = role === "manager";
-  const isWorker = !isAdmin && !isManager;
+  const [activeTab, setActiveTab] = useState("Cutting Queue");
   const [showModal, setShowModal] = useState(false);
-  const [checkMode, setCheckMode] = useState(null);
-  const [checkSelection, setCheckSelection] = useState({
-    design: "",
-    color: "",
-    size: "",
-  });
+  const [searchTerm, setSearchTerm] = useState("");
 
-  // New State for Modal Form
+  // Derived Stats
+  const stats = useMemo(() => {
+    const totalIssued = (masterData.cuttingStock || []).reduce((sum, item) => sum + (item.borka || 0) + (item.hijab || 0), 0);
+    const receivedPieces = (masterData.productions || [])
+      .filter(p => p.status === 'Received')
+      .reduce((sum, item) => sum + (item.receivedBorka || 0) + (item.receivedHijab || 0), 0);
+    const inProduction = totalIssued - receivedPieces;
+    const pendingCount = (masterData.productions || []).filter(p => !p.receivedBorka && !p.receivedHijab).length;
+    
+    return {
+      totalIssued,
+      inProduction: Math.max(0, inProduction),
+      received: receivedPieces,
+      pending: pendingCount
+    };
+  }, [masterData]);
+
+  // Form State for New Cutting Entry
   const [entryData, setEntryData] = useState({
     design: "",
     color: "",
@@ -53,34 +67,10 @@ const CuttingPanel = ({
     date: new Date().toISOString().split("T")[0],
     sizes: [{ size: "", borka: "", hijab: "" }],
   });
+
   const [printSlip, setPrintSlip] = useState(null);
 
-  // Yield Optimizer State
-  const [optimizer, setOptimizer] = useState({ rollWidth: 60, pieceWidth: 22 });
-  const optimization = React.useMemo(() => {
-    const r = Number(optimizer.rollWidth) || 60;
-    const p = Number(optimizer.pieceWidth) || 22;
-    const count = Math.floor(r / p);
-    const waste = r > 0 ? Math.round(((r - (count * p)) / r) * 100) : 0;
-    return { 
-      count, 
-      waste, 
-      rating: waste < 10 ? 'ELITE' : waste < 20 ? 'OPTIMAL' : 'REDUCIBLE' 
-    };
-  }, [optimizer]);
-
-  const uniqueLots = React.useMemo(() => {
-    const lots = [];
-    (masterData.cuttingStock || []).forEach((c) => {
-      const existing = lots.find((l) => l.lotNo === c.lotNo);
-      if (!existing) {
-        lots.push({ lotNo: c.lotNo, design: c.design, color: c.color });
-      }
-    });
-    return lots;
-  }, [masterData.cuttingStock]);
-
-  const nextLotNo = React.useMemo(() => {
+  const nextLotNo = useMemo(() => {
     const numbers = (masterData.cuttingStock || [])
       .map((l) => parseInt(l.lotNo))
       .filter((n) => !isNaN(n));
@@ -93,86 +83,9 @@ const CuttingPanel = ({
     }
   }, [nextLotNo]);
 
-  const checkStockResult = (() => {
-    if (
-      !checkSelection.design ||
-      !checkSelection.color ||
-      !checkSelection.size ||
-      !checkMode
-    )
-      return { borka: 0, hijab: 0 };
-    if (checkMode === "swing")
-      return getStock(
-        masterData,
-        checkSelection.design,
-        checkSelection.color,
-        checkSelection.size,
-      );
-    if (checkMode === "stone")
-      return getSewingStock(
-        masterData,
-        checkSelection.design,
-        checkSelection.color,
-        checkSelection.size,
-      );
-    return { borka: 0, hijab: 0 };
-  })();
-
-  const currentStock =
-    (masterData.cuttingStock || []).reduce(
-      (a, b) => a + Number(b.borka || 0) + Number(b.hijab || 0),
-      0,
-    ) -
-    (masterData.productions || [])
-      .filter((p) => p.type === "sewing")
-      .reduce(
-        (a, b) => a + Number(b.issueBorka || 0) + Number(b.issueHijab || 0),
-        0,
-      );
-
-  const handleAddSizeRow = () => {
-    setEntryData((prev) => ({
-      ...prev,
-      sizes: [...prev.sizes, { size: "", borka: "", hijab: "" }],
-    }));
-  };
-
-  const handleRemoveSizeRow = (index) => {
-    if (entryData.sizes.length === 1) return;
-    setEntryData((prev) => ({
-      ...prev,
-      sizes: prev.sizes.filter((_, i) => i !== index),
-    }));
-  };
-
-  const handleSizeChange = (index, field, value) => {
-    const newSizes = [...entryData.sizes];
-    newSizes[index][field] = value;
-    setEntryData((prev) => ({ ...prev, sizes: newSizes }));
-  };
-
   const handleAddCutting = (shouldPrint) => {
-    const finalDesign = entryData.design || "N/A";
-    const finalColor = entryData.color || "N/A";
-    const finalCutter = entryData.cutterName || "N/A";
-
-    if (user?.role?.toLowerCase() === "manager") {
-      if (
-        !entryData.design ||
-        !entryData.color ||
-        !entryData.cutterName ||
-        !entryData.lotNo
-      ) {
-        showNotify(
-          "ম্যানেজার হিসেবে ডিজাইন, কালার, লট নম্বর এবং মাস্টারের নাম দেওয়া বাধ্যতামূলক!",
-          "error",
-        );
-        return;
-      }
-    }
-
     const validSizes = entryData.sizes.filter(
-      (s) => s.size && (Number(s.borka || 0) > 0 || Number(s.hijab || 0) > 0),
+      (s) => s.size && (Number(s.borka || 0) > 0 || Number(s.hijab || 0) > 0)
     );
 
     if (validSizes.length === 0) {
@@ -181,21 +94,17 @@ const CuttingPanel = ({
     }
 
     const newEntries = validSizes.map((s, idx) => ({
-      id: Date.now() + idx + Math.random(),
-      date: entryData.date
-        ? new Date(entryData.date).toLocaleDateString("en-GB")
-        : new Date().toLocaleDateString("en-GB"),
-      time: new Date().toLocaleTimeString("en-GB", {
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
-      design: finalDesign,
-      color: finalColor,
+      id: `cut_${Date.now()}_${idx}_${Math.random()}`,
+      date: new Date(entryData.date).toLocaleDateString("en-GB"),
+      design: entryData.design || "N/A",
+      color: entryData.color || "N/A",
       size: s.size,
-      cutterName: finalCutter,
+      cutterName: entryData.cutterName || "N/A",
       lotNo: entryData.lotNo || "N/A",
       borka: Number(s.borka || 0),
       hijab: Number(s.hijab || 0),
+      status: "Ready",
+      timestamp: new Date().toISOString()
     }));
 
     setMasterData((prev) => ({
@@ -203,16 +112,12 @@ const CuttingPanel = ({
       cuttingStock: [...newEntries, ...(prev.cuttingStock || [])],
     }));
 
-    newEntries.forEach((entry) => {
-      syncToSheet({
-        type: "CUTTING_ENTRY",
-        worker: entry.cutterName,
-        detail: `${entry.design}(${entry.color}) - ${entry.size} - B:${entry.borka} H:${entry.hijab}`,
-        amount: 0,
-      });
-    });
-
+    logAction(user, 'CUTTING_ENTRY', `Lot #${entryData.lotNo} added. Total items: ${newEntries.length}`);
+    showNotify("কাটিং রেকর্ড সফলভাবে যোগ করা হয়েছে!");
+    
+    if (shouldPrint) setPrintSlip(newEntries[0]);
     setShowModal(false);
+    
     setEntryData({
       design: "",
       color: "",
@@ -221,610 +126,453 @@ const CuttingPanel = ({
       date: new Date().toISOString().split("T")[0],
       sizes: [{ size: "", borka: "", hijab: "" }],
     });
-    showNotify(`${finalDesign} (${finalColor}) সফলভাবে স্টক এ যোগ হয়েছে!`);
-    
-    logAction(user, 'CUTTING_ENTRY', `${finalDesign} (${finalColor}) Lot #${entryData.lotNo} added. Total items: ${newEntries.length}`);
-
-    if (shouldPrint && newEntries.length > 0) {
-      setPrintSlip(newEntries[0]);
-    }
   };
 
   const handleDelete = (id) => {
-    if (!confirm("আপনি কি নিশ্চিত? এটি মুছে ফেলা হবে।")) return;
-    setMasterData((prev) => ({
+    if (!window.confirm("Are you sure? This node will be purged.")) return;
+    setMasterData(prev => ({
       ...prev,
-      cuttingStock: (prev.cuttingStock || []).filter((item) => item.id !== id),
+      cuttingStock: (prev.cuttingStock || []).filter(item => item.id !== id)
     }));
-    logAction(user, 'CUTTING_DELETE', `Deleted cutting record ID: ${id}`);
+    logAction(user, 'CUTTING_DELETE', `Deleted node ID: ${id}`);
     showNotify("কাটিং রেকর্ড মুছে ফেলা হয়েছে!", "info");
   };
 
   if (printSlip) {
     return (
-      <div className="min-h-screen bg-white text-black italic font-outfit py-10 print:py-0 print:bg-white overflow-hidden">
-        <style>{`
-          @media print { 
-              .no-print { display: none !important; } 
-              body { background: white !important; margin: 0; padding: 0; }
-              @page { size: A4 portrait; margin: 0; }
-          }
-        `}</style>
-        <div className="no-print flex justify-between items-center mb-6 w-[210mm] mx-auto bg-white p-6 rounded-[2.5rem] shadow-xl border-4 border-black font-black">
-          <button onClick={() => setPrintSlip(null)} className="bg-slate-50 text-slate-600 px-10 py-5 uppercase text-xs rounded-full hover:bg-black hover:text-white transition-all">Cancel</button>
-          <button onClick={() => window.print()} className="bg-black text-white px-10 py-5 rounded-full uppercase text-xs shadow-2xl flex items-center gap-3 active:scale-95 transition-all">
-            <Printer size={18} /> Print Job
-          </button>
+      <div className="min-h-screen bg-white p-10 font-outfit italic animate-fade-up">
+        <div className="no-print flex justify-between items-center mb-10 max-w-5xl mx-auto">
+            <button onClick={() => setPrintSlip(null)} className="neu-button px-10 py-5">Cancel</button>
+            <button onClick={() => window.print()} className="action-btn-primary px-16">
+                <Printer size={20} /> PRINT SLIP (PDF)
+            </button>
         </div>
-        
-        <div className="w-[210mm] min-h-[297mm] mx-auto bg-white border border-gray-100 overflow-hidden relative">
-          <UniversalSlip data={printSlip} type="CUTTING" copyTitle="MASTER COPY" logoUrl={masterData.settings?.logo} />
-          <div className="h-4 w-full border-t-2 border-dashed border-slate-300"></div>
-          <UniversalSlip data={printSlip} type="CUTTING" copyTitle="RECIPIENT COPY" logoUrl={masterData.settings?.logo} />
+        <div className="w-[210mm] mx-auto bg-white border border-slate-100 shadow-2xl p-1 relative">
+            <UniversalSlip data={printSlip} type="CUTTING" copyTitle="MASTER ARCHIVE" />
+            <div className="h-4 border-t-2 border-dashed border-slate-300 my-10"></div>
+            <UniversalSlip data={printSlip} type="CUTTING" copyTitle="FACTORY COPY" />
         </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-4 pb-24 animate-fade-up px-1 md:px-2 italic text-black font-outfit uppercase">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
-        <div className="flex items-center gap-6">
-          <button
-            onClick={() => setActivePanel("Overview")}
-            className="w-12 h-12 flex items-center justify-center bg-white border border-slate-200 rounded-xl hover:bg-black hover:text-white transition-all shadow-sm"
+    <div className="min-h-screen bg-[var(--bg-primary)] font-outfit italic uppercase text-[#0f172a] pb-24">
+      {/* Header Section */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-10 mb-16 animate-fade-up">
+        <div className="space-y-4">
+          <h1 className="section-header !mb-0 text-7xl md:text-8xl">Cutting <span className="text-slate-400">Panel</span></h1>
+          <div className="flex items-center gap-4">
+            <div className="h-1 w-12 bg-black rounded-full"></div>
+            <p className="text-[11px] font-black tracking-[0.6em] text-slate-500 uppercase">Production Protocol Stable V4.0.2</p>
+          </div>
+        </div>
+        <div className="flex gap-6">
+          <button 
+             onClick={() => setShowModal(true)}
+             className="action-btn-primary !py-7 !px-12 flex items-center gap-4 shadow-black/10"
           >
-            <ArrowLeft size={20} />
+            <Plus size={24} strokeWidth={3} /> INITIALIZE CUTTING
           </button>
-          <div>
-            <h1 className="section-header">
-                Cutting <span className="text-slate-500">Unit</span>
-            </h1>
-            <p className="text-[11px] font-black text-slate-500 uppercase tracking-[0.4em] mt-2 italic">
-               Primary Fabric Injection
-            </p>
-          </div>
         </div>
-        <div className="flex items-center gap-6 w-full md:w-auto">
-          <div className="bg-white dark:bg-zinc-900 px-6 py-3 rounded-2xl border border-slate-100 dark:border-zinc-800 shadow-sm hidden md:block">
-            <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1 italic">Lot Intelligence</p>
-            <p className="text-2xl font-black italic text-black dark:text-white leading-none uppercase">
-                {uniqueLots.length} <span className="text-[10px] text-slate-500 ml-1">Lots</span>
-            </p>
+      </div>
+
+      {/* Summary Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16 animate-fade-up">
+        {[
+          { label: "Total Issued", value: stats.totalIssued, icon: Package, color: "text-black" },
+          { label: "In-Production", value: stats.inProduction, icon: Activity, color: "text-blue-600" },
+          { label: "Total Received", value: stats.received, icon: CheckCircle, color: "text-emerald-600" },
+          { label: "Pending Items", value: stats.pending, icon: Clock, color: stats.pending > 0 ? "text-rose-600" : "text-slate-400" },
+        ].map((s, i) => (
+          <div key={i} className="premium-card group hover:scale-[1.02] transition-all cursor-default border-none shadow-[var(--neu-convex)]">
+            <div className="flex justify-between items-start mb-8">
+              <div className="p-5 bg-slate-50 dark:bg-black/20 rounded-3xl group-hover:bg-black group-hover:text-white transition-all shadow-inner">
+                <s.icon size={28} strokeWidth={2.5} />
+              </div>
+              <div className="text-right">
+                <p className="text-[10px] font-black text-slate-500 tracking-[0.2em] mb-2">{s.label}</p>
+                <h2 className={`text-6xl font-black italic tracking-tighter leading-none ${s.color}`}>{s.value.toLocaleString()}</h2>
+              </div>
+            </div>
+            <div className="flex items-center gap-4 text-slate-400">
+               <TrendingDown size={14} className="opacity-20" />
+               <p className="text-[8px] font-bold tracking-widest">Real-Time Core Metrics</p>
+            </div>
           </div>
-          {(isAdmin || isManager) && (
-            <button
-              onClick={() => setShowModal(true)}
-              className="px-10 py-5 bg-black text-white rounded-2xl font-black uppercase text-xs tracking-widest shadow-2xl flex items-center gap-3 hover:scale-105 active:scale-95 transition-all italic border-b-[6px] border-zinc-900"
+        ))}
+      </div>
+
+      {/* Navigation Tabs */}
+      <div className="pill-nav mb-16 p-4 animate-fade-up bg-white/50 backdrop-blur-3xl border border-white/20">
+        {["Design Registration", "Cutting Queue", "Production Status"].map(tab => (
+          <button
+            key={tab}
+            onClick={() => setActiveTab(tab)}
+            className={`pill-tab !px-14 !py-6 ${activeTab === tab ? 'pill-tab-active shadow-2xl scale-105' : 'pill-tab-inactive'}`}
+          >
+            {tab}
+          </button>
+        ))}
+      </div>
+
+      {/* Tab Content */}
+      <div className="animate-fade-up">
+        {activeTab === "Cutting Queue" && (
+          <div className="premium-card !p-12 !rounded-[4rem]">
+            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-10 mb-16">
+              <div className="space-y-4">
+                <h3 className="text-4xl font-black italic tracking-tighter uppercase">Cutting <span className="text-slate-400">Queue Flow</span></h3>
+                <p className="text-[10px] font-bold tracking-[0.5em] text-slate-400">Active Material Pipeline</p>
+              </div>
+              <div className="relative w-full lg:w-[32rem] group">
+                <div className="absolute inset-y-0 left-8 flex items-center pointer-events-none text-slate-400 group-focus-within:text-black transition-colors">
+                  <Search size={22} />
+                </div>
+                <input 
+                  type="text" 
+                  placeholder="Scan Lot or Design Sequence..." 
+                  className="premium-input !pl-20 !py-8 !rounded-[2.5rem] !text-xl"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+            </div>
+
+                            <div className="overflow-x-auto no-scrollbar">
+                              <table className="w-full text-left border-separate border-spacing-y-6">
+                                <thead>
+                                  <tr className="text-[11px] font-black text-slate-500 tracking-[0.4em] uppercase">
+                                    <th className="px-10 py-4">সিরিয়াল</th>
+                                    <th className="px-10 py-4">লট নম্বর</th>
+                                    <th className="px-10 py-4">ডিজাইন</th>
+                                    <th className="px-10 py-4">রঙ</th>
+                                    <th className="px-10 py-4">পরিমাণ (QTY)</th>
+                                    <th className="px-10 py-4 text-center">অ্যাকশন</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {(masterData.cuttingStock || [])
+                                    .filter(item => 
+                                      item.lotNo?.toString().includes(searchTerm) || 
+                                      item.design?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                                      item.color?.toLowerCase().includes(searchTerm.toLowerCase())
+                                    )
+                                    .map((item, index) => (
+                                    <tr key={item.id} className="group hover:scale-[1.005] transition-all">
+                                      <td className="px-10 py-10 bg-slate-50/50 rounded-l-[3rem] font-black text-2xl text-slate-300">
+                                        {(index + 1).toString().padStart(2, '0')}
+                                      </td>
+                                      <td className="px-10 py-10 bg-slate-50/50 font-black italic">
+                                        <span className="badge-standard !px-6 !py-3 !text-lg !rounded-2xl shadow-sm">#{item.lotNo}</span>
+                                      </td>
+                                      <td className="px-10 py-10 bg-slate-50/50">
+                                        <h4 className="text-3xl font-black italic leading-none">{item.design}</h4>
+                                        <p className="text-[9px] font-bold text-slate-400 tracking-widest mt-2">ডিজাইন মডেল ভেক্টর</p>
+                                      </td>
+                                      <td className="px-10 py-10 bg-slate-50/50 font-black text-xl text-slate-500 opacity-80">{item.color}</td>
+                                      <td className="px-10 py-10 bg-slate-50/50">
+                                        <div className="flex gap-10">
+                                          <div className="text-center">
+                                            <p className="text-[10px] font-black text-slate-400 mb-2">বোরকা</p>
+                                            <p className="font-black text-4xl leading-none italic">{item.borka}</p>
+                                          </div>
+                                          <div className="w-0.5 h-12 bg-slate-200 self-center"></div>
+                                          <div className="text-center">
+                                            <p className="text-[10px] font-black text-slate-400 mb-2">হিজাব</p>
+                                            <p className="font-black text-4xl leading-none italic text-slate-400">{item.hijab}</p>
+                                          </div>
+                                        </div>
+                                      </td>
+                                      <td className="px-10 py-10 bg-slate-50/50 rounded-r-[3rem] text-center">
+                                         <div className="flex items-center justify-center gap-6">
+                                            <button 
+                                              onClick={() => setActivePanel('Swing')}
+                                              className="px-10 py-4 bg-black text-white rounded-2xl text-[10px] font-black tracking-[0.2em] hover:bg-emerald-600 transition-all shadow-xl shadow-black/5 active:scale-95"
+                                            >কাজে পাঠান</button>
+                                            <button 
+                                              onClick={() => setPrintSlip(item)}
+                                              className="px-10 py-4 bg-white text-black border border-black/10 rounded-2xl text-[10px] font-black tracking-[0.2em] hover:bg-black hover:text-white transition-all shadow-sm active:scale-95"
+                                            >স্লিপ প্রিন্ট</button>
+                                            <button 
+                                               onClick={() => handleDelete(item.id)}
+                                               className="p-4 bg-white text-rose-500 rounded-2xl hover:bg-rose-500 hover:text-white transition-all shadow-sm active:scale-90"
+                                            >
+                                              <Trash2 size={20} />
+                                            </button>
+                                         </div>
+                                      </td>
+                                    </tr>
+                                  ))}
+                                  {(masterData.cuttingStock || []).length === 0 && (
+                                    <tr>
+                                      <td colSpan="6" className="py-32 text-center text-slate-200 font-black uppercase tracking-[0.8em] italic text-xl">ম্যাটেরিয়াল কিউ খালি</td>
+                                    </tr>
+                                  )}
+                                </tbody>
+                              </table>
+                            </div>
+          </div>
+        )}
+
+        {/* Tab 2 Content */}
+        {activeTab === "Design Registration" && (
+           <div className="premium-card flex flex-col items-center justify-center py-48 !rounded-[5rem] space-y-12">
+              <div className="p-12 bg-slate-50 rounded-[3rem] animate-pulse">
+                <Box size={80} className="text-slate-300" strokeWidth={1} />
+              </div>
+              <div className="text-center space-y-4">
+                <h2 className="text-5xl font-black italic tracking-tighter uppercase">Ready to <span className="text-slate-400">Initialize</span></h2>
+                <p className="text-[11px] font-black tracking-[0.6em] text-slate-400 max-w-sm leading-relaxed">
+                  Design Management Hub is operational. Select parameters to begin material injection.
+                </p>
+              </div>
+              <button 
+                onClick={() => setShowModal(true)}
+                className="action-btn-primary !py-8 !px-20 text-lg"
+              >
+                Launch Registration Terminal
+              </button>
+           </div>
+        )}
+
+        {/* Tab 3 Content */}
+        {activeTab === "Production Status" && (
+           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+              <div className="lg:col-span-2 premium-card !p-12 space-y-12">
+                <div className="flex justify-between items-end">
+                   <div>
+                      <h3 className="text-4xl font-black italic tracking-tighter uppercase mb-2">Yield <span className="text-slate-400">Optimizer V2</span></h3>
+                      <p className="text-[10px] font-black tracking-[0.4em] text-slate-400">Advanced Pattern Utilization Analytics</p>
+                   </div>
+                   <TrendingDown className="text-emerald-500 opacity-20" size={64} />
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                   {[
+                     { label: "Global Utilization", value: "96.4%", sub: "Above Standard", icon: Layers, color: "text-emerald-500" },
+                     { label: "Fabric Waste Factor", value: "3.6%", sub: "Minimal Loss", icon: Scissors, color: "text-black" },
+                     { label: "Production Velocity", value: "142 U/H", sub: "Operational Peak", icon: Activity, color: "text-blue-500" },
+                     { label: "Queue Latency", value: "0.0s", sub: "Instant Process", icon: Clock, color: "text-rose-500" }
+                   ].map((a, i) => (
+                     <div key={i} className="p-8 bg-slate-50/50 rounded-[3rem] border border-black/5 group hover:bg-white hover:shadow-2xl transition-all duration-500">
+                        <div className="flex justify-between items-start mb-6">
+                           <div className="p-4 bg-white rounded-2xl shadow-sm text-slate-400 group-hover:bg-black group-hover:text-white transition-all">
+                              <a.icon size={20} />
+                           </div>
+                           <span className="text-[9px] font-black uppercase tracking-widest text-slate-400 opacity-50">Node 0{i+1}</span>
+                        </div>
+                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">{a.label}</p>
+                        <h4 className={`text-5xl font-black italic mb-3 ${a.color}`}>{a.value}</h4>
+                        <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-slate-300">{a.sub}</p>
+                     </div>
+                   ))}
+                </div>
+              </div>
+
+              <div className="premium-card !bg-black !text-white !p-12 flex flex-col justify-between items-center text-center group">
+                  <div className="relative">
+                    <div className="w-48 h-48 rounded-full border-[10px] border-white/5 border-t-white animate-spin"></div>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                       <Activity size={40} className="animate-pulse" />
+                    </div>
+                  </div>
+                  <div className="space-y-6">
+                    <div className="space-y-2">
+                       <h4 className="text-4xl font-black italic tracking-tighter uppercase">Live Matrix</h4>
+                       <p className="text-[10px] font-black text-white/30 uppercase tracking-[0.5em] leading-relaxed">
+                         Synchronizing with Factory Ground Nodes...
+                       </p>
+                    </div>
+                    <div className="flex justify-center gap-2">
+                       {[1,2,3].map(i => <div key={i} className="w-1.5 h-1.5 bg-white/20 rounded-full animate-bounce" style={{ animationDelay: `${i*0.2}s` }}></div>)}
+                    </div>
+                  </div>
+                  <div className="w-full pt-12 border-t border-white/10 flex justify-between items-center font-black italic">
+                     <span className="text-[10px] tracking-widest opacity-40">AUTO-SYNC: ON</span>
+                     <span className="text-emerald-500 text-[10px] tracking-widest">ENCRYPTED</span>
+                  </div>
+              </div>
+           </div>
+        )}
+      </div>
+
+      {/* Entry Modal */}
+      <AnimatePresence>
+        {showModal && (
+          <motion.div 
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[1000] bg-black/70 backdrop-blur-3xl flex items-center justify-center p-4"
+          >
+            <motion.div 
+              initial={{ scale: 0.9, y: 30 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.9, y: 30 }}
+              className="w-full max-w-6xl bg-white rounded-[4rem] shadow-[0_100px_150px_-50px_rgba(0,0,0,0.5)] p-16 relative overflow-hidden font-outfit uppercase italic"
             >
-              <Plus size={20} strokeWidth={3} />
-              নতুন কাটিং
-            </button>
-          )}
-        </div>
-      </div>
+              <button 
+                onClick={() => setShowModal(false)}
+                className="absolute top-12 right-12 p-5 hover:bg-slate-50 rounded-full transition-all text-slate-300 hover:text-black"
+              >
+                <X size={32} />
+              </button>
 
-      {/* Unified Floating Filter Bar */}
-      <div className="floating-header-group mb-12 p-2 dark:bg-zinc-900 border-none shadow-2xl">
-          <div className="flex flex-col lg:flex-row items-center gap-4 w-full">
-              <div className="flex items-center gap-1 bg-slate-100 dark:bg-black/50 p-1.5 rounded-2xl w-full lg:w-auto">
-                  <button className="px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest bg-black text-white dark:bg-white dark:text-black shadow-lg">চলমান</button>
-              </div>
-              
-              <div className="flex-1 relative w-full group">
-                  <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none text-slate-500 group-focus-within:text-black dark:group-focus-within:text-white transition-colors">
-                      <Search size={16} />
+              <div className="space-y-16">
+                <div className="text-center space-y-6">
+                  <div className="mx-auto w-24 h-24 bg-black text-white rounded-[2.5rem] flex items-center justify-center shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)] rotate-6">
+                    <Scissors size={48} strokeWidth={2} />
                   </div>
-                  <input
-                      placeholder="সার্চ লট বা ডিজাইন নম্বর..."
-                      className="w-full bg-slate-50 dark:bg-black/20 h-14 rounded-2xl pl-16 pr-8 text-xs font-black uppercase tracking-widest italic outline-none border border-transparent focus:border-black/10 dark:focus:border-white/10 transition-all text-black dark:text-white"
-                  />
-              </div>
-          </div>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-        <div className="lg:col-span-2 space-y-10">
-          <div className="bg-white rounded-3xl p-5 md:p-6 border-2 border-slate-50 shadow-2xl relative overflow-hidden group">
-            <div className="relative z-10">
-              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
-                <div>
-                  <h3 className="text-lg md:text-3xl font-black uppercase tracking-tighter italic flex items-center gap-4 text-black">
-                    <div className="p-3 bg-slate-50 rounded-2xl border border-slate-100 shadow-sm">
-                      <Search
-                        size={24}
-                        strokeWidth={3}
-                        className="text-black"
-                      />
-                    </div>
-                    <span>Stock Matrix Probe</span>
-                  </h3>
-                  <p className="text-[8px] md:text-[10px] text-slate-500 font-black uppercase tracking-[0.2em] mt-2 italic">
-                    REAL-TIME INVENTORY ANALYTICS
-                  </p>
-                </div>
-                <div className="flex p-2 bg-slate-50 rounded-lg border border-slate-100 shadow-inner">
-                  <button
-                    onClick={() => setCheckMode("swing")}
-                    className={`px-8 md:px-12 py-3 rounded-xl text-[9px] md:text-[11px] font-black uppercase tracking-widest transition-all ${checkMode === "swing" ? "bg-black text-white shadow-xl translate-y-[-2px]" : "text-slate-500 hover:text-black"}`}
-                  >
-                    Sewing
-                  </button>
-                  <button
-                    onClick={() => setCheckMode("stone")}
-                    className={`px-8 md:px-12 py-3 rounded-xl text-[9px] md:text-[11px] font-black uppercase tracking-widest transition-all ${checkMode === "stone" ? "bg-black text-white shadow-xl translate-y-[-2px]" : "text-slate-500 hover:text-black"}`}
-                  >
-                    Stone
-                  </button>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-                <select
-                  className="form-input text-sm md:text-base font-black uppercase py-3 md:py-4 bg-slate-50 border-slate-100 text-black rounded-xl"
-                  onChange={(e) =>
-                    setCheckSelection((prev) => ({
-                      ...prev,
-                      design: e.target.value,
-                    }))
-                  }
-                  value={checkSelection.design}
-                >
-                  <option value="">DESIGN</option>
-                  {(masterData.designs || []).map((d) => (
-                    <option key={d.name} value={d.name}>
-                      {d.name}
-                    </option>
-                  ))}
-                </select>
-                <select
-                  className="form-input text-sm md:text-base font-black uppercase py-3 md:py-4 bg-slate-50 border-slate-100 text-black rounded-xl"
-                  onChange={(e) =>
-                    setCheckSelection((prev) => ({
-                      ...prev,
-                      color: e.target.value,
-                    }))
-                  }
-                  value={checkSelection.color}
-                >
-                  <option value="">COLOR</option>
-                  {(masterData.colors || []).map((c) => (
-                    <option key={c} value={c}>
-                      {c}
-                    </option>
-                  ))}
-                </select>
-                <select
-                  className="form-input text-sm md:text-base font-black uppercase py-3 md:py-4 bg-slate-50 border-slate-100 text-black rounded-xl"
-                  onChange={(e) =>
-                    setCheckSelection((prev) => ({
-                      ...prev,
-                      size: e.target.value,
-                    }))
-                  }
-                  value={checkSelection.size}
-                >
-                  <option value="">SIZE</option>
-                  {(masterData.sizes || []).map((s) => (
-                    <option key={s} value={s}>
-                      {s}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="bg-slate-50 rounded-xl p-5 md:p-6 border border-slate-100 italic relative overflow-hidden shadow-inner">
-                {checkMode ? (
-                  <div className="w-full animate-fade-up">
-                    {checkSelection.design &&
-                    checkSelection.color &&
-                    !checkSelection.size ? (
-                      <div className="space-y-6">
-                        <div className="flex justify-between items-center px-8 mb-4 border-b border-slate-100 pb-4">
-                          <p className="text-xs font-black text-slate-600 uppercase tracking-[0.4em]">
-                            Size Breakdown
-                          </p>
-                          <p className="text-xs font-black text-slate-600 uppercase tracking-[0.4em]">
-                            Borka / Hijab
-                          </p>
-                        </div>
-                        <div className="grid grid-cols-1 gap-4 max-h-[300px] overflow-y-auto pr-4">
-                          {(masterData.sizes || []).map((s) => {
-                            const res =
-                              checkMode === "swing"
-                                ? getStock(
-                                    masterData,
-                                    checkSelection.design,
-                                    checkSelection.color,
-                                    s,
-                                  )
-                                : getSewingStock(
-                                    masterData,
-                                    checkSelection.design,
-                                    checkSelection.color,
-                                    s,
-                                  );
-
-                            if (res.borka === 0 && res.hijab === 0) return null;
-
-                            return (
-                              <div
-                                key={s}
-                                className="flex justify-between items-center bg-white p-6 rounded-3xl border border-slate-100 shadow-sm"
-                              >
-                                <span className="text-2xl font-black italic text-black">
-                                  {s}
-                                </span>
-                                <div className="flex gap-8">
-                                  <div className="text-right">
-                                    <span className="text-xs text-slate-600 block uppercase font-bold">
-                                      Borka
-                                    </span>
-                                    <span className="text-2xl font-black text-black">
-                                      {res.borka}
-                                    </span>
-                                  </div>
-                                  <div className="text-right">
-                                    <span className="text-xs text-slate-600 block uppercase font-bold">
-                                      Hijab
-                                    </span>
-                                    <span className="text-2xl font-black text-black">
-                                      {res.hijab}
-                                    </span>
-                                  </div>
-                                </div>
-                              </div>
-                            );
-                          })}
-                          {!(masterData.sizes || []).some((s) => {
-                            const res =
-                              checkMode === "swing"
-                                ? getStock(
-                                    masterData,
-                                    checkSelection.design,
-                                    checkSelection.color,
-                                    s,
-                                  )
-                                : getSewingStock(
-                                    masterData,
-                                    checkSelection.design,
-                                    checkSelection.color,
-                                    s,
-                                  );
-                            return res.borka > 0 || res.hijab > 0;
-                          }) && (
-                            <p className="text-center py-10 text-slate-500 font-black uppercase tracking-widest text-xs">
-                              No Stock Available
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                    ) : checkSelection.size ? (
-                      <div className="flex w-full items-center justify-around">
-                        <div className="flex flex-col items-center">
-                          <p className="text-[9px] md:text-[10px] font-black text-slate-600 uppercase tracking-[0.4em] mb-4">
-                            BORKA
-                          </p>
-                          <p className="text-3xl md:text-7xl font-black italic tracking-tighter leading-none text-black">
-                            {checkStockResult.borka}
-                          </p>
-                        </div>
-                        <div className="w-[2px] h-20 bg-slate-200 rounded-full"></div>
-                        <div className="flex flex-col items-center">
-                          <p className="text-[9px] md:text-[10px] font-black text-slate-600 uppercase tracking-[0.4em] mb-4">
-                            HIJAB
-                          </p>
-                          <p className="text-3xl md:text-7xl font-black italic tracking-tighter leading-none text-black">
-                            {checkStockResult.hijab}
-                          </p>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="py-14 text-slate-100 flex flex-col items-center gap-6">
-                        <Search
-                          size={64}
-                          strokeWidth={1}
-                          className="opacity-20"
-                        />
-                        <p className="text-[11px] font-black uppercase tracking-[0.6em] text-center">
-                          SELECT DESIGN & COLOR TO SEE BREAKDOWN
-                        </p>
-                      </div>
-                    )}
+                  <div>
+                    <h2 className="text-6xl font-black italic tracking-tighter">Initialize <span className="text-slate-400">Cut Hub</span></h2>
+                    <p className="text-[11px] font-black text-slate-400 tracking-[0.8em] mt-2">Primary Material Registration Protocol</p>
                   </div>
-                ) : (
-                  <div className="py-14 text-slate-100 flex flex-col items-center gap-6">
-                    <Search size={64} strokeWidth={1} className="opacity-20" />
-                    <p className="text-[11px] font-black uppercase tracking-[0.6em]">
-                      SELECT PARAMETERS TO PROBE DATA
-                    </p>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-
-          <div className="space-y-8">
-            <div className="flex items-center justify-between px-6">
-              <h3 className="text-2xl font-black uppercase italic tracking-tighter text-black">
-                Production <span className="text-slate-500">Artifacts</span>
-              </h3>
-              <div className="px-5 py-2 bg-slate-50 border border-slate-100 rounded-full text-[9px] font-black uppercase tracking-widest italic text-slate-500">
-                {(masterData.cuttingStock || []).length} Records
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              {(masterData.cuttingStock || []).filter(s => {
-                  if (isAdmin || isManager) return true;
-                  return s.cutterName?.trim().toLowerCase() === user?.name?.trim().toLowerCase();
-              }).length === 0 ? (
-                <div className="h-64 flex flex-col items-center justify-center bg-white rounded-3xl border-2 border-dashed border-slate-100 opacity-70">
-                  <Box size={48} strokeWidth={1} />
-                  <p className="text-[10px] font-black uppercase tracking-[0.4em] mt-6">Zero Cut Nodes</p>
-                </div>
-              ) : (
-                (masterData.cuttingStock || []).filter(s => {
-                    if (isAdmin || isManager) return true;
-                    return s.cutterName?.trim().toLowerCase() === user?.name?.trim().toLowerCase();
-                }).map((s, idx) => (
-                  <div
-                    key={s.id || idx}
-                    className="item-card flex flex-col md:flex-row justify-between items-center gap-8 group"
-                  >
-                    <div className="flex items-center gap-8 flex-1 w-full md:w-auto">
-                        <div className="w-14 h-14 bg-slate-50 flex items-center justify-center text-3xl font-black italic rounded-xl border border-slate-100 shadow-inner group-hover:bg-black group-hover:text-white transition-all transform group-hover:rotate-6">
-                            {s.size}
-                        </div>
-                        <div className="space-y-2 flex-1">
-                            <div className="flex items-center gap-4">
-                                <h4 className="text-xl md:text-2xl font-black italic uppercase leading-none tracking-tighter">
-                                    • কাটিং # {s.cutterName}
-                                </h4>
-                                <span className="badge-standard">#{s.lotNo}</span>
-                            </div>
-                            <div className="flex items-center gap-4 text-slate-500 text-[11px] font-black uppercase italic tracking-widest">
-                                <span>• {s.design}</span>
-                                <span>• {s.color}</span>
-                                <span>• {s.date}</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="flex items-center gap-12 w-full md:w-auto justify-between border-t md:border-t-0 pt-6 md:pt-0">
-                        <div className="flex gap-12">
-                            <div className="text-center">
-                                <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1 italic">Borka</p>
-                                <p className="text-4xl font-black italic tracking-tighter leading-none">{s.borka}</p>
-                            </div>
-                            <div className="text-center">
-                                <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1 italic">Hijab</p>
-                                <p className="text-4xl font-black italic tracking-tighter leading-none">{s.hijab}</p>
-                            </div>
-                        </div>
-                        <div className="flex gap-3">
-                            <button
-                              onClick={() => setPrintSlip(s)}
-                              className="w-12 h-12 flex items-center justify-center rounded-full bg-slate-50 text-slate-500 hover:bg-black hover:text-white transition-all shadow-sm"
-                            >
-                              <Printer size={18} />
-                            </button>
-                            {isAdmin && (
-                                <button
-                                  onClick={() => handleDelete(s.id)}
-                                  className="w-12 h-12 flex items-center justify-center rounded-full bg-rose-50 text-rose-500 hover:bg-rose-500 hover:text-white transition-all shadow-sm"
-                                >
-                                  <Trash2 size={18} />
-                                </button>
-                            )}
-                        </div>
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
-          </div>
-        </div>
-
-        <div className="space-y-10">
-          <div className="bg-white rounded-3xl p-12 flex items-center justify-between border-4 border-slate-50 shadow-2xl">
-            <div className="flex items-center gap-6">
-              <div className="p-4 bg-emerald-50 rounded-2xl border border-emerald-100 text-emerald-500">
-                <CheckCircle size={32} />
-              </div>
-              <div>
-                <p className="text-[10px] font-black text-slate-600 uppercase tracking-[0.4em] mb-1">
-                  SYSTEM STATUS
-                </p>
-                <p className="text-xl font-black italic tracking-tighter leading-none text-black">
-                  OPERATION NOMINAL
-                </p>
-              </div>
-            </div>
-            <div className="w-8 h-8 rounded-full border-4 border-slate-100 border-t-black animate-spin"></div>
-          </div>
-
-          <div className="bg-black text-white rounded-[4rem] p-10 md:p-12 shadow-3xl relative overflow-hidden group italic">
-            <div className="relative z-10 space-y-10">
-                <div className="flex justify-between items-start">
-                    <div>
-                        <h3 className="text-3xl font-black italic tracking-tighter uppercase leading-none">Yield Optimizer</h3>
-                        <p className="text-[9px] font-black uppercase text-white/70 tracking-[0.4em] mt-3">Advanced Waste Reduction Engine</p>
-                    </div>
-                    <div className="p-4 bg-white/10 rounded-2xl">
-                        <Scissors size={24} className="text-emerald-500" />
-                    </div>
                 </div>
 
-                <div className="space-y-6">
-                    <div className="p-6 bg-white/5 rounded-3xl border border-white/10">
-                        <label className="text-[8px] font-black uppercase tracking-widest text-white/70 mb-3 block">Roll Width (Inches)</label>
-                        <input 
-                            type="number" 
-                            className="bg-transparent border-none text-4xl font-black italic w-full outline-none text-white focus:text-emerald-500 transition-colors" 
-                            value={optimizer.rollWidth}
-                            onChange={e => setOptimizer(p => ({ ...p, rollWidth: e.target.value }))}
-                        />
-                    </div>
-                    <div className="p-6 bg-white/5 rounded-3xl border border-white/10">
-                        <label className="text-[8px] font-black uppercase tracking-widest text-white/70 mb-3 block">Design Width (Inches)</label>
-                        <input 
-                            type="number" 
-                            className="bg-transparent border-none text-4xl font-black italic w-full outline-none text-white focus:text-emerald-500 transition-colors" 
-                            value={optimizer.pieceWidth}
-                            onChange={e => setOptimizer(p => ({ ...p, pieceWidth: e.target.value }))}
-                        />
-                    </div>
-                </div>
-
-                <div className="pt-6 border-t border-white/10 space-y-6">
-                    <div className="flex justify-between items-center">
-                        <span className="text-[10px] font-black uppercase tracking-widest text-white/70">Efficiency Rating</span>
-                        <span className={`text-xl font-black italic ${optimization.rating === 'ELITE' ? 'text-emerald-400' : optimization.rating === 'OPTIMAL' ? 'text-emerald-500' : 'text-amber-500'}`}>{optimization.rating}</span>
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                        <div className="p-5 bg-white/5 rounded-3xl text-center">
-                            <p className="text-[8px] font-black uppercase text-white/70 mb-1">Max Pieces</p>
-                            <p className="text-2xl font-black italic">{optimization.count} / Layer</p>
-                        </div>
-                        <div className="p-5 bg-white/5 rounded-3xl text-center">
-                            <p className="text-[8px] font-black uppercase text-white/70 mb-1">Waste Factor</p>
-                            <p className="text-2xl font-black italic">{optimization.waste}%</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <Scissors className="absolute bottom-[-10%] right-[-5%] text-white opacity-[0.03]" size={200} />
-          </div>
-        </div>
-      </div>
-
-      {showModal && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-3xl z-[250] flex items-start md:items-center justify-center p-2 md:p-4 overflow-y-auto">
-          <div className="bg-white w-full max-w-5xl my-auto rounded-[2.5rem] border-2 border-black shadow-3xl p-6 md:p-12 space-y-10 animate-fade-up text-black italic relative font-outfit uppercase">
-            <button onClick={() => setShowModal(false)} className="absolute top-8 right-8 p-4 bg-slate-50 hover:bg-black hover:text-white rounded-full transition-all z-10 border border-slate-100 shadow-sm"><X size={24} /></button>
-            
-            <div className="text-center space-y-3">
-              <div className="mx-auto w-14 h-14 bg-black text-white rounded-2xl flex items-center justify-center shadow-2xl rotate-3">
-                <Scissors size={32} />
-              </div>
-              <h3 className="text-4xl font-black tracking-tighter uppercase leading-none">Cutting <span className="text-slate-500">Entry</span></h3>
-              <p className="inline-block px-4 py-1 bg-slate-100 text-slate-500 rounded-full text-[10px] font-black uppercase tracking-widest">LOT REGISTRATION MODE</p>
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-                <div className="lg:col-span-4 space-y-6">
-                    <div className="space-y-2">
-                        <label className="text-[10px] font-black uppercase text-slate-500 tracking-widest ml-4">Authorized Cutter</label>
-                        <select className="premium-input bg-black text-white h-16 w-full rounded-2xl px-6 font-black text-sm uppercase appearance-none" value={entryData.cutterName} onChange={e => setEntryData(p => ({ ...p, cutterName: e.target.value }))}>
-                            <option value="">-- SELECT WORKER --</option>
-                            {(masterData.workerCategories?.cutting || []).map(w => <option key={w} value={w}>{w}</option>)}
-                        </select>
-                    </div>
-                    <div className="space-y-2">
-                        <label className="text-[10px] font-black uppercase text-slate-500 tracking-widest ml-4">Design / Model</label>
-                        <select className="premium-input bg-slate-50 border-slate-100 h-16 w-full rounded-2xl px-6 font-black text-sm uppercase appearance-none" value={entryData.design} onChange={e => setEntryData(p => ({ ...p, design: e.target.value }))}>
-                            <option value="">-- SELECT DESIGN --</option>
-                            {(masterData.designs || []).map(d => <option key={d.name} value={d.name}>{d.name}</option>)}
-                        </select>
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                            <label className="text-[10px] font-black uppercase text-slate-500 tracking-widest ml-4">Lot ID</label>
-                            <input className="premium-input bg-slate-50 border-slate-100 h-16 w-full rounded-2xl px-6 font-black text-sm text-center" value={entryData.lotNo} onChange={e => setEntryData(p => ({ ...p, lotNo: e.target.value }))} />
-                        </div>
-                        <div className="space-y-2">
-                            <label className="text-[10px] font-black uppercase text-slate-500 tracking-widest ml-4">Date</label>
-                            <input type="date" className="premium-input bg-slate-50 border-slate-100 h-16 w-full rounded-2xl px-6 font-black text-[10px] text-center" value={entryData.date} onChange={e => setEntryData(p => ({ ...p, date: e.target.value }))} />
-                        </div>
-                    </div>
-                </div>
-
-                <div className="lg:col-span-8 flex flex-col bg-slate-50 p-8 rounded-[2rem] border border-slate-100">
-                    <div className="flex justify-between items-center mb-6">
-                        <label className="text-[10px] font-black uppercase text-black tracking-widest">Size Matrix Distribution</label>
-                        <button onClick={handleAddSizeRow} className="px-4 py-2 bg-black text-white rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-2 hover:scale-105 transition-all"><Plus size={14} /> Add Pattern</button>
-                    </div>
-
-                    <div className="space-y-4 max-h-[40vh] overflow-y-auto pr-2 custom-scrollbar">
-                        {entryData.sizes.map((s, i) => (
-                            <div key={i} className="grid grid-cols-12 gap-4 items-center animate-fade-in">
-                                <div className="col-span-3">
-                                    <select className="h-14 w-full bg-white border border-slate-200 rounded-xl px-4 font-black uppercase text-xs" value={s.size} onChange={e => handleSizeChange(i, 'size', e.target.value)}>
-                                        <option value="">SIZE</option>
-                                        {(masterData.sizes || []).map(sz => <option key={sz} value={sz}>{sz}</option>)}
-                                    </select>
-                                </div>
-                                <div className="col-span-4 bg-white border border-slate-200 rounded-xl px-4 h-14 flex items-center gap-2">
-                                    <p className="text-[8px] font-black text-slate-500">B</p>
-                                    <input type="number" className="bg-transparent w-full font-black text-xl outline-none" placeholder="0" value={s.borka} onChange={e => handleSizeChange(i, 'borka', e.target.value)} />
-                                </div>
-                                <div className="col-span-4 bg-white border border-slate-200 rounded-xl px-4 h-14 flex items-center gap-2">
-                                    <p className="text-[8px] font-black text-slate-500">H</p>
-                                    <input type="number" className="bg-transparent w-full font-black text-xl outline-none" placeholder="0" value={s.hijab} onChange={e => handleSizeChange(i, 'hijab', e.target.value)} />
-                                </div>
-                                <div className="col-span-1 flex justify-end">
-                                    <button onClick={() => handleRemoveSizeRow(i)} className="p-3 text-slate-500 hover:text-rose-500 transition-colors"><Trash2 size={18} /></button>
-                                </div>
-                            </div>
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
+                  <div className="lg:col-span-5 space-y-8">
+                    <div className="space-y-3">
+                      <label className="text-[10px] font-black uppercase text-slate-500 tracking-widest ml-6 flex items-center gap-3">
+                        <Package size={12} /> Design Model Identifier
+                      </label>
+                      <select 
+                        className="premium-input !bg-slate-50 !py-7 !px-10 !text-xl font-black uppercase"
+                        value={entryData.design}
+                        onChange={(e) => setEntryData(p => ({ ...p, design: e.target.value }))}
+                      >
+                        <option value="">Select Master Design...</option>
+                        {(masterData.designs || []).map(d => (
+                          <option key={d.name} value={d.name}>{d.name}</option>
                         ))}
-                    </div>
-
-                    <div className="mt-8 pt-6 border-t border-slate-200 flex justify-between items-center px-4">
-                        <p className="text-[10px] font-black uppercase text-slate-500">Aggregate Volume</p>
-                        <div className="flex gap-8">
-                            <div className="text-right">
-                                <p className="text-[9px] font-black text-slate-500 uppercase">Total Borka</p>
-                                <p className="text-2xl font-black">{entryData.sizes.reduce((sum, s) => sum + Number(s.borka || 0), 0)}</p>
-                            </div>
-                            <div className="text-right">
-                                <p className="text-[9px] font-black text-slate-500 uppercase">Total Hijab</p>
-                                <p className="text-2xl font-black text-rose-500">{entryData.sizes.reduce((sum, s) => sum + Number(s.hijab || 0), 0)}</p>
-                            </div>
-                        </div>
-                    </div>
+                      </select>
                     </div>
                     
-                    <div className="flex flex-col md:flex-row gap-4 pt-8 mt-6">
-                        <button
-                          type="button"
-                          onClick={() => setShowModal(false)}
-                          className="flex-1 h-16 rounded-2xl bg-slate-50 text-slate-500 font-black uppercase text-[10px] italic"
-                        >
-                          বাতিল (Cancel)
-                        </button>
-                        <button
-                          onClick={() => handleAddCutting(true)}
-                          className="flex-1 h-16 rounded-2xl bg-slate-900 text-white font-black uppercase text-[10px] tracking-widest flex items-center justify-center gap-3 transition-all hover:bg-black"
-                        >
-                          <Printer size={18} /> প্রিন্ট ও সেভ
-                        </button>
-                        <button
-                          onClick={() => handleAddCutting(false)}
-                          className="flex-[2] h-16 rounded-2xl bg-emerald-600 text-white font-black uppercase text-sm tracking-widest shadow-2xl flex items-center justify-center gap-3 transition-all hover:scale-[1.02]"
-                        >
-                          পণ্য স্টোকে যোগ করুন (Save Job) <CheckCircle size={20} />
-                        </button>
+                    <div className="space-y-3">
+                      <label className="text-[10px] font-black uppercase text-slate-500 tracking-widest ml-6 flex items-center gap-3">
+                        <Activity size={12} /> Fabric Color Spectrum
+                      </label>
+                      <select 
+                        className="premium-input !bg-slate-50 !py-7 !px-10 !text-xl font-black uppercase"
+                        value={entryData.color}
+                        onChange={(e) => setEntryData(p => ({ ...p, color: e.target.value }))}
+                      >
+                        <option value="">Mapping Color Node...</option>
+                        {(masterData.colors || []).map(c => (
+                          <option key={c} value={c}>{c}</option>
+                        ))}
+                      </select>
                     </div>
-                </div>
-            </div>
-          </div>
-      )}
 
-      <div className="flex justify-center pt-20">
-        <button
-          onClick={() => setActivePanel("Overview")}
-          className="group relative flex items-center gap-6 bg-white px-12 py-6 rounded-full border-4 border-slate-50 shadow-2xl hover:border-black transition-all duration-500"
-        >
-          <div className="p-3 bg-black text-white rounded-2xl group-hover:rotate-[-12deg] transition-transform">
-            <ArrowLeft size={20} strokeWidth={3} />
-          </div>
-          <span className="text-lg font-black uppercase italic tracking-widest text-black">
-            ড্যাশবোর্ডে ফিরে যান
-          </span>
-          <div className="absolute -inset-1 bg-black/5 blur-2xl rounded-full -z-10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-        </button>
-      </div>
+                    <div className="grid grid-cols-2 gap-8">
+                        <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase text-slate-500 tracking-widest ml-6">Lot Identifier</label>
+                        <input 
+                            className="premium-input !bg-black text-white !py-7 !px-10 !text-2xl font-black text-center shadow-2xl"
+                            value={entryData.lotNo}
+                            onChange={(e) => setEntryData(p => ({ ...p, lotNo: e.target.value }))}
+                        />
+                        </div>
+                        <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase text-slate-500 tracking-widest ml-6">Injection Date</label>
+                        <input 
+                            type="date"
+                            className="premium-input !bg-slate-50 !py-7 !px-10 !text-xs font-black text-center"
+                            value={entryData.date}
+                            onChange={(e) => setEntryData(p => ({ ...p, date: e.target.value }))}
+                        />
+                        </div>
+                    </div>
+                  </div>
+
+                  <div className="lg:col-span-7 bg-slate-50/50 p-12 rounded-[4rem] border border-black/5 group flex flex-col">
+                     <div className="flex justify-between items-center mb-10">
+                        <div className="space-y-2">
+                           <h4 className="text-[10px] font-black uppercase tracking-widest text-black">Size Matrix Distribution</h4>
+                           <p className="text-[8px] font-bold text-slate-300 tracking-widest uppercase">Multi-Pattern Multipliers</p>
+                        </div>
+                        <button 
+                          onClick={() => setEntryData(p => ({ ...p, sizes: [...p.sizes, { size: "", borka: "", hijab: "" }] }))}
+                          className="w-16 h-16 bg-black text-white rounded-3xl flex items-center justify-center hover:scale-110 hover:shadow-2xl transition-all active:scale-95"
+                        >
+                          <Plus size={24} strokeWidth={3} />
+                        </button>
+                     </div>
+                     
+                     <div className="flex-1 max-h-[30rem] overflow-y-auto pr-6 custom-scrollbar space-y-6">
+                        {entryData.sizes.map((s, idx) => (
+                          <div key={idx} className="grid grid-cols-12 gap-6 items-center animate-fade-up">
+                             <div className="col-span-3">
+                                <select 
+                                    className="premium-input !py-6 !px-6 w-full !rounded-2xl font-black uppercase text-xs"
+                                    value={s.size}
+                                    onChange={(e) => {
+                                    const newSizes = [...entryData.sizes];
+                                    newSizes[idx].size = e.target.value;
+                                    setEntryData(p => ({ ...p, sizes: newSizes }));
+                                    }}
+                                >
+                                    <option value="">Size</option>
+                                    {(masterData.sizes || []).map(sz => <option key={sz} value={sz}>{sz}</option>)}
+                                </select>
+                             </div>
+                             <div className="col-span-4 relative group/input">
+                                <span className="absolute left-6 top-1/2 -translate-y-1/2 text-[9px] font-black text-slate-300 group-focus-within/input:text-black transition-colors">B</span>
+                                <input 
+                                    placeholder="0" type="number"
+                                    className="premium-input !py-6 !pl-12 !pr-6 !rounded-2xl font-black text-2xl text-center"
+                                    value={s.borka}
+                                    onChange={(e) => {
+                                        const newSizes = [...entryData.sizes];
+                                        newSizes[idx].borka = e.target.value;
+                                        setEntryData(p => ({ ...p, sizes: newSizes }));
+                                    }}
+                                />
+                             </div>
+                             <div className="col-span-4 relative group/input">
+                                <span className="absolute left-6 top-1/2 -translate-y-1/2 text-[9px] font-black text-slate-300 group-focus-within/input:text-black transition-colors">H</span>
+                                <input 
+                                    placeholder="0" type="number"
+                                    className="premium-input !py-6 !pl-12 !pr-6 !rounded-2xl font-black text-2xl text-center text-slate-400"
+                                    value={s.hijab}
+                                    onChange={(e) => {
+                                        const newSizes = [...entryData.sizes];
+                                        newSizes[idx].hijab = e.target.value;
+                                        setEntryData(p => ({ ...p, sizes: newSizes }));
+                                    }}
+                                />
+                             </div>
+                             <div className="col-span-1 flex justify-end">
+                                {entryData.sizes.length > 1 && (
+                                    <button 
+                                        onClick={() => setEntryData(p => ({ ...p, sizes: p.sizes.filter((_, i) => i !== idx) }))}
+                                        className="p-4 text-slate-300 hover:text-rose-500 hover:bg-white rounded-2xl transition-all"
+                                    >
+                                    <Trash2 size={24} />
+                                    </button>
+                                )}
+                             </div>
+                          </div>
+                        ))}
+                     </div>
+                  </div>
+                </div>
+
+                <div className="flex gap-8 pt-8">
+                   <button 
+                     onClick={() => setShowModal(false)}
+                     className="flex-1 py-10 rounded-[2.5rem] bg-slate-50 text-slate-400 font-black uppercase text-[12px] tracking-[0.4em] hover:bg-rose-500 hover:text-white transition-all shadow-sm active:scale-[0.98]"
+                   >
+                     Void Operation
+                   </button>
+                   <button 
+                     onClick={() => handleAddCutting(true)}
+                     className="action-btn-primary flex-1 !rounded-[2.5rem] !py-10 text-xl shadow-[0_30px_100px_-20px_rgba(0,0,0,0.3)] active:scale-[0.98]"
+                   >
+                     Finalize Protocol & Print
+                   </button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

@@ -342,7 +342,16 @@ export const translations = {
         fault: "সিস্টেম ত্রুটি ধরা পড়েছে",
         dbLatency: "ডাটাবেস ল্যাটেন্সি",
         systemCapacity: "সিস্টেম ক্যাপাসিটি",
-        storageAllocated: "আনলিমিটেড ক্লাউড স্টোরেজ"
+        storageAllocated: "আনলিমিটেড ক্লাউড স্টোরেজ",
+        strategicHub: "কৌশলগত হাব (Strategic)",
+        hub: "নোড",
+        systemVersion: "সিস্টেম কন্ট্রোল নোড v2.1",
+        systemSecurity: "সিস্টেম সিকিউরিটি ও লজিক",
+        systemDiagnostic: "সিস্টেম ডায়াগনস্টিক",
+        productionMatrix: "উৎপাদন ম্যাট্রিক্স",
+        auditArchives: "অডিট আর্কাইভস",
+        strategicMaintenance: "কৌশলগত ব্যবস্থাপনা",
+        config: "কনফিগুরেশন"
     }
 };
 

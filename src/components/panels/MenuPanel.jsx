@@ -10,29 +10,34 @@ const MenuPanel = ({ setActivePanel, user, t }) => {
 
     const categories = [
         {
-            title: "Production Pipeline",
+            title: "মুখ্য হাব (CORE HUB)",
             items: [
-                { id: 'Cutting', icon: <Scissors size={28} />, color: 'bg-rose-500', desc: 'Manage Cutting Lots' },
-                { id: 'Swing', icon: <Layers size={28} />, color: 'bg-blue-500', desc: 'Sewing Workload' },
-                { id: 'Stone', icon: <Hammer size={28} />, color: 'bg-amber-500', desc: 'Stone Production' },
-                { id: 'Pata', icon: <Activity size={28} />, color: 'bg-emerald-500', desc: 'Pata Workshop' },
-                { id: 'Outside', icon: <Truck size={28} />, color: 'bg-indigo-500', desc: 'Outside Contractors' }
+                { id: 'Overview', label: 'ড্যাশবোর্ড', icon: <Activity size={28} />, color: 'bg-black', desc: 'লাইভ সিস্টেম মনিটর' },
+                { id: 'Attendance', label: 'হাজিরা', icon: <UserCheck size={28} />, color: 'bg-rose-500', desc: 'দৈনিক বায়োমেট্রিক হাজিরা' }
             ]
         },
         {
-            title: "HR & WORKFORCE (কারিগর ও হাজিরা)",
+            title: "উৎপাদন লাইন (PRODUCTION)",
             items: [
-                { id: 'Attendance', icon: <UserCheck size={28} />, color: 'bg-cyan-500', desc: 'Daily Attendance' },
-                { id: 'Accounts', icon: <DollarSign size={28} />, color: 'bg-emerald-600', desc: 'Ledger & Dadon' },
-                { id: 'Delivery', icon: <Truck size={28} />, color: 'bg-indigo-600', desc: 'Dispatch & Shipments' },
-                { id: 'Reports', icon: <BarChart2 size={28} />, color: 'bg-violet-600', desc: 'Performance Logs' }
+                { id: 'Cutting', label: 'কাটিং', icon: <Scissors size={28} />, color: 'bg-rose-500', desc: 'র-কাট লট ম্যানেজমেন্ট' },
+                { id: 'Swing', label: 'সেলাই', icon: <Layers size={28} />, color: 'bg-blue-500', desc: 'ফ্যাক্টরি ফ্লোর অপারেশন' },
+                { id: 'Stone', label: 'স্টোন', icon: <Hammer size={28} />, color: 'bg-amber-500', desc: 'স্টোন ইউনিট কন্ট্রোল' },
+                { id: 'Pata', label: 'পাতা', icon: <Package size={28} />, color: 'bg-emerald-500', desc: 'লজিস্টিকস এবং স্টোরেজ' }
             ]
         },
         {
-            title: "SYSTEM AUDIT (সিস্টেম সেটআপ)",
+            title: "অপারেশন ও মজুরি (OPERATIONS)",
             items: [
-                { id: 'Settings', icon: <Settings size={28} />, color: 'bg-slate-600', desc: 'Worker Profiles & Info' },
-                { id: 'Security', icon: <Shield size={28} />, color: 'bg-black', desc: 'Admin & Biometrics' }
+                { id: 'Outside', label: 'বাইরের কাজ', icon: <Truck size={28} />, color: 'bg-indigo-500', desc: 'এক্সটার্নাল ইউনিট প্রোডাকশন' },
+                { id: 'Accounts', label: 'হিসাব', icon: <DollarSign size={28} />, color: 'bg-emerald-600', desc: 'ক্যাশ এবং লেজার বুক' },
+                { id: 'Reports', label: 'রিপোর্ট', icon: <BarChart2 size={28} />, color: 'bg-slate-600', desc: 'বিভাগীয় রিপোর্ট এবং এনালাইসিস' }
+            ]
+        },
+        {
+            title: "সিস্টেম অডিট (AUDIT)",
+            items: [
+                { id: 'Settings', label: 'সেটিংস', icon: <Settings size={28} />, color: 'bg-slate-600', desc: 'মাস্টার সেটআপ কন্ট্রোল' },
+                { id: 'Security', label: 'নিরাপত্তা', icon: <Shield size={28} />, color: 'bg-black', desc: 'সিকিউরিটি এবং অডিট ভল্ট' }
             ]
         }
     ];
@@ -46,8 +51,8 @@ const MenuPanel = ({ setActivePanel, user, t }) => {
                             <LayoutGrid size={32} />
                         </div>
                         <div className="space-y-1">
-                            <h1 className="text-4xl md:text-7xl font-black italic tracking-tighter uppercase leading-none">CORE HUB</h1>
-                            <p className="text-[10px] md:text-[12px] font-bold text-slate-500 uppercase tracking-[0.4em] italic">NRZONE ENTERPRISE INTERFACE</p>
+                            <h1 className="text-4xl md:text-7xl font-black italic tracking-tighter uppercase leading-none">মুখ্য হাব</h1>
+                            <p className="text-[10px] md:text-[12px] font-bold text-slate-500 uppercase tracking-[0.4em] italic">এনআরজোন এন্টারপ্রাইজ ইন্টারফেস</p>
                         </div>
                     </div>
                     <button 
@@ -99,7 +104,7 @@ const MenuPanel = ({ setActivePanel, user, t }) => {
                                                     {React.cloneElement(item.icon, { size: 28 })}
                                                 </div>
                                                 <div className="space-y-1">
-                                                    <h4 className="text-2xl md:text-3xl font-black italic uppercase tracking-tighter text-black leading-none">{item.id}</h4>
+                                                    <h4 className="text-2xl md:text-3xl font-black italic uppercase tracking-tighter text-black leading-none">{item.label}</h4>
                                                     <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest leading-none">{item.desc}</p>
                                                 </div>
                                             </div>
@@ -113,10 +118,10 @@ const MenuPanel = ({ setActivePanel, user, t }) => {
                 </div>
 
                 <div className="mt-32 pt-16 border-t border-slate-50 flex flex-col md:flex-row justify-between items-center opacity-30 gap-8">
-                    <p className="text-[10px] font-black uppercase tracking-[0.5em]">OPERATIONAL V4.4 TERMINAL — SECURITY VERIFIED</p>
+                    <p className="text-[10px] font-black uppercase tracking-[0.5em]">অপারেশনাল V4.4 টার্মিনাল — সিকিউরিটি ভেরিফাইড</p>
                     <div className="flex gap-10">
-                        <button className="text-[10px] font-black uppercase tracking-[0.5em] hover:opacity-100 italic">Documentation</button>
-                        <button className="text-[10px] font-black uppercase tracking-[0.5em] hover:opacity-100 italic">System Status</button>
+                        <button className="text-[10px] font-black uppercase tracking-[0.5em] hover:opacity-100 italic">ডকুমেন্টেশন</button>
+                        <button className="text-[10px] font-black uppercase tracking-[0.5em] hover:opacity-100 italic">সিস্টেম স্ট্যাটাস</button>
                     </div>
                 </div>
             </div>

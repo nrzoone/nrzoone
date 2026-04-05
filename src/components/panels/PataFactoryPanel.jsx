@@ -72,6 +72,15 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
         date: new Date().toISOString().split('T')[0]
     });
 
+    const handleQRScan = (data) => {
+        if (data) {
+            setLotSearch(data);
+            setEntryData(prev => ({ ...prev, lotNo: data }));
+            setShowQR(false);
+            showNotify('QR কোড সফলভাবে স্ক্যান হয়েছে!', 'success');
+        }
+    };
+
     const workers = masterData.workerCategories?.pata || [];
 
     const getWorkerDue = (name) => {
@@ -301,7 +310,7 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
 
         setEditPataModal(null);
         logAction(user, 'PATA_OVERRIDE', `Admin override on Pata record ID: ${updated.id} for ${updated.worker}`);
-        showNotify(`${t('availableBalance')} ${t('received')} (Admin Mode)!`);
+        showNotify('রেকর্ড সফলভাবে আপডেট করা হয়েছে!');
     };
 
     const handleManualStockIn = (e) => {
@@ -352,8 +361,6 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
         showNotify('এন্ট্রি মুছে ফেলা হয়েছে!');
     };
 
-    // isWorker is already declared at the top of the component
-
     if (printSlip) {
         return (
             <div className="min-h-screen bg-white text-black italic font-outfit py-10 print:py-0 print:bg-white overflow-hidden">
@@ -365,9 +372,9 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                     }
                 `}</style>
                 <div className="no-print flex justify-between items-center mb-6 w-[210mm] mx-auto bg-white p-6 rounded-[2.5rem] shadow-xl border-4 border-black font-black">
-                    <button onClick={() => setPrintSlip(null)} className="bg-slate-50 text-slate-600 px-10 py-5 uppercase text-xs rounded-full hover:bg-black hover:text-white transition-all">Cancel</button>
+                    <button onClick={() => setPrintSlip(null)} className="bg-slate-50 text-slate-600 px-10 py-5 uppercase text-xs rounded-full hover:bg-black hover:text-white transition-all">বাতিল</button>
                     <button onClick={() => window.print()} className="bg-black text-white px-10 py-5 rounded-full uppercase text-xs shadow-2xl flex items-center gap-3 active:scale-95 transition-all">
-                        <Printer size={18} /> Print Job
+                        <Printer size={18} /> প্রিন্ট করুন
                     </button>
                 </div>
                 
@@ -392,6 +399,24 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
 
     return (
     <div className="space-y-4 pb-24 animate-fade-up px-1 md:px-2 italic text-black font-outfit uppercase">
+      {/* QR Scanner Modal */}
+      {showQR && (
+        <div className="fixed inset-0 z-[1000] bg-black/90 backdrop-blur-3xl flex items-center justify-center p-4">
+             <div className="bg-amber-500 rounded-[4rem] p-4 w-full max-w-sm relative">
+                  <div className="bg-white rounded-[3.5rem] p-12 w-full h-full relative border-4 border-amber-600">
+                        <button onClick={() => setShowQR(false)} className="absolute top-8 right-8 p-3 bg-slate-100 rounded-full hover:bg-black hover:text-white transition-all">
+                            <X size={24} />
+                        </button>
+                        <h3 className="text-2xl font-black italic mb-8 text-center">পাতা স্লিপ স্ক্যান</h3>
+                        <div className="rounded-[3rem] overflow-hidden border-4 border-black">
+                            <QRScanner onScan={handleQRScan} />
+                        </div>
+                        <p className="text-[10px] font-black text-center mt-8 text-slate-400 italic">লট নম্বর অটো-লোড করার জন্য স্ক্যান করুন</p>
+                  </div>
+             </div>
+        </div>
+      )}
+
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
         <div className="flex items-center gap-6">
           <button
@@ -404,8 +429,6 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
             <h1 className="section-header">
                 {t('pataHub')} <span className="text-slate-500">{t('productionUnit') || "Division"}</span>
             </h1>
-            <p className="text-[11px] font-black text-slate-500 uppercase tracking-[0.4em] mt-2 italic">
-            </p>
         </div>
       </div>
         {(isAdmin || isManager) && (
@@ -419,7 +442,6 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
         )}
     </div>
       
-      {/* Unified Floating Filter Bar */}
       <div className="floating-header-group mb-12 p-3 dark:bg-zinc-900 border-none shadow-2xl">
           <div className="flex flex-col lg:flex-row items-center gap-6 w-full">
               <div className="flex items-center gap-2 bg-slate-100 dark:bg-black/50 p-2 rounded-2xl w-full lg:w-auto overflow-x-auto no-scrollbar">
@@ -429,7 +451,7 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                       onClick={() => setView(v)}
                       className={`px-10 py-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${view === v ? 'bg-black text-white dark:bg-white dark:text-black shadow-lg italic' : 'text-slate-500 hover:text-black dark:hover:text-white'}`}
                     >
-                      {t(v)}
+                      {v === 'active' ? 'চলমান লিস্ট' : v === 'history' ? 'পুরাতন হিসেব' : 'লেজার ও পেমেন্ট'}
                     </button>
                   ))}
               </div>
