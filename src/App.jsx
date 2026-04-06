@@ -643,7 +643,7 @@ const AppContent = () => {
                                 {activePanel === "Accounts" && <ExpensePanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} setActivePanel={setActivePanel} />}
                                 {activePanel === "Attendance" && <AttendancePanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} setActivePanel={setActivePanel} />}
                                 {activePanel === "WorkerSummary" && <WorkerSummary masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} setActivePanel={setActivePanel} />}
-                                {activePanel === "Reports" && <ReportsPanel masterData={masterData} t={t} user={user} setActivePanel={setActivePanel} logAction={logAction} />}
+                                {activePanel === "Reports" && <ReportsPanel masterData={masterData} t={t} user={user} setActivePanel={setActivePanel} logAction={logAction} showNotify={showNotify} />}
                                 {activePanel === "Settings" && <SettingsPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} syncStatus={syncStatus} user={user} t={t} setActivePanel={setActivePanel} logs={logs} downloadBackup={downloadBackup} />}
                                 {activePanel === "Security" && <SecurityPanel logs={logs} downloadBackup={downloadBackup} user={user} t={t} />}
                                 {activePanel === "Notifications" && (

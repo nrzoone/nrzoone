@@ -1233,6 +1233,13 @@ const FactoryPanel = ({
                     name="rBorka"
                     type="number"
                     defaultValue={receiveModal.issueBorka}
+                    id="recBorkaInput"
+                    onChange={(e) => {
+                      const val = Number(e.target.value || 0);
+                      const shortage = receiveModal.issueBorka - val;
+                      const display = document.getElementById('shortageDisplay');
+                      if (display) display.innerText = (receiveModal.issueBorka + receiveModal.issueHijab) - (val + Number(document.getElementById('recHijabInput').value || 0));
+                    }}
                     className="w-full text-center text-3xl font-black bg-transparent border-none outline-none text-black dark:text-white dark:text-white"
                     autoFocus
                   />
@@ -1245,12 +1252,24 @@ const FactoryPanel = ({
                     name="rHijab"
                     type="number"
                     defaultValue={receiveModal.issueHijab}
+                    id="recHijabInput"
+                    onChange={(e) => {
+                      const val = Number(e.target.value || 0);
+                      const display = document.getElementById('shortageDisplay');
+                      if (display) display.innerText = (receiveModal.issueBorka + receiveModal.issueHijab) - (val + Number(document.getElementById('recBorkaInput').value || 0));
+                    }}
                     className="w-full text-center text-3xl font-black bg-transparent border-none outline-none text-black dark:text-white dark:text-white"
                   />
                 </div>
               </div>
-              <div className="bg-rose-50 dark:bg-rose-900/10 p-5 rounded-xl border border-rose-100 dark:border-rose-800">
-                <label className="text-[10px] font-bold text-rose-500 uppercase mb-2 block tracking-widest text-center">Batch Waste (অপচয়)</label>
+
+              <div className="flex justify-between items-center px-6 py-3 bg-rose-50 dark:bg-rose-900/10 rounded-xl border border-rose-100 dark:border-rose-800">
+                 <p className="text-[10px] font-bold text-rose-600 uppercase tracking-widest">ঘাটতি (Shortage):</p>
+                 <p className="text-xl font-black text-rose-600"><span id="shortageDisplay">0</span> পিস</p>
+              </div>
+
+              <div className="bg-slate-50 dark:bg-slate-800 p-5 rounded-xl border border-slate-100 dark:border-slate-700">
+                <label className="text-[10px] font-bold text-black dark:text-white dark:text-white uppercase mb-2 block tracking-widest text-center">Batch Waste (অপচয়)</label>
                 <input
                   name="wasteMaterial"
                   type="number"

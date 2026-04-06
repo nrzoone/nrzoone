@@ -34,7 +34,7 @@ const AttendancePanel = ({
   const [selectedDate, setSelectedDate] = useState(
     new Date().toISOString().split("T")[0],
   );
-  const [selectedDepartment, setSelectedDepartment] = useState("sewing");
+  const [selectedDepartment, setSelectedDepartment] = useState("monthly");
   const [showInvoice, setShowInvoice] = useState(false);
   const [showDailyPrint, setShowDailyPrint] = useState(false);
   const [viewMode, setViewMode] = useState("attendance"); // 'attendance' or 'duty'
@@ -454,11 +454,10 @@ const AttendancePanel = ({
       <div className="bg-white dark:bg-slate-900 !p-1.5 flex flex-col lg:flex-row items-center justify-between gap-6 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm my-4">
         <div className="flex flex-wrap gap-1 w-full lg:w-auto overflow-x-auto no-scrollbar">
           {[
-            { id: 'sewing', label: 'সেলাই (Sewing)' },
-            { id: 'cutting', label: 'কাটিং (Cutting)' },
-            { id: 'stone', label: 'স্টোন (Stone)' },
-            { id: 'pata', label: 'পাতা (Pata)' },
-            { id: 'office', label: 'অফিস (Office)' }
+            { id: 'monthly', label: 'মাসিক স্টাফ (Monthly)' },
+            { id: 'office', label: 'অফিস (Office)' },
+            { id: 'cutting', label: 'কাটিং মাস্টার (Cutting)' },
+            { id: 'pata', label: 'পাতা স্টাফ (Pata)' }
           ].map(dept => (
             <button
               key={dept.id}

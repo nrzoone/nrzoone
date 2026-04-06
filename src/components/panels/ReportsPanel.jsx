@@ -9,12 +9,13 @@ import {
   Database,
   ArrowLeft,
   MessageCircle,
+  AlertCircle,
 } from "lucide-react";
 import WorkerSummary from "../WorkerSummary";
 import WeeklyInvoice from "../WeeklyInvoice";
 import BusinessIntel from "../BusinessIntel";
 
-const ReportsPanel = ({ masterData, user, setActivePanel, t, logAction }) => {
+const ReportsPanel = ({ masterData, user, setActivePanel, t, logAction, showNotify }) => {
   const [activeTab, setActiveTab] = useState(
     user?.role?.toLowerCase() === "admin" ? "intel" : "summary",
   );
