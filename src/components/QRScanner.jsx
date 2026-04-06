@@ -82,7 +82,7 @@ const QRScanner = ({ onScanSuccess, onClose }) => {
                         </div>
                         <div>
                             <h2 className="text-xl font-black uppercase italic tracking-tighter">QR Scanner</h2>
-                            <p className="text-[8px] font-black uppercase text-black dark:text-white tracking-widest">NRZO0NE Core Intelligence</p>
+                            <p className="text-[8px] font-black uppercase text-black dark:text-white dark:text-white tracking-widest">NRZO0NE Core Intelligence</p>
                         </div>
                     </div>
                     <button 
@@ -98,7 +98,7 @@ const QRScanner = ({ onScanSuccess, onClose }) => {
                     
                     <button 
                         onClick={() => setIsBulk(!isBulk)}
-                        className={`w-full py-4 rounded-2xl font-black uppercase tracking-widest text-[10px] transition-all flex items-center justify-center gap-3 ${isBulk ? 'bg-emerald-500 text-white shadow-xl shadow-emerald-500/20' : 'bg-slate-100 text-black dark:text-white hover:text-black'}`}
+                        className={`w-full py-4 rounded-2xl font-black uppercase tracking-widest text-[10px] transition-all flex items-center justify-center gap-3 ${isBulk ? 'bg-emerald-500 text-white shadow-xl shadow-emerald-500/20' : 'bg-slate-100 text-black dark:text-white dark:text-white hover:text-black'}`}
                     >
                         <div className={`w-2 h-2 rounded-full ${isBulk ? 'bg-white animate-pulse' : 'bg-slate-300'}`} />
                         Bulk Batch Mode: {isBulk ? 'ON' : 'OFF'}
@@ -109,7 +109,7 @@ const QRScanner = ({ onScanSuccess, onClose }) => {
                     <div className="flex items-center justify-between gap-4 mb-6">
                         <div className="flex items-center gap-3">
                             <ShieldAlert size={14} className={isBulk ? "text-emerald-500" : "text-amber-500"} />
-                            <p className="text-[9px] font-black uppercase text-black dark:text-white tracking-widest italic">{isBulk ? "Multiple Scans Active" : "Single Item Session"}</p>
+                            <p className="text-[9px] font-black uppercase text-black dark:text-white dark:text-white tracking-widest italic">{isBulk ? "Multiple Scans Active" : "Single Item Session"}</p>
                         </div>
                         {isBulk && <span className="text-[10px] font-black text-emerald-500 uppercase">{scannedItems.length} Scanned</span>}
                     </div>

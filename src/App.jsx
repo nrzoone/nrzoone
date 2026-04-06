@@ -363,12 +363,12 @@ const Sidebar = ({ activePanel, setActivePanel, user, setUser, isOpen, setIsSide
     };
 
     return (
-        <aside className={`fixed inset-y-0 left-0 z-[200] w-[280px] md:w-[320px] flex flex-col bg-slate-950 border-r border-white/5 transition-all duration-700 cubic-bezier(0.19, 1, 0.22, 1) font-inter ${isOpen ? 'translate-x-0' : '-translate-x-full shadow-none'} lg:translate-x-0`}>
+        <aside className={`fixed inset-y-0 left-0 z-[200] w-[280px] md:w-[320px] flex flex-col bg-white dark:bg-slate-950 border-r border-slate-200 dark:border-white/5 transition-all duration-700 cubic-bezier(0.19, 1, 0.22, 1) font-inter ${isOpen ? 'translate-x-0' : '-translate-x-full shadow-none'} lg:translate-x-0`}>
             {/* Dark Sidebar Brand */}
             <div className="p-12 md:p-16 flex flex-col items-center relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-b from-blue-500/10 to-transparent pointer-events-none"></div>
-                <Logo size="sm" white={true} customUrl={masterData.settings?.logo} />
-                <div className="mt-8 h-1 w-12 bg-white/20 rounded-full"></div>
+                <Logo size="sm" white={isDarkMode} customUrl={masterData.settings?.logo} />
+                <div className="mt-8 h-1 w-12 bg-black/10 dark:bg-white/20 rounded-full"></div>
             </div>
             
             <div className="flex-1 overflow-y-auto px-6 md:px-8 space-y-10 no-scrollbar pb-12">
@@ -393,7 +393,7 @@ const Sidebar = ({ activePanel, setActivePanel, user, setUser, isOpen, setIsSide
                                         key={item.id} onClick={() => navigate(item.id)}
                                         className={`w-full flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all group relative ${active ? "bg-blue-600 text-white shadow-xl shadow-blue-900/20" : "text-black dark:text-white hover:text-white hover:bg-white/[0.05]"}`}
                                     >
-                                        <div className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all ${active ? "bg-white/20" : "bg-white/5 group-hover:bg-white/10"}`}>
+                                        <div className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all ${active ? "bg-white/20" : "bg-slate-100 dark:bg-white/5 group-hover:bg-slate-200 dark:group-hover:bg-white/10"}`}>
                                             <Icon size={18} strokeWidth={active ? 2.5 : 2} className="shrink-0" />
                                         </div>
                                         <div className="flex flex-col items-start leading-none space-y-1">
@@ -409,7 +409,7 @@ const Sidebar = ({ activePanel, setActivePanel, user, setUser, isOpen, setIsSide
                 })}
             </div>
             
-            <div className="p-8 border-t border-white/5 bg-slate-900/50">
+            <div className="p-8 border-t border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-slate-900/50">
                 <button 
                     onClick={() => {
                         setUser(null);
@@ -417,7 +417,7 @@ const Sidebar = ({ activePanel, setActivePanel, user, setUser, isOpen, setIsSide
                     }} 
                     className="w-full flex items-center gap-4 p-4 rounded-xl text-black dark:text-white hover:text-rose-500 transition-all hover:bg-rose-500/10 group"
                 >
-                    <div className="w-9 h-9 rounded-xl bg-white/5 flex items-center justify-center group-hover:bg-rose-500/20">
+                    <div className="w-9 h-9 rounded-xl bg-slate-100 dark:bg-white/5 flex items-center justify-center group-hover:bg-rose-500/20">
                         <LogOut size={18} />
                     </div>
                     <span className="text-[0.7rem] font-bold uppercase tracking-wider">সিস্টেম বন্ধ করুন</span>

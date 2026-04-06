@@ -277,7 +277,7 @@ const AttendancePanel = ({
 
   if (showInvoice) {
     return (
-      <div className="space-y-12 p-8 bg-white text-black min-h-screen font-sans selection:bg-black selection:text-white">
+      <div className="space-y-12 p-8 bg-white text-black dark:text-white min-h-screen font-sans selection:bg-black selection:text-white">
         <style>{`
                     @media print {
                         .no-print { display: none !important; }
@@ -298,17 +298,17 @@ const AttendancePanel = ({
               <div className="flex justify-between items-start mb-6">
                 <div>
                    <h3 className="text-lg font-bold tracking-tight text-[var(--text-primary)]">{worker}</h3>
-                   <p className="text-[8px] font-bold text-black dark:text-white uppercase tracking-widest mt-1">ID: REF-{worker.slice(0,3).toUpperCase()}</p>
+                   <p className="text-[8px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest mt-1">ID: REF-{worker.slice(0,3).toUpperCase()}</p>
                 </div>
-                <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${status === 'present' ? 'bg-emerald-500 text-white shadow-lg' : 'bg-slate-100 dark:bg-slate-800 text-black dark:text-white'}`}>
+                <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${status === 'present' ? 'bg-emerald-500 text-white shadow-lg' : 'bg-slate-100 dark:bg-slate-800 text-black dark:text-white dark:text-white'}`}>
                    <UserCheck size={14} />
                 </div>
               </div>
 
               <div className="space-y-4 mb-8">
-                 <div className="flex justify-between items-center text-[9px] font-bold uppercase text-black dark:text-white tracking-widest">
+                 <div className="flex justify-between items-center text-[9px] font-bold uppercase text-black dark:text-white dark:text-white tracking-widest">
                     <span>Base Earnings</span>
-                    <span className="text-black dark:text-white">৳{dailyWage}</span>
+                    <span className="text-black dark:text-white dark:text-white">৳{dailyWage}</span>
                  </div>
                  <div className="w-full h-1 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
                     <div className="h-full bg-emerald-500 transition-all duration-1000" style={{ width: status === 'present' ? '100%' : status === 'half-day' ? '50%' : '0%' }}></div>
@@ -318,19 +318,19 @@ const AttendancePanel = ({
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => markAttendance(worker, "present")}
-                  className={`flex-1 py-2.5 rounded-lg text-[9px] font-bold uppercase tracking-widest transition-all ${status === "present" ? "bg-emerald-500 text-white shadow-md" : "bg-slate-50 dark:bg-slate-800 text-black dark:text-white hover:bg-emerald-50 hover:text-emerald-600"}`}
+                  className={`flex-1 py-2.5 rounded-lg text-[9px] font-bold uppercase tracking-widest transition-all ${status === "present" ? "bg-emerald-500 text-white shadow-md" : "bg-slate-50 dark:bg-slate-800 text-black dark:text-white dark:text-white hover:bg-emerald-50 hover:text-emerald-600"}`}
                 >
                   FULL
                 </button>
                 <button
                   onClick={() => markAttendance(worker, "half-day")}
-                  className={`flex-1 py-2.5 rounded-lg text-[9px] font-bold uppercase tracking-widest transition-all ${status === "half-day" ? "bg-amber-400 text-black shadow-md font-extrabold" : "bg-slate-50 dark:bg-slate-800 text-black dark:text-white hover:bg-amber-50 hover:text-amber-600"}`}
+                  className={`flex-1 py-2.5 rounded-lg text-[9px] font-bold uppercase tracking-widest transition-all ${status === "half-day" ? "bg-amber-400 text-black dark:text-white shadow-md font-extrabold" : "bg-slate-50 dark:bg-slate-800 text-black dark:text-white dark:text-white hover:bg-amber-50 hover:text-amber-600"}`}
                 >
                   HALF
                 </button>
                 <button
                   onClick={() => markAttendance(worker, "absent")}
-                  className={`p-2.5 rounded-lg transition-all ${status === "absent" ? "bg-rose-500 text-white shadow-md rotate-90" : "bg-slate-50 dark:bg-slate-800 text-black dark:text-white hover:bg-rose-50 hover:text-rose-600"}`}
+                  className={`p-2.5 rounded-lg transition-all ${status === "absent" ? "bg-rose-500 text-white shadow-md rotate-90" : "bg-slate-50 dark:bg-slate-800 text-black dark:text-white dark:text-white hover:bg-rose-50 hover:text-rose-600"}`}
                 >
                   <X size={14} />
                 </button>
@@ -342,7 +342,7 @@ const AttendancePanel = ({
         <div className="flex justify-between items-center no-print w-[210mm] mx-auto mb-12">
           <button
             onClick={() => setShowInvoice(false)}
-            className="bg-slate-50 text-black px-5 py-3 rounded-full font-black uppercase text-xs border border-slate-100 shadow-sm hover:bg-black hover:text-white transition-all"
+            className="bg-slate-50 text-black dark:text-white px-5 py-3 rounded-full font-black uppercase text-xs border border-slate-100 shadow-sm hover:bg-black hover:text-white transition-all"
           >
             ফিরে যান
           </button>
@@ -359,10 +359,10 @@ const AttendancePanel = ({
           </div>
 
           <div className="text-center mb-10 flex flex-col items-center relative z-10">
-            <h1 className="text-2xl font-black tracking-tighter mb-2 text-black uppercase">
+            <h1 className="text-2xl font-black tracking-tighter mb-2 text-black dark:text-white uppercase">
               NRZO0NE
             </h1>
-            <p className="text-[8px] font-black uppercase tracking-[0.5em] text-black dark:text-white">
+            <p className="text-[8px] font-black uppercase tracking-[0.5em] text-black dark:text-white dark:text-white">
               Official Weekly Ledger Record
             </p>
             <div className="mt-4 px-4 py-1.5 bg-black text-white rounded-full inline-block">
@@ -374,7 +374,7 @@ const AttendancePanel = ({
 
           <table className="w-full text-left relative z-10">
             <thead className="border-b-2 border-slate-100">
-              <tr className="text-[8px] font-black uppercase tracking-[0.3em] text-black dark:text-white">
+              <tr className="text-[8px] font-black uppercase tracking-[0.3em] text-black dark:text-white dark:text-white">
                 <th className="py-4">Worker Identity</th>
                 <th className="py-4 text-center">Duty</th>
                 <th className="py-4 text-right">Net Payable</th>
@@ -386,7 +386,7 @@ const AttendancePanel = ({
                   <td className="py-4 uppercase tracking-tighter text-black">
                     {w.worker}
                   </td>
-                  <td className="py-4 text-center text-black dark:text-white">
+                  <td className="py-4 text-center text-black dark:text-white dark:text-white">
                     {w.presentDays}{" "}
                     <span className="text-[8px] tracking-widest">DAYS</span>
                   </td>
@@ -400,11 +400,11 @@ const AttendancePanel = ({
               <tr className="border-t-4 border-black font-black text-2xl">
                 <td
                   colSpan="2"
-                  className="py-6 text-right text-black dark:text-white"
+                  className="py-6 text-right text-black dark:text-white dark:text-white"
                 >
                   TOTAL:
                 </td>
-                <td className="py-6 text-right text-black font-black">
+                <td className="py-6 text-right text-black dark:text-white font-black">
                   ৳{weeklySummary.totalPayable.toLocaleString()}
                 </td>
               </tr>
@@ -416,7 +416,7 @@ const AttendancePanel = ({
   }
 
   return (
-    <div className="space-y-6 pb-24 animate-fade-up px-1 md:px-2 text-black border-t-0">
+    <div className="space-y-6 pb-24 animate-fade-up px-1 md:px-2 text-black dark:text-white border-t-0">
       {/* SaaS Stat Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm flex items-center gap-6 group">
@@ -424,8 +424,8 @@ const AttendancePanel = ({
             <Users size={24} />
           </div>
           <div>
-            <p className="text-3xl font-bold tracking-tight text-black dark:text-white leading-none mb-1">{workers.length}</p>
-            <p className="text-[10px] font-bold text-black dark:text-white uppercase tracking-widest leading-none">মোট কর্মী (Workforce)</p>
+            <p className="text-3xl font-bold tracking-tight text-black dark:text-white dark:text-white leading-none mb-1">{workers.length}</p>
+            <p className="text-[10px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest leading-none">মোট কর্মী (Workforce)</p>
           </div>
         </div>
         <div className="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm flex items-center gap-6 group">
@@ -434,7 +434,7 @@ const AttendancePanel = ({
           </div>
           <div>
             <p className="text-3xl font-bold tracking-tight text-emerald-600 leading-none mb-1">{stats.present}</p>
-            <p className="text-[10px] font-bold text-black dark:text-white uppercase tracking-widest leading-none">আজ উপস্থিত (Present Today)</p>
+            <p className="text-[10px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest leading-none">আজ উপস্থিত (Present Today)</p>
           </div>
         </div>
         <div className="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm flex items-center gap-6 group">
@@ -442,8 +442,8 @@ const AttendancePanel = ({
             <DollarSign size={24} />
           </div>
           <div>
-            <p className="text-3xl font-bold tracking-tight text-black dark:text-white leading-none mb-1">৳{stats.wages.toLocaleString()}</p>
-            <p className="text-[10px] font-bold text-black dark:text-white uppercase tracking-widest leading-none">দৈনিক পেমেন্ট (Payments)</p>
+            <p className="text-3xl font-bold tracking-tight text-black dark:text-white dark:text-white leading-none mb-1">৳{stats.wages.toLocaleString()}</p>
+            <p className="text-[10px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest leading-none">দৈনিক পেমেন্ট (Payments)</p>
           </div>
         </div>
       </div>
@@ -463,7 +463,7 @@ const AttendancePanel = ({
             <button
               key={dept.id}
               onClick={() => setSelectedDepartment(dept.id)}
-              className={`px-6 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all ${selectedDepartment === dept.id ? 'bg-slate-950 text-white shadow-lg' : 'text-black dark:text-white hover:text-black dark:hover:text-white'}`}
+              className={`px-6 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all ${selectedDepartment === dept.id ? 'bg-slate-950 text-white shadow-lg' : 'text-black dark:text-white dark:text-white hover:text-black dark:text-white dark:hover:text-white'}`}
             >
               {dept.label}
             </button>
@@ -472,7 +472,7 @@ const AttendancePanel = ({
 
         <div className="flex items-center gap-3 w-full lg:w-auto">
           <div className="relative group flex-1 lg:flex-none">
-            <Calendar size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-black dark:text-white" />
+            <Calendar size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-black dark:text-white dark:text-white" />
             <input
               type="date"
               className="premium-input !pl-11 !h-11 !text-[10px] !bg-slate-50 dark:!bg-slate-800/50"
@@ -526,10 +526,10 @@ const AttendancePanel = ({
                   </div>
                   <div className="space-y-0.5">
                     <div className="flex items-center gap-3">
-                        <h4 className="text-xl font-bold tracking-tight text-black dark:text-white uppercase leading-none">{worker}</h4>
+                        <h4 className="text-xl font-bold tracking-tight text-black dark:text-white dark:text-white uppercase leading-none">{worker}</h4>
                         {workerId && <span className="px-2 py-0.5 bg-emerald-50 dark:bg-emerald-900/10 text-emerald-600 text-[9px] font-bold rounded-md border border-emerald-100 dark:border-emerald-800">ID: {workerId}</span>}
                     </div>
-                    <p className="text-black dark:text-white text-[10px] font-bold uppercase tracking-widest leading-none mt-1 flex items-center gap-1.5 italic">
+                    <p className="text-black dark:text-white dark:text-white text-[10px] font-bold uppercase tracking-widest leading-none mt-1 flex items-center gap-1.5 italic">
                        <DollarSign size={10} /> দৈনিক মজুরি: ৳{wage.toLocaleString()} (Daily Wage)
                     </p>
                   </div>
@@ -550,7 +550,7 @@ const AttendancePanel = ({
                             className={`px-4 py-2 rounded-lg text-[9px] font-bold uppercase tracking-widest transition-all ${
                                 status === s.id 
                                 ? (s.id === "present" ? "bg-slate-950 text-white shadow-lg" : s.id === "half-day" ? "bg-amber-500 text-white shadow-lg" : "bg-rose-500 text-white shadow-lg") 
-                                : "text-black dark:text-white hover:text-black dark:hover:text-white"
+                                : "text-black dark:text-white dark:text-white hover:text-black dark:text-white dark:hover:text-white"
                             }`}
                           >
                             {s.label}
@@ -568,7 +568,7 @@ const AttendancePanel = ({
                     {(user?.role?.toLowerCase() === 'admin' || user?.role?.toLowerCase() === 'manager') && (
                        <button 
                           onClick={() => registerBiometric(worker)}
-                          className={`w-10 h-10 flex items-center justify-center rounded-xl transition-all border border-slate-200 dark:border-slate-800 ${masterData.workerBiometrics?.[worker] ? 'bg-emerald-500 text-white shadow-lg border-none' : 'bg-white dark:bg-slate-800 text-slate-300 hover:text-black dark:hover:text-white'}`}
+                          className={`w-10 h-10 flex items-center justify-center rounded-xl transition-all border border-slate-200 dark:border-slate-800 ${masterData.workerBiometrics?.[worker] ? 'bg-emerald-500 text-white shadow-lg border-none' : 'bg-white dark:bg-slate-800 text-slate-300 hover:text-black dark:text-white dark:hover:text-white'}`}
                           title="ফিঙ্গারপ্রিন্ট রেজিস্টার"
                       >
                           <Fingerprint size={16} />
@@ -600,7 +600,7 @@ const AttendancePanel = ({
             <div className="p-3 bg-slate-950 text-white rounded-xl transition-transform shadow-lg group-hover:scale-110">
                 <ArrowLeft size={20} strokeWidth={3} />
             </div>
-            <span className="text-lg font-bold tracking-tight text-black dark:text-white uppercase leading-none">
+            <span className="text-lg font-bold tracking-tight text-black dark:text-white dark:text-white uppercase leading-none">
                 ড্যাশবোর্ডে ফিরে যান
             </span>
         </button>

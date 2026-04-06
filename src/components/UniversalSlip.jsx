@@ -28,7 +28,7 @@ const UniversalSlip = ({ data, type, copyTitle, logoUrl = null }) => {
 
     return (
         <ConfigProvider theme={QR_Slip_Theme}>
-            <div className="w-full bg-white flex flex-col relative overflow-hidden border-[8px] border-black p-4 font-outfit text-black uppercase italic" style={{ height: '148.5mm', width: '210mm', pageBreakInside: 'avoid' }}>
+            <div className="w-full bg-white flex flex-col relative overflow-hidden border-[8px] border-black p-4 font-outfit text-black dark:text-white uppercase italic" style={{ height: '148.5mm', width: '210mm', pageBreakInside: 'avoid' }}>
                 
                 {/* Header (Shipping Label Aesthetic) */}
                 <div className="flex border-b-[8px] border-black h-36">
@@ -51,7 +51,7 @@ const UniversalSlip = ({ data, type, copyTitle, logoUrl = null }) => {
                                 আইডি: {displayId}
                             </div>
                             <div className="text-right">
-                                <p className="text-[9px] font-black uppercase text-black dark:text-white">সিকিউরিটি হ্যাশ</p>
+                                <p className="text-[9px] font-black uppercase text-black dark:text-white dark:text-white">সিকিউরিটি হ্যাশ</p>
                                 <p className="text-[10px] font-black font-mono">0x{displayId.slice(-6)}F2A</p>
                             </div>
                          </div>
@@ -69,22 +69,22 @@ const UniversalSlip = ({ data, type, copyTitle, logoUrl = null }) => {
                     <div className="flex-1 border-r-[8px] border-black p-6 space-y-6">
                         <div className="flex justify-between items-start">
                             <div className="space-y-1">
-                                <p className="text-[11px] font-black text-black dark:text-white">কারিগর</p>
+                                <p className="text-[11px] font-black text-black dark:text-white dark:text-white">কারিগর</p>
                                 <p className="text-5xl font-black leading-none tracking-tighter">{worker}</p>
                             </div>
                             <div className="text-right space-y-1">
-                                <p className="text-[11px] font-black text-black dark:text-white">লট নম্বর</p>
-                                <p className="text-4xl font-black tracking-tighter text-black underline decoration-4 underline-offset-8 decoration-black">{data.lotNo || 'N/A'}</p>
+                                <p className="text-[11px] font-black text-black dark:text-white dark:text-white">লট নম্বর</p>
+                                <p className="text-4xl font-black tracking-tighter text-black dark:text-white underline decoration-4 underline-offset-8 decoration-black">{data.lotNo || 'N/A'}</p>
                             </div>
                         </div>
 
                         <div className="grid grid-cols-2 gap-6 pt-4 border-t-4 border-black">
                             <div className="bg-slate-100 p-4 rounded-xl">
-                                <p className="text-[10px] font-black text-black dark:text-white">ডিজাইন</p>
+                                <p className="text-[10px] font-black text-black dark:text-white dark:text-white">ডিজাইন</p>
                                 <p className="text-3xl font-black tracking-tighter">{data.design || 'GENERAL'}</p>
                             </div>
                             <div className="bg-slate-100 p-4 rounded-xl text-right">
-                                <p className="text-[10px] font-black text-black dark:text-white">রঙ</p>
+                                <p className="text-[10px] font-black text-black dark:text-white dark:text-white">রঙ</p>
                                 <p className="text-3xl font-black tracking-tighter">{data.color || 'N/A'}</p>
                             </div>
                         </div>
@@ -116,7 +116,7 @@ const UniversalSlip = ({ data, type, copyTitle, logoUrl = null }) => {
                     {/* Right: Large Numbers or QR */}
                     <div className="w-[280px] p-6 flex flex-col items-center justify-between bg-slate-50">
                         <div className="w-full text-center">
-                            <p className="text-[11px] font-black uppercase text-black dark:text-white mb-2 mt-2">অরিজিনাল কিউ-আর</p>
+                            <p className="text-[11px] font-black uppercase text-black dark:text-white dark:text-white mb-2 mt-2">অরিজিনাল কিউ-আর</p>
                             <div className="border-[6px] border-black p-2 bg-white shadow-xl">
                                 <QRCode 
                                     value={`${window.location.origin}/track?id=${displayId}`} 
@@ -129,7 +129,7 @@ const UniversalSlip = ({ data, type, copyTitle, logoUrl = null }) => {
                         </div>
                         
                         <div className="w-full text-center pt-6 border-t-4 border-black/10">
-                            <p className="text-[11px] font-black text-black dark:text-white mb-1">মোট পরিমাণ</p>
+                            <p className="text-[11px] font-black text-black dark:text-white dark:text-white mb-1">মোট পরিমাণ</p>
                             <p className="text-7xl font-black leading-none italic tracking-tighter">
                                 {data.amount || data.pataQty || (Number(data.borka || 0) + Number(data.hijab || 0)) || (Number(data.issueBorka || 0) + Number(data.issueHijab || 0)) || (Number(data.receivedBorka || 0) + Number(data.receivedHijab || 0)) || Number(data.receivedQty || 0)}
                             </p>

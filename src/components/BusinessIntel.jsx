@@ -68,12 +68,12 @@ const BusinessIntel = ({ masterData }) => {
     }, [masterData]);
 
     return (
-        <div className="space-y-6 md:space-y-12 pb-24 animate-fade-up px-2 italic text-black font-outfit">
+        <div className="space-y-6 md:space-y-12 pb-24 animate-fade-up px-2 italic text-black dark:text-white font-outfit">
             <div className="flex flex-col md:flex-row justify-between items-center gap-8">
                 <div className="flex items-center gap-6 md:gap-10">
                     <button
                         onClick={() => window.dispatchEvent(new CustomEvent('setActivePanel', { detail: 'Overview' }))}
-                        className="p-4 md:p-6 bg-white text-black rounded-[2rem] border-4 border-slate-50 shadow-2xl hover:bg-black hover:text-white transition-all group active:scale-95"
+                        className="p-4 md:p-6 bg-white text-black dark:text-white rounded-[2rem] border-4 border-slate-50 shadow-2xl hover:bg-black hover:text-white transition-all group active:scale-95"
                     >
                         <ArrowLeft size={24} strokeWidth={3} className="group-hover:-translate-x-2 transition-transform" />
                     </button>
@@ -82,8 +82,8 @@ const BusinessIntel = ({ masterData }) => {
                            <NRZLogo size="md" white />
                         </div>
                         <div>
-                            <p className="text-xs md:text-sm font-black text-black dark:text-white uppercase tracking-[0.4em] mb-3 italic">ব্যবসা বিশ্লেষণ (Strategic Analytics)</p>
-                            <h2 className="text-4xl md:text-7xl lg:text-8xl font-black uppercase italic tracking-tighter leading-none text-black">বিজনেস <span className="text-black dark:text-white">ইন্টেল</span></h2>
+                            <p className="text-xs md:text-sm font-black text-black dark:text-white dark:text-white uppercase tracking-[0.4em] mb-3 italic">ব্যবসা বিশ্লেষণ (Strategic Analytics)</p>
+                            <h2 className="text-4xl md:text-7xl lg:text-8xl font-black uppercase italic tracking-tighter leading-none text-black">বিজনেস <span className="text-black dark:text-white dark:text-white">ইন্টেল</span></h2>
                         </div>
                     </div>
                 </div>
@@ -92,14 +92,14 @@ const BusinessIntel = ({ masterData }) => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 
                 <div className="bg-white p-10 rounded-[4rem] border-4 border-slate-50 shadow-xl relative overflow-hidden group">
-                    <p className="text-[10px] font-black uppercase tracking-[0.4em] text-black dark:text-white mb-4">উৎপাদন আউটপুট</p>
-                    <h3 className="text-5xl font-black italic tracking-tighter text-black mb-2">{(stats.totalProduced + stats.totalPata).toLocaleString()}</h3>
-                    <p className="text-[10px] font-black uppercase tracking-widest text-black dark:text-white">সর্বমোট তৈরি ইউনিট (পিস)</p>
+                    <p className="text-[10px] font-black uppercase tracking-[0.4em] text-black dark:text-white dark:text-white mb-4">উৎপাদন আউটপুট</p>
+                    <h3 className="text-5xl font-black italic tracking-tighter text-black dark:text-white mb-2">{(stats.totalProduced + stats.totalPata).toLocaleString()}</h3>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-black dark:text-white dark:text-white">সর্বমোট তৈরি ইউনিট (পিস)</p>
                     <TrendingUp className="absolute bottom-[-10%] right-[-5%] text-slate-100 opacity-75" size={120} />
                 </div>
 
                 <div className="bg-white p-10 rounded-[4rem] border-4 border-slate-50 shadow-xl relative overflow-hidden">
-                    <p className="text-[10px] font-black uppercase tracking-[0.4em] text-black dark:text-white mb-4">কাজের দক্ষতা (Efficiency)</p>
+                    <p className="text-[10px] font-black uppercase tracking-[0.4em] text-black dark:text-white dark:text-white mb-4">কাজের দক্ষতা (Efficiency)</p>
                     <div className="flex items-end gap-4">
                         <h3 className="text-7xl font-black italic tracking-tighter text-black">{stats.efficiency}%</h3>
                         <div className="mb-4 space-y-1">
@@ -130,7 +130,7 @@ const BusinessIntel = ({ masterData }) => {
                         {stats.topDesigns.map(([name, qty], idx) => (
                             <div key={idx} className="flex items-center justify-between p-6 bg-slate-50 rounded-3xl group hover:bg-black hover:text-white transition-all">
                                 <div className="flex items-center gap-6">
-                                    <span className="w-10 h-10 flex items-center justify-center bg-white rounded-xl text-black font-black text-xs shadow-sm">#{idx + 1}</span>
+                                    <span className="w-10 h-10 flex items-center justify-center bg-white rounded-xl text-black dark:text-white font-black text-xs shadow-sm">#{idx + 1}</span>
                                     <p className="text-xl font-black uppercase italic">{name}</p>
                                 </div>
                                 <div className="text-right">
@@ -139,7 +139,7 @@ const BusinessIntel = ({ masterData }) => {
                                 </div>
                             </div>
                         ))}
-                        {stats.topDesigns.length === 0 && <p className="text-center py-20 text-black dark:text-white font-black uppercase tracking-[0.5em] italic">কোনো প্রোডাকশন ডেটা নেই</p>}
+                        {stats.topDesigns.length === 0 && <p className="text-center py-20 text-black dark:text-white dark:text-white font-black uppercase tracking-[0.5em] italic">কোনো প্রোডাকশন ডেটা নেই</p>}
                     </div>
                 </div>
 
@@ -155,12 +155,12 @@ const BusinessIntel = ({ masterData }) => {
                             {stats.pataSummary.map((item, idx) => (
                                 <div key={idx} className="flex items-center justify-between p-6 border-2 border-slate-50 rounded-3xl bg-slate-50/50 italic group hover:border-black transition-all">
                                     <div>
-                                        <p className="text-xl font-black text-black uppercase">{item.design}</p>
-                                        <p className="text-[10px] font-black text-black dark:text-white uppercase mt-1">{item.color} • {item.type}</p>
+                                        <p className="text-xl font-black text-black dark:text-white uppercase">{item.design}</p>
+                                        <p className="text-[10px] font-black text-black dark:text-white dark:text-white uppercase mt-1">{item.color} • {item.type}</p>
                                     </div>
                                     <div className="flex items-center gap-6">
                                         <div className="text-right">
-                                            <p className="text-xs font-black text-black dark:text-white uppercase">ব্যালেন্স পিস</p>
+                                            <p className="text-xs font-black text-black dark:text-white dark:text-white uppercase">ব্যালেন্স পিস</p>
                                             <p className={`text-4xl font-black italic tracking-tighter leading-none ${item.balance > 0 ? 'text-black' : 'text-rose-500'}`}>{item.balance}</p>
                                         </div>
                                     </div>
@@ -180,17 +180,17 @@ const BusinessIntel = ({ masterData }) => {
                             <h4 className="text-2xl font-black uppercase italic tracking-tighter flex items-center gap-4 text-black">
                                 <TrendingUp className="text-emerald-500" /> ফুরিয়ে যাওয়ার পূর্বাভাস (Intel)
                             </h4>
-                            <span className="px-6 py-2 bg-slate-50 text-black dark:text-white rounded-full text-[10px] font-black uppercase tracking-widest">ট্রেকিং হচ্ছে</span>
+                            <span className="px-6 py-2 bg-slate-50 text-black dark:text-white dark:text-white rounded-full text-[10px] font-black uppercase tracking-widest">ট্রেকিং হচ্ছে</span>
                         </div>
                         <div className="grid grid-cols-1 gap-4 overflow-y-auto max-h-[400px] pr-2 custom-scrollbar">
                             {stats.depletionTrends.sort((a,b) => (a.daysLeft === 'INF' ? 999 : a.daysLeft) - (b.daysLeft === 'INF' ? 999 : b.daysLeft)).map((item, idx) => (
                                 <div key={idx} className="flex items-center justify-between p-6 border-2 border-slate-50 rounded-3xl bg-slate-50/50 italic group hover:border-black transition-all">
                                     <div className="flex-1">
-                                        <p className="text-xl font-black text-black uppercase">{item.name}</p>
-                                        <p className="text-[10px] font-black text-black dark:text-white uppercase mt-1">গড় ব্যবহার: {item.dailyBurn} / দিন</p>
+                                        <p className="text-xl font-black text-black dark:text-white uppercase">{item.name}</p>
+                                        <p className="text-[10px] font-black text-black dark:text-white dark:text-white uppercase mt-1">গড় ব্যবহার: {item.dailyBurn} / দিন</p>
                                     </div>
                                     <div className="text-right">
-                                        <p className="text-[9px] font-black uppercase text-black dark:text-white">ফুরিয়ে যাবে প্রায়</p>
+                                        <p className="text-[9px] font-black uppercase text-black dark:text-white dark:text-white">ফুরিয়ে যাবে প্রায়</p>
                                         <p className={`text-4xl font-black italic tracking-tighter leading-none ${item.daysLeft < 3 ? 'text-rose-500' : item.daysLeft < 7 ? 'text-amber-500' : 'text-emerald-500'}`}>
                                             {item.daysLeft === 'INF' ? '∞' : `${item.daysLeft} দিন`}
                                         </p>
@@ -209,7 +209,7 @@ const BusinessIntel = ({ masterData }) => {
                         </div>
                         <div className="grid grid-cols-1 gap-4 overflow-y-auto max-h-[400px] pr-2 custom-scrollbar relative z-10">
                             {stats.topWorkers.map((w, idx) => (
-                                <div key={idx} className="flex items-center justify-between p-6 border border-white/10 rounded-3xl bg-white/5 italic group/row hover:bg-white hover:text-black transition-all">
+                                <div key={idx} className="flex items-center justify-between p-6 border border-white/10 rounded-3xl bg-white/5 italic group/row hover:bg-white hover:text-black dark:text-white transition-all">
                                     <div className="flex items-center gap-6">
                                         <div className="w-12 h-12 bg-white/10 text-white rounded-2xl flex items-center justify-center font-black group-hover/row:bg-black group-hover/row:text-white transition-all">
                                             #{idx + 1}

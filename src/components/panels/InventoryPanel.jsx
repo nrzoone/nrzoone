@@ -116,7 +116,7 @@ const InventoryPanel = ({
   };
 
   return (
-    <div className="space-y-8 pb-32 animate-fade-up px-1 md:px-4 text-black border-none">
+    <div className="space-y-8 pb-32 animate-fade-up px-1 md:px-4 text-black dark:text-white border-none">
       {/* SaaS Operational HUD */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8">
         <div className="flex items-center gap-5">
@@ -127,10 +127,10 @@ const InventoryPanel = ({
             <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
           </button>
           <div>
-            <h2 className="text-3xl font-bold tracking-tight text-black dark:text-white uppercase leading-none">
+            <h2 className="text-3xl font-bold tracking-tight text-black dark:text-white dark:text-white uppercase leading-none">
               স্টক <span className="text-blue-600">ম্যাট্রিক্স</span>
             </h2>
-            <p className="text-[10px] font-bold text-black dark:text-white uppercase tracking-widest mt-2 italic leading-none">
+            <p className="text-[10px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest mt-2 italic leading-none">
                ইনভেন্টরি হাব (INVENTORY HUB)
             </p>
           </div>
@@ -170,7 +170,7 @@ const InventoryPanel = ({
           <button
             key={v.id}
             onClick={() => setView(v.id)}
-            className={`flex-1 min-w-[120px] px-6 py-3 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all ${view === v.id ? "bg-slate-950 text-white shadow-lg" : "text-black dark:text-white hover:text-black dark:hover:text-white"}`}
+            className={`flex-1 min-w-[120px] px-6 py-3 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all ${view === v.id ? "bg-slate-950 text-white shadow-lg" : "text-black dark:text-white dark:text-white hover:text-black dark:text-white dark:hover:text-white"}`}
           >
             {v.label}
           </button>
@@ -184,15 +184,15 @@ const InventoryPanel = ({
                 {summary.length === 0 ? (
                     <div className="col-span-full py-40 flex flex-col items-center justify-center saas-card border-dashed">
                         <Box size={48} strokeWidth={1} className="text-slate-200 mb-6" />
-                        <p className="text-[10px] font-bold text-black dark:text-white uppercase tracking-[0.2em]">বর্তমানে কোনো তৈরি মাল স্টকে নেই</p>
+                        <p className="text-[10px] font-bold text-black dark:text-white dark:text-white uppercase tracking-[0.2em]">বর্তমানে কোনো তৈরি মাল স্টকে নেই</p>
                     </div>
                 ) : (
                     summary.map((item, idx) => (
                         <div key={idx} className="saas-card group hover:border-slate-950 dark:hover:border-white transition-all animate-fade-up">
                             <div className="flex justify-between items-start mb-8">
                                 <div className="space-y-1">
-                                    <h4 className="text-2xl font-bold tracking-tight text-black dark:text-white uppercase leading-none truncate max-w-[200px]">{item.design}</h4>
-                                    <p className="text-[9px] font-bold text-black dark:text-white uppercase tracking-widest italic">• {item.color} ({item.size})</p>
+                                    <h4 className="text-2xl font-bold tracking-tight text-black dark:text-white dark:text-white uppercase leading-none truncate max-w-[200px]">{item.design}</h4>
+                                    <p className="text-[9px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest italic">• {item.color} ({item.size})</p>
                                 </div>
                                 <div className="w-12 h-12 bg-slate-50 dark:bg-slate-800 rounded-xl flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
                                     <Zap size={18} className="text-blue-500" />
@@ -200,12 +200,12 @@ const InventoryPanel = ({
                             </div>
                             <div className="grid grid-cols-2 gap-4 border-t border-slate-100 dark:border-slate-800 pt-6">
                                 <div className="space-y-1">
-                                    <p className="text-[9px] font-bold text-black dark:text-white uppercase tracking-widest leading-none">বোরকা (Borka)</p>
-                                    <p className="text-3xl font-bold text-black dark:text-white leading-none">{item.borka} পিস</p>
+                                    <p className="text-[9px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest leading-none">বোরকা (Borka)</p>
+                                    <p className="text-3xl font-bold text-black dark:text-white dark:text-white leading-none">{item.borka} পিস</p>
                                 </div>
                                 <div className="space-y-1 border-l border-slate-100 dark:border-slate-800 pl-4">
-                                    <p className="text-[9px] font-bold text-black dark:text-white uppercase tracking-widest leading-none">হিজাব (Hijab)</p>
-                                    <p className="text-3xl font-bold text-black dark:text-white leading-none">{item.hijab} পিস</p>
+                                    <p className="text-[9px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest leading-none">হিজাব (Hijab)</p>
+                                    <p className="text-3xl font-bold text-black dark:text-white dark:text-white leading-none">{item.hijab} পিস</p>
                                 </div>
                             </div>
                         </div>
@@ -218,7 +218,7 @@ const InventoryPanel = ({
             <div className="space-y-8">
                 <div className="saas-card !p-3 flex items-center bg-white dark:bg-slate-900 border-slate-100 dark:border-slate-800">
                     <div className="relative flex-1 group">
-                        <Search size={16} className="absolute left-5 top-1/2 -translate-y-1/2 text-black dark:text-white group-focus-within:text-blue-600 transition-colors" />
+                        <Search size={16} className="absolute left-5 top-1/2 -translate-y-1/2 text-black dark:text-white dark:text-white group-focus-within:text-blue-600 transition-colors" />
                         <input
                             placeholder="কাঁচামাল অনুসন্ধান করুন (Search Inventory...)"
                             className="premium-input !pl-14 !h-12 !text-[11px] !border-none !bg-transparent"
@@ -232,22 +232,22 @@ const InventoryPanel = ({
                     {filteredInventory.length === 0 ? (
                         <div className="col-span-full py-32 flex flex-col items-center justify-center saas-card border-dashed">
                             <Database size={48} className="text-slate-100 mb-4" />
-                            <p className="text-[10px] font-bold text-black dark:text-white uppercase tracking-widest">কোনো কাঁচামাল পাওয়া যায়নি</p>
+                            <p className="text-[10px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest">কোনো কাঁচামাল পাওয়া যায়নি</p>
                         </div>
                     ) : (
                         filteredInventory.map((item, idx) => (
                             <div key={idx} className="saas-card border-transparent hover:border-slate-950 dark:hover:border-white transition-all group">
-                                <h4 className="text-lg font-bold tracking-tight text-black dark:text-white uppercase truncate mb-1">
+                                <h4 className="text-lg font-bold tracking-tight text-black dark:text-white dark:text-white uppercase truncate mb-1">
                                     {item.name}
                                 </h4>
-                                <p className="text-[9px] font-bold text-black dark:text-white uppercase tracking-widest mb-6 italic truncate">
+                                <p className="text-[9px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest mb-6 italic truncate">
                                     {item.color || "STANDARD GRADE"}
                                 </p>
                                 <div className="flex items-end justify-between">
-                                    <span className={`text-4xl font-bold tracking-tighter leading-none ${item.qty <= 5 ? "text-rose-600" : "text-black dark:text-white"}`}>
+                                    <span className={`text-4xl font-bold tracking-tighter leading-none ${item.qty <= 5 ? "text-rose-600" : "text-black dark:text-white dark:text-white"}`}>
                                         {item.qty.toLocaleString()}
                                     </span>
-                                    <span className={`text-[8px] font-black py-1 px-2.5 rounded-lg tracking-[0.15em] uppercase ${item.qty <= 5 ? "bg-rose-500 text-white animate-pulse" : "bg-slate-100 dark:bg-slate-800 text-black dark:text-white"}`}>
+                                    <span className={`text-[8px] font-black py-1 px-2.5 rounded-lg tracking-[0.15em] uppercase ${item.qty <= 5 ? "bg-rose-500 text-white animate-pulse" : "bg-slate-100 dark:bg-slate-800 text-black dark:text-white dark:text-white"}`}>
                                         {item.qty <= 5 ? "অল্প (Low)" : "যথেষ্ট"}
                                     </span>
                                 </div>
@@ -263,15 +263,15 @@ const InventoryPanel = ({
                 {(masterData.whatsappRequests || []).length === 0 ? (
                     <div className="col-span-full py-40 flex flex-col items-center justify-center saas-card border-dashed">
                         <MessageSquare size={48} strokeWidth={1} className="text-slate-200 mb-6" />
-                        <p className="text-[10px] font-bold text-black dark:text-white uppercase tracking-[0.4em]">বর্তমানে কোনো রিকোয়েস্ট নেই</p>
+                        <p className="text-[10px] font-bold text-black dark:text-white dark:text-white uppercase tracking-[0.4em]">বর্তমানে কোনো রিকোয়েস্ট নেই</p>
                     </div>
                 ) : (
                     masterData.whatsappRequests.map((req, idx) => (
                         <div key={idx} className="saas-card border-l-4 border-l-blue-600 group hover:border-blue-700 transition-all animate-fade-up">
                             <div className="flex justify-between items-start mb-8">
                                 <div className="space-y-1">
-                                    <p className="text-[8px] font-bold text-black dark:text-white uppercase tracking-widest leading-none mb-1">প্রেরক (Operator)</p>
-                                    <h4 className="text-xl font-bold uppercase tracking-tight text-black dark:text-white">{req.worker}</h4>
+                                    <p className="text-[8px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest leading-none mb-1">প্রেরক (Operator)</p>
+                                    <h4 className="text-xl font-bold uppercase tracking-tight text-black dark:text-white dark:text-white">{req.worker}</h4>
                                 </div>
                                 <div className="p-2.5 bg-blue-50 dark:bg-blue-900/10 text-blue-600 rounded-xl group-hover:scale-110 transition-transform shadow-inner">
                                     <MessageSquare size={16} />
@@ -279,12 +279,12 @@ const InventoryPanel = ({
                             </div>
                             
                             <div className="bg-slate-50 dark:bg-slate-800/50 p-6 rounded-xl border border-slate-100 dark:border-slate-800 mb-8">
-                                <p className="text-[9px] font-bold text-black dark:text-white uppercase tracking-widest mb-2 italic">প্রয়োজনীয় মালামাল</p>
-                                <p className="text-2xl font-bold tracking-tight text-black dark:text-white uppercase leading-none">{req.item} <span className="text-sm text-black dark:text-white font-bold ml-2">x {req.qty}</span></p>
+                                <p className="text-[9px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest mb-2 italic">প্রয়োজনীয় মালামাল</p>
+                                <p className="text-2xl font-bold tracking-tight text-black dark:text-white dark:text-white uppercase leading-none">{req.item} <span className="text-sm text-black dark:text-white dark:text-white font-bold ml-2">x {req.qty}</span></p>
                             </div>
                             
                             <div className="flex items-center justify-between border-t border-slate-100 dark:border-slate-800 pt-6">
-                                <div className="flex items-center gap-2 text-black dark:text-white">
+                                <div className="flex items-center gap-2 text-black dark:text-white dark:text-white">
                                     <Clock size={12} />
                                     <span className="text-[9px] font-bold uppercase tracking-widest leading-none">{req.date}</span>
                                 </div>
@@ -320,8 +320,8 @@ const InventoryPanel = ({
             <div className="p-3 bg-slate-950 text-white rounded-xl transition-transform shadow-lg group-hover:-translate-x-2">
                 <ArrowLeft size={18} strokeWidth={3} />
             </div>
-            <span className="text-sm lg:text-lg font-bold tracking-tight text-black dark:text-white uppercase leading-none">
-                ড্যাশবোর্ড এ ফিরে যান <span className="text-black dark:text-white font-medium">(Return)</span>
+            <span className="text-sm lg:text-lg font-bold tracking-tight text-black dark:text-white dark:text-white uppercase leading-none">
+                ড্যাশবোর্ড এ ফিরে যান <span className="text-black dark:text-white dark:text-white font-medium">(Return)</span>
             </span>
         </button>
       </div>
@@ -336,26 +336,26 @@ const InventoryPanel = ({
                   <Database size={24} />
                 </div>
                 <div>
-                    <h3 className="text-2xl font-bold text-black dark:text-white uppercase leading-none">
+                    <h3 className="text-2xl font-bold text-black dark:text-white dark:text-white uppercase leading-none">
                         স্টক {transactionType === "in" ? "যোগ (Entry)" : "কমানো (Out)"}
                     </h3>
-                    <p className="text-[10px] font-bold text-black dark:text-white uppercase tracking-widest mt-2 italic leading-none">Inventory Adjustments Protocol</p>
+                    <p className="text-[10px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest mt-2 italic leading-none">Inventory Adjustments Protocol</p>
                 </div>
               </div>
 
               <form onSubmit={handleTransaction} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-1.5">
-                        <label className="text-[10px] font-bold text-black dark:text-white uppercase tracking-widest ml-1">আইটেম (Material)</label>
+                        <label className="text-[10px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest ml-1">আইটেম (Material)</label>
                         <input name="item" list="items-list" className="premium-input !h-12 text-sm uppercase font-bold" placeholder="MATERIAL..." required />
                     </div>
                     <div className="space-y-1.5">
-                        <label className="text-[10px] font-bold text-black dark:text-white uppercase tracking-widest ml-1">তারিখ (Date)</label>
+                        <label className="text-[10px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest ml-1">তারিখ (Date)</label>
                         <input name="date" type="date" className="premium-input !h-12 text-xs text-center !bg-slate-50 dark:!bg-slate-800/50 border-slate-200 dark:border-slate-700" defaultValue={new Date().toISOString().split("T")[0]} required />
                     </div>
                 </div>
                 <div className="space-y-1.5">
-                    <label className="text-[10px] font-bold text-black dark:text-white uppercase tracking-widest ml-1">গ্রেড / কালার (Classification)</label>
+                    <label className="text-[10px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest ml-1">গ্রেড / কালার (Classification)</label>
                     <input name="color" className="premium-input !h-12 text-sm uppercase font-bold" placeholder="E.G. GRADE-A..." />
                 </div>
 
@@ -365,7 +365,7 @@ const InventoryPanel = ({
                 </div>
 
                 <div className="flex flex-col md:flex-row gap-4 pt-4">
-                    <button type="button" onClick={() => setShowModal(false)} className="flex-1 py-4 rounded-xl font-bold text-[10px] uppercase tracking-widest bg-slate-50 dark:bg-slate-800 text-black dark:text-white hover:text-rose-500 transition-all border border-slate-100 dark:border-slate-800">বাতিল করুন</button>
+                    <button type="button" onClick={() => setShowModal(false)} className="flex-1 py-4 rounded-xl font-bold text-[10px] uppercase tracking-widest bg-slate-50 dark:bg-slate-800 text-black dark:text-white dark:text-white hover:text-rose-500 transition-all border border-slate-100 dark:border-slate-800">বাতিল করুন</button>
                     <button type="submit" className="flex-[2] py-4 rounded-xl font-bold text-[10px] uppercase tracking-widest bg-slate-950 text-white shadow-xl hover:bg-black transition-all flex items-center justify-center gap-2 italic"><ShieldCheck size={16} /> সংরক্ষণ করুন</button>
                 </div>
               </form>
@@ -390,7 +390,7 @@ const InventoryPanel = ({
         {showAIScan && (
             <div className="fixed inset-0 z-[2000] bg-slate-950/90 backdrop-blur-3xl flex items-center justify-center p-4">
                 <div className="w-full max-w-4xl bg-white dark:bg-slate-950 rounded-xl overflow-hidden shadow-[0_0_100px_rgba(37,99,235,0.2)] border border-white/10 relative animate-fade-up">
-                    <button onClick={() => setShowAIScan(false)} className="absolute top-8 right-8 p-4 bg-slate-50 dark:bg-slate-900 rounded-full hover:bg-rose-500 hover:text-white transition-all text-black dark:text-white z-50">
+                    <button onClick={() => setShowAIScan(false)} className="absolute top-8 right-8 p-4 bg-slate-50 dark:bg-slate-900 rounded-full hover:bg-rose-500 hover:text-white transition-all text-black dark:text-white dark:text-white z-50">
                         <X size={24} />
                     </button>
                     <div className="p-12 md:p-24 text-center">
@@ -399,23 +399,23 @@ const InventoryPanel = ({
                                 {identifying ? (
                                     <div className="space-y-8 flex flex-col items-center">
                                         <div className="w-24 h-24 border-[8px] border-slate-200 dark:border-slate-800 border-t-blue-600 rounded-full animate-spin"></div>
-                                        <p className="text-[10px] font-black uppercase text-black dark:text-white tracking-[0.6em] animate-pulse">Scanning Visual Matrices...</p>
+                                        <p className="text-[10px] font-black uppercase text-black dark:text-white dark:text-white tracking-[0.6em] animate-pulse">Scanning Visual Matrices...</p>
                                     </div>
                                 ) : (
                                     <div className="animate-fade-up text-center space-y-8 p-12">
                                         <div className="flex justify-center"><div className="px-6 py-2 bg-emerald-500/10 text-emerald-500 rounded-full text-[10px] font-black uppercase tracking-[0.3em] border border-emerald-500/20">Protocol Confirmed</div></div>
-                                        <h4 className="text-6xl md:text-8xl font-black italic tracking-tighter uppercase text-black dark:text-white">{masterData.designs?.[0]?.name || 'Unknown Node'}</h4>
-                                        <div className="flex justify-center gap-12 text-black dark:text-white">
-                                            <div><p className="text-[9px] font-black text-black dark:text-white uppercase tracking-widest mb-1 italic">Match Confidence</p><p className="text-3xl font-black">99.2%</p></div>
+                                        <h4 className="text-6xl md:text-8xl font-black italic tracking-tighter uppercase text-black dark:text-white dark:text-white">{masterData.designs?.[0]?.name || 'Unknown Node'}</h4>
+                                        <div className="flex justify-center gap-12 text-black dark:text-white dark:text-white">
+                                            <div><p className="text-[9px] font-black text-black dark:text-white dark:text-white uppercase tracking-widest mb-1 italic">Match Confidence</p><p className="text-3xl font-black">99.2%</p></div>
                                             <div className="w-px h-10 bg-slate-200 dark:bg-slate-800"></div>
-                                            <div><p className="text-[9px] font-black text-black dark:text-white uppercase tracking-widest mb-1 italic">Classification</p><p className="text-3xl font-black truncate">PREMIUM SERIES</p></div>
+                                            <div><p className="text-[9px] font-black text-black dark:text-white dark:text-white uppercase tracking-widest mb-1 italic">Classification</p><p className="text-3xl font-black truncate">PREMIUM SERIES</p></div>
                                         </div>
                                     </div>
                                 )}
                             </div>
                             <div className="absolute top-0 left-0 w-full h-[2px] bg-blue-600 animate-scan shadow-[0_0_20px_blue]"></div>
                         </div>
-                        <p className="mt-12 text-[9px] font-black text-black dark:text-white uppercase tracking-[0.5em] italic leading-none">NRZO0NE Core Vision Architecture v5.0 • Live Stream Active</p>
+                        <p className="mt-12 text-[9px] font-black text-black dark:text-white dark:text-white uppercase tracking-[0.5em] italic leading-none">NRZO0NE Core Vision Architecture v5.0 • Live Stream Active</p>
                     </div>
                 </div>
             </div>

@@ -49,8 +49,8 @@ const MenuPanel = ({ setActivePanel, user, t }) => {
                             <LayoutGrid size={48} className="md:w-16 md:h-16" />
                         </div>
                         <div className="space-y-2">
-                            <h1 className="text-6xl md:text-9xl font-black italic tracking-tightest uppercase leading-[0.8] text-black dark:text-white">মেনু হাব</h1>
-                            <p className="text-[11px] md:text-[13px] font-black text-black dark:text-white uppercase tracking-[0.6em] italic">NRZONE NEURAL INTERFACE V5.0 — ELITE ACCESS</p>
+                            <h1 className="text-6xl md:text-9xl font-black italic tracking-tightest uppercase leading-[0.8] text-black dark:text-white dark:text-white">মেনু হাব</h1>
+                            <p className="text-[11px] md:text-[13px] font-black text-black dark:text-white dark:text-white uppercase tracking-[0.6em] italic">NRZONE NEURAL INTERFACE V5.0 — ELITE ACCESS</p>
                         </div>
                     </div>
                     <button 
@@ -75,8 +75,8 @@ const MenuPanel = ({ setActivePanel, user, t }) => {
                         return (
                             <div key={i} className="animate-elite" style={{ animationDelay: `${i * 150}ms` }}>
                                 <div className="flex items-center gap-10 mb-12 md:mb-16 opacity-40">
-                                    <h3 className="text-[12px] md:text-[14px] font-black uppercase tracking-[0.8em] text-black whitespace-nowrap italic">{cat.title}</h3>
-                                    <div className="h-px bg-black flex-1 opacity-20"></div>
+                                    <h3 className="text-[12px] md:text-[14px] font-black uppercase tracking-[0.8em] text-black dark:text-white dark:text-white whitespace-nowrap italic">{cat.title}</h3>
+                                    <div className="h-px bg-black dark:bg-white flex-1 opacity-20"></div>
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 md:gap-14">
                                     {filteredItems.map((item, idx) => (
@@ -91,11 +91,11 @@ const MenuPanel = ({ setActivePanel, user, t }) => {
                                                     {item.icon}
                                                 </div>
                                                 <div className="space-y-2">
-                                                    <h4 className="text-3xl md:text-5xl font-black italic uppercase tracking-tightest text-black leading-none">{item.label}</h4>
-                                                    <p className="text-[11px] font-black text-black dark:text-white uppercase tracking-widest leading-none italic">{item.desc}</p>
+                                                    <h4 className="text-3xl md:text-5xl font-black italic uppercase tracking-tightest text-black dark:text-white dark:text-white leading-none">{item.label}</h4>
+                                                    <p className="text-[11px] font-black text-black dark:text-white dark:text-white uppercase tracking-widest leading-none italic">{item.desc}</p>
                                                 </div>
                                             </div>
-                                            <ChevronRight size={32} className="text-slate-200 group-hover:text-black group-hover:translate-x-4 transition-all shrink-0" />
+                                            <ChevronRight size={32} className="text-slate-400 dark:text-slate-500 group-hover:text-black dark:text-white dark:group-hover:text-white group-hover:translate-x-4 transition-all shrink-0" />
                                         </button>
                                     ))}
                                 </div>
@@ -104,7 +104,7 @@ const MenuPanel = ({ setActivePanel, user, t }) => {
                     })}
                 </div>
 
-                <div className="mt-48 pt-20 border-t border-black/5 flex flex-col md:flex-row justify-between items-center opacity-20 gap-10 italic">
+                <div className="mt-48 pt-20 border-t border-black/5 dark:border-white/5 flex flex-col md:flex-row justify-between items-center opacity-40 gap-10 italic text-black dark:text-white dark:text-white">
                     <p className="text-[11px] font-black uppercase tracking-[0.6em]">NRZONE NEURAL ENGINE V5.2 // SECURE BOOTH</p>
                     <div className="flex gap-16">
                         <button className="text-[11px] font-black uppercase tracking-[0.6em] hover:opacity-100 italic">SYSTEM LOGS</button>
