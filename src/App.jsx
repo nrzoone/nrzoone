@@ -108,22 +108,22 @@ class ErrorBoundary extends React.Component {
                         <div className="absolute inset-0 blur-3xl bg-amber-500 opacity-20 animate-pulse"></div>
                     </div>
                     <h1 className="text-3xl font-black uppercase tracking-tighter mb-4">রিমোট সিস্টেম প্রটেকশন</h1>
-                    <p className="text-slate-400 text-sm max-w-md mb-12 uppercase tracking-widest leading-relaxed">
+                    <p className="text-black dark:text-slate-400 text-sm max-w-md mb-12 uppercase tracking-widest leading-relaxed">
                         সিস্টেমে একটি গুরুতর ত্রুটি পাওয়া গেছে। ডাটা সুরক্ষিত রাখতে অপারেশন সাময়িকভাবে বন্ধ করা হয়েছে।
                     </p>
                     <div className="bg-slate-900 border border-slate-800 p-6 rounded-2xl mb-12 w-full max-w-lg text-left overflow-auto max-h-40">
                         <p className="text-rose-500 text-xs font-mono leading-relaxed">{this.state.error?.toString()}</p>
                     </div>
-                    <div className="flex flex-wrap justify-center gap-4">
+                    <div className="flex gap-4 w-full max-w-lg">
                         <button
                             onClick={() => window.location.reload()}
-                            className="bg-white text-black px-10 py-4 rounded-xl font-bold uppercase text-xs tracking-widest hover:scale-105 active:scale-95 transition-all"
+                            className="flex-1 bg-white border-2 border-black text-black px-10 py-5 rounded-xl font-black uppercase text-xs tracking-widest hover:bg-black hover:text-white transition-all shadow-xl"
                         >
                             রিবুট করুন
                         </button>
                         <button
                             onClick={this.handleRecover}
-                            className="bg-slate-800 text-white px-10 py-4 rounded-xl font-bold uppercase text-xs tracking-widest hover:bg-rose-600 transition-all"
+                            className="flex-1 bg-rose-600 text-white px-10 py-5 rounded-xl font-black uppercase text-xs tracking-widest hover:bg-rose-700 transition-all shadow-xl shadow-rose-600/20"
                         >
                             ডাটা ক্লিন ও রিস্টার্ট
                         </button>
@@ -196,7 +196,7 @@ const LoginView = ({ onLogin, masterData }) => {
                         <h2 className="text-5xl md:text-7xl font-black tracking-tight text-white uppercase leading-tight">
                             NRZOONE<br/><span className="text-blue-500">FACTORY ERP</span>
                         </h2>
-                        <p className="text-[11px] font-bold tracking-[0.6em] text-slate-500 uppercase">প্রফেশনাল ম্যানুফ্যাকচারিং সিস্টেম</p>
+                        <p className="text-[11px] font-bold tracking-[0.6em] text-black dark:text-slate-400 uppercase">প্রফেশনাল ম্যানুফ্যাকচারিং সিস্টেম</p>
                         <div className="h-1.5 w-24 bg-white/10 mx-auto rounded-full mt-10 overflow-hidden">
                            <div className="h-full bg-blue-500 w-1/2 animate-[shimmer_2s_infinite]"></div>
                         </div>
@@ -211,13 +211,13 @@ const LoginView = ({ onLogin, masterData }) => {
             <div className="w-full md:w-1/2 p-6 md:p-24 flex items-center justify-center relative">
                  <div className="w-full max-w-md bg-white rounded-3xl p-10 md:p-14 shadow-2xl space-y-10 border border-slate-100">
                     <div className="space-y-2">
-                        <h3 className="text-3xl font-black text-slate-900 tracking-tight">লগইন করুন</h3>
-                        <p className="text-xs font-bold uppercase text-slate-400 tracking-widest">Secure Access Required</p>
+                        <h3 className="text-3xl font-black text-black tracking-tight">লগইন করুন</h3>
+                        <p className="text-xs font-bold uppercase text-black dark:text-slate-400 tracking-widest">Secure Access Required</p>
                     </div>
 
                     <div className="space-y-8">
                         <div className="space-y-3">
-                            <label className="text-[11px] font-bold uppercase text-slate-500 tracking-wider block ml-1">ইউজার আইডি (ID)</label>
+                            <label className="text-[11px] font-bold uppercase text-black dark:text-slate-400 tracking-wider block ml-1">ইউজার আইডি (ID)</label>
                             <input 
                                 type="text"
                                 value={id}
@@ -228,7 +228,7 @@ const LoginView = ({ onLogin, masterData }) => {
                         </div>
 
                         <div className="space-y-3">
-                            <label className="text-[11px] font-bold uppercase text-slate-500 tracking-wider block ml-1">পাসওয়ার্ড (Password)</label>
+                            <label className="text-[11px] font-bold uppercase text-black dark:text-slate-400 tracking-wider block ml-1">পাসওয়ার্ড (Password)</label>
                             <div className="relative">
                                 <input 
                                     type={showPass ? "text" : "password"}
@@ -237,7 +237,7 @@ const LoginView = ({ onLogin, masterData }) => {
                                     className="premium-input !py-4"
                                     placeholder="••••••••"
                                 />
-                                <button onClick={() => setShowPass(!showPass)} className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-900 transition-colors">
+                                <button onClick={() => setShowPass(!showPass)} className="absolute right-5 top-1/2 -translate-y-1/2 text-black dark:text-slate-400 hover:text-black transition-colors">
                                     {showPass ? <EyeOff size={20} /> : <Eye size={20} />}
                                 </button>
                             </div>
@@ -278,13 +278,13 @@ const TrackingView = ({ trackId, masterData, onClose, isDarkMode }) => {
 
                 <div className="bg-black text-white p-12 rounded-[5rem] shadow-3xl text-center flex flex-col items-center">
                     <Logo size="md" white={true} customUrl={masterData.settings?.logo} />
-                    <p className="text-[10px] font-black uppercase tracking-[0.6em] text-slate-500 mt-6 mb-6">Status</p>
+                    <p className="text-[10px] font-black uppercase tracking-[0.6em] text-black dark:text-slate-400 mt-6 mb-6">Status</p>
                     <h2 className="text-4xl md:text-7xl font-black uppercase italic tracking-tighter">{item.status === 'Pending' ? 'In Production' : 'Completed'}</h2>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-12 border-t border-white/10 pt-12">
-                        <div><p className="text-[8px] text-slate-500 uppercase tracking-widest mb-1 font-black underline">Lot</p><p className="font-black">#{item.lotNo}</p></div>
-                        <div><p className="text-[8px] text-slate-500 uppercase tracking-widest mb-1 font-black underline">Worker</p><p className="font-black uppercase">{item.worker}</p></div>
-                        <div><p className="text-[8px] text-slate-500 uppercase tracking-widest mb-1 font-black underline">Design</p><p className="font-black uppercase">{item.design}</p></div>
-                        <div><p className="text-[8px] text-slate-500 uppercase tracking-widest mb-1 font-black underline">Qty</p><p className="font-black">{(item.issueBorka || item.pataQty || 0)} Pcs</p></div>
+                        <div><p className="text-[8px] text-black dark:text-slate-400 uppercase tracking-widest mb-1 font-black underline">Lot</p><p className="font-black">#{item.lotNo}</p></div>
+                        <div><p className="text-[8px] text-black dark:text-slate-400 uppercase tracking-widest mb-1 font-black underline">Worker</p><p className="font-black uppercase">{item.worker}</p></div>
+                        <div><p className="text-[8px] text-black dark:text-slate-400 uppercase tracking-widest mb-1 font-black underline">Design</p><p className="font-black uppercase">{item.design}</p></div>
+                        <div><p className="text-[8px] text-black dark:text-slate-400 uppercase tracking-widest mb-1 font-black underline">Qty</p><p className="font-black">{(item.issueBorka || item.pataQty || 0)} Pcs</p></div>
                     </div>
                 </div>
 
@@ -384,14 +384,14 @@ const Sidebar = ({ activePanel, setActivePanel, user, setUser, isOpen, setIsSide
 
                     return (
                         <nav key={category.id} className="space-y-2">
-                            <p className="px-5 text-[10px] font-black text-slate-500 tracking-[0.3em] mb-4 uppercase">{category.label}</p>
+                            <p className="px-5 text-[10px] font-black text-black dark:text-slate-400 tracking-[0.3em] mb-4 uppercase">{category.label}</p>
                             {filteredItems.map(item => {
                                 const Icon = item.icon;
                                 const active = activePanel === item.id;
                                 return (
                                     <button
                                         key={item.id} onClick={() => navigate(item.id)}
-                                        className={`w-full flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all group relative ${active ? "bg-blue-600 text-white shadow-xl shadow-blue-900/20" : "text-slate-400 hover:text-white hover:bg-white/[0.05]"}`}
+                                        className={`w-full flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all group relative ${active ? "bg-blue-600 text-white shadow-xl shadow-blue-900/20" : "text-black dark:text-slate-400 hover:text-white hover:bg-white/[0.05]"}`}
                                     >
                                         <div className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all ${active ? "bg-white/20" : "bg-white/5 group-hover:bg-white/10"}`}>
                                             <Icon size={18} strokeWidth={active ? 2.5 : 2} className="shrink-0" />
@@ -415,7 +415,7 @@ const Sidebar = ({ activePanel, setActivePanel, user, setUser, isOpen, setIsSide
                         setUser(null);
                         localStorage.removeItem('nrzone_user');
                     }} 
-                    className="w-full flex items-center gap-4 p-4 rounded-xl text-slate-400 hover:text-rose-500 transition-all hover:bg-rose-500/10 group"
+                    className="w-full flex items-center gap-4 p-4 rounded-xl text-black dark:text-slate-400 hover:text-rose-500 transition-all hover:bg-rose-500/10 group"
                 >
                     <div className="w-9 h-9 rounded-xl bg-white/5 flex items-center justify-center group-hover:bg-rose-500/20">
                         <LogOut size={18} />
@@ -594,12 +594,12 @@ const AppContent = () => {
                                     <Menu size={20} />
                                 </button>
                                 <div className="space-y-0.5">
-                                    <h2 className="text-xl md:text-2xl font-bold tracking-tight text-slate-950 dark:text-white uppercase leading-none">
+                                    <h2 className="text-xl md:text-2xl font-bold tracking-tight text-black dark:text-white uppercase leading-none">
                                         {t?.(activePanel?.toLowerCase()) || activePanel}
                                     </h2>
                                     <div className="flex items-center gap-2">
                                         <div className={`w-1.5 h-1.5 rounded-full ${syncStatus === 'syncing' ? 'bg-amber-500 animate-pulse' : syncStatus === 'error' ? 'bg-rose-500' : 'bg-emerald-500'}`}></div>
-                                        <span className="text-[9px] font-bold uppercase tracking-widest text-slate-400">
+                                        <span className="text-[9px] font-bold uppercase tracking-widest text-black dark:text-slate-400">
                                             {syncStatus === 'syncing' ? 'সিঙ্কিং হচ্ছে...' : syncStatus === 'error' ? 'ত্রুটি' : 'সিস্টেম সুরক্ষিত (V5.0)'}
                                         </span>
                                     </div>
@@ -608,8 +608,8 @@ const AppContent = () => {
 
                             <div className="flex items-center gap-3 md:gap-6">
                                 <div className="hidden sm:flex flex-col items-end pr-5 border-r border-slate-100 dark:border-slate-800">
-                                    <p className="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-0.5">অনুমোদিত ইউজার</p>
-                                    <p className="text-sm font-bold uppercase text-slate-950 dark:text-white leading-none">{user?.name || 'অпераটর'}</p>
+                                    <p className="text-[9px] font-bold uppercase tracking-widest text-black dark:text-slate-400 mb-0.5">অনুমোদিত ইউজার</p>
+                                    <p className="text-sm font-bold uppercase text-black dark:text-white leading-none">{user?.name || 'অпераটর'}</p>
                                 </div>
                                 <div className="flex gap-2">
                                     <button 
@@ -617,7 +617,7 @@ const AppContent = () => {
                                         className="w-10 h-10 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-center hover:bg-slate-50 dark:hover:bg-slate-700 transition-all group"
                                         title="সেটিংস"
                                     >
-                                        <Settings size={18} className="group-hover:rotate-45 transition-transform text-slate-600 dark:text-slate-300" />
+                                        <Settings size={18} className="group-hover:rotate-45 transition-transform text-black dark:text-slate-300" />
                                     </button>
                                     <button 
                                         onClick={() => setIsDarkMode(!isDarkMode)}
@@ -634,22 +634,22 @@ const AppContent = () => {
                             <div className="max-w-[1400px] mx-auto space-y-8 animate-fade-up">
                                 {activePanel === "Menu" && <MenuPanel masterData={masterData} setActivePanel={setActivePanel} user={user} t={t} />}
                                 {activePanel === "Overview" && <Overview masterData={masterData} user={user} setActivePanel={setActivePanel} t={t} syncStatus={syncStatus} />}
-                                {activePanel === "Cutting" && <CuttingPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} logAction={logAction} setActivePanel={setActivePanel} />}
+                                {activePanel === "Cutting" && <CuttingPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} logAction={logAction} setActivePanel={setActivePanel} t={t} />}
                                 {activePanel === "Swing" && <FactoryPanel type="sewing" masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} setActivePanel={setActivePanel} />}
                                 {activePanel === "Stone" && <FactoryPanel type="stone" masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} setActivePanel={setActivePanel} />}
                                 {activePanel === "Pata" && <PataFactoryPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} setActivePanel={setActivePanel} />}
-                                {activePanel === "Outside" && <OutsideWorkPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} />}
-                                {activePanel === "Stock" && <InventoryPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} />}
+                                {activePanel === "Outside" && <OutsideWorkPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} setActivePanel={setActivePanel} />}
+                                {activePanel === "Stock" && <InventoryPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} setActivePanel={setActivePanel} logAction={logAction} />}
                                 {activePanel === "Accounts" && <ExpensePanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} setActivePanel={setActivePanel} />}
-                                {activePanel === "Attendance" && <AttendancePanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} />}
-                                {activePanel === "WorkerSummary" && <WorkerSummary masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} />}
-                                {activePanel === "Reports" && <ReportsPanel masterData={masterData} t={t} />}
-                                {activePanel === "Settings" && <SettingsPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} syncStatus={syncStatus} user={user} />}
+                                {activePanel === "Attendance" && <AttendancePanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} setActivePanel={setActivePanel} />}
+                                {activePanel === "WorkerSummary" && <WorkerSummary masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} setActivePanel={setActivePanel} />}
+                                {activePanel === "Reports" && <ReportsPanel masterData={masterData} t={t} user={user} setActivePanel={setActivePanel} logAction={logAction} />}
+                                {activePanel === "Settings" && <SettingsPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} syncStatus={syncStatus} user={user} t={t} setActivePanel={setActivePanel} logs={logs} downloadBackup={downloadBackup} />}
                                 {activePanel === "Security" && <SecurityPanel logs={logs} downloadBackup={downloadBackup} user={user} t={t} />}
                                 {activePanel === "Notifications" && (
                                     <div className="space-y-8 pb-24 animate-fade-up px-2">
                                          <div className="flex justify-between items-center mb-10">
-                                            <h1 className="text-3xl font-bold tracking-tight text-slate-950 dark:text-white uppercase leading-none">নোটিফিকেশন <span className="text-blue-600">প্যানেল</span></h1>
+                                            <h1 className="text-3xl font-bold tracking-tight text-black dark:text-white uppercase leading-none">নোটিফিকেশন <span className="text-blue-600">প্যানেল</span></h1>
                                             <button 
                                                 onClick={() => setMasterData(p => ({ ...p, notifications: (p.notifications || []).map(n => ({ ...n, read: true })) }))} 
                                                 className="px-5 py-2.5 bg-slate-100 dark:bg-slate-800 rounded-xl text-[10px] font-bold uppercase tracking-widest hover:bg-slate-950 hover:text-white transition-all border border-slate-200 dark:border-slate-700 shadow-sm"
@@ -663,12 +663,12 @@ const AppContent = () => {
                                             ) : (
                                                 (masterData.notifications || []).map((n, i) => (
                                                     <div key={i} className={`saas-card flex items-center gap-6 group transition-all ${n.read ? 'opacity-80 grayscale-[0.5]' : 'border-blue-600/30 bg-blue-600/5'}`}>
-                                                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 shadow-lg ${n.read ? 'bg-slate-100 dark:bg-slate-800 text-slate-400' : 'bg-blue-600 text-white'}`}>
+                                                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 shadow-lg ${n.read ? 'bg-slate-100 dark:bg-slate-800 text-black dark:text-slate-400' : 'bg-blue-600 text-white'}`}>
                                                             {n.type === 'task' ? <Activity size={20} /> : <Shield size={20} />}
                                                         </div>
                                                         <div className="flex-1 space-y-1">
-                                                            <h4 className="text-lg font-bold text-slate-950 dark:text-white uppercase leading-none">{n.title}</h4>
-                                                            <p className="text-[11px] font-medium text-slate-500 dark:text-slate-400">{n.message}</p>
+                                                            <h4 className="text-lg font-bold text-black dark:text-white uppercase leading-none">{n.title}</h4>
+                                                            <p className="text-[11px] font-medium text-black dark:text-slate-400 dark:text-black dark:text-slate-400">{n.message}</p>
                                                             <p className="text-[9px] font-bold uppercase tracking-widest opacity-40">{new Date(n.timestamp).toLocaleString()}</p>
                                                         </div>
                                                     </div>
@@ -712,7 +712,7 @@ const AppContent = () => {
                 </button>
                    <button 
                        onClick={() => setActivePanel('Notifications')}
-                       className="w-14 h-14 rounded-2xl bg-white dark:bg-slate-800 shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all text-slate-500 dark:text-slate-400 relative border-4 border-white dark:border-slate-900"
+                       className="w-14 h-14 rounded-2xl bg-white dark:bg-slate-800 shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all text-black dark:text-slate-400 dark:text-black dark:text-slate-400 relative border-4 border-white dark:border-slate-900"
                        title="নোটিফিকেশন"
                    >
                        <Bell size={24} />
@@ -725,7 +725,7 @@ const AppContent = () => {
 
                    <button 
                        onClick={() => { setIsListening(!isListening); playSound(); }}
-                   className={`w-14 h-14 rounded-xl shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all border-4 border-white dark:border-slate-900 ${isListening ? 'bg-rose-600 animate-pulse text-white' : 'bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400'}`}
+                   className={`w-14 h-14 rounded-xl shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all border-4 border-white dark:border-slate-900 ${isListening ? 'bg-rose-600 animate-pulse text-white' : 'bg-white dark:bg-slate-800 text-black dark:text-slate-400 dark:text-black dark:text-slate-400'}`}
                    title="ভয়েস কমান্ড"
                 >
                     <Activity size={24} />

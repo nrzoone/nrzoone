@@ -129,7 +129,7 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t, logAction }) => {
     };
 
     return (
-      <div className="min-h-screen bg-white p-8 md:p-12 text-slate-950 font-sans italic selection:bg-slate-900 selection:text-white">
+      <div className="min-h-screen bg-white p-8 md:p-12 text-black font-sans italic selection:bg-slate-900 selection:text-white">
         <style>{`
             @media print {
                 .no-print { display: none !important; }
@@ -141,7 +141,7 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t, logAction }) => {
         <div className="no-print flex justify-between items-center mb-12 max-w-5xl mx-auto bg-slate-50 dark:bg-slate-900/50 p-6 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm">
           <button
             onClick={() => setIsPrinting(false)}
-            className="px-8 py-3.5 bg-white dark:bg-slate-900 text-slate-950 dark:text-white font-bold uppercase text-[10px] rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm hover:bg-slate-950 hover:text-white transition-all flex items-center gap-3"
+            className="px-8 py-3.5 bg-white dark:bg-slate-900 text-black dark:text-white font-bold uppercase text-[10px] rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm hover:bg-slate-950 hover:text-white transition-all flex items-center gap-3"
           >
             <ArrowLeft size={16} /> ফিরে যান (Cancel)
           </button>
@@ -167,12 +167,12 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t, logAction }) => {
               <h1 className="text-4xl font-black tracking-tight leading-none mb-3 uppercase">
                 NRZO0NE <span className="text-blue-600">FACTORY ERP</span>
               </h1>
-              <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-slate-400">
+              <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-black dark:text-slate-400">
                 Official Audit Registry — {transactionTab.toUpperCase()} UNIT
               </p>
             </div>
             <div className="text-right">
-              <p className="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-1">
+              <p className="text-[9px] font-bold uppercase tracking-widest text-black dark:text-slate-400 mb-1">
                 Authenticated On
               </p>
               <p className="text-lg font-bold">
@@ -182,7 +182,7 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t, logAction }) => {
           </div>
 
           <table className="w-full text-left">
-            <thead className="border-b border-slate-100 text-[9px] font-bold uppercase tracking-widest text-slate-400">
+            <thead className="border-b border-slate-100 text-[9px] font-bold uppercase tracking-widest text-black dark:text-slate-400">
               <tr>
                 <th className="py-6">Date</th>
                 <th className="py-6">Entity / Details</th>
@@ -193,17 +193,17 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t, logAction }) => {
             <tbody className="divide-y divide-slate-50">
               {printData.map((item, idx) => (
                 <tr key={idx} className="text-sm font-bold">
-                  <td className="py-6 text-slate-500">{item.date}</td>
+                  <td className="py-6 text-black dark:text-slate-400">{item.date}</td>
                   <td className="py-6 uppercase">
-                    <p className="text-base text-slate-900">
+                    <p className="text-base text-black">
                       {item.worker || item.cutterName || item.description || item.task}
                     </p>
-                    <p className="text-[9px] text-slate-400 mt-0.5">
+                    <p className="text-[9px] text-black dark:text-slate-400 mt-0.5">
                       {item.design ? `${item.design} (${item.color})` : item.department || item.source || "Factory Registry"}
                     </p>
                   </td>
                   <td className="py-6 text-center">
-                    <span className="text-[8px] uppercase tracking-widest px-3 py-1 rounded-md border border-slate-100 bg-slate-50 text-slate-500 font-bold leading-none">
+                    <span className="text-[8px] uppercase tracking-widest px-3 py-1 rounded-md border border-slate-100 bg-slate-50 text-black dark:text-slate-400 font-bold leading-none">
                       {item.status || item.category || transactionTab.toUpperCase()}
                     </span>
                   </td>
@@ -227,11 +227,11 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t, logAction }) => {
 
           <div className="mt-20 pt-10 border-t border-slate-100 grid grid-cols-2 gap-20">
             <div className="space-y-4">
-              <p className="text-[8px] font-bold uppercase tracking-widest text-slate-400">Authorized Signature</p>
+              <p className="text-[8px] font-bold uppercase tracking-widest text-black dark:text-slate-400">Authorized Signature</p>
               <div className="h-0.5 w-full bg-slate-100"></div>
             </div>
             <div className="text-right">
-              <p className="text-[8px] font-bold uppercase tracking-widest text-slate-400">Total Entries</p>
+              <p className="text-[8px] font-bold uppercase tracking-widest text-black dark:text-slate-400">Total Entries</p>
               <p className="text-3xl font-bold">{printData.length}</p>
             </div>
           </div>
@@ -241,7 +241,7 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t, logAction }) => {
   }
 
   return (
-    <div className="space-y-8 pb-24 animate-fade-up px-1 md:px-2 text-slate-950">
+    <div className="space-y-8 pb-24 animate-fade-up px-1 md:px-2 text-black">
       {/* Header Area */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8">
         <div className="flex items-center gap-4">
@@ -252,10 +252,10 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t, logAction }) => {
                 <ArrowLeft size={18} />
             </button>
             <div className="space-y-1">
-                <h2 className="text-3xl font-bold tracking-tight text-slate-950 dark:text-white uppercase leading-none">
+                <h2 className="text-3xl font-bold tracking-tight text-black dark:text-white uppercase leading-none">
                     রিপোর্ট ও <span className="text-blue-600">তথ্য ভাণ্ডার</span>
                 </h2>
-                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest italic leading-none mt-1">
+                <p className="text-[10px] font-bold text-black dark:text-slate-400 uppercase tracking-widest italic leading-none mt-1">
                     Central Business Intelligence Hub
                 </p>
             </div>
@@ -270,7 +270,7 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t, logAction }) => {
         {isAdmin && (
           <button
             onClick={() => setActiveTab("intel")}
-            className={`px-8 py-3 rounded-xl font-bold uppercase text-[10px] tracking-widest transition-all whitespace-nowrap ${activeTab === "intel" ? "bg-slate-950 text-white shadow-xl" : "text-slate-400 hover:text-slate-950 dark:hover:text-white"}`}
+            className={`px-8 py-3 rounded-xl font-bold uppercase text-[10px] tracking-widest transition-all whitespace-nowrap ${activeTab === "intel" ? "bg-slate-950 text-white shadow-xl" : "text-black dark:text-slate-400 hover:text-black dark:hover:text-white"}`}
           >
             বিজনেস ইন্টেল (Admin)
           </button>
@@ -278,7 +278,7 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t, logAction }) => {
         {!isAdmin && (
           <button
             onClick={() => setActiveTab("summary")}
-            className={`px-8 py-3 rounded-xl font-bold uppercase text-[10px] tracking-widest transition-all whitespace-nowrap ${activeTab === "summary" ? "bg-slate-950 text-white shadow-xl" : "text-slate-400 hover:text-slate-950 dark:hover:text-white"}`}
+            className={`px-8 py-3 rounded-xl font-bold uppercase text-[10px] tracking-widest transition-all whitespace-nowrap ${activeTab === "summary" ? "bg-slate-950 text-white shadow-xl" : "text-black dark:text-slate-400 hover:text-black dark:hover:text-white"}`}
           >
             লেজার সামারি (Ledger)
           </button>
@@ -286,13 +286,13 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t, logAction }) => {
 
         <button
           onClick={() => setActiveTab("invoice")}
-          className={`px-8 py-3 rounded-xl font-bold uppercase text-[10px] tracking-widest transition-all whitespace-nowrap ${activeTab === "invoice" ? "bg-slate-950 text-white shadow-xl" : "text-slate-400 hover:text-slate-950 dark:hover:text-white"}`}
+          className={`px-8 py-3 rounded-xl font-bold uppercase text-[10px] tracking-widest transition-all whitespace-nowrap ${activeTab === "invoice" ? "bg-slate-950 text-white shadow-xl" : "text-black dark:text-slate-400 hover:text-black dark:hover:text-white"}`}
         >
           সাপ্তাহিক ইনভয়েস (Invoices)
         </button>
         <button
           onClick={() => setActiveTab("transactions")}
-          className={`px-8 py-3 rounded-xl font-bold uppercase text-[10px] tracking-widest transition-all whitespace-nowrap ${activeTab === "transactions" ? "bg-slate-950 text-white shadow-xl" : "text-slate-400 hover:text-slate-950 dark:hover:text-white"}`}
+          className={`px-8 py-3 rounded-xl font-bold uppercase text-[10px] tracking-widest transition-all whitespace-nowrap ${activeTab === "transactions" ? "bg-slate-950 text-white shadow-xl" : "text-black dark:text-slate-400 hover:text-black dark:hover:text-white"}`}
         >
           অডিট লগ (Audit Records)
         </button>
@@ -323,7 +323,7 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t, logAction }) => {
                   <button
                     key={t.id}
                     onClick={() => setTransactionTab(t.id)}
-                    className={`pill-tab !px-6 !py-2.5 !text-[9px] ${transactionTab === t.id ? "pill-tab-active" : "text-slate-400"}`}
+                    className={`pill-tab !px-6 !py-2.5 !text-[9px] ${transactionTab === t.id ? "pill-tab-active" : "text-black dark:text-slate-400"}`}
                   >
                     {t.label}
                   </button>
@@ -331,7 +331,7 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t, logAction }) => {
               </div>
               <div className="flex items-center gap-3 w-full xl:w-auto">
                 <div className="relative group flex-1 xl:w-80">
-                  <Search size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <Search size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-black dark:text-slate-400" />
                   <input
                     type="text"
                     placeholder="অডিট সার্চ করুন (Search)..."
@@ -352,7 +352,7 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t, logAction }) => {
 
             <div className="overflow-x-auto">
               <table className="w-full text-left">
-                <thead className="bg-slate-50 dark:bg-slate-800/50 text-[10px] font-bold uppercase tracking-widest text-slate-400 border-b border-slate-100 dark:border-slate-800">
+                <thead className="bg-slate-50 dark:bg-slate-800/50 text-[10px] font-bold uppercase tracking-widest text-black dark:text-slate-400 border-b border-slate-100 dark:border-slate-800">
                   <tr>
                     <th className="py-5 px-6">তারিখ (Date)</th>
                     <th className="py-5 px-6">বিস্তারিত (Description)</th>
@@ -365,14 +365,14 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t, logAction }) => {
                     filteredProductions.map((p, idx) => {
                       return (
                           <tr key={p.id || idx} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/20 transition-all font-bold">
-                            <td className="py-6 px-6 text-slate-950 dark:text-white text-sm">
+                            <td className="py-6 px-6 text-black dark:text-white text-sm">
                               {p.date}
                             </td>
                             <td className="py-6 px-6 uppercase">
-                              <p className="text-base text-slate-900 dark:text-white leading-none mb-1">
+                              <p className="text-base text-black dark:text-white leading-none mb-1">
                                 {p.worker}
                               </p>
-                              <p className="text-[9px] text-slate-400 italic uppercase tracking-widest">
+                              <p className="text-[9px] text-black dark:text-slate-400 italic uppercase tracking-widest">
                                 {p.design} ({p.color}) • Lot: {p.lotNo}
                               </p>
                             </td>
@@ -383,7 +383,7 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t, logAction }) => {
                                 {p.status}
                               </span>
                             </td>
-                            <td className="py-6 px-6 text-right text-xl font-bold tracking-tight text-slate-950 dark:text-white">
+                            <td className="py-6 px-6 text-right text-xl font-bold tracking-tight text-black dark:text-white">
                               {p.issueBorka + p.issueHijab}
                             </td>
                           </tr>
@@ -393,10 +393,10 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t, logAction }) => {
                   {/* Additional Tabs (Cutting, Pata, etc.) Simplified for clarity and consistency */}
                   {transactionTab === "cutting" && filteredCutting.map((c, idx) => (
                     <tr key={c.id || idx} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/20 transition-all font-bold">
-                        <td className="py-6 px-6 text-slate-400 text-sm">{c.date}</td>
+                        <td className="py-6 px-6 text-black dark:text-slate-400 text-sm">{c.date}</td>
                         <td className="py-6 px-6 uppercase">
-                            <p className="text-base text-slate-900 dark:text-white leading-none mb-1">{c.design}</p>
-                            <p className="text-[9px] text-slate-400 italic uppercase tracking-widest">{c.color} • {c.cutterName || "Manual Cut"}</p>
+                            <p className="text-base text-black dark:text-white leading-none mb-1">{c.design}</p>
+                            <p className="text-[9px] text-black dark:text-slate-400 italic uppercase tracking-widest">{c.color} • {c.cutterName || "Manual Cut"}</p>
                         </td>
                         <td className="py-6 px-6 text-center">
                             <span className="px-3 py-1 bg-slate-950 text-white rounded-md text-[8px] font-bold uppercase tracking-widest">CUTTING</span>
@@ -408,13 +408,13 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t, logAction }) => {
                   {/* Rendering logic for other tabs follows the same pattern... */}
                   {(transactionTab === "outside" ? filteredOutside : transactionTab === "pata" ? filteredPata : transactionTab === "attendance" ? filteredAttendance : transactionTab === "expense" ? filteredExpenses : []).map((item, idx) => (
                     <tr key={idx} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/20 transition-all font-bold">
-                        <td className="py-6 px-6 text-slate-400 text-sm">{item.date}</td>
+                        <td className="py-6 px-6 text-black dark:text-slate-400 text-sm">{item.date}</td>
                         <td className="py-6 px-6 uppercase">
-                            <p className="text-base text-slate-900 dark:text-white leading-none mb-1">{item.worker || item.description}</p>
-                            <p className="text-[9px] text-slate-400 italic uppercase tracking-widest">{item.task || item.category || item.department || "Factory Record"}</p>
+                            <p className="text-base text-black dark:text-white leading-none mb-1">{item.worker || item.description}</p>
+                            <p className="text-[9px] text-black dark:text-slate-400 italic uppercase tracking-widest">{item.task || item.category || item.department || "Factory Record"}</p>
                         </td>
                         <td className="py-6 px-6 text-center">
-                            <span className="px-3 py-1 bg-slate-100 dark:bg-slate-800 rounded-md text-[8px] font-bold uppercase tracking-widest text-slate-500">{item.status || "LOG"}</span>
+                            <span className="px-3 py-1 bg-slate-100 dark:bg-slate-800 rounded-md text-[8px] font-bold uppercase tracking-widest text-black dark:text-slate-400">{item.status || "LOG"}</span>
                         </td>
                         <td className="py-6 px-6 text-right text-xl font-bold">
                             {item.amount ? `৳${item.amount.toLocaleString()}` : item.borkaQty || item.pataQty || "—"}
@@ -449,7 +449,7 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t, logAction }) => {
             <div className="p-2.5 bg-slate-950 text-white rounded-xl transition-transform shadow-lg group-hover:scale-110">
                 <ArrowLeft size={18} />
             </div>
-            <span className="text-sm font-bold tracking-tight text-slate-950 dark:text-white uppercase">
+            <span className="text-sm font-bold tracking-tight text-black dark:text-white uppercase">
                 ড্যাশবোর্ডে ফিরে যান (Return Home)
             </span>
         </button>

@@ -50,7 +50,7 @@ const MenuPanel = ({ setActivePanel, user, t }) => {
                         </div>
                         <div className="space-y-2">
                             <h1 className="text-6xl md:text-9xl font-black italic tracking-tightest uppercase leading-[0.8] text-black dark:text-white">মেনু হাব</h1>
-                            <p className="text-[11px] md:text-[13px] font-black text-slate-400 uppercase tracking-[0.6em] italic">NRZONE NEURAL INTERFACE V5.0 — ELITE ACCESS</p>
+                            <p className="text-[11px] md:text-[13px] font-black text-black dark:text-slate-400 uppercase tracking-[0.6em] italic">NRZONE NEURAL INTERFACE V5.0 — ELITE ACCESS</p>
                         </div>
                     </div>
                     <button 
@@ -75,7 +75,7 @@ const MenuPanel = ({ setActivePanel, user, t }) => {
                         return (
                             <div key={i} className="animate-elite" style={{ animationDelay: `${i * 150}ms` }}>
                                 <div className="flex items-center gap-10 mb-12 md:mb-16 opacity-40">
-                                    <h3 className="text-[12px] md:text-[14px] font-black uppercase tracking-[0.8em] text-slate-600 whitespace-nowrap italic">{cat.title}</h3>
+                                    <h3 className="text-[12px] md:text-[14px] font-black uppercase tracking-[0.8em] text-black whitespace-nowrap italic">{cat.title}</h3>
                                     <div className="h-px bg-black flex-1 opacity-20"></div>
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 md:gap-14">
@@ -92,7 +92,7 @@ const MenuPanel = ({ setActivePanel, user, t }) => {
                                                 </div>
                                                 <div className="space-y-2">
                                                     <h4 className="text-3xl md:text-5xl font-black italic uppercase tracking-tightest text-black leading-none">{item.label}</h4>
-                                                    <p className="text-[11px] font-black text-slate-400 uppercase tracking-widest leading-none italic">{item.desc}</p>
+                                                    <p className="text-[11px] font-black text-black dark:text-slate-400 uppercase tracking-widest leading-none italic">{item.desc}</p>
                                                 </div>
                                             </div>
                                             <ChevronRight size={32} className="text-slate-200 group-hover:text-black group-hover:translate-x-4 transition-all shrink-0" />

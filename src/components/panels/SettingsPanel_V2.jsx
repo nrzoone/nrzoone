@@ -53,15 +53,15 @@ const AccordionItem = ({ id, label, icon: Icon, description, children, activeTab
         className="w-full px-6 py-5 flex items-center justify-between text-left group"
       >
         <div className="flex items-center gap-5">
-          <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all ${isOpen ? 'bg-slate-950 text-white' : 'bg-white dark:bg-slate-900 text-slate-400 group-hover:scale-110 shadow-sm border border-slate-100 dark:border-slate-800'}`}>
+          <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all ${isOpen ? 'bg-slate-950 text-white' : 'bg-white dark:bg-slate-900 text-black dark:text-slate-400 group-hover:scale-110 shadow-sm border border-slate-100 dark:border-slate-800'}`}>
             <Icon size={20} />
           </div>
           <div>
-            <h3 className={`text-lg font-bold uppercase tracking-tight leading-none transition-colors ${isOpen ? 'text-slate-950 dark:text-white' : 'text-slate-500'}`}>{label}</h3>
-            <p className="text-[9px] font-bold uppercase text-slate-400 tracking-widest mt-2 italic">{description}</p>
+            <h3 className={`text-lg font-bold uppercase tracking-tight leading-none transition-colors ${isOpen ? 'text-black dark:text-white' : 'text-black dark:text-slate-400'}`}>{label}</h3>
+            <p className="text-[9px] font-bold uppercase text-black dark:text-slate-400 tracking-widest mt-2 italic">{description}</p>
           </div>
         </div>
-        <div className={`w-8 h-8 rounded-lg flex items-center justify-center border border-slate-200 dark:border-zinc-700 transition-all ${isOpen ? 'bg-slate-950 border-slate-950 text-white rotate-180' : 'bg-white dark:bg-slate-800 text-slate-300 group-hover:text-slate-950'}`}>
+        <div className={`w-8 h-8 rounded-lg flex items-center justify-center border border-slate-200 dark:border-zinc-700 transition-all ${isOpen ? 'bg-slate-950 border-slate-950 text-white rotate-180' : 'bg-white dark:bg-slate-800 text-slate-300 group-hover:text-black'}`}>
           <ChevronRight size={14} />
         </div>
       </button>
@@ -94,13 +94,13 @@ const SettingsPanel_V2 = ({
         <div className="w-16 h-16 bg-rose-50 dark:bg-rose-500/10 text-rose-500 rounded-xl flex items-center justify-center mb-8 shadow-sm">
           <ShieldAlert size={32} />
         </div>
-        <h3 className="text-2xl font-bold tracking-tight mb-4 text-slate-950 dark:text-white uppercase">এক্সেস লিমিটেড (ACCESS RESTRICTED)</h3>
-        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest max-w-xs leading-relaxed italic">
+        <h3 className="text-2xl font-bold tracking-tight mb-4 text-black dark:text-white uppercase">এক্সেস লিমিটেড (ACCESS RESTRICTED)</h3>
+        <p className="text-[10px] font-bold text-black dark:text-slate-400 uppercase tracking-widest max-w-xs leading-relaxed italic">
            এই বিভাগটি শুধুমাত্র অ্যাডমিনদের জন্য সংরক্ষিত। আপনার অনুমতির অভাব রয়েছে।
         </p>
         <button 
            onClick={() => setActivePanel('Overview')}
-           className="mt-12 px-8 py-4 bg-slate-950 text-white dark:bg-white dark:text-black rounded-xl font-bold uppercase text-[10px] tracking-widest shadow-xl hover:-translate-y-1 transition-all"
+           className="mt-12 px-8 py-4 bg-slate-950 text-white dark:bg-white dark:text-slate-400 rounded-xl font-bold uppercase text-[10px] tracking-widest shadow-xl hover:-translate-y-1 transition-all"
         >
            ড্যাশবোর্ডে ফিরে যান (Return)
         </button>
@@ -495,7 +495,7 @@ const SettingsPanel_V2 = ({
     <button
       onClick={() => onClick(id)}
       className={`px-6 py-3 rounded-xl font-bold uppercase text-[10px] tracking-widest transition-all ${
-        active === id ? "bg-slate-950 text-white shadow-lg" : "text-slate-400 hover:text-slate-900 dark:hover:text-white"
+        active === id ? "bg-slate-950 text-white shadow-lg" : "text-black dark:text-slate-400 hover:text-black dark:hover:text-white"
       }`}
     >
       {label}
@@ -516,10 +516,10 @@ const SettingsPanel_V2 = ({
             )}
           </div>
           <div>
-            <h3 className="text-2xl font-bold tracking-tight text-slate-950 dark:text-white uppercase leading-none">
+            <h3 className="text-2xl font-bold tracking-tight text-black dark:text-white uppercase leading-none">
               {title}
             </h3>
-            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-2">
+            <p className="text-[10px] text-black dark:text-slate-400 font-bold uppercase tracking-widest mt-2">
               {items?.length || 0} টি কনফিগার করা হয়েছে
             </p>
           </div>
@@ -551,7 +551,7 @@ const SettingsPanel_V2 = ({
                   <div className="flex gap-2 mt-auto">
                     <button
                       onClick={() => setEditingItem(null)}
-                      className="flex-1 py-3 rounded-lg bg-slate-50 dark:bg-slate-800 text-[8px] font-bold uppercase tracking-widest text-slate-500"
+                      className="flex-1 py-3 rounded-lg bg-slate-50 dark:bg-slate-800 text-[8px] font-bold uppercase tracking-widest text-black dark:text-slate-400"
                     >
                       Cancel
                     </button>
@@ -572,15 +572,15 @@ const SettingsPanel_V2 = ({
               ) : (
                 <>
                   <div className="space-y-1">
-                    <p className="text-[8px] font-bold text-slate-400 uppercase tracking-widest mb-2">Item ID: {idx + 1}</p>
-                    <p className="font-bold text-xl uppercase tracking-tight text-slate-950 dark:text-white leading-tight">
+                    <p className="text-[8px] font-bold text-black dark:text-slate-400 uppercase tracking-widest mb-2">Item ID: {idx + 1}</p>
+                    <p className="font-bold text-xl uppercase tracking-tight text-black dark:text-white leading-tight">
                       {item}
                     </p>
                   </div>
                   <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-all mt-6">
                     <button
                       onClick={() => setEditingItem(`${category}-${idx}`)}
-                      className="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-slate-500 hover:text-slate-950 dark:hover:text-white transition-all shadow-sm border border-slate-100 dark:border-slate-800"
+                      className="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-black dark:text-slate-400 hover:text-black dark:hover:text-white transition-all shadow-sm border border-slate-100 dark:border-slate-800"
                     >
                       <Edit2 size={14} />
                     </button>
@@ -635,7 +635,7 @@ const SettingsPanel_V2 = ({
   const renderUsersContent = () => (
     <div className="space-y-8 animate-fade-up">
        <div className="flex justify-between items-center">
-          <h4 className="text-2xl font-bold uppercase tracking-tight text-slate-950 dark:text-white">সিস্টেম <span className="text-blue-600">এক্সেস নোড</span></h4>
+          <h4 className="text-2xl font-bold uppercase tracking-tight text-black dark:text-white">সিস্টেম <span className="text-blue-600">এক্সেস নোড</span></h4>
           <button 
              onClick={() => {
                 const name = prompt("ইউজারের নাম লিখুন (Name):");
@@ -658,11 +658,11 @@ const SettingsPanel_V2 = ({
           {masterData.users?.map((u, idx) => (
              <div key={idx} className="saas-card group relative flex flex-col justify-between overflow-hidden min-h-[220px]">
                 <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:opacity-[0.05] transition-opacity pointer-events-none">
-                   <ShieldCheck size={120} className="text-slate-950 dark:text-white" />
+                   <ShieldCheck size={120} className="text-black dark:text-white" />
                 </div>
                 
                 <div className="flex justify-between items-start mb-8 relative z-10">
-                   <span className={`px-3 py-1 rounded-lg text-[9px] font-bold uppercase tracking-widest ${u.role === 'admin' ? 'bg-slate-950 text-white shadow-lg' : 'bg-slate-100 dark:bg-slate-800 text-slate-500'}`}>
+                   <span className={`px-3 py-1 rounded-lg text-[9px] font-bold uppercase tracking-widest ${u.role === 'admin' ? 'bg-slate-950 text-white shadow-lg' : 'bg-slate-100 dark:bg-slate-800 text-black dark:text-slate-400'}`}>
                       {u.role}
                    </span>
                    <div className="flex gap-2">
@@ -694,9 +694,9 @@ const SettingsPanel_V2 = ({
                 </div>
 
                 <div className="relative z-10">
-                   <h4 className="text-2xl font-bold tracking-tight text-slate-950 dark:text-white uppercase leading-none">{u.name}</h4>
+                   <h4 className="text-2xl font-bold tracking-tight text-black dark:text-white uppercase leading-none">{u.name}</h4>
                    <div className="flex items-center gap-3 mt-3">
-                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{u.id}</p>
+                      <p className="text-[10px] font-bold text-black dark:text-slate-400 uppercase tracking-widest">{u.id}</p>
                       <div className="w-1 h-1 bg-slate-300 rounded-full"></div>
                       <p className="text-[9px] font-bold text-emerald-500 uppercase tracking-widest">Active Node</p>
                    </div>
@@ -704,12 +704,12 @@ const SettingsPanel_V2 = ({
 
                 <div className="mt-8 pt-6 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center relative z-10">
                    <div>
-                      <p className="text-[8px] font-bold text-slate-400 uppercase tracking-tight mb-1">Auth Level</p>
-                      <p className="font-mono text-xs text-slate-300 group-hover:text-slate-950 dark:group-hover:text-white transition-colors">••••••••</p>
+                      <p className="text-[8px] font-bold text-black dark:text-slate-400 uppercase tracking-tight mb-1">Auth Level</p>
+                      <p className="font-mono text-xs text-slate-300 group-hover:text-black dark:group-hover:text-white transition-colors">••••••••</p>
                    </div>
                    <button 
                       onClick={() => alert(`ID: ${u.id}\nPW: ${u.password}`)}
-                      className="px-4 py-2 bg-slate-50 dark:bg-slate-800 text-slate-500 hover:text-slate-950 dark:hover:text-white rounded-lg text-[8px] font-bold uppercase tracking-widest transition-all"
+                      className="px-4 py-2 bg-slate-50 dark:bg-slate-800 text-black dark:text-slate-400 hover:text-black dark:hover:text-white rounded-lg text-[8px] font-bold uppercase tracking-widest transition-all"
                    >
                       Verify
                    </button>
@@ -732,10 +732,10 @@ const SettingsPanel_V2 = ({
         ].map((sec) => (
           <button key={sec.label} onClick={() => setActiveTab(sec.cat)} className="flex items-center justify-between p-6 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 hover:border-slate-950 transition-all group text-left shadow-sm">
             <div className="flex items-center gap-5">
-              <div className="w-12 h-12 bg-slate-50 dark:bg-slate-800 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform"><sec.icon size={18} className="text-slate-600 dark:text-slate-300" /></div>
+              <div className="w-12 h-12 bg-slate-50 dark:bg-slate-800 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform"><sec.icon size={18} className="text-black dark:text-slate-300" /></div>
               <div>
-                 <h4 className="text-lg font-bold tracking-tight uppercase leading-none text-slate-950 dark:text-white">{sec.label}</h4>
-                 <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-2">{sec.items?.length || 0} টি কনফিগার করা হয়েছে</p>
+                 <h4 className="text-lg font-bold tracking-tight uppercase leading-none text-black dark:text-white">{sec.label}</h4>
+                 <p className="text-[9px] font-bold text-black dark:text-slate-400 uppercase tracking-widest mt-2">{sec.items?.length || 0} টি কনফিগার করা হয়েছে</p>
               </div>
             </div>
             <ChevronRight size={14} className="text-slate-300 group-hover:translate-x-1 transition-transform" />
@@ -765,7 +765,7 @@ const SettingsPanel_V2 = ({
           কর্মী নিবন্ধন (Add Worker)
         </button>
         <div className="relative w-full md:w-80">
-           <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+           <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-black dark:text-slate-400" size={18} />
            <input 
               type="text" 
               placeholder="কর্মী খুঁজুন (Search)..." 
@@ -779,8 +779,8 @@ const SettingsPanel_V2 = ({
       {['sewing', 'stone', 'pata'].map(dept => (
         <div key={dept} className="saas-card !bg-slate-50/50 dark:!bg-slate-900/50">
           <div className="flex justify-between items-center mb-6">
-             <h4 className="text-xl font-bold uppercase tracking-tight text-slate-950 dark:text-white">{dept === 'sewing' ? 'সেলাই' : dept === 'stone' ? 'স্টোন' : 'পাতা'} ইউনিট {t("operatives") || "Operatives"}</h4>
-             <span className="text-[10px] font-bold uppercase text-slate-400 tracking-widest">{getUnifiedWorkers(dept).length} জন কর্মী</span>
+             <h4 className="text-xl font-bold uppercase tracking-tight text-black dark:text-white">{dept === 'sewing' ? 'সেলাই' : dept === 'stone' ? 'স্টোন' : 'পাতা'} ইউনিট {t("operatives") || "Operatives"}</h4>
+             <span className="text-[10px] font-bold uppercase text-black dark:text-slate-400 tracking-widest">{getUnifiedWorkers(dept).length} জন কর্মী</span>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {getUnifiedWorkers(dept)
@@ -788,7 +788,7 @@ const SettingsPanel_V2 = ({
               .map((w, idx) => (
               <div key={idx} className="saas-card group relative flex flex-col justify-between overflow-hidden shadow-sm hover:border-slate-950 dark:hover:border-white transition-all min-h-[240px]">
                 <div className="flex justify-between items-start mb-6">
-                  <div className="w-14 h-14 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-800 flex items-center justify-center text-slate-400 group-hover:scale-105 transition-all overflow-hidden shadow-inner shrink-0">
+                  <div className="w-14 h-14 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-800 flex items-center justify-center text-black dark:text-slate-400 group-hover:scale-105 transition-all overflow-hidden shadow-inner shrink-0">
                      {w.photo ? <img src={w.photo} className="w-full h-full object-cover" /> : <User size={20} />}
                   </div>
                   <div className="flex gap-2">
@@ -798,7 +798,7 @@ const SettingsPanel_V2 = ({
                         setTempWorkerPhoto(w.photo || null);
                         setTempNidPhoto(w.nidPhoto || null);
                       }} 
-                      className="w-9 h-9 bg-white dark:bg-slate-800 rounded-lg text-slate-500 hover:text-slate-950 dark:hover:text-white transition-all shadow-sm border border-slate-200 dark:border-slate-700 flex items-center justify-center"
+                      className="w-9 h-9 bg-white dark:bg-slate-800 rounded-lg text-black dark:text-slate-400 hover:text-black dark:hover:text-white transition-all shadow-sm border border-slate-200 dark:border-slate-700 flex items-center justify-center"
                     >
                       <Edit2 size={14} />
                     </button>
@@ -807,19 +807,19 @@ const SettingsPanel_V2 = ({
                 </div>
 
                 <div className="space-y-1 mb-6">
-                   <h4 className="text-lg font-bold tracking-tight text-slate-950 dark:text-white uppercase leading-none truncate">{w.name}</h4>
-                   <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest italic">{w.phone || "No Connection"}</p>
+                   <h4 className="text-lg font-bold tracking-tight text-black dark:text-white uppercase leading-none truncate">{w.name}</h4>
+                   <p className="text-[9px] font-bold text-black dark:text-slate-400 uppercase tracking-widest italic">{w.phone || "No Connection"}</p>
                 </div>
 
                 <div className="mt-auto pt-6 border-t border-slate-100 dark:border-slate-800 flex justify-between items-end">
                    <div>
-                      <p className="text-[8px] font-bold text-slate-400 uppercase tracking-tight mb-1">বেস রেট (Wage)</p>
-                      <p className="text-xl font-bold text-slate-950 dark:text-white">৳{w.wage}</p>
+                      <p className="text-[8px] font-bold text-black dark:text-slate-400 uppercase tracking-tight mb-1">বেস রেট (Wage)</p>
+                      <p className="text-xl font-bold text-black dark:text-white">৳{w.wage}</p>
                    </div>
                    <div className="flex gap-2">
                       <button 
                         onClick={() => setPrintWorkerDoc(w)} 
-                        className="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-500 hover:bg-slate-950 hover:text-white transition-all shadow-sm border border-slate-100 dark:border-slate-800 flex items-center justify-center"
+                        className="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-800 text-black dark:text-slate-400 hover:bg-slate-950 hover:text-white transition-all shadow-sm border border-slate-100 dark:border-slate-800 flex items-center justify-center"
                       >
                          <Printer size={16} />
                       </button>
@@ -840,7 +840,7 @@ const SettingsPanel_V2 = ({
     <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 overflow-hidden min-h-[400px] shadow-sm animate-fade-up">
       <div className="overflow-x-auto">
         <table className="w-full text-left">
-          <thead className="bg-slate-50 dark:bg-slate-800/50 text-slate-500 font-bold text-[10px] uppercase tracking-widest border-b border-slate-100 dark:border-slate-800">
+          <thead className="bg-slate-50 dark:bg-slate-800/50 text-black dark:text-slate-400 font-bold text-[10px] uppercase tracking-widest border-b border-slate-100 dark:border-slate-800">
             <tr>
               <th className="px-6 py-5">সময় (Timestamp)</th>
               <th className="px-6 py-5">ইউজার (User)</th>
@@ -852,17 +852,17 @@ const SettingsPanel_V2 = ({
             {(masterData.auditLogs || []).slice(0, 50).map((log, i) => (
               <tr key={i} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/20 transition-all">
                 <td className="px-6 py-4">
-                   <p className="text-[10px] font-bold text-slate-950 dark:text-white leading-none mb-1">{new Date(log.timestamp).toLocaleTimeString()}</p>
-                   <p className="text-[9px] font-bold text-slate-400">{new Date(log.timestamp).toLocaleDateString()}</p>
+                   <p className="text-[10px] font-bold text-black dark:text-white leading-none mb-1">{new Date(log.timestamp).toLocaleTimeString()}</p>
+                   <p className="text-[9px] font-bold text-black dark:text-slate-400">{new Date(log.timestamp).toLocaleDateString()}</p>
                 </td>
                 <td className="px-6 py-4">
-                   <p className="text-xs font-bold uppercase text-slate-950 dark:text-white">{log.user}</p>
-                   <span className="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 text-[8px] font-bold text-slate-500 uppercase tracking-widest rounded">{log.role}</span>
+                   <p className="text-xs font-bold uppercase text-black dark:text-white">{log.user}</p>
+                   <span className="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 text-[8px] font-bold text-black dark:text-slate-400 uppercase tracking-widest rounded">{log.role}</span>
                 </td>
                 <td className="px-6 py-4">
                     <span className="text-[10px] font-bold uppercase text-blue-600 dark:text-blue-400">{log.action}</span>
                 </td>
-                <td className="px-6 py-4 text-[10px] text-slate-500 truncate max-w-xs">{typeof log.details === 'string' ? log.details : JSON.stringify(log.details)}</td>
+                <td className="px-6 py-4 text-[10px] text-black dark:text-slate-400 truncate max-w-xs">{typeof log.details === 'string' ? log.details : JSON.stringify(log.details)}</td>
               </tr>
             ))}
           </tbody>
@@ -881,7 +881,7 @@ const SettingsPanel_V2 = ({
              ) : (
                 <div className="flex flex-col items-center gap-4 text-slate-300">
                    <ImageIcon size={40} />
-                   <p className="text-[9px] font-bold uppercase tracking-widest text-slate-400">No Custom Logo</p>
+                   <p className="text-[9px] font-bold uppercase tracking-widest text-black dark:text-slate-400">No Custom Logo</p>
                 </div>
              )}
              {uploading && (
@@ -891,8 +891,8 @@ const SettingsPanel_V2 = ({
              )}
           </div>
           <div className="flex-1 text-center md:text-left">
-             <h4 className="text-2xl font-bold uppercase tracking-tight mb-3 text-slate-950 dark:text-white">কোম্পানি <span className="text-blue-600">ব্র্যান্ডিং (Branding)</span></h4>
-             <p className="text-slate-500 text-xs font-bold leading-relaxed mb-8 italic">
+             <h4 className="text-2xl font-bold uppercase tracking-tight mb-3 text-black dark:text-white">কোম্পানি <span className="text-blue-600">ব্র্যান্ডিং (Branding)</span></h4>
+             <p className="text-black dark:text-slate-400 text-xs font-bold leading-relaxed mb-8 italic">
                 আপনার ফ্যাক্টরির লোগো আপলোড করুন যা ড্যাশবোর্ড এবং প্রিন্ট স্লিপে প্রদর্শিত হবে।
              </p>
              <div className="flex flex-col md:flex-row items-center gap-5">
@@ -962,10 +962,10 @@ const SettingsPanel_V2 = ({
     <div className="space-y-6 animate-fade-up">
       <div className="bg-slate-950 text-white rounded-xl p-10 text-center relative overflow-hidden group shadow-2xl">
          <div className="relative z-10">
-            <h4 className="text-3xl font-bold uppercase tracking-tight mb-3">মাস্টার <span className="text-slate-400">আর্কাইভ (Archives)</span></h4>
-            <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest max-w-md mx-auto mb-10 italic">তথ্য সুরক্ষিত রাখুন এবং প্রয়োজনে রিস্টোর করুন।</p>
+            <h4 className="text-3xl font-bold uppercase tracking-tight mb-3">মাস্টার <span className="text-black dark:text-slate-400">আর্কাইভ (Archives)</span></h4>
+            <p className="text-black dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest max-w-md mx-auto mb-10 italic">তথ্য সুরক্ষিত রাখুন এবং প্রয়োজনে রিস্টোর করুন।</p>
             <div className="flex flex-col md:flex-row justify-center gap-4">
-               <button onClick={handleBackup} className="bg-white text-slate-950 px-8 py-4 rounded-xl font-bold uppercase text-[10px] tracking-widest hover:scale-105 transition-all shadow-xl flex items-center justify-center gap-3">
+               <button onClick={handleBackup} className="bg-white text-black px-8 py-4 rounded-xl font-bold uppercase text-[10px] tracking-widest hover:scale-105 transition-all shadow-xl flex items-center justify-center gap-3">
                   <Download size={16} /> ডাউনলোড ব্যাকআপ (Download)
                </button>
                <label className="bg-slate-800 text-white px-8 py-4 rounded-xl font-bold uppercase text-[10px] tracking-widest hover:bg-slate-700 transition-all cursor-pointer flex items-center justify-center gap-3 border border-slate-700">
@@ -979,8 +979,8 @@ const SettingsPanel_V2 = ({
          {['productions', 'cuttingStock', 'pataEntries', 'deliveries', 'attendance'].map(key => (
             <div key={key} className="saas-card flex justify-between items-center group hover:border-rose-500 transition-all">
                <div>
-                  <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">{key.toUpperCase()}</p>
-                  <p className="text-2xl font-bold tracking-tighter text-slate-950 dark:text-white">{masterData[key]?.length || 0}</p>
+                  <p className="text-[9px] font-bold text-black dark:text-slate-400 uppercase tracking-widest mb-1">{key.toUpperCase()}</p>
+                  <p className="text-2xl font-bold tracking-tighter text-black dark:text-white">{masterData[key]?.length || 0}</p>
                </div>
                <button onClick={() => { if(confirm(`সব ${key} মুছে ফেলতে চান?`)) setMasterData(prev => ({...prev, [key]: []})); }} className="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-800 text-rose-500 flex items-center justify-center hover:bg-rose-500 hover:text-white transition-all shadow-sm opacity-20 group-hover:opacity-100">
                   <Trash2 size={16} />
@@ -998,15 +998,15 @@ const SettingsPanel_V2 = ({
         <div className="flex items-center gap-6">
           <button
             onClick={() => setActivePanel("Overview")}
-            className="w-12 h-12 flex items-center justify-center bg-slate-50 dark:bg-slate-800 text-slate-400 hover:bg-slate-950 hover:text-white rounded-xl transition-all shadow-sm border border-slate-100 dark:border-slate-800"
+            className="w-12 h-12 flex items-center justify-center bg-slate-50 dark:bg-slate-800 text-black dark:text-slate-400 hover:bg-slate-950 hover:text-white rounded-xl transition-all shadow-sm border border-slate-100 dark:border-slate-800"
           >
             <ArrowLeft size={20} />
           </button>
           <div className="text-left">
-            <h1 className="text-2xl font-bold uppercase tracking-tight text-slate-950 dark:text-white leading-none">
+            <h1 className="text-2xl font-bold uppercase tracking-tight text-black dark:text-white leading-none">
               সিস্টেম <span className="text-blue-600">কন্ট্রোল হাব (Control)</span>
             </h1>
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2">
+            <p className="text-[10px] font-bold text-black dark:text-slate-400 uppercase tracking-widest mt-2">
               System Control Node v2.5 • {currentUser.name}
             </p>
           </div>
@@ -1036,7 +1036,7 @@ const SettingsPanel_V2 = ({
               className={`w-full flex items-center justify-between p-4 rounded-xl transition-all group ${
                 activeMainTab === tab.id 
                 ? 'bg-slate-950 text-white shadow-xl' 
-                : 'hover:bg-white dark:hover:bg-slate-800 text-slate-400 hover:text-slate-950 dark:hover:text-white border border-transparent border-slate-100 dark:border-slate-800'
+                : 'hover:bg-white dark:hover:bg-slate-800 text-black dark:text-slate-400 hover:text-black dark:hover:text-white border border-transparent border-slate-100 dark:border-slate-800'
               }`}
             >
               <div className="flex items-center gap-4">
@@ -1069,12 +1069,12 @@ const SettingsPanel_V2 = ({
         <div className="fixed inset-0 bg-slate-950/40 backdrop-blur-sm z-[200] flex items-center justify-center p-4">
           <div className="saas-card !p-12 w-full max-w-lg shadow-2xl animate-fade-up">
             <h3 className="text-2xl font-bold uppercase mb-2">নতুন ইউজার <span className="text-blue-600">নিবন্ধন</span></h3>
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-10">Access Provisioning Control</p>
+            <p className="text-[10px] font-bold text-black dark:text-slate-400 uppercase tracking-widest mb-10">Access Provisioning Control</p>
             <div className="space-y-6">
               <input id="new-user-id" className="premium-input !h-14" placeholder="USER ID / PHONE" />
               <div className="relative">
                 <input id="new-user-pass" type={showUserPass ? "text" : "password"} className="premium-input !h-14 pr-12" placeholder="PASSWORD" />
-                <button onClick={() => setShowUserPass(!showUserPass)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400">
+                <button onClick={() => setShowUserPass(!showUserPass)} className="absolute right-4 top-1/2 -translate-y-1/2 text-black dark:text-slate-400">
                   {showUserPass ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
               </div>
@@ -1085,7 +1085,7 @@ const SettingsPanel_V2 = ({
                 <option value="admin">ADMIN</option>
               </select>
               <div className="flex gap-4 pt-6">
-                <button onClick={() => setShowAddModal(false)} className="flex-1 py-4 rounded-xl font-bold uppercase text-[10px] tracking-widest text-slate-500 hover:bg-slate-50 transition-all">Cancel</button>
+                <button onClick={() => setShowAddModal(false)} className="flex-1 py-4 rounded-xl font-bold uppercase text-[10px] tracking-widest text-black dark:text-slate-400 hover:bg-slate-50 transition-all">Cancel</button>
                 <button 
                   onClick={() => handleAddUser(document.getElementById("new-user-id").value, document.getElementById("new-user-pass").value, document.getElementById("new-user-name").value, document.getElementById("new-user-role").value)} 
                   className="flex-[2] py-4 rounded-xl bg-slate-950 text-white font-bold uppercase text-[10px] tracking-widest shadow-xl hover:bg-black transition-all"
@@ -1100,7 +1100,7 @@ const SettingsPanel_V2 = ({
         <div className="fixed inset-0 bg-slate-950/40 backdrop-blur-sm z-[200] flex items-center justify-center p-4">
           <div className="saas-card !p-12 w-full max-w-lg shadow-2xl animate-fade-up">
             <h3 className="text-2xl font-bold uppercase mb-2">নতুন কর্মী <span className="text-blue-600">নিবন্ধন</span></h3>
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-10">Workforce Deployment Node</p>
+            <p className="text-[10px] font-bold text-black dark:text-slate-400 uppercase tracking-widest mb-10">Workforce Deployment Node</p>
             <div className="space-y-6">
               <select
                 id="new-worker-dept"
@@ -1117,7 +1117,7 @@ const SettingsPanel_V2 = ({
               <input id="new-worker-name" className="premium-input !h-14" placeholder="নাম (Name)" />
               <input id="new-worker-wage" type="number" className="premium-input !h-14" placeholder="রেট / বেতন (Rate/Salary)" />
               <div className="flex gap-4 pt-6">
-                <button onClick={() => setShowAddModal(false)} className="flex-1 py-4 rounded-xl font-bold uppercase text-[10px] tracking-widest text-slate-500 hover:bg-slate-50 transition-all">Cancel</button>
+                <button onClick={() => setShowAddModal(false)} className="flex-1 py-4 rounded-xl font-bold uppercase text-[10px] tracking-widest text-black dark:text-slate-400 hover:bg-slate-50 transition-all">Cancel</button>
                 <button 
                   onClick={() => handleAddWorker(newWorkerDept, document.getElementById("new-worker-name").value, document.getElementById("new-worker-wage")?.value || 0)} 
                   className="flex-[2] py-4 rounded-xl bg-slate-950 text-white font-bold uppercase text-[10px] tracking-widest shadow-xl hover:bg-black transition-all"
@@ -1133,7 +1133,7 @@ const SettingsPanel_V2 = ({
         <div className="fixed inset-0 bg-slate-950/40 backdrop-blur-sm z-[200] flex items-center justify-center p-4 overflow-y-auto">
           <div className="saas-card !p-10 w-full max-w-2xl shadow-2xl animate-fade-up my-auto">
             <h3 className="text-2xl font-bold uppercase mb-2">{editDesignModal ? 'স্টাইল আপডেট' : 'নতুন ডিজাইন'} <span className="text-blue-600">নিবন্ধন</span></h3>
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-8">Product Development Architecture</p>
+            <p className="text-[10px] font-bold text-black dark:text-slate-400 uppercase tracking-widest mb-8">Product Development Architecture</p>
             
             <div className="flex flex-col md:flex-row gap-8">
               <div className="w-full md:w-1/3 flex flex-col items-center gap-4">
@@ -1142,8 +1142,8 @@ const SettingsPanel_V2 = ({
                       <img src={tempImgUrl} className="w-full h-full object-contain p-2" />
                     ) : (
                       <div className="text-center p-4">
-                        <Upload size={24} className="mx-auto text-slate-400 mb-2 group-hover:scale-110 transition-transform" />
-                        <span className="text-[8px] font-bold uppercase text-slate-400 tracking-widest">Upload Photo</span>
+                        <Upload size={24} className="mx-auto text-black dark:text-slate-400 mb-2 group-hover:scale-110 transition-transform" />
+                        <span className="text-[8px] font-bold uppercase text-black dark:text-slate-400 tracking-widest">Upload Photo</span>
                       </div>
                     )}
                     <input type="file" className="hidden" accept="image/*" onChange={async (e) => { if (e.target.files[0]) { const url = await handleImageUpload(e.target.files[0]); if (url) setTempImgUrl(url); } }} />
@@ -1154,19 +1154,19 @@ const SettingsPanel_V2 = ({
                  <input id="design-name" className="premium-input !h-12" placeholder="DESIGN NAME" defaultValue={editDesignModal?.name || ""} />
                  <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="text-[8px] font-bold text-slate-400 uppercase ml-1">Sewing Rate</label>
+                      <label className="text-[8px] font-bold text-black dark:text-slate-400 uppercase ml-1">Sewing Rate</label>
                       <input id="design-sewing" type="number" className="premium-input !h-11" defaultValue={editDesignModal?.sewingRate || 0} />
                     </div>
                     <div>
-                      <label className="text-[8px] font-bold text-slate-400 uppercase ml-1">Stone Rate</label>
+                      <label className="text-[8px] font-bold text-black dark:text-slate-400 uppercase ml-1">Stone Rate</label>
                       <input id="design-stone" type="number" className="premium-input !h-11" defaultValue={editDesignModal?.stoneRate || 0} />
                     </div>
                     <div>
-                      <label className="text-[8px] font-bold text-slate-400 uppercase ml-1">Pata Rate</label>
+                      <label className="text-[8px] font-bold text-black dark:text-slate-400 uppercase ml-1">Pata Rate</label>
                       <input id="design-pata" type="number" className="premium-input !h-11" defaultValue={editDesignModal?.pataRate || 0} />
                     </div>
                     <div>
-                      <label className="text-[8px] font-bold text-slate-400 uppercase ml-1">Sell Price</label>
+                      <label className="text-[8px] font-bold text-black dark:text-slate-400 uppercase ml-1">Sell Price</label>
                       <input id="design-sell" type="number" className="premium-input !h-11 border-emerald-100 dark:border-emerald-900/30" defaultValue={editDesignModal?.sellingPrice || 0} />
                     </div>
                  </div>
@@ -1174,7 +1174,7 @@ const SettingsPanel_V2 = ({
             </div>
 
             <div className="flex gap-4 pt-8">
-              <button onClick={() => { setShowAddModal(false); setEditDesignModal(null); setTempImgUrl(null); }} className="flex-1 py-4 rounded-xl font-bold uppercase text-[10px] tracking-widest text-slate-500 hover:bg-slate-50 transition-all">Cancel</button>
+              <button onClick={() => { setShowAddModal(false); setEditDesignModal(null); setTempImgUrl(null); }} className="flex-1 py-4 rounded-xl font-bold uppercase text-[10px] tracking-widest text-black dark:text-slate-400 hover:bg-slate-50 transition-all">Cancel</button>
               <button 
                 onClick={() => {
                   const data = {
@@ -1204,7 +1204,7 @@ const SettingsPanel_V2 = ({
           <div className="w-10 h-10 bg-slate-950 text-white rounded-lg flex items-center justify-center group-hover:rotate-[-12deg] transition-transform">
             <ArrowLeft size={18} />
           </div>
-          <span className="text-sm font-bold uppercase tracking-widest text-slate-950 dark:text-white">
+          <span className="text-sm font-bold uppercase tracking-widest text-black dark:text-white">
             Back to Dashboard
           </span>
         </button>

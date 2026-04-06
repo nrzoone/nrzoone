@@ -6,7 +6,7 @@ export const DashboardCard = ({ title, pending, finished, bill, color, label2 = 
         <div className="premium-card group hover:shadow-premium !p-8 md:!p-10">
             <div className="flex justify-between items-start mb-10">
                 <div className="space-y-1">
-                    <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-slate-500">Operational Node</p>
+                    <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-black dark:text-slate-400">Operational Node</p>
                     <h3 className="text-3xl md:text-4xl font-black uppercase tracking-tighter italic leading-none text-[var(--text-primary)]">{title}</h3>
                 </div>
                 <div className="w-12 h-12 rounded-2xl bg-[var(--bg-primary)] shadow-[var(--neu-button)] flex items-center justify-center group-hover:bg-black group-hover:text-white transition-all duration-500">
@@ -16,18 +16,18 @@ export const DashboardCard = ({ title, pending, finished, bill, color, label2 = 
 
             <div className="grid grid-cols-2 gap-6">
                 <div className="bg-[var(--bg-primary)] p-6 md:p-8 rounded-3xl shadow-[var(--neu-concave)]">
-                    <p className="text-[9px] font-bold uppercase tracking-widest text-slate-500 mb-2">In Progress</p>
+                    <p className="text-[9px] font-bold uppercase tracking-widest text-black dark:text-slate-400 mb-2">In Progress</p>
                     <p className="text-3xl md:text-5xl font-black tracking-tighter leading-none italic text-[var(--text-primary)]">{pending}</p>
                 </div>
                 <div className="bg-[var(--bg-primary)] p-6 md:p-8 rounded-3xl shadow-[var(--neu-concave)]">
-                    <p className="text-[9px] font-bold uppercase tracking-widest text-slate-500 mb-2">{label2.toUpperCase()}</p>
+                    <p className="text-[9px] font-bold uppercase tracking-widest text-black dark:text-slate-400 mb-2">{label2.toUpperCase()}</p>
                     <p className="text-3xl md:text-5xl font-black tracking-tighter leading-none italic text-[var(--text-primary)]">{finished}</p>
                 </div>
             </div>
 
             {bill > 0 && (
                 <div className="mt-10 pt-8 border-t border-[var(--border)]">
-                    <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-slate-500 mb-3">Accumulated Revenue</p>
+                    <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-black dark:text-slate-400 mb-3">Accumulated Revenue</p>
                     <div className="flex items-baseline gap-2">
                         <span className="text-2xl font-black text-emerald-500 italic">৳</span>
                         <p className="text-5xl md:text-6xl font-black tracking-tighter leading-none italic text-[var(--text-primary)]">{bill.toLocaleString()}</p>
@@ -52,7 +52,7 @@ export const MenuButton = ({ title, sub, onClick, icon, color }) => {
                     <h4 className="text-3xl md:text-5xl font-black tracking-tighter italic uppercase leading-none text-[var(--text-primary)]">
                         {title}
                     </h4>
-                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.4em] italic">{sub}</p>
+                    <p className="text-[10px] font-bold text-black dark:text-slate-400 uppercase tracking-[0.4em] italic">{sub}</p>
                 </div>
             </div>
 

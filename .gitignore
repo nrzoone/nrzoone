@@ -7,3 +7,4 @@ dist
 local-npm-cache/
 vite_output.txt
 .env
+.ssh_keys/

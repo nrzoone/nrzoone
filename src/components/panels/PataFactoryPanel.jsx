@@ -267,7 +267,7 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
     const historyEntries = filteredEntries.filter(e => e.status === 'Received');
 
     return (
-    <div className="space-y-8 pb-32 animate-fade-up px-1 md:px-4 text-slate-900">
+    <div className="space-y-8 pb-32 animate-fade-up px-1 md:px-4 text-black">
       {/* HUD Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <div className="bg-slate-950 p-6 rounded-xl text-white shadow-xl group overflow-hidden relative">
@@ -290,8 +290,8 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                 <Layers size={24} />
             </div>
             <div>
-                <p className="text-3xl font-bold tracking-tight text-slate-950 dark:text-white leading-none mb-1">{rawStock.roll}</p>
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">পেপ্যার রোল (Rolls)</p>
+                <p className="text-3xl font-bold tracking-tight text-black dark:text-white leading-none mb-1">{rawStock.roll}</p>
+                <p className="text-[10px] font-bold text-black dark:text-slate-400 uppercase tracking-widest leading-none">পেপ্যার রোল (Rolls)</p>
             </div>
         </div>
 
@@ -300,8 +300,8 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                 <Box size={24} />
             </div>
             <div>
-                <p className="text-3xl font-bold tracking-tight text-slate-950 dark:text-white leading-none mb-1">{activeEntries.length}</p>
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">চলমান কাজ (Tasks)</p>
+                <p className="text-3xl font-bold tracking-tight text-black dark:text-white leading-none mb-1">{activeEntries.length}</p>
+                <p className="text-[10px] font-bold text-black dark:text-slate-400 uppercase tracking-widest leading-none">চলমান কাজ (Tasks)</p>
             </div>
         </div>
 
@@ -310,8 +310,8 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                 <DollarSign size={24} />
             </div>
             <div>
-                <p className="text-2xl font-bold tracking-tight text-slate-950 dark:text-white leading-none mb-1">৳{(workers.reduce((s, w) => s + getWorkerDue(w), 0)).toLocaleString()}</p>
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">মোট বকেয়া (Total Due)</p>
+                <p className="text-2xl font-bold tracking-tight text-black dark:text-white leading-none mb-1">৳{(workers.reduce((s, w) => s + getWorkerDue(w), 0)).toLocaleString()}</p>
+                <p className="text-[10px] font-bold text-black dark:text-slate-400 uppercase tracking-widest leading-none">মোট বকেয়া (Total Due)</p>
             </div>
         </div>
       </div>
@@ -327,7 +327,7 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
             <button
               key={v.id}
               onClick={() => setView(v.id)}
-              className={`px-6 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all ${view === v.id ? 'bg-slate-950 text-white shadow-lg' : 'text-slate-400 hover:text-slate-950 dark:hover:text-white'}`}
+              className={`px-6 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all ${view === v.id ? 'bg-slate-950 text-white shadow-lg' : 'text-black dark:text-slate-400 hover:text-black dark:hover:text-white'}`}
             >
               {v.label}
             </button>
@@ -336,7 +336,7 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
 
         <div className="flex items-center gap-3 w-full lg:w-auto px-1.5">
           <div className="relative group flex-1 lg:flex-none">
-            <Search size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+            <Search size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-black dark:text-slate-400" />
             <input
               placeholder="কারিগর বা ডিজাইন দিয়ে খুঁজুন..."
               className="premium-input !pl-11 !h-11 !text-[10px] !bg-slate-50 dark:!bg-slate-800/50"
@@ -347,7 +347,7 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
           <div className="flex gap-2">
               <button 
                 onClick={() => setShowQR(true)}
-                className="w-11 h-11 bg-white dark:bg-slate-800 text-slate-400 border border-slate-200 dark:border-slate-700 rounded-xl flex items-center justify-center hover:bg-slate-950 hover:text-white transition-all shadow-sm"
+                className="w-11 h-11 bg-white dark:bg-slate-800 text-black dark:text-slate-400 border border-slate-200 dark:border-slate-700 rounded-xl flex items-center justify-center hover:bg-slate-950 hover:text-white transition-all shadow-sm"
                 title="কিউআর স্ক্যান"
               >
                  <Camera size={18} />
@@ -376,8 +376,8 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                              <div className="space-y-6 flex-1">
                                 <div className="flex justify-between items-start">
                                     <div className="space-y-1">
-                                        <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none">Pata Specialist</p>
-                                        <h4 className="text-2xl font-bold tracking-tight text-slate-950 dark:text-white uppercase leading-none">{w}</h4>
+                                        <p className="text-[9px] font-bold text-black dark:text-slate-400 uppercase tracking-widest leading-none">Pata Specialist</p>
+                                        <h4 className="text-2xl font-bold tracking-tight text-black dark:text-white uppercase leading-none">{w}</h4>
                                     </div>
                                     <div className={`w-12 h-12 ${due > 0 ? 'bg-amber-500/10 text-amber-600' : 'bg-slate-100 dark:bg-slate-800 text-slate-300'} rounded-xl flex items-center justify-center transition-all group-hover:scale-110`}>
                                         <DollarSign size={20} />
@@ -385,8 +385,8 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                                 </div>
                                 
                                 <div className="bg-slate-50 dark:bg-slate-800/50 p-6 rounded-xl border border-slate-100 dark:border-slate-800">
-                                     <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1 block leading-none">বকেয়া মজুরি (Payable)</span>
-                                     <span className={`text-4xl font-bold leading-none ${due > 0 ? 'text-slate-950 dark:text-white' : 'text-slate-200 dark:text-slate-700'}`}>৳{due.toLocaleString()}</span>
+                                     <span className="text-[9px] font-bold text-black dark:text-slate-400 uppercase tracking-widest mb-1 block leading-none">বকেয়া মজুরি (Payable)</span>
+                                     <span className={`text-4xl font-bold leading-none ${due > 0 ? 'text-black dark:text-white' : 'text-slate-200 dark:text-slate-700'}`}>৳{due.toLocaleString()}</span>
                                 </div>
                             </div>
 
@@ -407,7 +407,7 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                 {(view === 'active' ? activeEntries : historyEntries).length === 0 ? (
                     <div className="col-span-full py-32 flex flex-col items-center justify-center saas-card border-dashed">
                         <Box size={48} strokeWidth={1} className="text-slate-200 mb-4" />
-                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">বর্তমানে কোনো রেকর্ড পাওয়া যায়নি</p>
+                        <p className="text-[10px] font-bold text-black dark:text-slate-400 uppercase tracking-[0.2em]">বর্তমানে কোনো রেকর্ড পাওয়া যায়নি</p>
                     </div>
                 ) : (
                     (view === 'active' ? activeEntries : historyEntries).map((item, idx) => (
@@ -415,8 +415,8 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                             <div className="space-y-6 flex-1">
                                 <div className="flex justify-between items-start">
                                     <div className="space-y-1">
-                                        <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none">কারিগর (Operator)</p>
-                                        <h4 className="text-2xl font-bold tracking-tight text-slate-950 dark:text-white uppercase leading-none truncate max-w-[180px]">{item.worker}</h4>
+                                        <p className="text-[9px] font-bold text-black dark:text-slate-400 uppercase tracking-widest leading-none">কারিগর (Operator)</p>
+                                        <h4 className="text-2xl font-bold tracking-tight text-black dark:text-white uppercase leading-none truncate max-w-[180px]">{item.worker}</h4>
                                     </div>
                                     <div className={`w-12 h-12 ${item.status === 'Pending' ? 'bg-amber-500/10 text-amber-600' : 'bg-emerald-500/10 text-emerald-600'} rounded-xl flex items-center justify-center font-bold text-xs shadow-sm`}>
                                         #{item.lotNo}
@@ -425,29 +425,29 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
 
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-xl border border-slate-100 dark:border-slate-800">
-                                        <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1 italic">ডিজাইন আইডি</p>
-                                        <p className="text-sm font-bold text-slate-950 dark:text-white truncate uppercase">{item.design} ({item.color})</p>
+                                        <p className="text-[9px] font-bold text-black dark:text-slate-400 uppercase tracking-widest mb-1 italic">ডিজাইন আইডি</p>
+                                        <p className="text-sm font-bold text-black dark:text-white truncate uppercase">{item.design} ({item.color})</p>
                                     </div>
                                     <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-xl border border-slate-100 dark:border-slate-800">
-                                        <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1 italic">লট ক্যাটাগরি</p>
-                                        <p className="text-sm font-bold text-slate-950 dark:text-white truncate uppercase">{item.pataType} PATA</p>
+                                        <p className="text-[9px] font-bold text-black dark:text-slate-400 uppercase tracking-widest mb-1 italic">লট ক্যাটাগরি</p>
+                                        <p className="text-sm font-bold text-black dark:text-white truncate uppercase">{item.pataType} PATA</p>
                                     </div>
                                 </div>
                                 
                                 <div className="flex justify-between items-center py-5 border-y border-slate-100 dark:border-slate-800 border-dashed">
                                     <div className="flex flex-col">
-                                         <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1 leading-none">পরিমাণ (Output)</span>
-                                         <span className="text-3xl font-bold text-slate-950 dark:text-white leading-none">{item.receivedQty || item.pataQty} পিস</span>
+                                         <span className="text-[9px] font-bold text-black dark:text-slate-400 uppercase tracking-widest mb-1 leading-none">পরিমাণ (Output)</span>
+                                         <span className="text-3xl font-bold text-black dark:text-white leading-none">{item.receivedQty || item.pataQty} পিস</span>
                                     </div>
                                     <div className="text-right">
-                                         <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1 leading-none italic">তারিখ</span>
-                                         <p className="text-[11px] font-bold text-slate-500 italic mt-1">{item.date}</p>
+                                         <span className="text-[9px] font-bold text-black dark:text-slate-400 uppercase tracking-widest mb-1 leading-none italic">তারিখ</span>
+                                         <p className="text-[11px] font-bold text-black dark:text-slate-400 italic mt-1">{item.date}</p>
                                     </div>
                                 </div>
                             </div>
 
                             <div className="flex gap-3 mt-8">
-                                <button onClick={() => setPrintSlip(item)} className="w-11 h-11 bg-slate-50 dark:bg-slate-800 rounded-xl flex items-center justify-center text-slate-400 hover:bg-slate-950 hover:text-white transition-all border border-slate-100 dark:border-slate-800 shadow-sm" title="স্লিপ প্রিন্ট">
+                                <button onClick={() => setPrintSlip(item)} className="w-11 h-11 bg-slate-50 dark:bg-slate-800 rounded-xl flex items-center justify-center text-black dark:text-slate-400 hover:bg-slate-950 hover:text-white transition-all border border-slate-100 dark:border-slate-800 shadow-sm" title="স্লিপ প্রিন্ট">
                                     <Printer size={16} />
                                 </button>
                                 {item.status === 'Pending' ? (
@@ -480,30 +480,19 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
             <div className="p-3 bg-slate-950 text-white rounded-xl transition-transform shadow-lg group-hover:-translate-x-2">
                 <ArrowLeft size={20} strokeWidth={3} />
             </div>
-            <span className="text-lg font-bold tracking-tight text-slate-950 dark:text-white uppercase leading-none">
+            <span className="text-lg font-bold tracking-tight text-black dark:text-white uppercase leading-none">
                 ড্যাশবোর্ডে ফিরে যান
             </span>
         </button>
       </div>
 
-      {/* QR MODAL */}
+      {/* QR MODAL (Self-Managed) */}
       <AnimatePresence>
         {showQR && (
-          <div className="fixed inset-0 z-[1000] bg-slate-950/40 backdrop-blur-md flex items-center justify-center p-4">
-            <div className="w-full max-w-sm bg-white dark:bg-slate-900 rounded-xl shadow-2xl p-8 relative overflow-hidden border border-slate-100 dark:border-slate-800 animate-fade-up">
-                <button 
-                    onClick={() => setShowQR(false)} 
-                    className="absolute top-6 right-6 p-2 bg-slate-50 dark:bg-slate-800 rounded-xl hover:bg-slate-950 hover:text-white transition-all text-slate-400"
-                >
-                    <X size={20} />
-                </button>
-                <div className="text-center space-y-6 pt-4">
-                    <h3 className="text-xl font-bold uppercase tracking-tight text-slate-950 dark:text-white">কিউআর স্ক্যান করুন</h3>
-                    <div className="rounded-xl overflow-hidden shadow-xl border-2 border-slate-950 dark:border-slate-700"><QRScanner onScan={handleQRScan} /></div>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest italic">স্লিপ এর কিউআর সামনে ধরুন</p>
-                </div>
-            </div>
-          </div>
+          <QRScanner 
+            onScanSuccess={handleQRScan} 
+            onClose={() => setShowQR(false)} 
+          />
         )}
       </AnimatePresence>
 
@@ -514,7 +503,7 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
             <div className="w-full max-w-4xl my-auto bg-white dark:bg-slate-900 rounded-xl shadow-2xl p-8 md:p-12 relative overflow-hidden border border-slate-100 dark:border-slate-800 animate-fade-up">
               <button 
                 onClick={() => setShowModal(false)} 
-                className="absolute top-6 right-6 p-2.5 bg-slate-50 dark:bg-slate-800 rounded-xl hover:bg-slate-950 hover:text-white transition-all text-slate-400"
+                className="absolute top-6 right-6 p-2.5 bg-slate-50 dark:bg-slate-800 rounded-xl hover:bg-slate-950 hover:text-white transition-all text-black dark:text-slate-400"
               >
                 <X size={20} />
               </button>
@@ -523,32 +512,32 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                 <div className="text-center space-y-3">
                   <div className="mx-auto w-14 h-14 bg-slate-950 text-white rounded-xl flex items-center justify-center shadow-lg"><Database size={24} /></div>
                   <div>
-                    <h2 className="text-2xl font-bold tracking-tight text-slate-950 dark:text-white uppercase leading-none">নতুন কাজ <span className="text-blue-600">ইস্যু করুন</span></h2>
-                    <p className="text-[10px] font-bold text-slate-400 tracking-widest mt-2 uppercase italic leading-none">Distributing Pata Production Units</p>
+                    <h2 className="text-2xl font-bold tracking-tight text-black dark:text-white uppercase leading-none">নতুন কাজ <span className="text-blue-600">ইস্যু করুন</span></h2>
+                    <p className="text-[10px] font-bold text-black dark:text-slate-400 tracking-widest mt-2 uppercase italic leading-none">Distributing Pata Production Units</p>
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     <div className="space-y-1.5">
-                        <label className="text-[10px] font-bold uppercase text-slate-500 tracking-widest ml-1">কারিগর (Worker)</label>
+                        <label className="text-[10px] font-bold uppercase text-black dark:text-slate-400 tracking-widest ml-1">কারিগর (Worker)</label>
                         <select className="premium-input !h-12 text-sm uppercase font-bold" value={entryData.worker} onChange={(e) => setEntryData(p => ({ ...p, worker: e.target.value }))}>
                             <option value="">কারিগর নির্বাচন করুন...</option>
                             {workers.map(w => <option key={w} value={w}>{w}</option>)}
                         </select>
                     </div>
                     <div className="space-y-1.5">
-                        <label className="text-[10px] font-bold uppercase text-slate-500 tracking-widest ml-1">ডিজাইন (Design)</label>
+                        <label className="text-[10px] font-bold uppercase text-black dark:text-slate-400 tracking-widest ml-1">ডিজাইন (Design)</label>
                         <select className="premium-input !h-12 text-sm uppercase font-bold" value={entryData.design} onChange={(e) => setEntryData(p => ({ ...p, design: e.target.value }))}>
                             <option value="">ডিজাইন নির্বাচন করুন...</option>
                             {(masterData.designs || []).map(d => <option key={d.name} value={d.name}>{d.name}</option>)}
                         </select>
                     </div>
                     <div className="space-y-1.5">
-                        <label className="text-[10px] font-bold uppercase text-slate-500 tracking-widest ml-1">লট নম্বর (Lot ID)</label>
+                        <label className="text-[10px] font-bold uppercase text-black dark:text-slate-400 tracking-widest ml-1">লট নম্বর (Lot ID)</label>
                         <input className="premium-input !h-12 text-sm uppercase text-center font-black !bg-slate-950 !text-white !border-none" placeholder="LOT NO..." value={entryData.lotNo} onChange={(e) => setEntryData(p => ({ ...p, lotNo: e.target.value }))} />
                     </div>
                     <div className="space-y-1.5">
-                        <label className="text-[10px] font-bold uppercase text-slate-500 tracking-widest ml-1">তারিখ (Issue Date)</label>
+                        <label className="text-[10px] font-bold uppercase text-black dark:text-slate-400 tracking-widest ml-1">তারিখ (Issue Date)</label>
                         <input type="date" className="premium-input !h-12 text-xs text-center !bg-slate-50 dark:!bg-slate-800/50 border-slate-200 dark:border-slate-700" value={entryData.date} onChange={(e) => setEntryData(p => ({ ...p, date: e.target.value }))} />
                     </div>
                 </div>
@@ -556,13 +545,13 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 bg-slate-50 dark:bg-slate-800/50 p-8 rounded-xl border border-slate-100 dark:border-slate-800 shadow-inner">
                      <div className="space-y-2 lg:border-r border-slate-200 dark:border-slate-700 lg:pr-8">
                         <div className="flex items-start justify-between">
-                            <label className="text-[10px] font-bold uppercase text-slate-400 tracking-widest mb-2 block">পাতার পরিমাণ (Pata Qty)</label>
+                            <label className="text-[10px] font-bold uppercase text-black dark:text-slate-400 tracking-widest mb-2 block">পাতার পরিমাণ (Pata Qty)</label>
                             <span className="text-[9px] font-black bg-slate-950 text-white px-2 py-0.5 rounded uppercase">Required</span>
                         </div>
-                        <input placeholder="0" type="number" className="w-full text-5xl font-bold bg-transparent outline-none text-slate-950 dark:text-white" value={entryData.pataQty} onChange={(e) => setEntryData(p => ({ ...p, pataQty: e.target.value }))} />
+                        <input placeholder="0" type="number" className="w-full text-5xl font-bold bg-transparent outline-none text-black dark:text-white" value={entryData.pataQty} onChange={(e) => setEntryData(p => ({ ...p, pataQty: e.target.value }))} />
                         <div className="flex flex-wrap gap-2 mt-4">
                             {['Single', 'Double', 'Triple'].map(pt => (
-                                <button key={pt} onClick={() => setEntryData(p => ({ ...p, pataType: pt }))} className={`px-4 py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-widest transition-all ${entryData.pataType === pt ? 'bg-blue-600 text-white shadow-lg' : 'bg-white dark:bg-slate-900 text-slate-400 border border-slate-100 dark:border-slate-800'}`}>{pt}</button>
+                                <button key={pt} onClick={() => setEntryData(p => ({ ...p, pataType: pt }))} className={`px-4 py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-widest transition-all ${entryData.pataType === pt ? 'bg-blue-600 text-white shadow-lg' : 'bg-white dark:bg-slate-900 text-black dark:text-slate-400 border border-slate-100 dark:border-slate-800'}`}>{pt}</button>
                             ))}
                         </div>
                      </div>
@@ -585,7 +574,7 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                 <div className="flex flex-col md:flex-row gap-4">
                    <button 
                     onClick={() => setShowModal(false)} 
-                    className="flex-1 py-4 rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-400 font-bold uppercase text-[10px] tracking-widest hover:text-rose-500 transition-all border border-slate-100 dark:border-slate-800"
+                    className="flex-1 py-4 rounded-xl bg-slate-50 dark:bg-slate-800 text-black dark:text-slate-400 font-bold uppercase text-[10px] tracking-widest hover:text-rose-500 transition-all border border-slate-100 dark:border-slate-800"
                    >
                     বাতিল (Cancel)
                    </button>
@@ -616,17 +605,17 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                 <div className="text-center space-y-8">
                     <div className="mx-auto w-14 h-14 bg-emerald-500 text-white rounded-xl flex items-center justify-center shadow-lg"><CheckCircle size={28} /></div>
                     <div className="space-y-2">
-                        <h3 className="text-2xl font-bold uppercase text-slate-950 dark:text-white leading-none">উৎপাদন জমা <span className="text-blue-600">নিন (Receive)</span></h3>
-                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest italic mt-2 leading-none">{receiveModal.worker} - Lot #{receiveModal.lotNo}</p>
+                        <h3 className="text-2xl font-bold uppercase text-black dark:text-white leading-none">উৎপাদন জমা <span className="text-blue-600">নিন (Receive)</span></h3>
+                        <p className="text-[10px] font-bold text-black dark:text-slate-400 uppercase tracking-widest italic mt-2 leading-none">{receiveModal.worker} - Lot #{receiveModal.lotNo}</p>
                     </div>
                     <form onSubmit={handleReceive} className="space-y-8">
                         <div className="bg-slate-50 dark:bg-slate-800/50 p-10 rounded-xl text-center border border-slate-100 dark:border-slate-800 shadow-inner">
-                            <label className="text-[10px] font-bold uppercase text-slate-400 tracking-widest block mb-4">স্বাক্ষরিত পরিমাণ (Confirm Quantity)</label>
-                            <input name="rQty" type="number" defaultValue={receiveModal.pataQty} className="w-full text-center text-6xl font-bold bg-transparent border-none text-slate-950 dark:text-white outline-none leading-none h-20" autoFocus />
+                            <label className="text-[10px] font-bold uppercase text-black dark:text-slate-400 tracking-widest block mb-4">স্বাক্ষরিত পরিমাণ (Confirm Quantity)</label>
+                            <input name="rQty" type="number" defaultValue={receiveModal.pataQty} className="w-full text-center text-6xl font-bold bg-transparent border-none text-black dark:text-white outline-none leading-none h-20" autoFocus />
                         </div>
                         <div className="flex flex-col gap-3">
                             <button type="submit" className="w-full py-4 bg-slate-950 text-white rounded-xl font-bold text-[10px] uppercase tracking-widest shadow-xl hover:bg-black transition-all">নিশ্চিত করুন (Confirm)</button>
-                            <button type="button" onClick={() => setReceiveModal(null)} className="w-full py-4 text-slate-400 font-bold text-[10px] uppercase rounded-xl hover:text-rose-500 transition-all font-outfit">বাতিল করুন</button>
+                            <button type="button" onClick={() => setReceiveModal(null)} className="w-full py-4 text-black dark:text-slate-400 font-bold text-[10px] uppercase rounded-xl hover:text-rose-500 transition-all font-outfit">বাতিল করুন</button>
                         </div>
                     </form>
                 </div>
@@ -643,8 +632,8 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                 <div className="text-center space-y-8">
                     <div className="mx-auto w-14 h-14 bg-blue-600 text-white rounded-xl flex items-center justify-center shadow-lg"><DollarSign size={28} /></div>
                     <div className="space-y-2">
-                        <h3 className="text-2xl font-bold uppercase text-slate-950 dark:text-white leading-none">মজুরি <span className="text-blue-600">পরিশোধ করুন</span></h3>
-                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest italic mt-2 leading-none font-outfit">{payModal}</p>
+                        <h3 className="text-2xl font-bold uppercase text-black dark:text-white leading-none">মজুরি <span className="text-blue-600">পরিশোধ করুন</span></h3>
+                        <p className="text-[10px] font-bold text-black dark:text-slate-400 uppercase tracking-widest italic mt-2 leading-none font-outfit">{payModal}</p>
                     </div>
                     <form onSubmit={handleConfirmPayment} className="space-y-8">
                         <div className="bg-slate-950 p-10 rounded-xl text-center border-b-4 border-blue-600 shadow-2xl">
@@ -654,17 +643,17 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-1.5">
-                                <label className="text-[9px] font-bold uppercase text-slate-500 tracking-widest ml-1">তারিখ</label>
+                                <label className="text-[9px] font-bold uppercase text-black dark:text-slate-400 tracking-widest ml-1">তারিখ</label>
                                 <input name="date" type="date" className="premium-input !h-11 text-xs text-center !bg-slate-50 dark:!bg-slate-800/50 border-slate-200 dark:border-slate-700" defaultValue={new Date().toISOString().split('T')[0]} />
                             </div>
                             <div className="space-y-1.5">
-                                <label className="text-[9px] font-bold uppercase text-slate-500 tracking-widest ml-1">নোট (Optional)</label>
+                                <label className="text-[9px] font-bold uppercase text-black dark:text-slate-400 tracking-widest ml-1">নোট (Optional)</label>
                                 <input name="note" className="premium-input !h-11 text-xs" placeholder="REMARKS..." />
                             </div>
                         </div>
                         <div className="flex flex-col gap-3">
                             <button type="submit" className="w-full py-4 bg-blue-600 text-white rounded-xl font-bold text-[10px] uppercase tracking-widest shadow-xl hover:bg-blue-700 transition-all flex items-center justify-center gap-2"><ShieldCheck size={18} /> কনফার্ম পেমেন্ট</button>
-                            <button type="button" onClick={() => setPayModal(null)} className="w-full py-4 text-slate-400 font-bold text-[10px] uppercase rounded-xl hover:text-rose-500 transition-all font-outfit">বাতিল করুন</button>
+                            <button type="button" onClick={() => setPayModal(null)} className="w-full py-4 text-black dark:text-slate-400 font-bold text-[10px] uppercase rounded-xl hover:text-rose-500 transition-all font-outfit">বাতিল করুন</button>
                         </div>
                     </form>
                 </div>
@@ -681,12 +670,12 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                 <div className="space-y-8">
                     <div className="flex justify-between items-center pb-6 border-b border-slate-100 dark:border-slate-800">
                         <div>
-                            <h3 className="text-2xl font-bold uppercase text-slate-950 dark:text-white leading-none">কারিগর <span className="text-blue-600">লেজার (Ledger)</span></h3>
-                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest italic mt-2 leading-none font-outfit">{ledgerModal} - Audit Log</p>
+                            <h3 className="text-2xl font-bold uppercase text-black dark:text-white leading-none">কারিগর <span className="text-blue-600">লেজার (Ledger)</span></h3>
+                            <p className="text-[10px] font-bold text-black dark:text-slate-400 uppercase tracking-widest italic mt-2 leading-none font-outfit">{ledgerModal} - Audit Log</p>
                         </div>
                         <button 
                             onClick={() => setLedgerModal(null)} 
-                            className="p-2.5 bg-slate-50 dark:bg-slate-800 rounded-xl hover:bg-rose-500 hover:text-white transition-all text-slate-400 shadow-sm"
+                            className="p-2.5 bg-slate-50 dark:bg-slate-800 rounded-xl hover:bg-rose-500 hover:text-white transition-all text-black dark:text-slate-400 shadow-sm"
                         >
                             <X size={20} />
                         </button>
@@ -696,8 +685,8 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                         {(masterData.pataEntries || []).filter(e => e.worker === ledgerModal && e.status === 'Received').map((e, idx) => (
                             <div key={idx} className="flex justify-between items-center p-5 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-800 group hover:border-emerald-500/30 transition-all">
                                 <div className="space-y-1">
-                                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest italic leading-none">{e.receiveDate}</p>
-                                    <h4 className="text-sm font-bold uppercase text-slate-900 dark:text-white">{e.design} ({e.receivedQty || e.pataQty} পিস)</h4>
+                                    <p className="text-[9px] font-bold text-black dark:text-slate-400 uppercase tracking-widest italic leading-none">{e.receiveDate}</p>
+                                    <h4 className="text-sm font-bold uppercase text-black dark:text-white">{e.design} ({e.receivedQty || e.pataQty} পিস)</h4>
                                 </div>
                                 <div className="text-right">
                                     <p className="text-lg font-bold text-emerald-600">+ ৳{(e.amount || 0).toLocaleString()}</p>

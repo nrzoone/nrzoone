@@ -76,7 +76,7 @@ const WeeklyInvoice = ({ masterData, user, logAction, showNotify, setActivePanel
                     <div className="flex justify-between items-start border-b-4 border-black pb-12 mb-12">
                         <div>
                             <h1 className="text-6xl font-black uppercase italic tracking-tighter">NRZO0NE <span className="text-gray-200">WEEKLY</span></h1>
-                            <p className="text-xs font-black text-slate-500 mt-4 tracking-widest">{selectedDept === 'sewing' ? 'সেলাই' : selectedDept === 'stone' ? 'স্টোন' : 'পাটা'} বিভাগের সাপ্তাহিক বিল</p>
+                            <p className="text-xs font-black text-black dark:text-slate-400 mt-4 tracking-widest">{selectedDept === 'sewing' ? 'সেলাই' : selectedDept === 'stone' ? 'স্টোন' : 'পাটা'} বিভাগের সাপ্তাহিক বিল</p>
                         </div>
                         <div className="text-right">
                             <p className="text-sm font-black italic">{range.saturday.toLocaleDateString('bn-BD')} - {range.thursday.toLocaleDateString('bn-BD')}</p>
@@ -131,8 +131,8 @@ const WeeklyInvoice = ({ masterData, user, logAction, showNotify, setActivePanel
                            <NRZLogo size="md" white />
                         </div>
                         <div>
-                            <p className="text-xs md:text-sm font-black text-slate-500 uppercase tracking-[0.4em] mb-3 italic">সাপ্তাহিক ম্যাট্রিক্স</p>
-                            <h2 className="text-4xl md:text-7xl lg:text-8xl font-black uppercase italic tracking-tighter leading-none text-black">সাপ্তাহিক <span className="text-slate-500">বিল হাব</span></h2>
+                            <p className="text-xs md:text-sm font-black text-black dark:text-slate-400 uppercase tracking-[0.4em] mb-3 italic">সাপ্তাহিক ম্যাট্রিক্স</p>
+                            <h2 className="text-4xl md:text-7xl lg:text-8xl font-black uppercase italic tracking-tighter leading-none text-black">সাপ্তাহিক <span className="text-black dark:text-slate-400">বিল হাব</span></h2>
                         </div>
                     </div>
                 </div>
@@ -150,15 +150,15 @@ const WeeklyInvoice = ({ masterData, user, logAction, showNotify, setActivePanel
 
             <div className="bg-white p-12 rounded-[4rem] border-4 border-slate-50 shadow-2xl flex items-center justify-between">
                 <div>
-                    <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.5em] mb-4">Current Cycle</p>
+                    <p className="text-[10px] font-black text-black dark:text-slate-400 uppercase tracking-[0.5em] mb-4">Current Cycle</p>
                     <p className="text-5xl font-black italic tracking-tighter text-black">{range.saturday.toLocaleDateString('en-GB')} — {range.thursday.toLocaleDateString('en-GB')}</p>
                 </div>
-                <div className="p-8 bg-slate-50 rounded-full rotate-12 border border-slate-100 shadow-inner"><Calendar size={48} className="text-slate-500" /></div>
+                <div className="p-8 bg-slate-50 rounded-full rotate-12 border border-slate-100 shadow-inner"><Calendar size={48} className="text-black dark:text-slate-400" /></div>
             </div>
 
             <div className="bg-white rounded-[5rem] border-4 border-slate-50 shadow-2xl overflow-hidden">
                 <table className="w-full text-left">
-                    <thead className="bg-slate-50 text-slate-500 uppercase font-black text-[10px] tracking-widest">
+                    <thead className="bg-slate-50 text-black dark:text-slate-400 uppercase font-black text-[10px] tracking-widest">
                         <tr>
                             <th className="px-16 py-10">কারিগর (Worker Node)</th>
                             <th className="px-16 py-10 text-center">কাজের পরিমাণ (Output)</th>
@@ -172,7 +172,7 @@ const WeeklyInvoice = ({ masterData, user, logAction, showNotify, setActivePanel
                             return (
                                 <tr key={w} className="hover:bg-slate-50 transition-all group">
                                     <td className="px-16 py-12"><p className="font-black text-3xl uppercase tracking-tighter italic text-black">{w}</p></td>
-                                    <td className="px-16 py-12 text-center font-black text-4xl italic text-black">{d.qty} <span className="text-xs text-slate-500">{d.qtyLabel === 'Pcs' ? 'পিস' : 'দিন'}</span></td>
+                                    <td className="px-16 py-12 text-center font-black text-4xl italic text-black">{d.qty} <span className="text-xs text-black dark:text-slate-400">{d.qtyLabel === 'Pcs' ? 'পিস' : 'দিন'}</span></td>
                                     <td className="px-16 py-12 text-right font-black text-5xl italic tracking-tighter text-black">৳{d.bill.toLocaleString()}</td>
                                 </tr>
                             );
