@@ -625,7 +625,7 @@ const FactoryPanel = ({
             <h1 className="text-3xl font-bold tracking-tight text-black dark:text-white uppercase leading-none">
               {type === "sewing" ? 'সেলাই' : 'স্টোন'} <span className="text-blue-600">উৎপাদন ইউনিট</span>
             </h1>
-            <p className="text-[10px] font-bold text-black dark:text-slate-400 uppercase tracking-widest italic leading-none mt-1">
+            <p className="text-[10px] font-bold text-black dark:text-white uppercase tracking-widest italic leading-none mt-1">
                সিস্টেম সচল V5.0 — {type.toUpperCase()} PRODUCTION HUB
             </p>
           </div>
@@ -650,7 +650,7 @@ const FactoryPanel = ({
                 <button
                   key={v}
                   onClick={() => setView(v)}
-                  className={`pill-tab !px-6 !py-2.5 !text-[10px] ${view === v ? 'pill-tab-active' : 'text-black dark:text-slate-400 hover:text-black dark:hover:text-white'}`}
+                  className={`pill-tab !px-6 !py-2.5 !text-[10px] ${view === v ? 'pill-tab-active' : 'text-black dark:text-white hover:text-black dark:hover:text-white'}`}
                 >
                   {v === 'active' ? 'চলমান প্রজেক্ট' : v === 'history' ? 'পুরাতন হিসেব' : 'পেমেন্ট ও লেজার'}
                 </button>
@@ -658,7 +658,7 @@ const FactoryPanel = ({
           </div>
           
           <div className="flex-1 relative w-full group">
-              <Search size={14} className="absolute left-5 top-1/2 -translate-y-1/2 text-black dark:text-slate-400 group-focus-within:text-blue-600 transition-colors" />
+              <Search size={14} className="absolute left-5 top-1/2 -translate-y-1/2 text-black dark:text-white group-focus-within:text-blue-600 transition-colors" />
               <input
                   placeholder="লট, ডিজাইন বা কারিগর দিয়ে খুঁজুন (Search)..."
                   className="premium-input !pl-12 !h-11 !text-[11px] !bg-slate-50 dark:!bg-slate-800/50"
@@ -683,8 +683,8 @@ const FactoryPanel = ({
           <div className="grid grid-cols-1 gap-4">
             {activeProductions.length === 0 ? (
               <div className="h-64 flex flex-col items-center justify-center bg-white dark:bg-slate-900 rounded-xl border border-dashed border-slate-200 dark:border-slate-800 opacity-60">
-                <Box size={40} strokeWidth={1} className="text-black dark:text-slate-400 mb-4" />
-                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-black dark:text-slate-400">কোন চলমান প্রজেক্ট নেই (Empty)</p>
+                <Box size={40} strokeWidth={1} className="text-black dark:text-white mb-4" />
+                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-black dark:text-white">কোন চলমান প্রজেক্ট নেই (Empty)</p>
               </div>
             ) : (
               activeProductions.map((p, idx) => (
@@ -703,7 +703,7 @@ const FactoryPanel = ({
                         </h4>
                         <span className="px-2 py-0.5 bg-blue-600/10 text-blue-600 text-[9px] font-bold rounded border border-blue-600/20">#{p.lotNo}</span>
                       </div>
-                      <div className="flex items-center gap-3 text-black dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest italic overflow-hidden">
+                      <div className="flex items-center gap-3 text-black dark:text-white text-[10px] font-bold uppercase tracking-widest italic overflow-hidden">
                         <span className="flex items-center gap-1 shrink-0"><Scissors size={10} /> {p.design}</span>
                         <span className="opacity-20">•</span>
                         <span className="truncate">{p.date}</span>
@@ -714,12 +714,12 @@ const FactoryPanel = ({
                   <div className="flex items-center gap-8 w-full md:w-auto justify-between border-t md:border-t-0 border-slate-50 dark:border-slate-800 pt-5 md:pt-0">
                     <div className="flex gap-6">
                       <div className="text-center">
-                        <p className="text-[9px] font-bold text-black dark:text-slate-400 uppercase tracking-widest mb-1 leading-none">BORKA</p>
+                        <p className="text-[9px] font-bold text-black dark:text-white uppercase tracking-widest mb-1 leading-none">BORKA</p>
                         <p className="text-2xl font-bold text-black dark:text-white leading-none">{p.issueBorka}</p>
                       </div>
                       <div className="text-center">
-                        <p className="text-[9px] font-bold text-black dark:text-slate-400 uppercase tracking-widest mb-1 leading-none">HIJAB</p>
-                        <p className="text-2xl font-bold text-black dark:text-slate-400 leading-none">{p.issueHijab}</p>
+                        <p className="text-[9px] font-bold text-black dark:text-white uppercase tracking-widest mb-1 leading-none">HIJAB</p>
+                        <p className="text-2xl font-bold text-black dark:text-white leading-none">{p.issueHijab}</p>
                       </div>
                     </div>
                     <div className="flex gap-2">
@@ -733,14 +733,14 @@ const FactoryPanel = ({
                       )}
                       <button
                         onClick={() => setPrintSlip(p)}
-                        className="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-800 text-black dark:text-slate-400 hover:bg-slate-950 hover:text-white transition-all border border-slate-100 dark:border-slate-800"
+                        className="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-800 text-black dark:text-white hover:bg-slate-950 hover:text-white transition-all border border-slate-100 dark:border-slate-800"
                       >
                         <Printer size={16} />
                       </button>
                       {isAdmin && (
                         <button
                           onClick={() => setEditModal(p)}
-                          className="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-800 text-black dark:text-slate-400 hover:bg-blue-600 hover:text-white transition-all border border-slate-100 dark:border-slate-800"
+                          className="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-800 text-black dark:text-white hover:bg-blue-600 hover:text-white transition-all border border-slate-100 dark:border-slate-800"
                         >
                           <Settings size={16} />
                         </button>
@@ -757,8 +757,8 @@ const FactoryPanel = ({
           <div className="grid grid-cols-1 gap-4">
             {historyProductions.length === 0 ? (
               <div className="h-64 flex flex-col items-center justify-center bg-white dark:bg-slate-900 rounded-xl border border-dashed border-slate-200 dark:border-slate-800 opacity-60">
-                <Archive size={40} strokeWidth={1} className="text-black dark:text-slate-400 mb-4" />
-                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-black dark:text-slate-400">আর্কাইভ খালি (Empty Archive)</p>
+                <Archive size={40} strokeWidth={1} className="text-black dark:text-white mb-4" />
+                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-black dark:text-white">আর্কাইভ খালি (Empty Archive)</p>
               </div>
             ) : (
               historyProductions.map((p, idx) => (
@@ -767,7 +767,7 @@ const FactoryPanel = ({
                   className="saas-card flex flex-col md:flex-row justify-between items-center gap-6 group hover:border-slate-950 dark:hover:border-white transition-all opacity-80 hover:opacity-100 italic"
                 >
                   <div className="flex items-center gap-6 flex-1 w-full">
-                    <div className="w-14 h-14 bg-slate-100 dark:bg-slate-800 text-black dark:text-slate-400 flex items-center justify-center text-xl font-bold rounded-xl border border-slate-200 dark:border-slate-700">
+                    <div className="w-14 h-14 bg-slate-100 dark:bg-slate-800 text-black dark:text-white flex items-center justify-center text-xl font-bold rounded-xl border border-slate-200 dark:border-slate-700">
                       {p.size}
                     </div>
                     <div className="space-y-1">
@@ -775,23 +775,23 @@ const FactoryPanel = ({
                         <h4 className="text-xl font-bold text-black dark:text-white line-through opacity-50">{p.worker}</h4>
                         <span className="text-[10px] text-emerald-600 font-bold bg-emerald-50 px-2 py-0.5 rounded leading-none">সফল (DONE)</span>
                       </div>
-                      <p className="text-[10px] font-bold text-black dark:text-slate-400 uppercase tracking-widest">{p.design} • {p.receiveDate}</p>
+                      <p className="text-[10px] font-bold text-black dark:text-white uppercase tracking-widest">{p.design} • {p.receiveDate}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-10">
                     <div className="flex gap-8">
                        <div className="text-right">
-                          <p className="text-[9px] font-bold text-black dark:text-slate-400 uppercase leading-none mb-1">RECEIVED</p>
+                          <p className="text-[9px] font-bold text-black dark:text-white uppercase leading-none mb-1">RECEIVED</p>
                           <p className="text-xl font-bold">{p.receivedBorka + p.receivedHijab}</p>
                        </div>
                        <div className="text-right">
-                          <p className="text-[9px] font-bold text-black dark:text-slate-400 uppercase leading-none mb-1">WAGE</p>
+                          <p className="text-[9px] font-bold text-black dark:text-white uppercase leading-none mb-1">WAGE</p>
                           <p className="text-xl font-bold text-emerald-600">৳{p.rate}</p>
                        </div>
                     </div>
                     <button
                         onClick={() => setPrintSlip(p)}
-                        className="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-800 text-black dark:text-slate-400 hover:bg-slate-950 hover:text-white transition-all"
+                        className="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-800 text-black dark:text-white hover:bg-slate-950 hover:text-white transition-all"
                       >
                         <Printer size={16} />
                       </button>
@@ -806,7 +806,7 @@ const FactoryPanel = ({
       {view === "payments" && (
         <div className="space-y-6">
           {workers.length === 0 ? (
-            <div className="h-[300px] flex flex-col items-center justify-center text-black dark:text-slate-400 uppercase font-black italic gap-6">
+            <div className="h-[300px] flex flex-col items-center justify-center text-black dark:text-white uppercase font-black italic gap-6">
               <User size={60} strokeWidth={1} />
               <p>No Factory Personnel Registered</p>
             </div>
@@ -829,7 +829,7 @@ const FactoryPanel = ({
                            <span className="px-2 py-1 bg-emerald-500/10 text-emerald-600 text-[10px] font-bold rounded-md border border-emerald-500/20">ID: {masterData.workerDocs?.find(d => d.name.toUpperCase() === w.toUpperCase() && d.dept === type)?.workerId}</span>
                         )}
                       </h4>
-                      <p className="text-[10px] font-bold text-black dark:text-slate-400 uppercase tracking-widest italic opacity-60">
+                      <p className="text-[10px] font-bold text-black dark:text-white uppercase tracking-widest italic opacity-60">
                         Senior Operator // {type.toUpperCase()} UNIT
                       </p>
                     </div>
@@ -853,7 +853,7 @@ const FactoryPanel = ({
                     </button>
                     <button
                       onClick={() => setLedgerModal(w)}
-                      className="w-12 h-12 flex items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-800 text-black dark:text-slate-400 hover:bg-slate-900 hover:text-white transition-all border border-slate-200 dark:border-slate-700"
+                      className="w-12 h-12 flex items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-800 text-black dark:text-white hover:bg-slate-900 hover:text-white transition-all border border-slate-200 dark:border-slate-700"
                     >
                       <DollarSign size={20} />
                     </button>
@@ -887,7 +887,7 @@ const FactoryPanel = ({
             </div>
 
             <div className="flex items-center justify-center gap-4">
-              <span className={`text-[10px] font-black uppercase tracking-widest italic transition-colors ${!showAllLots ? "text-black" : "text-black dark:text-slate-400"}`}>Normal Pipeline</span>
+              <span className={`text-[10px] font-black uppercase tracking-widest italic transition-colors ${!showAllLots ? "text-black" : "text-black dark:text-white"}`}>Normal Pipeline</span>
               <button
                 type="button"
                 onClick={() => setShowAllLots(!showAllLots)}
@@ -895,7 +895,7 @@ const FactoryPanel = ({
               >
                 <div className={`absolute top-1 left-1 bg-white w-6 h-6 rounded-full shadow-md transition-transform duration-300 ${showAllLots ? "translate-x-6" : ""}`}></div>
               </button>
-              <span className={`text-[10px] font-black uppercase tracking-widest italic transition-colors ${showAllLots ? "text-rose-500" : "text-black dark:text-slate-400"}`}>{t('adminPower')}</span>
+              <span className={`text-[10px] font-black uppercase tracking-widest italic transition-colors ${showAllLots ? "text-rose-500" : "text-black dark:text-white"}`}>{t('adminPower')}</span>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12">
@@ -904,9 +904,9 @@ const FactoryPanel = ({
                 {/* Lot Selection Box */}
                 <div className="bg-slate-50 p-6 md:p-8 rounded-xl border border-slate-100 relative group transition-all hover:border-slate-950">
                   <div className="flex items-center gap-3 mb-4">
-                    <Search size={18} className="text-black dark:text-slate-400" />
+                    <Search size={18} className="text-black dark:text-white" />
                     <label className="text-xs font-black text-black uppercase tracking-widest">
-                      প্রাপ্য লট নির্বাচন করুন <span className="text-black dark:text-slate-400 text-[10px] ml-1">(Select Available Lot)</span>
+                      প্রাপ্য লট নির্বাচন করুন <span className="text-black dark:text-white text-[10px] ml-1">(Select Available Lot)</span>
                     </label>
                   </div>
                   <div className="relative">
@@ -925,10 +925,10 @@ const FactoryPanel = ({
                         </option>
                       ))}
                     </select>
-                    <ChevronRight size={20} className="absolute right-6 top-1/2 -translate-y-1/2 text-black dark:text-slate-400 pointer-events-none" />
+                    <ChevronRight size={20} className="absolute right-6 top-1/2 -translate-y-1/2 text-black dark:text-white pointer-events-none" />
                   </div>
                   {availableLots.length === 0 && (
-                    <div className="mt-4 p-4 bg-white border-2 border-dashed border-slate-200 rounded-xl flex items-center justify-center gap-2 text-black dark:text-slate-400">
+                    <div className="mt-4 p-4 bg-white border-2 border-dashed border-slate-200 rounded-xl flex items-center justify-center gap-2 text-black dark:text-white">
                        <Box size={16} /> <span className="text-[10px] font-black tracking-widest uppercase">কোন লট পাওয়া যায়নি</span>
                     </div>
                   )}
@@ -936,7 +936,7 @@ const FactoryPanel = ({
 
                 <div className="bg-white space-y-6">
                   <div className="space-y-2">
-                    <label className="text-[10px] font-bold text-black dark:text-slate-400 uppercase flex items-center gap-2 mb-2 tracking-widest">
+                    <label className="text-[10px] font-bold text-black dark:text-white uppercase flex items-center gap-2 mb-2 tracking-widest">
                       <User size={16} className="text-blue-600" /> কারিগর নির্বাচন করুন (Select Worker)
                     </label>
                     <div className="relative">
@@ -968,7 +968,7 @@ const FactoryPanel = ({
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="bg-slate-50 dark:bg-slate-800 p-4 rounded-xl border border-slate-100 dark:border-slate-700 flex flex-col justify-center">
-                      <p className="text-[10px] font-bold text-black dark:text-slate-400 uppercase tracking-widest mb-1">মজুরি রেট (Rate)</p>
+                      <p className="text-[10px] font-bold text-black dark:text-white uppercase tracking-widest mb-1">মজুরি রেট (Rate)</p>
                       <div className="flex items-center gap-1 font-bold text-blue-600 text-2xl">
                          ৳
                          <input
@@ -981,7 +981,7 @@ const FactoryPanel = ({
                       </div>
                     </div>
                     <div className="bg-slate-50 dark:bg-slate-800 p-4 rounded-xl border border-slate-100 dark:border-slate-700 flex flex-col justify-center">
-                      <p className="text-[10px] font-bold text-black dark:text-slate-400 uppercase tracking-widest mb-1">তারিখ (Date)</p>
+                      <p className="text-[10px] font-bold text-black dark:text-white uppercase tracking-widest mb-1">তারিখ (Date)</p>
                       <input 
                         type="date"
                         className="w-full bg-transparent text-sm font-bold text-black dark:text-white outline-none p-0"
@@ -990,18 +990,18 @@ const FactoryPanel = ({
                       />
                     </div>
                     <div className="bg-slate-50 dark:bg-slate-800 p-4 rounded-xl border border-slate-100 dark:border-slate-700 flex flex-col justify-center">
-                      <p className="text-[10px] font-bold text-black dark:text-slate-400 uppercase tracking-widest mb-1">ডিজাইন (Design)</p>
+                      <p className="text-[10px] font-bold text-black dark:text-white uppercase tracking-widest mb-1">ডিজাইন (Design)</p>
                       <p className="text-sm font-bold truncate text-black dark:text-white">{selection.design || "---"}</p>
                     </div>
                     <div className="bg-slate-50 dark:bg-slate-800 p-4 rounded-xl border border-slate-100 dark:border-slate-700 flex flex-col justify-center">
-                      <p className="text-[10px] font-bold text-black dark:text-slate-400 uppercase tracking-widest mb-1">রঙ (Color)</p>
+                      <p className="text-[10px] font-bold text-black dark:text-white uppercase tracking-widest mb-1">রঙ (Color)</p>
                       <p className="text-sm font-bold truncate text-black dark:text-white">{selection.color || "---"}</p>
                     </div>
                   </div>
 
 
                   <div>
-                     <label className="text-[10px] font-bold text-black dark:text-slate-400 uppercase block mb-2 tracking-widest">বিশেষ দ্রষ্টব্য (Optional Note)</label>
+                     <label className="text-[10px] font-bold text-black dark:text-white uppercase block mb-2 tracking-widest">বিশেষ দ্রষ্টব্য (Optional Note)</label>
                      <input
                        type="text"
                        className="premium-input !h-12 !bg-slate-50 dark:!bg-slate-800 text-sm font-medium"
@@ -1041,15 +1041,15 @@ const FactoryPanel = ({
               <div className="lg:col-span-6">
                 <div className="bg-slate-50 p-6 md:p-8 rounded-xl border border-slate-100 h-full flex flex-col">
                   <div className="flex items-center gap-3 mb-6">
-                    <Layers size={18} className="text-black dark:text-slate-400" />
+                    <Layers size={18} className="text-black dark:text-white" />
                     <label className="text-xs font-black text-black uppercase tracking-widest">
-                       পরিমাণ এবং ক্যাটাগরি <span className="text-black dark:text-slate-400 text-[9px] ml-1">(Qty & Size)</span>
+                       পরিমাণ এবং ক্যাটাগরি <span className="text-black dark:text-white text-[9px] ml-1">(Qty & Size)</span>
                     </label>
                   </div>
 
                   <div className="flex-1 space-y-4 max-h-[400px] overflow-y-auto pr-2">
                     {issueSizes.length === 0 ? (
-                      <div className="h-40 flex items-center justify-center text-black dark:text-slate-400 uppercase font-black italic tracking-widest text-[10px]">
+                      <div className="h-40 flex items-center justify-center text-black dark:text-white uppercase font-black italic tracking-widest text-[10px]">
                         লট সিলেক্ট করুন (Select Lot)
                       </div>
                     ) : (
@@ -1085,8 +1085,8 @@ const FactoryPanel = ({
                                <div className="grid grid-cols-2 md:grid-cols-3 gap-4 items-center">
                                   <div className="bg-slate-50 p-3 rounded-xl border border-slate-100">
                                       <div className="flex justify-between items-center mb-1">
-                                         <p className="text-[9px] font-black uppercase text-black dark:text-slate-400">Borka Qty</p>
-                                         <span className="text-[8px] font-bold text-black dark:text-slate-400">Max: {maxBorka}</span>
+                                         <p className="text-[9px] font-black uppercase text-black dark:text-white">Borka Qty</p>
+                                         <span className="text-[8px] font-bold text-black dark:text-white">Max: {maxBorka}</span>
                                       </div>
                                       <input
                                         type="number"
@@ -1102,12 +1102,12 @@ const FactoryPanel = ({
                                   </div>
                                   <div className="bg-slate-50 p-3 rounded-xl border border-slate-100">
                                       <div className="flex justify-between items-center mb-1">
-                                         <p className="text-[9px] font-black uppercase text-black dark:text-slate-400">Hijab Qty</p>
-                                         <span className="text-[8px] font-bold text-black dark:text-slate-400">Max: {maxHijab}</span>
+                                         <p className="text-[9px] font-black uppercase text-black dark:text-white">Hijab Qty</p>
+                                         <span className="text-[8px] font-bold text-black dark:text-white">Max: {maxHijab}</span>
                                       </div>
                                       <input
                                         type="number"
-                                        className="w-full bg-transparent text-xl font-black text-black dark:text-slate-400 outline-none p-0"
+                                        className="w-full bg-transparent text-xl font-black text-black dark:text-white outline-none p-0"
                                         placeholder="0"
                                         value={row.hijab}
                                         onChange={(e) => {
@@ -1128,7 +1128,7 @@ const FactoryPanel = ({
                                                     <>
                                                       <p className={`text-[7px] font-black uppercase tracking-widest ${stock < 10 ? 'text-rose-500 animate-pulse' : 'text-indigo-300'}`}>{stock < 10 ? 'ALERT: LOW' : 'Live Stock'}</p>
                                                       <p className={`text-[10px] font-black ${stock < 10 ? 'text-rose-500' : 'text-black'}`}>
-                                                          {stock} <span className="text-[8px] text-black dark:text-slate-400">Pcs</span>
+                                                          {stock} <span className="text-[8px] text-black dark:text-white">Pcs</span>
                                                       </p>
                                                     </>
                                                   );
@@ -1155,7 +1155,7 @@ const FactoryPanel = ({
                      <button
                        type="button"
                        onClick={() => setIssueSizes([...issueSizes, { size: "", borka: "", hijab: "", pataQty: "" }])}
-                       className="w-full py-4 border-2 border-dashed border-slate-200 rounded-xl flex items-center justify-center gap-2 text-black dark:text-slate-400 hover:border-slate-950 hover:text-black transition-all text-[10px] font-black uppercase tracking-widest mt-4"
+                       className="w-full py-4 border-2 border-dashed border-slate-200 rounded-xl flex items-center justify-center gap-2 text-black dark:text-white hover:border-slate-950 hover:text-black transition-all text-[10px] font-black uppercase tracking-widest mt-4"
                      >
                        <Plus size={14} /> আরও সাইজ যোগ করুন (Add Size)
                      </button>
@@ -1164,14 +1164,14 @@ const FactoryPanel = ({
                   {/* Selection Summary Counter */}
                   {issueSizes.some(s => Number(s.borka || 0) > 0 || Number(s.hijab || 0) > 0) && (
                     <div className="mt-4 pt-4 border-t border-slate-100 flex justify-between items-center px-4">
-                        <p className="text-[9px] font-black text-black dark:text-slate-400 uppercase tracking-widest italic leading-none">নির্বাচিত মোট পরিমাণ (Total Volume)</p>
+                        <p className="text-[9px] font-black text-black dark:text-white uppercase tracking-widest italic leading-none">নির্বাচিত মোট পরিমাণ (Total Volume)</p>
                         <div className="flex gap-6 items-baseline text-black">
                            <div className="flex items-baseline gap-1">
-                               <span className="text-[10px] text-black dark:text-slate-400">BORKA:</span>
+                               <span className="text-[10px] text-black dark:text-white">BORKA:</span>
                                <span className="text-xl font-black italic">{issueSizes.reduce((s, r) => s + Number(r.borka || 0), 0)}</span>
                            </div>
                            <div className="flex items-baseline gap-1">
-                               <span className="text-[10px] text-black dark:text-slate-400">HIJAB:</span>
+                               <span className="text-[10px] text-black dark:text-white">HIJAB:</span>
                                <span className="text-xl font-black italic">{issueSizes.reduce((s, r) => s + Number(r.hijab || 0), 0)}</span>
                            </div>
                         </div>
@@ -1184,7 +1184,7 @@ const FactoryPanel = ({
               <button
                 type="button"
                 onClick={() => setShowIssueModal(false)}
-                className="py-4 md:py-5 px-8 rounded-xl bg-slate-50 dark:bg-slate-800 text-black dark:text-slate-400 font-bold uppercase text-[10px] tracking-widest hover:bg-slate-200 transition-all font-outfit"
+                className="py-4 md:py-5 px-8 rounded-xl bg-slate-50 dark:bg-slate-800 text-black dark:text-white font-bold uppercase text-[10px] tracking-widest hover:bg-slate-200 transition-all font-outfit"
               >
                 বাতিল করুন
               </button>
@@ -1216,7 +1216,7 @@ const FactoryPanel = ({
               <h3 className="text-2xl font-bold text-black dark:text-white uppercase">
                 উৎপাদন গ্রহণ (Receive)
               </h3>
-              <p className="text-[10px] font-bold text-black dark:text-slate-400 uppercase tracking-widest leading-none">
+              <p className="text-[10px] font-bold text-black dark:text-white uppercase tracking-widest leading-none">
                 {receiveModal.worker} • {receiveModal.design}
               </p>
             </div>
@@ -1226,7 +1226,7 @@ const FactoryPanel = ({
             >
               <div className="grid grid-cols-2 gap-4 bg-slate-50 dark:bg-slate-800 p-6 rounded-xl border border-slate-100 dark:border-slate-700">
                 <div className="text-center space-y-1">
-                  <label className="text-[10px] font-bold text-black dark:text-slate-400 uppercase block">
+                  <label className="text-[10px] font-bold text-black dark:text-white uppercase block">
                     বোরকা (Rec)
                   </label>
                   <input
@@ -1238,7 +1238,7 @@ const FactoryPanel = ({
                   />
                 </div>
                 <div className="text-center space-y-1">
-                  <label className="text-[10px] font-bold text-black dark:text-slate-400 uppercase block">
+                  <label className="text-[10px] font-bold text-black dark:text-white uppercase block">
                     হিজাব (Rec)
                   </label>
                   <input
@@ -1262,7 +1262,7 @@ const FactoryPanel = ({
                 <button
                   type="button"
                   onClick={() => setReceiveModal(null)}
-                  className="py-4 bg-slate-50 dark:bg-slate-800 text-black dark:text-slate-400 rounded-xl font-bold uppercase text-[10px] tracking-widest hover:text-rose-500 transition-all"
+                  className="py-4 bg-slate-50 dark:bg-slate-800 text-black dark:text-white rounded-xl font-bold uppercase text-[10px] tracking-widest hover:text-rose-500 transition-all"
                 >
                   বাতিল করুন
                 </button>
@@ -1289,12 +1289,12 @@ const FactoryPanel = ({
                 </div>
                 <div>
                   <h3 className="text-xl font-bold text-black dark:text-white">ডেটা সংশোধন (Edit Data)</h3>
-                  <p className="text-[10px] font-bold text-black dark:text-slate-400 uppercase tracking-widest">Industrial Protocol Override</p>
+                  <p className="text-[10px] font-bold text-black dark:text-white uppercase tracking-widest">Industrial Protocol Override</p>
                 </div>
               </div>
               <button 
                 onClick={() => setEditModal(null)} 
-                className="p-2 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-full transition-all text-black dark:text-slate-400"
+                className="p-2 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-full transition-all text-black dark:text-white"
               >
                 <X size={20} />
               </button>
@@ -1302,19 +1302,19 @@ const FactoryPanel = ({
 
             <form onSubmit={handleEditSave} className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-1">
-                <label className="text-[10px] font-bold text-black dark:text-slate-400 uppercase tracking-widest ml-1">কারিগর (Worker)</label>
+                <label className="text-[10px] font-bold text-black dark:text-white uppercase tracking-widest ml-1">কারিগর (Worker)</label>
                 <select name="worker" defaultValue={editModal.worker} className="premium-input !h-12 text-sm" required>
                   {workers.map(w => <option key={w} value={w}>{w}</option>)}
                 </select>
               </div>
               <div className="space-y-1">
-                <label className="text-[10px] font-bold text-black dark:text-slate-400 uppercase tracking-widest ml-1">ডিজাইন (Design)</label>
+                <label className="text-[10px] font-bold text-black dark:text-white uppercase tracking-widest ml-1">ডিজাইন (Design)</label>
                 <select name="design" defaultValue={editModal.design} className="premium-input !h-12 text-sm" required>
                   {(masterData.designs || []).map(d => <option key={d.name} value={d.name}>{d.name}</option>)}
                 </select>
               </div>
               <div className="space-y-1">
-                <label className="text-[10px] font-bold text-black dark:text-slate-400 uppercase tracking-widest ml-1">রঙ ও লট (Color & Lot)</label>
+                <label className="text-[10px] font-bold text-black dark:text-white uppercase tracking-widest ml-1">রঙ ও লট (Color & Lot)</label>
                 <div className="grid grid-cols-2 gap-3">
                   <select name="color" defaultValue={editModal.color} className="premium-input !h-12 text-sm" required>
                     {(masterData.colors || []).map(c => <option key={c} value={c}>{c}</option>)}
@@ -1323,7 +1323,7 @@ const FactoryPanel = ({
                 </div>
               </div>
               <div className="space-y-1">
-                <label className="text-[10px] font-bold text-black dark:text-slate-400 uppercase tracking-widest ml-1">স্ট্যাটাস ও তারিখ (Status & Date)</label>
+                <label className="text-[10px] font-bold text-black dark:text-white uppercase tracking-widest ml-1">স্ট্যাটাস ও তারিখ (Status & Date)</label>
                 <div className="grid grid-cols-2 gap-3">
                   <select name="status" defaultValue={editModal.status} className="premium-input !h-12 !bg-slate-950 !text-white text-sm" required>
                     <option value="Pending">PENDING</option>
@@ -1335,14 +1335,14 @@ const FactoryPanel = ({
 
               <div className="md:col-span-2 bg-slate-50 dark:bg-slate-800/50 p-6 rounded-xl border border-slate-100 dark:border-slate-800 grid grid-cols-2 gap-6">
                 <div className="space-y-4">
-                   <p className="text-[10px] font-bold text-black dark:text-slate-400 text-center uppercase tracking-widest">Issue (চালান)</p>
+                   <p className="text-[10px] font-bold text-black dark:text-white text-center uppercase tracking-widest">Issue (চালান)</p>
                    <div className="grid grid-cols-2 gap-3">
                       <div>
-                        <label className="text-[8px] font-bold text-black dark:text-slate-400 text-center block mb-1">Bork</label>
+                        <label className="text-[8px] font-bold text-black dark:text-white text-center block mb-1">Bork</label>
                         <input name="iBorka" type="number" defaultValue={editModal.issueBorka} className="premium-input !h-12 text-center text-xl" />
                       </div>
                       <div>
-                        <label className="text-[8px] font-bold text-black dark:text-slate-400 text-center block mb-1">Hijab</label>
+                        <label className="text-[8px] font-bold text-black dark:text-white text-center block mb-1">Hijab</label>
                         <input name="iHijab" type="number" defaultValue={editModal.issueHijab} className="premium-input !h-12 text-center text-xl" />
                       </div>
                    </div>
@@ -1363,12 +1363,12 @@ const FactoryPanel = ({
               </div>
 
               <div className="space-y-1">
-                <label className="text-[10px] font-bold text-black dark:text-slate-400 uppercase tracking-widest ml-1">মজুরি রেট (Wage Rate)</label>
+                <label className="text-[10px] font-bold text-black dark:text-white uppercase tracking-widest ml-1">মজুরি রেট (Wage Rate)</label>
                 <input name="rate" type="number" defaultValue={editModal.rate} className="premium-input !h-12 text-xl font-bold !text-blue-600" required />
               </div>
 
               <div className="md:col-span-2">
-                <label className="text-[10px] font-bold text-black dark:text-slate-400 uppercase tracking-widest ml-1">বিশেষ দ্রষ্টব্য (Note)</label>
+                <label className="text-[10px] font-bold text-black dark:text-white uppercase tracking-widest ml-1">বিশেষ দ্রষ্টব্য (Note)</label>
                 <textarea name="note" defaultValue={editModal.note} className="premium-input min-h-[80px] py-3 text-sm" placeholder="কিছু লিখুন..." />
               </div>
 
@@ -1376,7 +1376,7 @@ const FactoryPanel = ({
                 <button 
                   type="button" 
                   onClick={() => setEditModal(null)}
-                  className="flex-1 py-4 rounded-xl bg-slate-50 dark:bg-slate-800 text-black dark:text-slate-400 font-bold uppercase text-xs tracking-widest hover:text-rose-500 transition-all"
+                  className="flex-1 py-4 rounded-xl bg-slate-50 dark:bg-slate-800 text-black dark:text-white font-bold uppercase text-xs tracking-widest hover:text-rose-500 transition-all"
                 >
                   বাতিল
                 </button>
@@ -1399,7 +1399,7 @@ const FactoryPanel = ({
               <h3 className="text-2xl font-bold text-black dark:text-white uppercase">
                 মজুরি প্রদান (Disbursement)
               </h3>
-              <p className="text-xs font-bold text-black dark:text-slate-400 uppercase tracking-widest italic leading-none">
+              <p className="text-xs font-bold text-black dark:text-white uppercase tracking-widest italic leading-none">
                 কারিগর: {payModal}
               </p>
             </div>
@@ -1419,14 +1419,14 @@ const FactoryPanel = ({
               </div>
               <input
                 name="note"
-                className="premium-input !h-14 text-sm font-bold placeholder:text-black dark:text-slate-400 px-6 rounded-xl"
+                className="premium-input !h-14 text-sm font-bold placeholder:text-black dark:text-white px-6 rounded-xl"
                 placeholder="রেফারেন্স বা বিশেষ নোট..."
               />
               <div className="flex flex-col md:flex-row gap-4">
                 <button
                   type="button"
                   onClick={() => setPayModal(null)}
-                  className="flex-1 py-4 rounded-xl font-bold uppercase text-xs bg-slate-50 dark:bg-slate-800 text-black dark:text-slate-400 hover:text-rose-500 transition-all border border-slate-100 dark:border-slate-800"
+                  className="flex-1 py-4 rounded-xl font-bold uppercase text-xs bg-slate-50 dark:bg-slate-800 text-black dark:text-white hover:text-rose-500 transition-all border border-slate-100 dark:border-slate-800"
                 >
                   বাতিল করুন
                 </button>

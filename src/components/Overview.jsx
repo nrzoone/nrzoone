@@ -56,7 +56,7 @@ const Overview = ({ masterData, stats: propStats, setActivePanel, t }) => {
                      <h1 className="text-3xl font-extrabold text-black dark:text-white">
                         এনআরজোন <span className="text-blue-600">ফ্যাক্টরি ড্যাশবোর্ড</span>
                     </h1>
-                    <p className="text-[10px] font-bold text-black dark:text-slate-400 uppercase tracking-widest italic">
+                    <p className="text-[10px] font-bold text-black dark:text-white uppercase tracking-widest italic">
                         INDUSTRIAL ERP // LIVE OPERATIONAL HUB v5.2
                     </p>
                 </div>
@@ -69,7 +69,7 @@ const Overview = ({ masterData, stats: propStats, setActivePanel, t }) => {
                         <button 
                             key={tf.id}
                             onClick={() => setTimeframe(tf.id)}
-                            className={`px-6 py-2.5 rounded-xl text-xs font-bold transition-all ${timeframe === tf.id ? 'bg-blue-600 text-white shadow-lg' : 'text-black dark:text-slate-400 hover:text-black'}`}
+                            className={`px-6 py-2.5 rounded-xl text-xs font-bold transition-all ${timeframe === tf.id ? 'bg-blue-600 text-white shadow-lg' : 'text-black dark:text-white hover:text-black'}`}
                         >
                             {tf.label}
                         </button>
@@ -95,7 +95,7 @@ const Overview = ({ masterData, stats: propStats, setActivePanel, t }) => {
                             </div>
                         </div>
                         <div className="space-y-1">
-                            <p className="text-[10px] font-bold uppercase text-black dark:text-slate-400 tracking-wider leading-none">{kpi.label}</p>
+                            <p className="text-[10px] font-bold uppercase text-black dark:text-white tracking-wider leading-none">{kpi.label}</p>
                             <h3 className="text-3xl font-bold text-black dark:text-white leading-tight">{kpi.value}</h3>
                         </div>
                     </div>
@@ -124,7 +124,7 @@ const Overview = ({ masterData, stats: propStats, setActivePanel, t }) => {
                         </div>
                         <div className="mt-8 pt-6 border-t border-slate-100 dark:border-slate-800">
                             <div className="flex justify-between items-center mb-3">
-                                <span className="text-[10px] font-bold text-black dark:text-slate-400 uppercase tracking-wider">সাপ্তাহিক প্রজেকশন</span>
+                                <span className="text-[10px] font-bold text-black dark:text-white uppercase tracking-wider">সাপ্তাহিক প্রজেকশন</span>
                                 <span className="text-[10px] font-bold text-emerald-600 uppercase tracking-wider">+১৮.২% উন্নতি</span>
                             </div>
                             <div className="h-1.5 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
@@ -136,16 +136,16 @@ const Overview = ({ masterData, stats: propStats, setActivePanel, t }) => {
                     <div className="saas-card bg-slate-950 text-white border-none shadow-xl">
                         <div className="space-y-10">
                             <div className="space-y-1">
-                                <p className="text-[10px] font-bold text-black dark:text-slate-400 uppercase tracking-widest">BI Metrics</p>
-                                <h4 className="text-xl font-bold uppercase tracking-tight">সিস্টেম আর্কিটেকচার <br/><span className="text-black dark:text-slate-400">V5.2 ELITE</span></h4>
+                                <p className="text-[10px] font-bold text-black dark:text-white uppercase tracking-widest">BI Metrics</p>
+                                <h4 className="text-xl font-bold uppercase tracking-tight">সিস্টেম আর্কিটেকচার <br/><span className="text-black dark:text-white">V5.2 ELITE</span></h4>
                             </div>
                             <div className="space-y-4">
                                 <div className="flex justify-between items-end border-b border-white/5 pb-3">
-                                    <p className="text-[10px] font-bold uppercase tracking-wider text-black dark:text-slate-400">এনক্রিপশন</p>
+                                    <p className="text-[10px] font-bold uppercase tracking-wider text-black dark:text-white">এনক্রিপশন</p>
                                     <p className="text-sm font-bold">AES-256 SECURE</p>
                                 </div>
                                 <div className="flex justify-between items-end border-b border-white/5 pb-3">
-                                    <p className="text-[10px] font-bold uppercase tracking-wider text-black dark:text-slate-400">সার্ভার স্ট্যাটাস</p>
+                                    <p className="text-[10px] font-bold uppercase tracking-wider text-black dark:text-white">সার্ভার স্ট্যাটাস</p>
                                     <p className="text-sm font-bold text-emerald-400 italic">OPTIMAL NODE</p>
                                 </div>
                             </div>
@@ -171,7 +171,7 @@ const Overview = ({ masterData, stats: propStats, setActivePanel, t }) => {
                     <div className="flex-1 overflow-x-auto">
                         <table className="w-full text-left border-collapse">
                             <thead>
-                                <tr className="text-[10px] text-black dark:text-slate-400 uppercase tracking-widest font-bold">
+                                <tr className="text-[10px] text-black dark:text-white uppercase tracking-widest font-bold">
                                     <th className="px-8 py-5 border-b border-slate-50 dark:border-slate-800">লট নম্বর / কারিগর</th>
                                     <th className="px-8 py-5 border-b border-slate-50 dark:border-slate-800">ডিজাইন ও প্রসেস</th>
                                     <th className="px-8 py-5 border-b border-slate-50 dark:border-slate-800 text-center">পরিমাণ</th>
@@ -186,16 +186,16 @@ const Overview = ({ masterData, stats: propStats, setActivePanel, t }) => {
                                                 <div className="w-10 h-10 bg-slate-950 text-white rounded-xl flex items-center justify-center font-bold text-[10px] shadow-sm">
                                                     #{job.lotNo}
                                                 </div>
-                                                <span className="text-xs font-bold text-black dark:text-black dark:text-slate-400 uppercase">/ {job.worker || 'System'}</span>
+                                                <span className="text-xs font-bold text-black dark:text-black dark:text-white uppercase">/ {job.worker || 'System'}</span>
                                             </div>
                                         </td>
                                         <td className="px-8 py-5">
                                             <p className="text-sm font-bold text-black dark:text-white uppercase leading-none mb-1">{job.design}</p>
-                                            <p className="text-[9px] text-black dark:text-slate-400 uppercase tracking-wider font-bold">{job.activityType === 'Pata' ? 'Logistics HUB' : job.activityType === 'Sewing' ? 'Factory Line' : 'Stone Unit'}</p>
+                                            <p className="text-[9px] text-black dark:text-white uppercase tracking-wider font-bold">{job.activityType === 'Pata' ? 'Logistics HUB' : job.activityType === 'Sewing' ? 'Factory Line' : 'Stone Unit'}</p>
                                         </td>
                                         <td className="px-8 py-5 text-center">
                                             <span className="text-xl font-bold text-black dark:text-white">{job.issueBorka || job.pataQty || job.borka || 0}</span>
-                                            <span className="text-[10px] text-black dark:text-slate-400 ml-2 font-bold uppercase tracking-wider">UNIT</span>
+                                            <span className="text-[10px] text-black dark:text-white ml-2 font-bold uppercase tracking-wider">UNIT</span>
                                         </td>
                                         <td className="px-8 py-5 text-right">
                                             <div className="flex justify-end">

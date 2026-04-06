@@ -134,15 +134,15 @@ const WorkerSummary = ({ masterData, setMasterData, showNotify, user, logAction,
                         <NRZLogo size="sm" white />
                     </div>
                     <div>
-                        <p className="text-[10px] font-black text-black dark:text-slate-400 uppercase tracking-[0.6em] mb-2 px-1 italic">সিস্টেম ইন্টেলিজেন্ট</p>
+                        <p className="text-[10px] font-black text-black dark:text-white uppercase tracking-[0.6em] mb-2 px-1 italic">সিস্টেম ইন্টেলিজেন্ট</p>
                         <h2 className="text-5xl md:text-6xl font-black uppercase tracking-tighter leading-none text-black italic">
-                            কারিগর <span className="text-black dark:text-slate-400">লেজার বুক</span>
+                            কারিগর <span className="text-black dark:text-white">লেজার বুক</span>
                         </h2>
                     </div>
                 </div>
                 <div className="flex flex-col md:flex-row gap-6 w-full lg:w-auto">
                     <div className="bg-white p-8 rounded-[3rem] border-2 border-slate-50 shadow-2xl text-right flex-1 lg:min-w-[220px]">
-                        <p className="text-[9px] font-black text-black dark:text-slate-400 uppercase tracking-[0.4em] mb-3">মোট পাওনা</p>
+                        <p className="text-[9px] font-black text-black dark:text-white uppercase tracking-[0.4em] mb-3">মোট পাওনা</p>
                         <p className="text-3xl font-black italic tracking-tighter text-emerald-500">৳{totalBillAll.toLocaleString()}</p>
                     </div>
                     <div className="bg-black text-white p-8 rounded-[3rem] shadow-3xl text-right flex-1 lg:min-w-[220px]">
@@ -154,7 +154,7 @@ const WorkerSummary = ({ masterData, setMasterData, showNotify, user, logAction,
 
             <div className="bg-white p-4 rounded-[3rem] border-4 border-slate-50 shadow-inner flex flex-col md:flex-row gap-6">
                 <div className="flex-1 bg-slate-50 px-10 py-6 rounded-[2rem] flex items-center gap-6 border border-white shadow-sm">
-                    <Search size={22} className="text-black dark:text-slate-400" />
+                    <Search size={22} className="text-black dark:text-white" />
                     <input type="text" placeholder="কারিগর বা আইডি নম্বর দিয়ে খুঁজুন..." className="bg-transparent font-black italic border-none outline-none w-full uppercase text-xl text-black placeholder:text-slate-300" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
                 </div>
                 <select className="bg-black text-white px-12 py-6 rounded-[2rem] font-black uppercase text-[11px] tracking-[0.2em] cursor-pointer hover:bg-zinc-800 transition-all shadow-xl" value={filterDept} onChange={(e) => setFilterDept(e.target.value)}>
@@ -181,13 +181,13 @@ const WorkerSummary = ({ masterData, setMasterData, showNotify, user, logAction,
                                  {w.photo ? <img src={w.photo} className="w-full h-full object-cover" /> : <div className="text-slate-300 text-3xl font-black italic uppercase">{w.name.charAt(0)}</div>}
                             </div>
                             <div className="text-right">
-                                <p className="text-[10px] font-black text-black dark:text-slate-400 uppercase tracking-[0.5em] mb-2 italic">পরিচয়</p>
+                                <p className="text-[10px] font-black text-black dark:text-white uppercase tracking-[0.5em] mb-2 italic">পরিচয়</p>
                                 <h4 className="text-3xl font-black italic uppercase leading-none text-black underline decoration-black/10 group-hover:decoration-black transition-all truncate max-w-[150px]">{w.name}</h4>
                                 <div className="flex gap-2 justify-end mt-2">
                                     {masterData.workerDocs?.find(d => d.name.toUpperCase() === w.name.toUpperCase() && d.dept === w.dept)?.workerId && (
                                         <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-[7px] font-black rounded-full">আইডি: {masterData.workerDocs?.find(d => d.name.toUpperCase() === w.name.toUpperCase() && d.dept === w.dept)?.workerId}</span>
                                     )}
-                                    <span className="inline-block px-4 py-1 bg-slate-100 rounded-full text-[8px] font-black uppercase text-black dark:text-slate-400 tracking-widest">{w.dept === 'sewing' ? 'সেলাই' : w.dept === 'stone' ? 'স্টোন' : w.dept === 'pata' ? 'পাতা' : w.dept === 'cutting' ? 'কাটিং' : 'মাসিক'}</span>
+                                    <span className="inline-block px-4 py-1 bg-slate-100 rounded-full text-[8px] font-black uppercase text-black dark:text-white tracking-widest">{w.dept === 'sewing' ? 'সেলাই' : w.dept === 'stone' ? 'স্টোন' : w.dept === 'pata' ? 'পাতা' : w.dept === 'cutting' ? 'কাটিং' : 'মাসিক'}</span>
                                 </div>
                             </div>
                         </div>
@@ -195,11 +195,11 @@ const WorkerSummary = ({ masterData, setMasterData, showNotify, user, logAction,
                         <div className="space-y-6 mt-auto relative z-10">
                             <div className="bg-slate-50/80 p-8 rounded-[3rem] border border-white shadow-inner flex flex-col gap-4">
                                 <div className="flex justify-between items-center">
-                                    <p className="text-[10px] font-black text-black dark:text-slate-400 uppercase tracking-widest font-mono">কাজের বিবরণ</p>
-                                    <p className="text-xl font-black italic text-black">{w.qty} <span className="text-[10px] text-black dark:text-slate-400">{w.label.includes('DAYS') ? 'দিন' : 'পিস'}</span></p>
+                                    <p className="text-[10px] font-black text-black dark:text-white uppercase tracking-widest font-mono">কাজের বিবরণ</p>
+                                    <p className="text-xl font-black italic text-black">{w.qty} <span className="text-[10px] text-black dark:text-white">{w.label.includes('DAYS') ? 'দিন' : 'পিস'}</span></p>
                                 </div>
                                 <div className="flex justify-between items-center group/p">
-                                    <p className="text-[10px] font-black text-black dark:text-slate-400 uppercase tracking-widest font-mono">পিন কোড</p>
+                                    <p className="text-[10px] font-black text-black dark:text-white uppercase tracking-widest font-mono">পিন কোড</p>
                                     <div className="flex items-center gap-2">
                                          <p className="text-lg font-black italic text-black font-mono tracking-tighter bg-white px-3 py-1 rounded-lg border border-slate-100 shadow-sm opacity-0 group-hover/p:opacity-100 transition-opacity">{w.password || 'N/A'}</p>
                                          <Eye size={16} className="text-slate-200 group-hover/p:text-emerald-500 transition-colors" />
@@ -212,14 +212,14 @@ const WorkerSummary = ({ masterData, setMasterData, showNotify, user, logAction,
                                     <p className="text-[9px] font-black uppercase tracking-widest mb-1 opacity-60">মোট পেমেন্ট</p>
                                     <p className="text-2xl font-black italic tracking-tighter font-mono">৳{w.paid.toLocaleString()}</p>
                                 </div>
-                                <div className={`${w.balance > 0 ? 'bg-rose-50 text-rose-600 border-rose-100' : 'bg-slate-50 text-black dark:text-slate-400 border-slate-100'} p-8 rounded-[3.5rem] border flex flex-col justify-center`}>
+                                <div className={`${w.balance > 0 ? 'bg-rose-50 text-rose-600 border-rose-100' : 'bg-slate-50 text-black dark:text-white border-slate-100'} p-8 rounded-[3.5rem] border flex flex-col justify-center`}>
                                     <p className="text-[9px] font-black uppercase tracking-widest mb-1 opacity-60">বকেয়া</p>
                                     <p className="text-2xl font-black italic tracking-tighter font-mono">৳{w.balance.toLocaleString()}</p>
                                 </div>
                             </div>
 
                             <div className="grid grid-cols-3 gap-3">
-                                 <button onClick={() => setSelectedWorker(w)} className="flex-1 bg-white border border-slate-100 text-black dark:text-slate-400 p-5 rounded-3xl flex items-center justify-center hover:bg-black hover:text-white transition-all shadow-sm"><History size={20} /></button>
+                                 <button onClick={() => setSelectedWorker(w)} className="flex-1 bg-white border border-slate-100 text-black dark:text-white p-5 rounded-3xl flex items-center justify-center hover:bg-black hover:text-white transition-all shadow-sm"><History size={20} /></button>
                                  <button onClick={() => {
                                       const doc = masterData.workerDocs?.find(d => d.name.toUpperCase() === w.name.toUpperCase() && d.dept === w.dept);
                                       if (doc?.phone) sendWeeklySummary(w.name, { totalQty: w.qty, totalBill: w.bill, paid: w.paid, balance: w.balance }, doc.phone);
@@ -240,31 +240,31 @@ const WorkerSummary = ({ masterData, setMasterData, showNotify, user, logAction,
                     <form onSubmit={handleConfirmPayment} className="bg-white w-full max-w-lg rounded-[4rem] p-12 space-y-10 shadow-3xl">
                         <div className="text-center space-y-4">
                             <h3 className="text-4xl font-black italic uppercase">নতুন দাদন বা পেমেন্ট</h3>
-                            <p className="text-xs font-black text-black dark:text-slate-400 uppercase tracking-widest">{showPayModal.name} — {showPayModal.dept}</p>
+                            <p className="text-xs font-black text-black dark:text-white uppercase tracking-widest">{showPayModal.name} — {showPayModal.dept}</p>
                             <NRZLogo size="xs" />
                         </div>
                         <div className="space-y-8">
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-black dark:text-slate-400 uppercase ml-4 italic font-mono tracking-widest">পেমেন্ট ধরণ</label>
+                                    <label className="text-[10px] font-black text-black dark:text-white uppercase ml-4 italic font-mono tracking-widest">পেমেন্ট ধরণ</label>
                                     <select name="payType" className="w-full bg-slate-50 h-16 px-8 rounded-2xl text-[11px] font-black uppercase tracking-widest border border-slate-100 shadow-inner outline-none focus:border-black transition-all italic">
                                         <option value="Dadon">অ্যাডভান্স / দাদন (Dadon)</option>
                                         <option value="Salary">বেতন পেমেন্ট (Salary)</option>
                                     </select>
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-black dark:text-slate-400 uppercase ml-4 italic font-mono tracking-widest">তারিখ</label>
+                                    <label className="text-[10px] font-black text-black dark:text-white uppercase ml-4 italic font-mono tracking-widest">তারিখ</label>
                                     <input name="date" type="date" defaultValue={new Date().toISOString().split('T')[0]} className="w-full bg-slate-50 h-16 px-8 rounded-2xl text-[11px] font-black tracking-widest border border-slate-100 shadow-inner outline-none focus:border-black transition-all italic" />
                                 </div>
                             </div>
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black text-black dark:text-slate-400 uppercase ml-6 italic font-mono tracking-widest">টাকার পরিমাণ (Amount)</label>
+                                <label className="text-[10px] font-black text-black dark:text-white uppercase ml-6 italic font-mono tracking-widest">টাকার পরিমাণ (Amount)</label>
                                 <input name="amount" type="number" placeholder="৳ 0.00" className="w-full bg-emerald-50 h-24 px-10 rounded-[2.5rem] text-4xl font-black italic border-2 border-emerald-100 placeholder:text-emerald-200 outline-none focus:border-emerald-500 transition-all text-emerald-600 shadow-xl" required autoFocus />
                             </div>
                             <input name="note" placeholder="নোট থাকলে এখানে লিখুন..." className="w-full bg-slate-100 h-16 px-8 rounded-2xl text-[11px] font-black uppercase tracking-widest border border-slate-200 shadow-inner outline-none focus:border-black transition-all italic" />
                         </div>
                         <div className="flex gap-4 pt-6">
-                            <button type="button" onClick={() => setShowPayModal(null)} className="flex-1 h-20 rounded-[2.5rem] bg-slate-50 text-black dark:text-slate-400 font-black uppercase text-[11px] italic">বাতিল</button>
+                            <button type="button" onClick={() => setShowPayModal(null)} className="flex-1 h-20 rounded-[2.5rem] bg-slate-50 text-black dark:text-white font-black uppercase text-[11px] italic">বাতিল</button>
                             <button type="submit" className="flex-[2] h-20 rounded-[2.5rem] bg-black text-white font-black uppercase text-[11px] tracking-widest shadow-2xl active:scale-95 transition-all italic">সংরক্ষণ করুন (Confirm)</button>
                         </div>
                     </form>
@@ -307,7 +307,7 @@ const WorkerSummary = ({ masterData, setMasterData, showNotify, user, logAction,
                         <div className="flex-1 overflow-y-auto p-12 md:p-20 space-y-16 no-scrollbar bg-[#fcfcfc]">
                              {/* Payment Trace */}
                              <div className="space-y-10">
-                                <h3 className="text-sm font-black uppercase tracking-[0.5em] text-black dark:text-slate-400 mb-10 border-b-2 border-slate-100 pb-6 flex items-center gap-6 italic"><DollarSign size={22} className="text-emerald-500" /> Payment Distribution Matrix</h3>
+                                <h3 className="text-sm font-black uppercase tracking-[0.5em] text-black dark:text-white mb-10 border-b-2 border-slate-100 pb-6 flex items-center gap-6 italic"><DollarSign size={22} className="text-emerald-500" /> Payment Distribution Matrix</h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                      {(masterData.workerPayments || []).filter(p => p.worker === selectedWorker.name && p.dept === selectedWorker.dept).map((p, pidx) => (
                                          <div key={pidx} className="bg-white p-10 rounded-[3rem] border-2 border-slate-50 shadow-xl flex items-center justify-between group hover:border-black transition-all relative overflow-hidden">
@@ -317,8 +317,8 @@ const WorkerSummary = ({ masterData, setMasterData, showNotify, user, logAction,
                                                      {p.type === 'Dadon' ? 'D' : 'S'}
                                                  </div>
                                                  <div>
-                                                     <p className="text-[10px] font-black text-black dark:text-slate-400 uppercase tracking-widest mb-2 italic">{p.date}</p>
-                                                     <p className="text-xl font-black uppercase italic text-black">{p.type === 'Dadon' ? 'দাদন (Advance)' : 'বেতন (Direct)'} <span className="text-[11px] text-black dark:text-slate-400 ml-2 italic tracking-tight">— {p.note}</span></p>
+                                                     <p className="text-[10px] font-black text-black dark:text-white uppercase tracking-widest mb-2 italic">{p.date}</p>
+                                                     <p className="text-xl font-black uppercase italic text-black">{p.type === 'Dadon' ? 'দাদন (Advance)' : 'বেতন (Direct)'} <span className="text-[11px] text-black dark:text-white ml-2 italic tracking-tight">— {p.note}</span></p>
                                                  </div>
                                              </div>
                                              <p className="text-3xl font-black italic text-rose-600 tracking-tighter font-mono">- ৳{p.amount.toLocaleString()}</p>
@@ -328,7 +328,7 @@ const WorkerSummary = ({ masterData, setMasterData, showNotify, user, logAction,
                              </div>
 
                              <div className="space-y-10">
-                                <h3 className="text-sm font-black uppercase tracking-[0.5em] text-black dark:text-slate-400 mb-10 border-b-2 border-slate-100 pb-6 flex items-center gap-6 italic"><History size={22} className="text-black" /> Operational Output Log</h3>
+                                <h3 className="text-sm font-black uppercase tracking-[0.5em] text-black dark:text-white mb-10 border-b-2 border-slate-100 pb-6 flex items-center gap-6 italic"><History size={22} className="text-black" /> Operational Output Log</h3>
                                 <div className="space-y-6">
                                     {selectedWorker.history.length === 0 ? (
                                         <div className="py-24 text-center opacity-20 italic uppercase font-black text-3xl tracking-widest flex flex-col gap-6"><Activity size={60} className="mx-auto" /> Output Buffer Empty</div>
@@ -338,7 +338,7 @@ const WorkerSummary = ({ masterData, setMasterData, showNotify, user, logAction,
                                                 <div className="flex items-center gap-10">
                                                     <div className="w-20 h-20 bg-slate-50 rounded-[2rem] flex items-center justify-center font-black text-3xl italic border-4 border-white shadow-inner group-hover:bg-black group-hover:text-white transition-all transform group-hover:scale-110">{log.date.split('/')[0]}</div>
                                                     <div>
-                                                        <p className="text-[10px] font-black text-black dark:text-slate-400 uppercase tracking-widest mb-2 italic tracking-[0.2em]">{log.date} • LOT #{log.lotNo || 'NZ-PRO'}</p>
+                                                        <p className="text-[10px] font-black text-black dark:text-white uppercase tracking-widest mb-2 italic tracking-[0.2em]">{log.date} • LOT #{log.lotNo || 'NZ-PRO'}</p>
                                                         <h4 className="text-2xl font-black uppercase italic text-black tracking-tight">{log.design || 'Manual Workshop'}</h4>
                                                         <p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest mt-2 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-100 inline-block">YIELD RATE: ৳{log.rate || 0} PER UNIT</p>
                                                     </div>
@@ -354,12 +354,12 @@ const WorkerSummary = ({ masterData, setMasterData, showNotify, user, logAction,
                              </div>
 
                              <div className="space-y-10">
-                                <h3 className="text-sm font-black uppercase tracking-[0.5em] text-black dark:text-slate-400 mb-10 border-b-2 border-slate-100 pb-6 flex items-center gap-6 italic"><UserCheck size={22} className="text-blue-500" /> Attendance Archive</h3>
+                                <h3 className="text-sm font-black uppercase tracking-[0.5em] text-black dark:text-white mb-10 border-b-2 border-slate-100 pb-6 flex items-center gap-6 italic"><UserCheck size={22} className="text-blue-500" /> Attendance Archive</h3>
                                 <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
                                     {(selectedWorker.attendanceHistory || []).slice(0, 18).map((a, aidx) => (
                                         <div key={aidx} className="bg-white p-8 rounded-[2.5rem] border-2 border-slate-50 flex items-center justify-between relative overflow-hidden group hover:border-black transition-all shadow-lg text-center h-32 flex-col justify-center">
                                             <div className="relative z-10">
-                                                <p className="text-[9px] font-black text-black dark:text-slate-400 uppercase italic mb-2 tracking-widest">{a.date}</p>
+                                                <p className="text-[9px] font-black text-black dark:text-white uppercase italic mb-2 tracking-widest">{a.date}</p>
                                                 <p className={`text-xs font-black uppercase italic ${a.status.toLowerCase().includes('present') ? 'text-emerald-500 underline decoration-2 underline-offset-4' : 'text-rose-500'}`}>{a.status}</p>
                                             </div>
                                             <div className={`w-1.5 h-1/2 absolute right-0 top-1/4 rounded-l-full ${a.status.toLowerCase().includes('present') ? 'bg-emerald-500' : 'bg-rose-500'}`}></div>

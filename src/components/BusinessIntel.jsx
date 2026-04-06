@@ -82,8 +82,8 @@ const BusinessIntel = ({ masterData }) => {
                            <NRZLogo size="md" white />
                         </div>
                         <div>
-                            <p className="text-xs md:text-sm font-black text-black dark:text-slate-400 uppercase tracking-[0.4em] mb-3 italic">ব্যবসা বিশ্লেষণ (Strategic Analytics)</p>
-                            <h2 className="text-4xl md:text-7xl lg:text-8xl font-black uppercase italic tracking-tighter leading-none text-black">বিজনেস <span className="text-black dark:text-slate-400">ইন্টেল</span></h2>
+                            <p className="text-xs md:text-sm font-black text-black dark:text-white uppercase tracking-[0.4em] mb-3 italic">ব্যবসা বিশ্লেষণ (Strategic Analytics)</p>
+                            <h2 className="text-4xl md:text-7xl lg:text-8xl font-black uppercase italic tracking-tighter leading-none text-black">বিজনেস <span className="text-black dark:text-white">ইন্টেল</span></h2>
                         </div>
                     </div>
                 </div>
@@ -92,14 +92,14 @@ const BusinessIntel = ({ masterData }) => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 
                 <div className="bg-white p-10 rounded-[4rem] border-4 border-slate-50 shadow-xl relative overflow-hidden group">
-                    <p className="text-[10px] font-black uppercase tracking-[0.4em] text-black dark:text-slate-400 mb-4">উৎপাদন আউটপুট</p>
+                    <p className="text-[10px] font-black uppercase tracking-[0.4em] text-black dark:text-white mb-4">উৎপাদন আউটপুট</p>
                     <h3 className="text-5xl font-black italic tracking-tighter text-black mb-2">{(stats.totalProduced + stats.totalPata).toLocaleString()}</h3>
-                    <p className="text-[10px] font-black uppercase tracking-widest text-black dark:text-slate-400">সর্বমোট তৈরি ইউনিট (পিস)</p>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-black dark:text-white">সর্বমোট তৈরি ইউনিট (পিস)</p>
                     <TrendingUp className="absolute bottom-[-10%] right-[-5%] text-slate-100 opacity-75" size={120} />
                 </div>
 
                 <div className="bg-white p-10 rounded-[4rem] border-4 border-slate-50 shadow-xl relative overflow-hidden">
-                    <p className="text-[10px] font-black uppercase tracking-[0.4em] text-black dark:text-slate-400 mb-4">কাজের দক্ষতা (Efficiency)</p>
+                    <p className="text-[10px] font-black uppercase tracking-[0.4em] text-black dark:text-white mb-4">কাজের দক্ষতা (Efficiency)</p>
                     <div className="flex items-end gap-4">
                         <h3 className="text-7xl font-black italic tracking-tighter text-black">{stats.efficiency}%</h3>
                         <div className="mb-4 space-y-1">
@@ -139,7 +139,7 @@ const BusinessIntel = ({ masterData }) => {
                                 </div>
                             </div>
                         ))}
-                        {stats.topDesigns.length === 0 && <p className="text-center py-20 text-black dark:text-slate-400 font-black uppercase tracking-[0.5em] italic">কোনো প্রোডাকশন ডেটা নেই</p>}
+                        {stats.topDesigns.length === 0 && <p className="text-center py-20 text-black dark:text-white font-black uppercase tracking-[0.5em] italic">কোনো প্রোডাকশন ডেটা নেই</p>}
                     </div>
                 </div>
 
@@ -156,11 +156,11 @@ const BusinessIntel = ({ masterData }) => {
                                 <div key={idx} className="flex items-center justify-between p-6 border-2 border-slate-50 rounded-3xl bg-slate-50/50 italic group hover:border-black transition-all">
                                     <div>
                                         <p className="text-xl font-black text-black uppercase">{item.design}</p>
-                                        <p className="text-[10px] font-black text-black dark:text-slate-400 uppercase mt-1">{item.color} • {item.type}</p>
+                                        <p className="text-[10px] font-black text-black dark:text-white uppercase mt-1">{item.color} • {item.type}</p>
                                     </div>
                                     <div className="flex items-center gap-6">
                                         <div className="text-right">
-                                            <p className="text-xs font-black text-black dark:text-slate-400 uppercase">ব্যালেন্স পিস</p>
+                                            <p className="text-xs font-black text-black dark:text-white uppercase">ব্যালেন্স পিস</p>
                                             <p className={`text-4xl font-black italic tracking-tighter leading-none ${item.balance > 0 ? 'text-black' : 'text-rose-500'}`}>{item.balance}</p>
                                         </div>
                                     </div>
@@ -180,17 +180,17 @@ const BusinessIntel = ({ masterData }) => {
                             <h4 className="text-2xl font-black uppercase italic tracking-tighter flex items-center gap-4 text-black">
                                 <TrendingUp className="text-emerald-500" /> ফুরিয়ে যাওয়ার পূর্বাভাস (Intel)
                             </h4>
-                            <span className="px-6 py-2 bg-slate-50 text-black dark:text-slate-400 rounded-full text-[10px] font-black uppercase tracking-widest">ট্রেকিং হচ্ছে</span>
+                            <span className="px-6 py-2 bg-slate-50 text-black dark:text-white rounded-full text-[10px] font-black uppercase tracking-widest">ট্রেকিং হচ্ছে</span>
                         </div>
                         <div className="grid grid-cols-1 gap-4 overflow-y-auto max-h-[400px] pr-2 custom-scrollbar">
                             {stats.depletionTrends.sort((a,b) => (a.daysLeft === 'INF' ? 999 : a.daysLeft) - (b.daysLeft === 'INF' ? 999 : b.daysLeft)).map((item, idx) => (
                                 <div key={idx} className="flex items-center justify-between p-6 border-2 border-slate-50 rounded-3xl bg-slate-50/50 italic group hover:border-black transition-all">
                                     <div className="flex-1">
                                         <p className="text-xl font-black text-black uppercase">{item.name}</p>
-                                        <p className="text-[10px] font-black text-black dark:text-slate-400 uppercase mt-1">গড় ব্যবহার: {item.dailyBurn} / দিন</p>
+                                        <p className="text-[10px] font-black text-black dark:text-white uppercase mt-1">গড় ব্যবহার: {item.dailyBurn} / দিন</p>
                                     </div>
                                     <div className="text-right">
-                                        <p className="text-[9px] font-black uppercase text-black dark:text-slate-400">ফুরিয়ে যাবে প্রায়</p>
+                                        <p className="text-[9px] font-black uppercase text-black dark:text-white">ফুরিয়ে যাবে প্রায়</p>
                                         <p className={`text-4xl font-black italic tracking-tighter leading-none ${item.daysLeft < 3 ? 'text-rose-500' : item.daysLeft < 7 ? 'text-amber-500' : 'text-emerald-500'}`}>
                                             {item.daysLeft === 'INF' ? '∞' : `${item.daysLeft} দিন`}
                                         </p>

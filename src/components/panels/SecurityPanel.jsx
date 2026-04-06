@@ -17,14 +17,14 @@ const SecurityPanel = ({ masterData, setActivePanel, t, logs = [], syncStatus })
                     </button>
                     <div className="space-y-1">
                         <h2 className="text-3xl font-bold tracking-tight text-black dark:text-white uppercase leading-none">সিকিউরিটি ও <span className="text-blue-600">অডিট লগ</span></h2>
-                        <p className="text-[10px] font-bold text-black dark:text-slate-400 uppercase tracking-widest italic leading-none mt-1">Audit Trail & System Integrity Hub</p>
+                        <p className="text-[10px] font-bold text-black dark:text-white uppercase tracking-widest italic leading-none mt-1">Audit Trail & System Integrity Hub</p>
                     </div>
                 </div>
                 
                 <div className="flex items-center gap-3 w-full md:w-auto">
                     <div className="bg-white dark:bg-slate-900 px-4 py-2 rounded-xl flex items-center gap-3 shadow-sm border border-slate-100 dark:border-slate-800 flex-1 md:flex-none">
                         <div className={`w-2 h-2 rounded-full ${syncStatus === 'syncing' ? 'bg-amber-500 animate-pulse' : syncStatus === 'error' ? 'bg-rose-500' : 'bg-emerald-500'}`}></div>
-                        <p className="text-[10px] font-bold uppercase tracking-widest text-black dark:text-slate-400">
+                        <p className="text-[10px] font-bold uppercase tracking-widest text-black dark:text-white">
                             {syncStatus === 'syncing' ? 'Syncing...' : syncStatus === 'error' ? 'Sync Error' : 'Neural Link Stable'}
                         </p>
                     </div>
@@ -47,7 +47,7 @@ const SecurityPanel = ({ masterData, setActivePanel, t, logs = [], syncStatus })
                         </div>
                         <div>
                             <p className="text-2xl font-bold tracking-tight text-black dark:text-white leading-none mb-1 uppercase">{stat.value}</p>
-                            <p className="text-[10px] font-bold text-black dark:text-slate-400 uppercase tracking-widest leading-none">{stat.label}</p>
+                            <p className="text-[10px] font-bold text-black dark:text-white uppercase tracking-widest leading-none">{stat.label}</p>
                         </div>
                     </div>
                  ))}
@@ -57,11 +57,11 @@ const SecurityPanel = ({ masterData, setActivePanel, t, logs = [], syncStatus })
             <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden">
                 <div className="p-6 md:p-8 border-b border-slate-100 dark:border-slate-800 flex flex-col md:flex-row justify-between gap-6 md:items-center bg-slate-50/30 dark:bg-slate-800/20">
                     <div className="flex items-center gap-3">
-                        <Clock size={20} className="text-black dark:text-slate-400" />
+                        <Clock size={20} className="text-black dark:text-white" />
                         <h3 className="text-lg font-bold uppercase tracking-tight text-black dark:text-white">সিস্টেম অডিট ট্রেইল (Full Audit Trail)</h3>
                     </div>
                     <div className="relative group w-full md:w-80">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-black dark:text-slate-400" size={14} />
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-black dark:text-white" size={14} />
                         <input 
                             type="text" 
                             placeholder="অডিট সার্চ করুন (Search)..." 
@@ -74,7 +74,7 @@ const SecurityPanel = ({ masterData, setActivePanel, t, logs = [], syncStatus })
 
                 <div className="overflow-x-auto">
                     <table className="w-full text-left">
-                        <thead className="bg-slate-50 dark:bg-slate-800/50 text-[10px] font-bold uppercase tracking-widest text-black dark:text-slate-400 border-b border-slate-100 dark:border-slate-800">
+                        <thead className="bg-slate-50 dark:bg-slate-800/50 text-[10px] font-bold uppercase tracking-widest text-black dark:text-white border-b border-slate-100 dark:border-slate-800">
                             <tr>
                                 <th className="px-8 py-5">সময়রেখা (Timeline)</th>
                                 <th className="px-6 py-5">কারিগর/ইউজার (Identity)</th>
@@ -113,7 +113,7 @@ const SecurityPanel = ({ masterData, setActivePanel, t, logs = [], syncStatus })
                                         <tr key={i} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors group">
                                             <td className="px-8 py-6">
                                                 <p className="text-sm font-bold text-black dark:text-white leading-none mb-1">{timeStr}</p>
-                                                <p className="text-[9px] font-bold uppercase text-black dark:text-slate-400 tracking-widest leading-none">{dateStr}</p>
+                                                <p className="text-[9px] font-bold uppercase text-black dark:text-white tracking-widest leading-none">{dateStr}</p>
                                             </td>
                                             <td className="px-6 py-6">
                                                 <div className="flex items-center gap-3">
@@ -124,12 +124,12 @@ const SecurityPanel = ({ masterData, setActivePanel, t, logs = [], syncStatus })
                                                 </div>
                                             </td>
                                             <td className="px-6 py-6">
-                                                <span className="px-3 py-1 bg-slate-100 dark:bg-slate-800 rounded-md text-[9px] font-bold uppercase tracking-widest text-black dark:text-slate-300 group-hover:bg-slate-950 group-hover:text-white transition-all">
+                                                <span className="px-3 py-1 bg-slate-100 dark:bg-slate-800 rounded-md text-[9px] font-bold uppercase tracking-widest text-black dark:text-white group-hover:bg-slate-950 group-hover:text-white transition-all">
                                                     {log.action || log.type}
                                                 </span>
                                             </td>
                                             <td className="px-8 py-6">
-                                                <p className="text-xs font-medium text-black dark:text-slate-400 tracking-tight leading-relaxed lg:max-w-md italic">
+                                                <p className="text-xs font-medium text-black dark:text-white tracking-tight leading-relaxed lg:max-w-md italic">
                                                     {log.details || log.detail}
                                                 </p>
                                             </td>
@@ -143,7 +143,7 @@ const SecurityPanel = ({ masterData, setActivePanel, t, logs = [], syncStatus })
                 
                 {logs.length > 100 && (
                     <div className="p-6 text-center bg-slate-50/50 dark:bg-slate-800/30 border-t border-slate-100 dark:border-slate-800">
-                        <p className="text-[10px] font-bold text-black dark:text-slate-400 uppercase tracking-widest italic">Showing latest 100 audit entries</p>
+                        <p className="text-[10px] font-bold text-black dark:text-white uppercase tracking-widest italic">Showing latest 100 audit entries</p>
                     </div>
                 )}
             </div>
