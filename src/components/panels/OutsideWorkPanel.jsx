@@ -495,10 +495,6 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
                 </div>
             )}
 
-                    </div>
-                </div>
-            )}
-
             {/* Settlement Modal */}
             {payModal && (
                 <div className="fixed inset-0 bg-slate-950/20 backdrop-blur-md z-[1000] flex items-center justify-center p-4">

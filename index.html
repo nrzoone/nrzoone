@@ -88,8 +88,23 @@
       window.addEventListener('error', (e) => {
         if (!/abort|resizeobserver|cancelled/i.test(e.message)) {
           console.log("CRITICAL ERROR DURING BOOT:", e.message);
+          // alert("ERROR: " + e.message + "\nFile: " + e.filename + "\nLine: " + e.lineno);
         }
       });
+      window.onerror = function(msg, url, line, col, error) {
+         if (!/abort|resizeobserver|cancelled/i.test(msg)) {
+            const errDiv = document.createElement('div');
+            errDiv.style.cssText = "position:fixed;top:0;left:0;width:100%;height:100%;background:black;color:red;padding:50px;z-index:99999;font-family:monospace;overflow:auto;";
+            errDiv.innerHTML = "<h1>💥 CRITICAL SYSTEM FAULT 💥</h1>" +
+                               "<p>Message: " + msg + "</p>" +
+                               "<p>File: " + url + "</p>" +
+                               "<p>Line: " + line + "</p>" +
+                               "<p>Stack: " + (error?.stack || 'N/A') + "</p>" +
+                               "<button onclick='location.reload()' style='padding:10px 20px;background:white;color:black;border:none;border-radius:10px;cursor:pointer;'>RETRY BOOT</button>";
+            document.body.appendChild(errDiv);
+         }
+         return false;
+      };
     </script>
     <script type="module" src="/src/main.jsx"></script>
     <script>

@@ -19,10 +19,25 @@ const Overview = ({ masterData, stats: propStats, setActivePanel, t }) => {
 
     const stats = propStats || {
         activeJobs: [
-            ...(masterData?.cuttingEntries || []).map(e => ({ ...e, activityType: 'Cutting' })),
-            ...(masterData?.sewingEntries || []).map(e => ({ ...e, activityType: 'Sewing' })),
-            ...(masterData?.pataEntries || []).map(e => ({ ...e, activityType: 'Pata' }))
-        ].sort((a, b) => new Date(b.date) - new Date(a.date))
+            ...(masterData?.cuttingStock || []).map(e => ({ ...e, activityType: 'Cutting' })),
+            ...(masterData?.productions || [])
+                .filter(p => p.type === 'sewing')
+                .map(e => ({ ...e, activityType: 'Sewing' })),
+            ...(masterData?.productions || [])
+                .filter(p => p.type === 'stone')
+                .map(e => ({ ...e, activityType: 'Stone' })),
+            ...(masterData?.pataEntries || [])
+                .map(e => ({ ...e, activityType: 'Pata' }))
+        ].sort((a, b) => {
+            const parseDate = (d) => {
+                if (!d) return 0;
+                const parts = d.split('/');
+                if (parts.length !== 3) return 0;
+                const [day, month, year] = parts;
+                return new Date(`${year}-${month}-${day}`).getTime();
+            };
+            return parseDate(b.date) - parseDate(a.date);
+        })
     };
 
     const trendData = [
@@ -179,7 +194,7 @@ const Overview = ({ masterData, stats: propStats, setActivePanel, t }) => {
                                             <p className="text-[9px] text-slate-400 uppercase tracking-wider font-bold">{job.activityType === 'Pata' ? 'Logistics HUB' : job.activityType === 'Sewing' ? 'Factory Line' : 'Stone Unit'}</p>
                                         </td>
                                         <td className="px-8 py-5 text-center">
-                                            <span className="text-xl font-bold text-slate-950 dark:text-white">{job.issueBorka || job.pataQty || 0}</span>
+                                            <span className="text-xl font-bold text-slate-950 dark:text-white">{job.issueBorka || job.pataQty || job.borka || 0}</span>
                                             <span className="text-[10px] text-slate-400 ml-2 font-bold uppercase tracking-wider">UNIT</span>
                                         </td>
                                         <td className="px-8 py-5 text-right">

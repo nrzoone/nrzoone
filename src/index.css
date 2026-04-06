@@ -52,7 +52,7 @@
 
 @layer components {
   .saas-card {
-    @apply bg-[var(--bg-secondary)] rounded-[var(--radius-saas)] p-6 md:p-8 shadow-[var(--shadow-card)] border border-[var(--border)] transition-all duration-300 hover:shadow-elite hover:-translate-y-0.5;
+    @apply bg-[var(--bg-secondary)] rounded-[var(--radius-saas)] p-6 md:p-8 shadow-[var(--shadow-card)] border border-[var(--border)] transition-all duration-300 hover:shadow-[var(--shadow-elite)] hover:-translate-y-0.5;
   }
 
   .premium-card {

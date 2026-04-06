@@ -74,7 +74,7 @@ const AccordionItem = ({ id, label, icon: Icon, description, children, activeTab
   );
 };
 
-const SettingsPanel = ({
+const SettingsPanel_V2 = ({
   masterData,
   setMasterData,
   user: currentUser,
