@@ -594,7 +594,7 @@ const AppContent = () => {
                                     <Menu size={20} />
                                 </button>
                                 <div className="space-y-0.5">
-                                    <h2 className="text-xl md:text-2xl font-bold tracking-tight text-black dark:text-white uppercase leading-none">
+                                    <h2 className="text-xl md:text-2xl font-bold tracking-tight text-black dark:text-white uppercase leading-tight">
                                         {t?.(activePanel?.toLowerCase()) || activePanel}
                                     </h2>
                                     <div className="flex items-center gap-2">

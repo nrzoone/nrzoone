@@ -69,6 +69,7 @@ const InventoryPanel = ({
           name: log.item,
           color: log.color || null,
           qty: 0,
+          unit: log.unit || "গজ",
           lastUpdated: log.date,
         };
       if (log.type === "in") stock[key].qty += Number(log.qty);
@@ -100,8 +101,9 @@ const InventoryPanel = ({
       item,
       color,
       qty,
+      unit: form.unit ? form.unit.value : "গজ",
       type: transactionType,
-      note: form.note.value,
+      note: form.note ? form.note.value : "",
     };
 
     setMasterData((prev) => ({
@@ -109,10 +111,33 @@ const InventoryPanel = ({
       rawInventory: [newEntry, ...(prev.rawInventory || [])],
     }));
 
-    logAction(user, transactionType === "in" ? "STOCK_ADD" : "STOCK_DEDUCT", `${item}${color ? ` (${color})` : ""} - Qty: ${qty}`);
+    logAction(user, transactionType === "in" ? "STOCK_ADD" : "STOCK_DEDUCT", `${item}${color ? ` (${color})` : ""} - Qty: ${qty} ${form.unit ? form.unit.value : "গজ"}`);
     syncToSheet({ type: `STOCK_${transactionType.toUpperCase()}`, detail: `${item}${color ? ` (${color})` : ""}`, amount: qty });
     setShowModal(false);
     showNotify(`স্টক সফলভাবে ${transactionType === "in" ? "যোগ" : "কমানো"} হয়েছে!`);
+  };
+
+  const handleDelivery = (e) => {
+    e.preventDefault();
+    const form = e.target;
+    if (!form.design.value || form.qtyBorka.value < 0) return;
+
+    setMasterData(prev => ({
+        ...prev,
+        deliveries: [{
+            id: Date.now(),
+            date: new Date().toLocaleDateString("en-GB"),
+            design: form.design.value,
+            color: form.color.value || "",
+            size: form.size.value || "",
+            receiver: form.receiver.value || "Unknown",
+            qtyBorka: Number(form.qtyBorka.value) || 0,
+            qtyHijab: Number(form.qtyHijab.value) || 0,
+            status: "Delivered"
+        }, ...(prev.deliveries || [])]
+    }));
+    showNotify("পণ্য সফলভাবে ডেলিভারি দেওয়া হয়েছে!");
+    form.reset();
   };
 
   return (
@@ -165,6 +190,7 @@ const InventoryPanel = ({
         {[
             { id: "overview", label: "তৈরি মাল (Finished)" },
             { id: "raw", label: "কাঁচামাল (Inventory)" },
+            { id: "delivery", label: "পণ্য ডেলিভারি (Delivery)" },
             { id: "requisitions", label: "অনুরোধ (Requests)" }
         ].map((v) => (
           <button
@@ -245,7 +271,7 @@ const InventoryPanel = ({
                                 </p>
                                 <div className="flex items-end justify-between">
                                     <span className={`text-4xl font-bold tracking-tighter leading-none ${item.qty <= 5 ? "text-rose-600" : "text-black dark:text-white dark:text-white"}`}>
-                                        {item.qty.toLocaleString()}
+                                        {item.qty.toLocaleString()} <span className="text-lg font-bold ml-1">{item.unit || "গজ"}</span>
                                     </span>
                                     <span className={`text-[8px] font-black py-1 px-2.5 rounded-lg tracking-[0.15em] uppercase ${item.qty <= 5 ? "bg-rose-500 text-white animate-pulse" : "bg-slate-100 dark:bg-slate-800 text-black dark:text-white dark:text-white"}`}>
                                         {item.qty <= 5 ? "অল্প (Low)" : "যথেষ্ট"}
@@ -254,6 +280,74 @@ const InventoryPanel = ({
                             </div>
                         ))
                     )}
+                </div>
+            </div>
+        )}
+
+        {view === "delivery" && (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div className="saas-card bg-slate-50/50 dark:bg-slate-900/50 animate-fade-up">
+                    <h3 className="text-2xl font-bold uppercase tracking-tight text-black dark:text-white dark:text-white mb-6">নতুন ডেসপ্যাচ <span className="text-blue-600">(Dispatch)</span></h3>
+                    <form onSubmit={handleDelivery} className="space-y-6">
+                        <div className="space-y-1.5">
+                            <label className="text-[10px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest ml-1">শোরুম / গ্রাহকের নাম (Receiver)</label>
+                            <input name="receiver" className="premium-input !h-12 text-sm uppercase font-bold" placeholder="E.G. NRZ MIRPUR STORE" required />
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="space-y-1.5">
+                                <label className="text-[10px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest ml-1">ডিজাইনের নাম (Design)</label>
+                                <select name="design" className="premium-input !h-12" required>
+                                    <option value="">নির্বাচন করুন</option>
+                                    {(masterData.designs || []).map(d => <option key={d.name} value={d.name}>{d.name}</option>)}
+                                </select>
+                            </div>
+                            <div className="space-y-1.5">
+                                <label className="text-[10px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest ml-1">কালার (Color)</label>
+                                <select name="color" className="premium-input !h-12">
+                                    <option value="">সব কালার (Mix)</option>
+                                    {(masterData.colors || []).map(c => <option key={c} value={c}>{c}</option>)}
+                                </select>
+                            </div>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div className="space-y-1.5">
+                                <label className="text-[10px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest ml-1">সাইজ (Size)</label>
+                                <select name="size" className="premium-input !h-12 text-sm text-center">
+                                    <option value="">Mix</option>
+                                    {(masterData.sizes || []).map(s => <option key={s} value={s}>{s}</option>)}
+                                </select>
+                            </div>
+                            <div className="space-y-1.5">
+                                <label className="text-[10px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest ml-1 text-center block">বোরকা (Borka. Qty)</label>
+                                <input name="qtyBorka" type="number" className="premium-input !h-12 text-xl font-bold text-center !bg-slate-100 dark:!bg-slate-800/50" placeholder="0" defaultValue={0} />
+                            </div>
+                            <div className="space-y-1.5">
+                                <label className="text-[10px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest ml-1 text-center block">হিজাব (Hijab. Qty)</label>
+                                <input name="qtyHijab" type="number" className="premium-input !h-12 text-xl font-bold text-center !bg-slate-100 dark:!bg-slate-800/50" placeholder="0" defaultValue={0} />
+                            </div>
+                        </div>
+                        <div className="pt-6">
+                            <button type="submit" className="w-full py-5 rounded-2xl bg-blue-600 border-b-4 border-blue-800 text-white font-bold uppercase text-[11px] tracking-[0.2em] shadow-xl hover:bg-blue-700 active:scale-95 transition-all">ডেলিভারি কনফার্ম করুন (Confirm)</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div className="saas-card overflow-hidden flex flex-col">
+                    <h3 className="text-xl font-bold uppercase tracking-tight text-black dark:text-white dark:text-white mb-6">সাম্প্রতিক <span className="text-blue-600">ডেলিভারি হিস্ট্রি</span></h3>
+                    <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar space-y-4">
+                        {(masterData.deliveries || []).slice(0, 10).map((d, i) => (
+                            <div key={i} className="p-5 border border-slate-100 dark:border-slate-800 rounded-xl bg-slate-50/50 dark:bg-slate-900/50 flex justify-between items-center group hover:border-slate-300 dark:hover:border-slate-600 transition-all">
+                                <div>
+                                    <h4 className="font-bold text-lg leading-none mb-1 text-black dark:text-white">{d.design}</h4>
+                                    <p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">{d.receiver} • {d.date}</p>
+                                </div>
+                                <div className="text-right">
+                                    <p className="font-black text-xl leading-none text-black dark:text-white">B:{d.qtyBorka} H:{d.qtyHijab}</p>
+                                    <p className="text-[8px] font-black uppercase tracking-[0.2em] text-emerald-500">Delivered</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </div>
         )}
@@ -359,9 +453,20 @@ const InventoryPanel = ({
                     <input name="color" className="premium-input !h-12 text-sm uppercase font-bold" placeholder="E.G. GRADE-A..." />
                 </div>
 
-                <div className="bg-slate-950 p-10 rounded-xl shadow-2xl border-b-4 border-blue-600 text-center">
-                    <label className="text-[10px] font-bold text-blue-400 uppercase tracking-widest mb-4 block leading-none">পরিমাণ (Quantity)</label>
-                    <input name="qty" type="number" className="w-full text-center text-7xl font-bold bg-transparent border-none text-white outline-none leading-none h-20 placeholder:text-white/10" placeholder="0" autoFocus required />
+                <div className="flex bg-slate-950 rounded-xl overflow-hidden shadow-2xl border-b-4 border-blue-600">
+                    <div className="flex-1 p-10 text-center relative border-r border-slate-800">
+                        <label className="text-[10px] font-bold text-blue-400 uppercase tracking-widest mb-4 block leading-none">পরিমাণ (Quantity)</label>
+                        <input name="qty" type="number" className="w-full text-center text-5xl md:text-7xl font-bold bg-transparent border-none text-white outline-none leading-none h-20 placeholder:text-white/10" placeholder="0" autoFocus required />
+                    </div>
+                    <div className="w-1/3 p-4 md:p-10 text-center flex flex-col justify-center bg-slate-900">
+                        <label className="text-[10px] font-bold text-blue-400 uppercase tracking-widest mb-4 block leading-none">একক</label>
+                        <select name="unit" className="w-full text-center text-sm md:text-2xl font-bold bg-transparent border-none text-white outline-none">
+                            <option className="text-black" value="গজ">গজ (Yards)</option>
+                            <option className="text-black" value="কেজি">কেজি (KG)</option>
+                            <option className="text-black" value="পিস">পিস (Pcs)</option>
+                            <option className="text-black" value="প্যাকেট">প্যাকেট (Px)</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div className="flex flex-col md:flex-row gap-4 pt-4">

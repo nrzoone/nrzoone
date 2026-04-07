@@ -732,7 +732,7 @@ const CuttingPanel = ({
                 <div className="lg:col-span-8 flex flex-col bg-slate-50 p-8 rounded-[2rem] border border-slate-100">
                     <div className="flex justify-between items-center mb-6">
                         <label className="text-[10px] font-black uppercase text-black tracking-widest">Size Matrix Distribution</label>
-                        <button onClick={addSize} className="px-4 py-2 bg-black text-white rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-2 hover:scale-105 transition-all"><Plus size={14} /> Add Pattern</button>
+                        <button onClick={handleAddSizeRow} className="px-4 py-2 bg-black text-white rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-2 hover:scale-105 transition-all"><Plus size={14} /> Add Pattern</button>
                     </div>
 
                     <div className="space-y-4 max-h-[40vh] overflow-y-auto pr-2 custom-scrollbar">
@@ -753,7 +753,7 @@ const CuttingPanel = ({
                                     <input type="number" className="bg-transparent w-full font-black text-xl outline-none" placeholder="0" value={s.hijab} onChange={e => handleSizeChange(i, 'hijab', e.target.value)} />
                                 </div>
                                 <div className="col-span-1 flex justify-end">
-                                    <button onClick={() => removeSize(i)} className="p-3 text-slate-500 hover:text-rose-500 transition-colors"><Trash2 size={18} /></button>
+                                    <button onClick={() => handleRemoveSizeRow(i)} className="p-3 text-slate-500 hover:text-rose-500 transition-colors"><Trash2 size={18} /></button>
                                 </div>
                             </div>
                         ))}
@@ -772,6 +772,28 @@ const CuttingPanel = ({
                             </div>
                         </div>
                     </div>
+                </div>
+
+                <div className="flex flex-col md:flex-row gap-4 pt-12 border-t border-slate-100">
+                    <button 
+                        onClick={() => setShowModal(false)}
+                        className="flex-1 py-6 bg-slate-100 text-slate-500 rounded-full font-black text-xl uppercase tracking-widest hover:bg-black hover:text-white transition-all shadow-sm outline-none"
+                    >
+                        {t('cancel') || "Cancel"}
+                    </button>
+                    <button 
+                        onClick={() => handleAddCutting(false)} 
+                        className="flex-[2] py-6 bg-black text-white rounded-full font-black text-xl uppercase tracking-widest shadow-2xl hover:scale-105 active:scale-95 transition-all outline-none"
+                    >
+                        {t('confirmIssue') || "CONFIRM ISSUE"}
+                    </button>
+                    <button 
+                        onClick={() => handleAddCutting(true)} 
+                        className="flex-1 py-6 bg-indigo-600 text-white rounded-full font-black text-xl uppercase tracking-widest shadow-2xl hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-3 outline-none"
+                    >
+                        <Printer size={24} /> & PRINT
+                    </button>
+                </div>
                 </div>
             </div>
           </div>

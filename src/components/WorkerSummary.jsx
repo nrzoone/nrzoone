@@ -137,7 +137,7 @@ const WorkerSummary = ({ masterData, setMasterData, showNotify, user, logAction,
                     </div>
                     <div>
                         <p className="text-[10px] font-black text-black dark:text-white dark:text-white uppercase tracking-[0.6em] mb-2 px-1 italic">সিস্টেম ইন্টেলিজেন্ট</p>
-                        <h2 className="text-5xl md:text-6xl font-black uppercase tracking-tighter leading-none text-black dark:text-white italic">
+                        <h2 className="text-5xl md:text-6xl font-black uppercase tracking-tighter leading-tight text-black dark:text-white italic">
                             কারিগর <span className="text-black dark:text-white dark:text-white">লেজার বুক</span>
                         </h2>
                     </div>
@@ -184,7 +184,7 @@ const WorkerSummary = ({ masterData, setMasterData, showNotify, user, logAction,
                             </div>
                             <div className="text-right">
                                 <p className="text-[10px] font-black text-black dark:text-white dark:text-white uppercase tracking-[0.5em] mb-2 italic">পরিচয়</p>
-                                <h4 className="text-3xl font-black italic uppercase leading-none text-black dark:text-white underline decoration-black/10 group-hover:decoration-black transition-all truncate max-w-[150px]">{w.name}</h4>
+                                <h4 className="text-3xl font-black italic uppercase leading-tight text-black dark:text-white underline decoration-black/10 group-hover:decoration-black transition-all truncate max-w-[150px]">{w.name}</h4>
                                 <div className="flex gap-2 justify-end mt-2">
                                     {masterData.workerDocs?.find(d => d.name.toUpperCase() === w.name.toUpperCase() && d.dept === w.dept)?.workerId && (
                                         <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-[7px] font-black rounded-full">আইডি: {masterData.workerDocs?.find(d => d.name.toUpperCase() === w.name.toUpperCase() && d.dept === w.dept)?.workerId}</span>
@@ -293,7 +293,7 @@ const WorkerSummary = ({ masterData, setMasterData, showNotify, user, logAction,
                                     </div>
                                     <div className="text-center md:text-left">
                                         <p className="text-xs font-black uppercase tracking-[0.8em] text-white/40 mb-3">Permanent Professional Ledger</p>
-                                        <h2 className="text-5xl md:text-8xl font-black uppercase italic tracking-tighter leading-none">{selectedWorker.name}</h2>
+                                        <h2 className="text-5xl md:text-8xl font-black uppercase italic tracking-tighter leading-tight">{selectedWorker.name}</h2>
                                         <div className="flex gap-4 mt-6 justify-center md:justify-start">
                                              <span className="px-5 py-2 bg-white/10 rounded-full text-[9px] font-black italic tracking-widest border border-white/10">{selectedWorker.dept.toUpperCase()} UNIT</span>
                                              <span className="px-5 py-2 bg-emerald-500 text-black dark:text-white rounded-full text-[9px] font-black italic tracking-widest">ACCESS KEY: {selectedWorker.password}</span>

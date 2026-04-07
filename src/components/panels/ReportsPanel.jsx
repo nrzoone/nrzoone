@@ -109,7 +109,7 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t, logAction, showNoti
         })();
 
         let lines = [
-            `*NRZO0NE ERP REPORT*`, 
+            `*${masterData.settings?.factoryName || 'NRZO0NE'} ERP REPORT*`, 
             `তারিখ: ${new Date().toLocaleDateString('en-GB')}`, 
             `-----------------------------`,
             `💰 আয় (Revenue): ৳${financialIntel.revenue.toLocaleString()}`,
@@ -166,7 +166,7 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t, logAction, showNoti
           <div className="flex justify-between items-start border-b-2 border-slate-100 pb-10 mb-10">
             <div>
               <h1 className="text-4xl font-black tracking-tight leading-none mb-3 uppercase">
-                NRZO0NE <span className="text-blue-600">FACTORY ERP</span>
+                {masterData.settings?.factoryName || 'NRZO0NE FACTORY ERP'}
               </h1>
               <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-black dark:text-white">
                 Official Audit Registry — {transactionTab.toUpperCase()} UNIT

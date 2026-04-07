@@ -49,7 +49,7 @@ const MenuPanel = ({ setActivePanel, user, t, showNotify }) => {
                             <LayoutGrid size={48} className="md:w-16 md:h-16" />
                         </div>
                         <div className="space-y-2">
-                            <h1 className="text-6xl md:text-9xl font-black italic tracking-tightest uppercase leading-[0.8] text-black dark:text-white dark:text-white">মেনু হাব</h1>
+                            <h1 className="text-6xl md:text-9xl font-black italic tracking-tightest uppercase leading-[1.1] text-black dark:text-white dark:text-white">মেনু হাব</h1>
                             <p className="text-[11px] md:text-[13px] font-black text-black dark:text-white dark:text-white uppercase tracking-[0.6em] italic">NRZONE NEURAL INTERFACE V5.0 — ELITE ACCESS</p>
                         </div>
                     </div>
@@ -91,7 +91,7 @@ const MenuPanel = ({ setActivePanel, user, t, showNotify }) => {
                                                     {item.icon}
                                                 </div>
                                                 <div className="space-y-2">
-                                                    <h4 className="text-3xl md:text-5xl font-black italic uppercase tracking-tightest text-black dark:text-white dark:text-white leading-none">{item.label}</h4>
+                                                    <h4 className="text-3xl md:text-5xl font-black italic uppercase tracking-tightest text-black dark:text-white dark:text-white leading-snug">{item.label}</h4>
                                                     <p className="text-[11px] font-black text-black dark:text-white dark:text-white uppercase tracking-widest leading-none italic">{item.desc}</p>
                                                 </div>
                                             </div>

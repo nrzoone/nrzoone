@@ -37,7 +37,8 @@ import {
   Fingerprint,
   ShieldAlert,
   Server,
-  Palette
+  Palette,
+  Star
 } from "lucide-react";
 import { storage } from "../../firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
@@ -393,16 +394,46 @@ const SettingsPanel_V2 = ({
     }));
   };
 
-  const handleAddWorker = (dept, name, wage) => {
+  const handleAddWorker = (dept, name, wage, phone, password, nidNumber, address, joiningDate, emergency, notes) => {
     if (!name.trim()) return showNotify("কর্মী নাম আবশ্যক!", "error");
+    
+    const workerId = Date.now().toString();
+    const formattedName = name.trim().toUpperCase();
+    const formattedPhone = phone?.trim() || "";
+
     handleSaveUnifiedWorker({
-      id: Date.now().toString(),
-      name: name.toUpperCase(),
+      id: workerId,
+      name: formattedName,
       dept,
       wage: Number(wage) || 0,
-      phone: "",
-      joiningDate: new Date().toISOString().split("T")[0],
+      phone: formattedPhone,
+      password: password || "",
+      nidNumber: nidNumber || "",
+      address: address || "",
+      joiningDate: joiningDate || new Date().toISOString().split("T")[0],
+      emergencyContact: emergency || "",
+      notes: notes || "",
     });
+
+    if (password?.trim()) {
+       setMasterData(prev => ({
+          ...prev,
+          users: [
+             ...(prev.users || []),
+             {
+                id: formattedPhone || formattedName,
+                name: formattedName,
+                password: password.trim(),
+                role: 'worker'
+             }
+          ]
+       }));
+       showNotify(`${formattedName} এর লগিন এক্সেস তৈরি হয়েছে!`, "success");
+    } else {
+       showNotify(`${formattedName} সফলভাবে যুক্ত হয়েছে!`, "success");
+    }
+
+    setShowAddModal(false);
   };
 
   const handleAddDesign = (
@@ -504,9 +535,9 @@ const SettingsPanel_V2 = ({
 
   const ListSection = ({ category, title, items, icon }) => (
     <div className="space-y-6 animate-fade-up">
-      <div className="bg-white dark:bg-slate-900 p-8 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm flex justify-between items-center">
+      <div className="bg-white dark:bg-slate-950 p-8 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm flex justify-between items-center group">
         <div className="flex items-center gap-6">
-          <div className="w-14 h-14 bg-slate-950 text-white rounded-xl flex items-center justify-center shadow-lg">
+          <div className="w-14 h-14 bg-slate-950 text-white rounded-xl flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
             {icon ? (
               React.cloneElement(icon, {
                 size: 24,
@@ -526,9 +557,10 @@ const SettingsPanel_V2 = ({
         </div>
         <button
           onClick={() => setShowAddModal(category)}
-          className="w-12 h-12 bg-slate-950 text-white rounded-xl flex items-center justify-center hover:bg-black transition-all shadow-xl active:scale-95"
+          className="px-6 h-12 bg-slate-950 text-white rounded-xl flex items-center justify-center gap-3 hover:bg-black transition-all shadow-xl active:scale-95"
         >
-          <Plus size={20} strokeWidth={3} />
+          <Plus size={18} strokeWidth={3} />
+          <span className="text-[9px] font-bold uppercase tracking-widest">নতুন যুক্ত করুন</span>
         </button>
       </div>
 
@@ -601,7 +633,10 @@ const SettingsPanel_V2 = ({
   );
 
   const getUnifiedWorkers = (dept) => {
-    const legacyNames = masterData.workerCategories?.[dept] || [];
+    let legacyNames = masterData.workerCategories?.[dept] || [];
+    if (dept === 'cutting') {
+      legacyNames = masterData.cutters || [];
+    }
     const wages = masterData.workerWages?.[dept] || {};
     const allDocs = masterData.workerDocs || [];
 
@@ -637,18 +672,7 @@ const SettingsPanel_V2 = ({
        <div className="flex justify-between items-center">
           <h4 className="text-2xl font-bold uppercase tracking-tight text-black dark:text-white dark:text-white">সিস্টেম <span className="text-blue-600">এক্সেস নোড</span></h4>
           <button 
-             onClick={() => {
-                const name = prompt("ইউজারের নাম লিখুন (Name):");
-                const id = prompt("ইউজার আইডি / ফোন লিখুন (ID/Phone):");
-                const pass = prompt("পাসওয়ার্ড লিখুন (Password):");
-                if (name && id && pass) {
-                   setMasterData(prev => ({
-                      ...prev,
-                      users: [...(prev.users || []), { name, id, password: pass, role: 'manager' }]
-                   }));
-                   showNotify("নতুন ম্যানেজার নোড সফলভাবে নিবন্ধিত হয়েছে!");
-                }
-             }}
+             onClick={() => setShowAddModal("user")}
              className="px-6 py-3.5 bg-slate-950 text-white rounded-xl text-[10px] font-bold uppercase tracking-widest hover:bg-black transition-all shadow-xl flex items-center gap-2"
           >
              <Plus size={16} strokeWidth={3} /> নতুন এক্সেস নোড
@@ -721,27 +745,129 @@ const SettingsPanel_V2 = ({
   );
 
 
+  const renderDesignsList = () => (
+    <div className="space-y-8 animate-fade-up">
+       <div className="bg-white dark:bg-slate-950 p-8 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm flex flex-col md:flex-row justify-between items-center gap-6 group">
+          <div className="flex items-center gap-6">
+            <div className="w-14 h-14 bg-blue-600 text-white rounded-xl flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform">
+               <Palette size={24} />
+            </div>
+            <div>
+               <h3 className="text-2xl font-bold uppercase tracking-tight text-black dark:text-white">ডিজাইন ও <span className="text-blue-600">স্টাইল হাব</span></h3>
+               <p className="text-[9px] font-bold uppercase tracking-widest mt-2">{masterData.designs?.length || 0} টি ডিজাইন অ্যাক্টিভ আছে</p>
+            </div>
+          </div>
+          <button 
+             onClick={() => {
+                setEditDesignModal(null);
+                setTempImgUrl(null);
+                setShowAddModal("design");
+             }} 
+             className="px-8 h-12 bg-slate-950 text-white rounded-xl text-[10px] font-bold uppercase tracking-widest hover:bg-black transition-all shadow-xl flex items-center gap-3 active:scale-95"
+          >
+             <Plus size={18} strokeWidth={3} /> নতুন ডিজাইন যুক্ত করুন
+          </button>
+       </div>
+
+       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+          {masterData.designs?.map((d, idx) => (
+             <div key={idx} className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border-2 border-slate-50 dark:border-slate-800 shadow-xl group hover:border-blue-500 transition-all relative overflow-hidden flex flex-col">
+                <div className="relative aspect-square rounded-[2rem] overflow-hidden bg-slate-50 dark:bg-slate-800 mb-6 border border-slate-100 dark:border-slate-700">
+                    {d.image ? (
+                        <img src={d.image} className="w-full h-full object-contain p-4 transition-transform group-hover:scale-110" alt={d.name} />
+                    ) : (
+                        <div className="w-full h-full flex items-center justify-center opacity-[0.05] group-hover:opacity-10 transition-opacity">
+                            <Palette size={120} />
+                        </div>
+                    )}
+                    <div className="absolute top-4 right-4 bg-white/90 dark:bg-slate-950/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm">
+                        <p className="text-[10px] font-black italic tracking-tighter text-blue-600">৳{d.sellingPrice || 0}</p>
+                    </div>
+                </div>
+
+                <div className="space-y-4 flex-1">
+                    <div className="flex justify-between items-start">
+                        <h4 className="text-xl font-bold uppercase tracking-tight truncate max-w-[70%]">{d.name}</h4>
+                        <span className="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 rounded text-[7px] font-bold uppercase tracking-widest">ID: {idx+1}</span>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-3">
+                        <div className="p-3 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-white dark:border-slate-700">
+                            <p className="text-[8px] font-black uppercase text-slate-400 mb-1">Sewing</p>
+                            <p className="font-bold text-sm italic">৳{d.sewingRate || 0}</p>
+                        </div>
+                        <div className="p-3 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-white dark:border-slate-700">
+                            <p className="text-[8px] font-black uppercase text-slate-400 mb-1">Stone</p>
+                            <p className="font-bold text-sm italic">৳{d.stoneRate || 0}</p>
+                        </div>
+                    </div>
+
+                    <div className="flex gap-2 pt-4">
+                        <button 
+                            onClick={() => { 
+                                setEditDesignModal({...d, index: idx}); 
+                                setTempImgUrl(d.image || ""); 
+                            }} 
+                            className="flex-1 py-3 bg-slate-50 dark:bg-slate-800 hover:bg-slate-950 dark:hover:bg-white hover:text-white dark:hover:text-black rounded-xl text-[9px] font-bold uppercase transition-all shadow-sm border border-slate-100 dark:border-slate-700 flex items-center justify-center gap-2"
+                        >
+                            <Edit2 size={12} /> এডিট
+                        </button>
+                        <button 
+                            onClick={() => handleDeleteDesign(idx)} 
+                            className="w-12 h-11 flex items-center justify-center text-rose-300 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/20 rounded-xl transition-all"
+                        >
+                            <Trash2 size={16} />
+                        </button>
+                    </div>
+                </div>
+             </div>
+          ))}
+       </div>
+    </div>
+  );
+
   const renderNodesContent = () => (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {[
-          { label: t("colors") || "Colors", cat: "colors", items: masterData.colors, icon: LayoutGrid },
-          { label: t("sizes") || "Sizes", cat: "sizes", items: masterData.sizes, icon: Package },
-          { label: t("masters") || "Masters", cat: "cutters", items: masterData.cutters, icon: Scissors },
-          { label: t("pataTaxonomy") || "Pata Taxonomy", cat: "pataTypes", items: masterData.pataTypes, icon: LayoutGrid }
-        ].map((sec) => (
-          <button key={sec.label} onClick={() => setActiveTab(sec.cat)} className="flex items-center justify-between p-6 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 hover:border-slate-950 transition-all group text-left shadow-sm">
-            <div className="flex items-center gap-5">
-              <div className="w-12 h-12 bg-slate-50 dark:bg-slate-800 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform"><sec.icon size={18} className="text-black dark:text-white dark:text-white" /></div>
-              <div>
-                 <h4 className="text-lg font-bold tracking-tight uppercase leading-none text-black dark:text-white dark:text-white">{sec.label}</h4>
-                 <p className="text-[9px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest mt-2">{sec.items?.length || 0} টি কনফিগার করা হয়েছে</p>
-              </div>
-            </div>
-            <ChevronRight size={14} className="text-slate-300 group-hover:translate-x-1 transition-transform" />
-          </button>
-        ))}
-      </div>
+      {activeTab && activeTab !== "users" ? (
+         <div className="space-y-6">
+            <button 
+               onClick={() => setActiveTab("")} 
+               className="flex items-center gap-3 px-6 py-3 bg-white dark:bg-slate-900 rounded-xl text-[10px] font-bold uppercase tracking-widest text-slate-500 hover:text-black dark:hover:text-white transition-all mb-4 border border-slate-100 dark:border-slate-800 shadow-sm"
+            >
+                <ArrowLeft size={14} /> Back to Hub
+            </button>
+            {activeTab === 'colors' && <ListSection category="colors" title="সিস্টেম কালার (Colors)" items={masterData.colors} icon={<Palette />} />}
+            {activeTab === 'sizes' && <ListSection category="sizes" title="সিস্টেম সাইজ (Sizes)" items={masterData.sizes} icon={<Package />} />}
+            {activeTab === 'cutters' && <ListSection category="cutters" title="মাস্টার কাটিং (Masters)" items={masterData.cutters} icon={<Scissors />} />}
+            {activeTab === 'pataTypes' && <ListSection category="pataTypes" title="পাতা ট্যাক্সোনমি (Type)" items={masterData.pataTypes} icon={<LayoutGrid />} />}
+            {activeTab === 'designers' && <ListSection category="designers" title="ব্র্যান্ড এবং ডিজাইনার (Brands)" items={masterData.designers} icon={<Star />} />}
+            {activeTab === 'designs' && renderDesignsList()}
+         </div>
+      ) : (
+         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[
+            { label: "Styles & Designs", cat: "designs", items: masterData.designs, icon: Palette, sub: "Product Hub" },
+            { label: t("colors") || "Colors", cat: "colors", items: masterData.colors, icon: LayoutGrid, sub: "Variant Mix" },
+            { label: t("sizes") || "Sizes", cat: "sizes", items: masterData.sizes, icon: Package, sub: "Physical Spec" },
+            { label: "Masters / Cutters", cat: "cutters", items: masterData.cutters, icon: Scissors, sub: "Cutting Unit" },
+            { label: "Pata Taxonomy", cat: "pataTypes", items: masterData.pataTypes, icon: LayoutGrid, sub: "Unit Logic" },
+            { label: "ব্র্যান্ড / ডিজাইনার", cat: "designers", items: masterData.designers, icon: Star, sub: "Brand Identity" }
+            ].map((sec) => (
+            <button key={sec.label} onClick={() => setActiveTab(sec.cat)} className="flex items-center justify-between p-8 bg-white dark:bg-slate-900 rounded-[2rem] border-2 border-slate-50 dark:border-slate-800 hover:border-blue-600 transition-all group text-left shadow-xl hover:-translate-y-1">
+               <div className="flex items-center gap-6">
+                  <div className="w-14 h-14 bg-slate-50 dark:bg-slate-800 text-black dark:text-white rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all shadow-inner"><sec.icon size={22} /></div>
+                  <div>
+                     <h4 className="text-xl font-bold tracking-tight uppercase leading-none text-black dark:text-white">{sec.label}</h4>
+                     <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-2">{sec.items?.length || 0} টি সংরক্ষিত • {sec.sub}</p>
+                  </div>
+               </div>
+               <div className="w-10 h-10 rounded-full bg-slate-50 dark:bg-slate-800 flex items-center justify-center opacity-0 group-hover:opacity-100 group-hover:translate-x-2 transition-all">
+                  <ChevronRight size={14} className="text-blue-600" />
+               </div>
+            </button>
+            ))}
+         </div>
+      )}
     </div>
   );
 
@@ -758,7 +884,7 @@ const SettingsPanel_V2 = ({
 
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <button
-          onClick={() => setWorkerDocModal("add")}
+          onClick={() => setShowAddModal("worker")}
           className="px-8 py-4 bg-slate-950 text-white rounded-xl font-bold uppercase text-[10px] tracking-widest shadow-xl flex items-center gap-3 hover:bg-black transition-all active:scale-95"
         >
           <Plus size={18} strokeWidth={3} />
@@ -776,10 +902,10 @@ const SettingsPanel_V2 = ({
         </div>
       </div>
 
-      {['sewing', 'stone', 'pata'].map(dept => (
+      {[(personnelTab === 'staff' ? 'monthly' : personnelTab === 'outside' ? 'logistics' : personnelTab || 'sewing')].map(dept => (
         <div key={dept} className="saas-card !bg-slate-50/50 dark:!bg-slate-900/50">
           <div className="flex justify-between items-center mb-6">
-             <h4 className="text-xl font-bold uppercase tracking-tight text-black dark:text-white dark:text-white">{dept === 'sewing' ? 'সেলাই' : dept === 'stone' ? 'স্টোন' : 'পাতা'} ইউনিট {t("operatives") || "Operatives"}</h4>
+             <h4 className="text-xl font-bold uppercase tracking-tight text-black dark:text-white dark:text-white">{dept === 'sewing' ? 'সেলাই' : dept === 'stone' ? 'স্টোন' : dept === 'monthly' ? 'মূল কর্মী' : dept === 'logistics' ? 'বাইরের কাজ' : dept === 'cutting' ? 'কাটিং' : 'পাতা'} ইউনিট {t("operatives") || "Operatives"}</h4>
              <span className="text-[10px] font-bold uppercase text-black dark:text-white dark:text-white tracking-widest">{getUnifiedWorkers(dept).length} জন কর্মী</span>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -913,6 +1039,45 @@ const SettingsPanel_V2 = ({
           </div>
        </div>
 
+       {/* Card 1.5: Factory Details */}
+       <div className="saas-card bg-white dark:bg-slate-900 flex flex-col md:flex-row items-center gap-10 group transition-all shadow-sm border border-slate-100 dark:border-slate-800">
+          <div className="w-40 h-40 bg-slate-50 dark:bg-slate-800 rounded-xl shadow-inner flex items-center justify-center overflow-hidden border border-slate-100 dark:border-slate-700 relative shrink-0">
+             <div className="p-6 bg-slate-950 text-white rounded-xl shadow-lg group-hover:scale-110 transition-transform">
+                <Database size={32} />
+             </div>
+          </div>
+          <div className="flex-1 w-full flex flex-col md:flex-row gap-6 items-start md:items-center">
+             <div className="flex-1 space-y-4 w-full">
+                <div className="text-center md:text-left mb-2">
+                   <h4 className="text-2xl font-bold uppercase tracking-tight text-black dark:text-white dark:text-white">কোম্পানি <span className="text-blue-600">তথ্য (Info)</span></h4>
+                   <p className="text-slate-500 text-[10px] font-bold leading-relaxed italic mt-1">
+                      রিপোর্ট ও প্রিন্ট স্লিপের জন্য ফ্যাক্টরির নাম ও ঠিকানা সেট করুন।
+                   </p>
+                </div>
+                <div className="grid grid-cols-1 gap-3 w-full">
+                   <input id="factory-name" className="premium-input !h-12 !text-[11px]" placeholder="Factory Name (e.g. NRZOONE FACTORY)" defaultValue={masterData.settings?.factoryName || "NRZOONE FACTORY"} />
+                   <input id="factory-slogan" className="premium-input !h-12 !text-[11px]" placeholder="Slogan (Optional)" defaultValue={masterData.settings?.slogan || ""} />
+                   <input id="factory-address" className="premium-input !h-12 !text-[11px]" placeholder="Address" defaultValue={masterData.settings?.factoryAddress || ""} />
+                </div>
+             </div>
+             <button
+                onClick={() => {
+                   const fName = document.getElementById('factory-name').value.trim();
+                   const fSlogan = document.getElementById('factory-slogan').value.trim();
+                   const fAddress = document.getElementById('factory-address').value.trim();
+                   setMasterData(prev => ({
+                      ...prev,
+                      settings: { ...(prev.settings || {}), factoryName: fName || "NRZOONE FACTORY", slogan: fSlogan, factoryAddress: fAddress }
+                   }));
+                   window.dispatchEvent(new CustomEvent('notify', { detail: "কোম্পানির তথ্য সফলভাবে সেভ হয়েছে!" }));
+                }}
+                className="w-full md:w-auto px-8 py-10 bg-slate-950 text-white rounded-xl font-bold uppercase text-[10px] tracking-widest shadow-xl hover:bg-black transition-all active:scale-95"
+             >
+                আপডেট করুন
+             </button>
+          </div>
+       </div>
+
        {/* Card 2: WhatsApp Connectivity */}
        <div className="saas-card bg-emerald-500/5 border-emerald-500/20 flex flex-col md:flex-row items-center gap-10 group transition-all hover:border-emerald-500 shadow-sm">
           <div className="w-40 h-40 bg-white dark:bg-slate-800 rounded-xl shadow-inner flex items-center justify-center overflow-hidden border border-emerald-100 dark:border-emerald-900/40 relative shrink-0">
@@ -1014,7 +1179,7 @@ const SettingsPanel_V2 = ({
         <div className="flex items-center gap-3">
           <span className={`px-4 py-2 rounded-lg text-[9px] font-bold uppercase tracking-widest flex items-center gap-2 ${syncStatus === 'syncing' ? 'bg-amber-100 text-amber-600' : 'bg-emerald-100 text-emerald-600'}`}>
             <div className={`w-1.5 h-1.5 rounded-full ${syncStatus === 'syncing' ? 'bg-amber-500 animate-pulse' : 'bg-emerald-500'}`}></div>
-            {syncStatus === 'syncing' ? 'Neural Link Syncing...' : 'Primary Cloud Online'}
+            {syncStatus === 'syncing' ? 'সিস্টেম সিঙ্কিং হচ্ছে...' : 'প্রাইমারি ক্লাউড অনলাইন'}
           </span>
         </div>
       </div>
@@ -1069,7 +1234,7 @@ const SettingsPanel_V2 = ({
         <div className="fixed inset-0 bg-slate-950/40 backdrop-blur-sm z-[200] flex items-center justify-center p-4">
           <div className="saas-card !p-12 w-full max-w-lg shadow-2xl animate-fade-up">
             <h3 className="text-2xl font-bold uppercase mb-2">নতুন ইউজার <span className="text-blue-600">নিবন্ধন</span></h3>
-            <p className="text-[10px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest mb-10">Access Provisioning Control</p>
+            <p className="text-[10px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest mb-10">এক্সেস প্রোভিশনিং সিস্টেম</p>
             <div className="space-y-6">
               <input id="new-user-id" className="premium-input !h-14" placeholder="USER ID / PHONE" />
               <div className="relative">
@@ -1095,33 +1260,132 @@ const SettingsPanel_V2 = ({
           </div>
         </div>
       )}
-      {/* Worker Add Modal */}
+      {/* Generic Item Add Modal */}
+      {(showAddModal && !['user', 'worker', 'design'].includes(showAddModal)) && (
+         <div className="fixed inset-0 bg-slate-950/40 backdrop-blur-sm z-[200] flex items-center justify-center p-4">
+            <div className="saas-card !p-12 w-full max-w-md shadow-2xl animate-fade-up border-b-8 border-blue-600">
+               <h3 className="text-3xl font-black uppercase mb-2 tracking-tighter italic">নতুন <span className="text-blue-600 underline">আইটেম</span></h3>
+               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-10">{showAddModal.toUpperCase()} CONFIGURATION NODE</p>
+               <div className="space-y-6">
+                  <input 
+                    id="generic-item-input" 
+                    className="premium-input !h-20 !text-3xl !font-black !uppercase !tracking-tighter !text-center !bg-slate-50 dark:!bg-slate-900 !border-slate-200 dark:!border-slate-700" 
+                    placeholder="লিখুন..." 
+                    autoFocus 
+                    onKeyDown={(e) => { 
+                        if(e.key === 'Enter') {
+                            handleAddListItem(showAddModal, e.target.value);
+                            setShowAddModal(false);
+                        }
+                    }} 
+                  />
+                  <div className="flex gap-4 pt-6">
+                     <button onClick={() => setShowAddModal(false)} className="flex-1 py-4 rounded-2xl font-bold uppercase text-[10px] tracking-widest text-black dark:text-white hover:bg-slate-50 dark:hover:bg-slate-800 transition-all border border-slate-100 dark:border-slate-800">Cancel</button>
+                     <button 
+                        onClick={() => {
+                            const val = document.getElementById("generic-item-input").value;
+                            if(val) {
+                                handleAddListItem(showAddModal, val);
+                                setShowAddModal(false);
+                            }
+                        }} 
+                        className="flex-[2] py-4 rounded-2xl bg-blue-600 text-white font-bold uppercase text-[11px] tracking-[0.2em] shadow-xl hover:bg-blue-700 hover:-translate-y-1 active:scale-95 transition-all border-b-4 border-blue-800"
+                     >Confirm Save</button>
+                  </div>
+               </div>
+            </div>
+         </div>
+      )}
       {showAddModal === "worker" && (
         <div className="fixed inset-0 bg-slate-950/40 backdrop-blur-sm z-[200] flex items-center justify-center p-4">
           <div className="saas-card !p-12 w-full max-w-lg shadow-2xl animate-fade-up">
             <h3 className="text-2xl font-bold uppercase mb-2">নতুন কর্মী <span className="text-blue-600">নিবন্ধন</span></h3>
-            <p className="text-[10px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest mb-10">Workforce Deployment Node</p>
-            <div className="space-y-6">
-              <select
-                id="new-worker-dept"
-                className="premium-input !h-14"
-                value={newWorkerDept}
-                onChange={(e) => setNewWorkerDept(e.target.value)}
-              >
-                <option value="sewing">সেলাই (Sewing Dept)</option>
-                <option value="stone">স্টোন (Stone Dept)</option>
-                <option value="pata">পাতা (Pata Dept)</option>
-                <option value="logistics">লজিস্টিকস (Logistics)</option>
-                <option value="monthly">মান্থলি স্টাফ (Monthly Staff)</option>
-              </select>
-              <input id="new-worker-name" className="premium-input !h-14" placeholder="নাম (Name)" />
-              <input id="new-worker-wage" type="number" className="premium-input !h-14" placeholder="রেট / বেতন (Rate/Salary)" />
+            <p className="text-[10px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest mb-10">ওয়ার্কফোর্স ম্যানেজমেন্ট হাব</p>
+            <div className="space-y-5">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                 <div className="space-y-1">
+                    <label className="text-[9px] font-bold uppercase ml-2">বিভাগ (Department)</label>
+                    <select
+                      id="new-worker-dept"
+                      className="premium-input !h-12"
+                      value={newWorkerDept}
+                      onChange={(e) => setNewWorkerDept(e.target.value)}
+                    >
+                      <option value="monthly">মূল কর্মী (Core Staff)</option>
+                      <option value="cutting">কাটিং (Cutting)</option>
+                      <option value="sewing">সেলাই (Sewing)</option>
+                      <option value="stone">স্টোন (Stone)</option>
+                      <option value="pata">পাতা ইউনিট (Pata Unit)</option>
+                      <option value="logistics">বাইরের কাজ (Outside)</option>
+                    </select>
+                 </div>
+                 <div className="space-y-1">
+                    <label className="text-[9px] font-bold uppercase ml-2">পূর্ণ নাম *</label>
+                    <input id="new-worker-name" className="premium-input !h-12" placeholder="কর্মীর নাম" />
+                 </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                 <div className="space-y-1">
+                    <label className="text-[9px] font-bold uppercase ml-2">মোবাইল নম্বর *</label>
+                    <input id="new-worker-phone" className="premium-input !h-12" placeholder="01XXXXXXXXX" />
+                 </div>
+                 <div className="space-y-1">
+                    <label className="text-[9px] font-bold uppercase ml-2">পাসওয়ার্ড (Login Access)</label>
+                    <input id="new-worker-pass" type="password" className="premium-input !h-12" placeholder="নির্ধারণ করুন" />
+                 </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                 <div className="space-y-1">
+                    <label className="text-[9px] font-bold uppercase ml-2">নির্ধারিত রেট (Wage/Salary)</label>
+                    <input id="new-worker-wage" type="number" className="premium-input !h-12" placeholder="৳ 0.00" />
+                 </div>
+                 <div className="space-y-1">
+                    <label className="text-[9px] font-bold uppercase ml-2">NID / পরিচয়পত্র নম্বর</label>
+                    <input id="new-worker-nid" className="premium-input !h-12" placeholder="NID No." />
+                 </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                 <div className="space-y-1">
+                    <label className="text-[9px] font-bold uppercase ml-2">স্থায়ী ঠিকানা</label>
+                    <input id="new-worker-address" className="premium-input !h-12" placeholder="গ্রাম, উপজেলা, জেলা" />
+                 </div>
+                 <div className="space-y-1">
+                    <label className="text-[9px] font-bold uppercase ml-2">যোগদানের তারিখ</label>
+                    <input id="new-worker-date" type="date" defaultValue={new Date().toISOString().split('T')[0]} className="premium-input !h-12" />
+                 </div>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                 <div className="space-y-1">
+                    <label className="text-[9px] font-bold uppercase ml-2">জরুরি যোগাযোগ</label>
+                    <input id="new-worker-emergency" className="premium-input !h-12" placeholder="নাম — 01XXXXXXXXX" />
+                 </div>
+                 <div className="space-y-1">
+                    <label className="text-[9px] font-bold uppercase ml-2">অতিরিক্ত নোট</label>
+                    <input id="new-worker-notes" className="premium-input !h-12" placeholder="বিশেষ তথ্য..." />
+                 </div>
+              </div>
+
               <div className="flex gap-4 pt-6">
-                <button onClick={() => setShowAddModal(false)} className="flex-1 py-4 rounded-xl font-bold uppercase text-[10px] tracking-widest text-black dark:text-white dark:text-white hover:bg-slate-50 transition-all">Cancel</button>
+                <button onClick={() => setShowAddModal(false)} className="flex-1 py-4 rounded-xl font-bold uppercase text-[10px] tracking-widest text-black dark:text-white dark:text-white hover:bg-slate-50 transition-all border border-slate-100 dark:border-slate-800">বাতিল</button>
                 <button 
-                  onClick={() => handleAddWorker(newWorkerDept, document.getElementById("new-worker-name").value, document.getElementById("new-worker-wage")?.value || 0)} 
+                   onClick={() => handleAddWorker(
+                    newWorkerDept, 
+                    document.getElementById("new-worker-name").value, 
+                    document.getElementById("new-worker-wage")?.value || 0,
+                    document.getElementById("new-worker-phone")?.value || "",
+                    document.getElementById("new-worker-pass")?.value || "",
+                    document.getElementById("new-worker-nid")?.value || "",
+                    document.getElementById("new-worker-address")?.value || "",
+                    document.getElementById("new-worker-date")?.value || "",
+                    document.getElementById("new-worker-emergency")?.value || "",
+                    document.getElementById("new-worker-notes")?.value || ""
+                  )} 
                   className="flex-[2] py-4 rounded-xl bg-slate-950 text-white font-bold uppercase text-[10px] tracking-widest shadow-xl hover:bg-black transition-all"
-                >Confirm Creation</button>
+                >সংরক্ষণ করুন</button>
               </div>
             </div>
           </div>
@@ -1132,64 +1396,81 @@ const SettingsPanel_V2 = ({
       {(showAddModal === "design" || editDesignModal) && (
         <div className="fixed inset-0 bg-slate-950/40 backdrop-blur-sm z-[200] flex items-center justify-center p-4 overflow-y-auto">
           <div className="saas-card !p-10 w-full max-w-2xl shadow-2xl animate-fade-up my-auto">
-            <h3 className="text-2xl font-bold uppercase mb-2">{editDesignModal ? 'স্টাইল আপডেট' : 'নতুন ডিজাইন'} <span className="text-blue-600">নিবন্ধন</span></h3>
-            <p className="text-[10px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest mb-8">Product Development Architecture</p>
+            <h3 className="text-3xl font-bold uppercase mb-2 tracking-tighter">{editDesignModal ? 'স্টাইল আপডেট' : 'নতুন ডিজাইন'} <span className="text-blue-600">নিবন্ধন</span></h3>
+            <p className="text-[10px] font-bold text-black dark:text-white uppercase tracking-widest mb-10">ডিজাইন ও ডেভেলপমেন্ট হাব</p>
             
-            <div className="flex flex-col md:flex-row gap-8">
-              <div className="w-full md:w-1/3 flex flex-col items-center gap-4">
-                 <label className="w-full aspect-square bg-slate-50 dark:bg-slate-800 rounded-xl border border-dashed border-slate-200 dark:border-slate-700 flex flex-col items-center justify-center cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-all overflow-hidden group">
+            <div className="flex flex-col md:flex-row gap-10">
+              <div className="w-full md:w-1/3 flex flex-col items-center gap-6">
+                 <label className="w-full aspect-square bg-slate-50 dark:bg-slate-800 rounded-[2rem] border-4 border-dashed border-slate-100 dark:border-slate-700 flex flex-col items-center justify-center cursor-pointer hover:bg-white dark:hover:bg-slate-800 transition-all overflow-hidden group shadow-inner">
                     {tempImgUrl ? (
-                      <img src={tempImgUrl} className="w-full h-full object-contain p-2" />
+                      <img src={tempImgUrl} className="w-full h-full object-contain p-4" alt="Studio Preview" />
                     ) : (
-                      <div className="text-center p-4">
-                        <Upload size={24} className="mx-auto text-black dark:text-white dark:text-white mb-2 group-hover:scale-110 transition-transform" />
-                        <span className="text-[8px] font-bold uppercase text-black dark:text-white dark:text-white tracking-widest">Upload Photo</span>
+                      <div className="text-center p-6 flex flex-col items-center gap-4">
+                        <div className="w-16 h-16 bg-white dark:bg-slate-900 rounded-2xl flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+                          <Upload size={28} className="text-blue-600" />
+                        </div>
+                        <span className="text-[10px] font-bold uppercase text-slate-400 tracking-widest leading-tight">Click to Upload Store Preview</span>
                       </div>
                     )}
                     <input type="file" className="hidden" accept="image/*" onChange={async (e) => { if (e.target.files[0]) { const url = await handleImageUpload(e.target.files[0]); if (url) setTempImgUrl(url); } }} />
                  </label>
+                 {tempImgUrl && <button onClick={() => setTempImgUrl(null)} className="text-[10px] font-bold uppercase text-rose-500 tracking-widest hover:underline">Remove Photo</button>}
               </div>
 
-              <div className="flex-1 space-y-4">
-                 <input id="design-name" className="premium-input !h-12" placeholder="DESIGN NAME" defaultValue={editDesignModal?.name || ""} />
-                 <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="text-[8px] font-bold text-black dark:text-white dark:text-white uppercase ml-1">Sewing Rate</label>
-                      <input id="design-sewing" type="number" className="premium-input !h-11" defaultValue={editDesignModal?.sewingRate || 0} />
+              <div className="flex-1 space-y-6">
+                 <div className="space-y-2">
+                    <label className="text-[10px] font-black text-slate-400 uppercase ml-2 tracking-widest italic">Product Identity</label>
+                    <input id="design-name" className="premium-input !h-14 !text-xl !font-bold" placeholder="DESIGN NAME (EG: ABAYA-X)" defaultValue={editDesignModal?.name || ""} />
+                 </div>
+                 
+                 <div className="grid grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black text-slate-400 uppercase ml-2 tracking-widest italic">Sewing Rate</label>
+                      <input id="design-sewing" type="number" className="premium-input !h-12 !bg-slate-50 dark:!bg-slate-800/50" defaultValue={editDesignModal?.sewingRate || 0} />
                     </div>
-                    <div>
-                      <label className="text-[8px] font-bold text-black dark:text-white dark:text-white uppercase ml-1">Stone Rate</label>
-                      <input id="design-stone" type="number" className="premium-input !h-11" defaultValue={editDesignModal?.stoneRate || 0} />
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black text-slate-400 uppercase ml-2 tracking-widest italic">Stone Rate</label>
+                      <input id="design-stone" type="number" className="premium-input !h-12 !bg-slate-50 dark:!bg-slate-800/50" defaultValue={editDesignModal?.stoneRate || 0} />
                     </div>
-                    <div>
-                      <label className="text-[8px] font-bold text-black dark:text-white dark:text-white uppercase ml-1">Pata Rate</label>
-                      <input id="design-pata" type="number" className="premium-input !h-11" defaultValue={editDesignModal?.pataRate || 0} />
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black text-slate-400 uppercase ml-2 tracking-widest italic">Pata Rate</label>
+                      <input id="design-pata" type="number" className="premium-input !h-12 !bg-slate-50 dark:!bg-slate-800/50" defaultValue={editDesignModal?.pataRate || 0} />
                     </div>
-                    <div>
-                      <label className="text-[8px] font-bold text-black dark:text-white dark:text-white uppercase ml-1">Sell Price</label>
-                      <input id="design-sell" type="number" className="premium-input !h-11 border-emerald-100 dark:border-emerald-900/30" defaultValue={editDesignModal?.sellingPrice || 0} />
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black text-emerald-500 uppercase ml-2 tracking-widest italic font-mono">Retail Price</label>
+                      <input id="design-sell" type="number" className="premium-input !h-12 border-emerald-200 dark:border-emerald-900/50 text-emerald-600 font-bold" defaultValue={editDesignModal?.sellingPrice || 0} />
                     </div>
                  </div>
               </div>
             </div>
 
-            <div className="flex gap-4 pt-8">
-              <button onClick={() => { setShowAddModal(false); setEditDesignModal(null); setTempImgUrl(null); }} className="flex-1 py-4 rounded-xl font-bold uppercase text-[10px] tracking-widest text-black dark:text-white dark:text-white hover:bg-slate-50 transition-all">Cancel</button>
+            <div className="flex gap-4 pt-12">
+              <button 
+                onClick={() => { 
+                  setShowAddModal(false); 
+                  setEditDesignModal(null); 
+                  setTempImgUrl(null); 
+                }} 
+                className="flex-1 h-16 rounded-2xl font-bold uppercase text-[10px] tracking-widest text-black dark:text-white hover:bg-slate-50 dark:hover:bg-slate-800 transition-all border border-slate-100 dark:border-slate-800"
+              >Cancel</button>
               <button 
                 onClick={() => {
                   const data = {
-                    name: document.getElementById("design-name").value,
+                    name: document.getElementById("design-name").value.trim().toUpperCase(),
                     sewingRate: Number(document.getElementById("design-sewing").value),
                     stoneRate: Number(document.getElementById("design-stone").value),
                     pataRate: Number(document.getElementById("design-pata").value),
                     sellingPrice: Number(document.getElementById("design-sell").value),
                     image: tempImgUrl
                   };
+                  
+                  if (!data.name) return alert("স্টাইল নাম আবশ্যক!");
+                  
                   if(editDesignModal) handleUpdateDesignFull(editDesignModal.index, data);
                   else handleAddDesign(data.name, data.sewingRate, data.stoneRate, data.pataRate, 0, 0, data.sellingPrice);
                 }} 
-                className="flex-[2] py-4 rounded-xl bg-slate-950 text-white font-bold uppercase text-[10px] tracking-widest shadow-xl hover:bg-black transition-all"
-              >{editDesignModal ? 'Update Style' : 'Confirm Creation'}</button>
+                className="flex-[2] h-16 rounded-2xl bg-slate-950 text-white font-bold uppercase text-[11px] tracking-[0.2em] shadow-2xl hover:bg-black transition-all active:scale-95 border-b-4 border-slate-800"
+              >{editDesignModal ? 'Update Component' : 'Deploy Style'}</button>
             </div>
           </div>
         </div>

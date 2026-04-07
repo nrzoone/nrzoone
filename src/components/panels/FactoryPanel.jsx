@@ -817,11 +817,61 @@ const FactoryPanel = ({
             )}
           </div>
         )}
-      </div>
+        
+        {view === "payments" && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-up">
+            {workers.map((w) => {
+              const due = getWorkerDue(w);
+              const doc = masterData.workerDocs?.find(d => d.name.toUpperCase() === w.toUpperCase() && d.dept === type);
+              return (
+                <div key={w} className="saas-card !p-8 flex flex-col justify-between group hover:border-slate-950 dark:hover:border-white transition-all overflow-hidden relative">
+                  <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:opacity-[0.08] transition-all">
+                    <User size={120} className="text-black dark:text-white" />
+                  </div>
+                  <div className="relative z-10 space-y-6">
+                    <div className="flex justify-between items-start">
+                      <div className="space-y-1">
+                        <p className="text-[10px] font-bold text-black dark:text-white uppercase tracking-widest leading-none bg-blue-600/10 inline-block px-2 py-1 rounded">
+                          {type === 'sewing' ? 'মাশিন চালক' : 'স্টোন এক্সপার্ট'}
+                        </p>
+                        <h4 className="text-2xl font-black tracking-tight text-black dark:text-white uppercase leading-none mt-2">
+                          {w}
+                        </h4>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">ID: {doc?.workerId || 'N/A'}</p>
+                      </div>
+                      <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all ${due > 0 ? 'bg-amber-500 text-white shadow-lg' : 'bg-slate-100 dark:bg-slate-800 text-slate-300'}`}>
+                        <DollarSign size={20} />
+                      </div>
+                    </div>
+                    
+                    <div className="bg-slate-50 dark:bg-slate-800/50 p-6 rounded-xl border border-slate-100 dark:border-slate-800">
+                      <p className="text-[9px] font-bold text-black dark:text-white uppercase tracking-widest mb-1 leading-none italic">বকেয়া মজুরি (Payable)</p>
+                      <p className={`text-4xl font-black leading-none ${due > 0 ? 'text-black dark:text-white' : 'text-slate-200 dark:text-slate-700'}`}>
+                        ৳{due.toLocaleString()}
+                      </p>
+                    </div>
+                  </div>
 
-          )}
-        </div>
-      )}
+                  <div className="grid grid-cols-2 gap-3 mt-8 relative z-10">
+                    <button
+                      onClick={() => setLedgerModal(w)}
+                      className="w-full py-4 rounded-xl bg-slate-50 dark:bg-slate-800 text-black dark:text-white font-bold uppercase text-[10px] tracking-widest hover:bg-slate-950 hover:text-white transition-all border border-slate-100 dark:border-slate-800"
+                    >
+                      লেজার (Ledger)
+                    </button>
+                    <button
+                      onClick={() => setPayModal(w)}
+                      className="w-full py-4 rounded-xl bg-slate-950 text-white font-bold uppercase text-[10px] tracking-widest shadow-lg hover:bg-black active:scale-95 transition-all"
+                    >
+                      পেমেন্ট দিন
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
 
       {/* LEDGER MODAL IMPLEMENTATION */}
       <AnimatePresence>
@@ -1490,6 +1540,7 @@ const FactoryPanel = ({
           </div>
         </div>
       )}
+      </AnimatePresence>
 
       <div className="pt-24 pb-12 flex justify-center">
         <button
