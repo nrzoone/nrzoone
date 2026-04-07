@@ -126,22 +126,47 @@ export const useMasterData = () => {
         // Main Data Sync
         const unsub = onSnapshot(doc(db, COLLECTION_NAME, DOC_ID), (snap) => {
             if (!isSubscribed) return;
+            
+            // Critical Fix: Skip server data if the client has pending writes to avoid local revert issues
+            if (snap.metadata.hasPendingWrites) {
+                console.log("⏳ Skipping cloud update: local changes pending sync...");
+                return;
+            }
+
             try {
                 if (snap.exists()) {
                     const cloud = snap.data()?.content;
                     if (cloud) {
                         setMasterData(prev => {
-                            const merged = { ...initialData, ...cloud };
-                            // Remove auditLogs from main state if it exists (migration)
+                            // Enhanced Merge strategy
+                            const merged = { ...initialData };
+                            Object.keys(cloud).forEach(k => {
+                                if (cloud[k] !== undefined && cloud[k] !== null) {
+                                    // Depth 1 merge for objects
+                                    if (typeof cloud[k] === 'object' && !Array.isArray(cloud[k])) {
+                                        merged[k] = { ...initialData[k], ...cloud[k] };
+                                    } else {
+                                        merged[k] = cloud[k];
+                                    }
+                                }
+                            });
+                            
+                            // Remove legacy auditLogs from content
                             if (merged.auditLogs) delete merged.auditLogs;
-                            if (JSON.stringify(merged) !== JSON.stringify(prev)) {
-                                localStorage.setItem('nrzone_data', JSON.stringify(merged));
+                            
+                            const pStr = JSON.stringify(prev);
+                            const mStr = JSON.stringify(merged);
+                            
+                            if (pStr !== mStr) {
+                                localStorage.setItem('nrzone_data', mStr);
                                 return merged;
                             }
                             return prev;
                         });
                     }
                 } else {
+                    // Initialize empty cloud doc if missing
+                    console.warn("☁️ Cloud document missing. Initializing...");
                     setDoc(doc(db, COLLECTION_NAME, DOC_ID), { content: initialData }).catch(console.error);
                 }
                 setSyncStatus('synced');
@@ -183,19 +208,52 @@ export const useMasterData = () => {
 
         const timer = setTimeout(async () => {
             try {
-                if (!masterData.users || masterData.users.length === 0) return;
+                // Relaxed condition: Only block save if we are loading or db is missing
+                if (Object.keys(masterData).length < 5) return;
 
+                console.info("💾 CLOUD SYNC: Timer triggered. Preparing to save...");
                 setSyncStatus('syncing');
+                
                 // Ensure we don't save logs in the main document
-                const { auditLogs, ...dataToSave } = masterData; 
+                // Use a deep clone to prevent any state changes from affecting the write midway
+                const dataToSave = JSON.parse(JSON.stringify(masterData));
+                if (dataToSave.auditLogs) delete dataToSave.auditLogs; 
+                
+                // Firestore 1MB Check
+                const serialized = JSON.stringify(dataToSave);
+                const sizeInBytes = new Blob([serialized]).size;
+                const sizeInKb = (sizeInBytes / 1024).toFixed(2);
+                
+                console.info(`📦 PAYLOAD SIZE: ${sizeInKb} KB`);
+                
+                if (sizeInBytes > 950000) {
+                    console.error(`🔥 CRITICAL: Database size (${sizeInKb}KB) exceeds Firestore 1MB limit!`);
+                } else if (sizeInBytes > 800000) {
+                    console.warn(`⚠️ WARNING: Database size (${sizeInKb}KB) is reaching the 1MB limit.`);
+                }
+
+                console.info("☁️ FIREBASE: Initiating setDoc write...");
                 await setDoc(doc(db, COLLECTION_NAME, DOC_ID), { content: dataToSave }, { merge: true });
-                localStorage.setItem('nrzone_data', JSON.stringify(dataToSave));
+                
+                localStorage.setItem('nrzone_data', serialized);
                 setSyncStatus('synced');
+                console.info("✅ SUCCESS: Data safely synced to cloud.");
             } catch (e) {
-                console.error("MasterData sync error:", e);
+                console.error("❌ MASTER DATA SYNC FAILED:", e);
                 setSyncStatus('error');
+                
+                const errorCode = e.code || "";
+                const errorMsg = e.message || "Unknown error";
+                
+                if (errorCode === 'resource-exhausted' || errorMsg.includes('quota')) {
+                    alert("⚠️ ডাটা স্টোরেজ পূর্ণ! (Storage Full / Quota Exceeded). অনুগ্রহ করে পুরনো ডাটা ডিলিট করুন।");
+                } else if (errorCode === 'permission-denied') {
+                    alert("⚠️ পারমিশন নেই! (Permission Denied). আপনার লগইন স্ট্যাটাস চেক করুন।");
+                } else {
+                    alert(`⚠️ ডাটা সেভ হয়নি! (Sync Error: ${errorCode || errorMsg}). অনুগ্রহ করে ইন্টারনেট চেক করুন।`);
+                }
             }
-        }, 3000); 
+        }, 2000); // Increased debounce to 2.0s for better reliability
 
         return () => clearTimeout(timer);
     }, [masterData, isLoading]);
@@ -209,7 +267,7 @@ export const useMasterData = () => {
             } catch (e) {
                 console.error("Logs sync error:", e);
             }
-        }, 5000);
+        }, 2000);
         return () => clearTimeout(timer);
     }, [logs]);
 

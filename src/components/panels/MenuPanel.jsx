@@ -5,7 +5,7 @@ import {
   BarChart2, X, LayoutGrid, ChevronRight, Share2 
 } from 'lucide-react';
 
-const MenuPanel = ({ setActivePanel, user, t }) => {
+const MenuPanel = ({ setActivePanel, user, t, showNotify }) => {
     const categories = [
         {
             title: "মুখ্য হাব (CORE HUB)",
@@ -107,8 +107,8 @@ const MenuPanel = ({ setActivePanel, user, t }) => {
                 <div className="mt-48 pt-20 border-t border-black/5 dark:border-white/5 flex flex-col md:flex-row justify-between items-center opacity-40 gap-10 italic text-black dark:text-white dark:text-white">
                     <p className="text-[11px] font-black uppercase tracking-[0.6em]">NRZONE NEURAL ENGINE V5.2 // SECURE BOOTH</p>
                     <div className="flex gap-16">
-                        <button className="text-[11px] font-black uppercase tracking-[0.6em] hover:opacity-100 italic">SYSTEM LOGS</button>
-                        <button className="text-[11px] font-black uppercase tracking-[0.6em] hover:opacity-100 italic">GATEWAY STATUS</button>
+                        <button onClick={() => setActivePanel('Security')} className="text-[11px] font-black uppercase tracking-[0.6em] hover:opacity-100 italic">SYSTEM LOGS</button>
+                        <button onClick={() => showNotify('NRZONE NEURAL ENGINE: STATUS ONLINE // LATENCY 12MS')} className="text-[11px] font-black uppercase tracking-[0.6em] hover:opacity-100 italic">GATEWAY STATUS</button>
                     </div>
                 </div>
             </div>

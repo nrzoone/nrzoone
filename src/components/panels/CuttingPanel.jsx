@@ -35,6 +35,7 @@ const CuttingPanel = ({
   showNotify,
   user,
   setActivePanel,
+  t,
   logAction,
 }) => {
   const [activeTab, setActiveTab] = useState("Cutting Queue");

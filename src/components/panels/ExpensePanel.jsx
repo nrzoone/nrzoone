@@ -32,6 +32,7 @@ const ExpensePanel = ({
   user,
   setActivePanel,
   t,
+  logAction,
 }) => {
   const role = user?.role?.toLowerCase();
   const isAdmin = role === "admin";

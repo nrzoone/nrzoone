@@ -49,9 +49,11 @@ const WorkerSummary = ({ masterData, setMasterData, showNotify, user, logAction,
         if (dept === 'pata') {
             const totalBill = history.reduce((acc, e) => acc + Number(e.amount || 0), 0);
             const actualQty = history.reduce((a, b) => a + Number(b.pataQty || 0), 0);
-            return { ...stats, qty: actualQty, bill: totalBill, paid, balance: totalBill - paid, label: 'PATA PRODUCED', subLabel: 'PIECE RATE', history, attendanceHistory };
+            const totalShortage = history.reduce((a, b) => a + Number(b.shortage || 0), 0);
+            return { ...stats, qty: actualQty, bill: totalBill, paid, balance: totalBill - paid, shortage: totalShortage, label: 'PATA PRODUCED', subLabel: 'PIECE RATE', history, attendanceHistory };
         } else {
             const totalQty = history.reduce((a, b) => a + Number(b.receivedBorka || 0) + Number(b.receivedHijab || 0), 0);
+            const totalShortage = history.reduce((a, b) => a + Number(b.totalShortage || 0), 0);
             const totalBill = history.reduce((acc, b) => {
                 const design = masterData.designs.find(d => d.name === b.design);
                 const netBorka = Number(b.receivedBorka || 0);
@@ -66,7 +68,7 @@ const WorkerSummary = ({ masterData, setMasterData, showNotify, user, logAction,
                 }
             }, 0);
 
-            return { ...stats, qty: totalQty, bill: totalBill, paid, balance: totalBill - paid, label: 'FINISHED GOODS', subLabel: 'PIECE RATE', history, attendanceHistory };
+            return { ...stats, qty: totalQty, bill: totalBill, paid, balance: totalBill - paid, shortage: totalShortage, label: 'PIECES PRODUCED', subLabel: 'PIECE RATE', history, attendanceHistory };
         }
     };
 
@@ -196,7 +198,10 @@ const WorkerSummary = ({ masterData, setMasterData, showNotify, user, logAction,
                             <div className="bg-slate-50/80 p-8 rounded-[3rem] border border-white shadow-inner flex flex-col gap-4">
                                 <div className="flex justify-between items-center">
                                     <p className="text-[10px] font-black text-black dark:text-white dark:text-white uppercase tracking-widest font-mono">কাজের বিবরণ</p>
-                                    <p className="text-xl font-black italic text-black">{w.qty} <span className="text-[10px] text-black dark:text-white dark:text-white">{w.label.includes('DAYS') ? 'দিন' : 'পিস'}</span></p>
+                                    <div className="text-right">
+                                        <p className="text-xl font-black italic text-black">{w.qty} <span className="text-[10px] text-black dark:text-white">{w.label.includes('DAYS') ? 'দিন' : 'পিস'}</span></p>
+                                        {w.shortage > 0 && <p className="text-[9px] font-black text-rose-500 uppercase">ঘাটতি: {w.shortage} পিস</p>}
+                                    </div>
                                 </div>
                                 <div className="flex justify-between items-center group/p">
                                     <p className="text-[10px] font-black text-black dark:text-white dark:text-white uppercase tracking-widest font-mono">পিন কোড</p>

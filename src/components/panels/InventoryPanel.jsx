@@ -413,6 +413,9 @@ const InventoryPanel = ({
                                     </div>
                                 )}
                             </div>
+                            <div className="absolute top-4 left-4 z-20">
+                                <span className="px-4 py-1.5 bg-rose-500 text-white text-[9px] font-black uppercase tracking-[0.3em] rounded-md shadow-lg animate-pulse">Vision Simulation (Demo)</span>
+                            </div>
                             <div className="absolute top-0 left-0 w-full h-[2px] bg-blue-600 animate-scan shadow-[0_0_20px_blue]"></div>
                         </div>
                         <p className="mt-12 text-[9px] font-black text-black dark:text-white dark:text-white uppercase tracking-[0.5em] italic leading-none">NRZO0NE Core Vision Architecture v5.0 • Live Stream Active</p>

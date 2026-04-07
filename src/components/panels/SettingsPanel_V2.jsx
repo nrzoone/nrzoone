@@ -347,8 +347,8 @@ const SettingsPanel_V2 = ({
       ...prev,
       workerDocs: (prev.workerDocs || []).filter((d) => d.id !== id),
       workerCategories: {
-        ...prev.workerCategories,
-        [dept]: (prev.workerCategories[dept] || []).filter(
+        ...(prev.workerCategories || {}),
+        [dept]: (prev.workerCategories?.[dept] || []).filter(
           (n) => n !== name.toUpperCase(),
         ),
       },
@@ -418,7 +418,7 @@ const SettingsPanel_V2 = ({
     setMasterData((prev) => ({
       ...prev,
       designs: [
-        ...prev.designs,
+        ...(prev.designs || []),
         {
           name,
           sewingRate: Number(sewingRate) || 0,
@@ -438,7 +438,7 @@ const SettingsPanel_V2 = ({
   const handleUpdateDesignFull = (index, updatedDesign) => {
     setMasterData((prev) => ({
       ...prev,
-      designs: prev.designs.map((d, i) =>
+      designs: (prev.designs || []).map((d, i) =>
         i === index ? { ...d, ...updatedDesign } : d,
       ),
     }));
@@ -451,7 +451,7 @@ const SettingsPanel_V2 = ({
     if (!confirm("Delete this design?")) return;
     setMasterData((prev) => ({
       ...prev,
-      designs: prev.designs.filter((_, i) => i !== index),
+      designs: (prev.designs || []).filter((_, i) => i !== index),
     }));
   };
 

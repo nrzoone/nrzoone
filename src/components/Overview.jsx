@@ -14,7 +14,7 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 
-const Overview = ({ masterData, stats: propStats, setActivePanel, t }) => {
+const Overview = ({ masterData, stats: propStats, setActivePanel, t, user, syncStatus }) => {
     const [timeframe, setTimeframe] = useState("Weekly");
 
     const stats = propStats || {
@@ -31,12 +31,15 @@ const Overview = ({ masterData, stats: propStats, setActivePanel, t }) => {
         ].sort((a, b) => {
             const parseDate = (d) => {
                 if (!d) return 0;
+                // Handle ISO strings (yyyy-mm-dd)
+                if (d.includes('-')) return new Date(d).getTime();
+                // Handle dd/mm/yyyy
                 const parts = d.split('/');
                 if (parts.length !== 3) return 0;
                 const [day, month, year] = parts;
                 return new Date(`${year}-${month}-${day}`).getTime();
             };
-            return parseDate(b.date) - parseDate(a.date);
+            return (parseDate(b.date) || b.id || 0) - (parseDate(a.date) || a.id || 0);
         })
     };
 

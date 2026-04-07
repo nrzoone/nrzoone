@@ -66,12 +66,12 @@ import NRZLogo from "./components/NRZLogo";
 
 const GlobalStyles = () => null;
 
-// Global Emergency Suppression for AbortError and quota issues
-// This must run before any hooks or components that might trigger these
+// Global Emergency Suppression for AbortError and legacy issues
+// Note: We are no longer suppressing 'quota' or 'storage' errors to help debug sync failures.
 const suppressGlobalError = (event) => {
     const reason = event.reason || event.error || event;
     const errStr = String(reason?.message || reason?.code || reason || '');
-    if (/abort|cancelled|user aborted|timeout|quota|storage/i.test(errStr)) {
+    if (/abort|cancelled|user aborted/i.test(errStr)) {
         if (event.preventDefault) event.preventDefault();
         if (event.stopPropagation) event.stopPropagation();
         console.warn("🛡️ SILENCED BENIGN ERROR:", errStr);
@@ -88,7 +88,7 @@ class ErrorBoundary extends React.Component {
     }
     static getDerivedStateFromError(error) {
         const errStr = String(error?.message || error?.toString() || error);
-        if (/abort|cancelled|user aborted|timeout|quota/i.test(errStr)) {
+        if (/abort|cancelled|user aborted/i.test(errStr)) {
             return { hasError: false, error: null };
         }
         return { hasError: true, error };
@@ -599,8 +599,8 @@ const AppContent = () => {
                                     </h2>
                                     <div className="flex items-center gap-2">
                                         <div className={`w-1.5 h-1.5 rounded-full ${syncStatus === 'syncing' ? 'bg-amber-500 animate-pulse' : syncStatus === 'error' ? 'bg-rose-500' : 'bg-emerald-500'}`}></div>
-                                        <span className="text-[9px] font-bold uppercase tracking-widest text-black dark:text-white">
-                                            {syncStatus === 'syncing' ? 'সিঙ্কিং হচ্ছে...' : syncStatus === 'error' ? 'ত্রুটি' : 'সিস্টেম সুরক্ষিত (V5.0)'}
+                                        <span className={`text-[9px] font-bold uppercase tracking-widest ${syncStatus === 'error' ? 'text-rose-500' : 'text-black dark:text-white'}`}>
+                                            {syncStatus === 'syncing' ? 'সিঙ্কিং হচ্ছে...' : syncStatus === 'error' ? 'সিঙ্ক ত্রুটি (Sync Error)' : 'সিস্টেম সুরক্ষিত (V5.0)'}
                                         </span>
                                     </div>
                                 </div>
@@ -632,7 +632,7 @@ const AppContent = () => {
 
                         <div className="flex-1 overflow-y-auto px-4 md:px-8 py-6 md:py-8 relative custom-scrollbar">
                             <div className="max-w-[1400px] mx-auto space-y-8 animate-fade-up">
-                                {activePanel === "Menu" && <MenuPanel masterData={masterData} setActivePanel={setActivePanel} user={user} t={t} />}
+                                {activePanel === "Menu" && <MenuPanel masterData={masterData} setActivePanel={setActivePanel} user={user} t={t} showNotify={showNotify} />}
                                 {activePanel === "Overview" && <Overview masterData={masterData} user={user} setActivePanel={setActivePanel} t={t} syncStatus={syncStatus} />}
                                 {activePanel === "Cutting" && <CuttingPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} logAction={logAction} setActivePanel={setActivePanel} t={t} />}
                                 {activePanel === "Swing" && <FactoryPanel type="sewing" masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} setActivePanel={setActivePanel} />}
@@ -645,7 +645,7 @@ const AppContent = () => {
                                 {activePanel === "WorkerSummary" && <WorkerSummary masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} setActivePanel={setActivePanel} />}
                                 {activePanel === "Reports" && <ReportsPanel masterData={masterData} t={t} user={user} setActivePanel={setActivePanel} logAction={logAction} showNotify={showNotify} />}
                                 {activePanel === "Settings" && <SettingsPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} syncStatus={syncStatus} user={user} t={t} setActivePanel={setActivePanel} logs={logs} downloadBackup={downloadBackup} />}
-                                {activePanel === "Security" && <SecurityPanel logs={logs} downloadBackup={downloadBackup} user={user} t={t} />}
+                                {activePanel === "Security" && <SecurityPanel masterData={masterData} setActivePanel={setActivePanel} syncStatus={syncStatus} logs={logs} downloadBackup={downloadBackup} user={user} t={t} />}
                                 {activePanel === "Notifications" && (
                                     <div className="space-y-8 pb-24 animate-fade-up px-2">
                                          <div className="flex justify-between items-center mb-10">
