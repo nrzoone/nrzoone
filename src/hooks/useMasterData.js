@@ -105,7 +105,11 @@ export const useMasterData = () => {
         const saved = localStorage.getItem('nrzone_data');
         if (saved) {
             lastSavedData.current = saved;
+        } else {
+            lastSavedData.current = JSON.stringify(masterData);
         }
+        // Ensure initial status is synced
+        setSyncStatus('synced');
     }, []);
 
     useEffect(() => {
@@ -219,8 +223,11 @@ export const useMasterData = () => {
         
         // IF no actual change happened, skip setting 'syncing' status
         if (currentDataStr === lastSavedData.current) {
-            // Ensure status settles as synced
-            if (syncStatus === 'syncing') setSyncStatus('synced');
+            // Force settlement to green if it was stuck in yellow
+            if (syncStatus === 'syncing') {
+                const settleTimer = setTimeout(() => setSyncStatus('synced'), 500);
+                return () => clearTimeout(settleTimer);
+            }
             return;
         }
 
