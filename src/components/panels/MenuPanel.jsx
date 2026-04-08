@@ -10,32 +10,32 @@ const MenuPanel = ({ setActivePanel, user, t, showNotify }) => {
         {
             title: "মুখ্য হাব (CORE HUB)",
             items: [
-                { id: 'Overview', label: 'ড্যাশবোর্ড', icon: <Activity size={32} />, color: 'bg-black', desc: 'লাইভ সিস্টেম মনিটর' },
-                { id: 'Attendance', label: 'হাজিরা', icon: <UserCheck size={32} />, color: 'bg-rose-500', desc: 'দৈনিক বায়োমেট্রিক হাজিরা' }
+                { id: 'Overview', label: 'ড্যাশবোর্ড', icon: <Activity size={32} />, color: 'bg-black dark:bg-white', desc: 'লাইভ সিস্টেম মনিটর' },
+                { id: 'Attendance', label: 'হাজিরা', icon: <UserCheck size={32} />, color: 'bg-black dark:bg-white', desc: 'দৈনিক বায়োমেট্রিক হাজিরা' }
             ]
         },
         {
             title: "উৎপাদন লাইন (PRODUCTION)",
             items: [
-                { id: 'Cutting', label: 'কাটিং', icon: <Scissors size={32} />, color: 'bg-rose-500', desc: 'র-কাট লট ম্যানেজমেন্ট' },
-                { id: 'Swing', label: 'সেলাই', icon: <Layers size={32} />, color: 'bg-blue-500', desc: 'ফ্যাক্টরি ফ্লোর অপারেশন' },
-                { id: 'Stone', label: 'স্টোন', icon: <Hammer size={32} />, color: 'bg-amber-500', desc: 'স্টোন ইউনিট কন্ট্রোল' },
-                { id: 'Pata', label: 'পাতা', icon: <Package size={32} />, color: 'bg-emerald-500', desc: 'লজিস্টিকস এবং স্টোরেজ' }
+                { id: 'Cutting', label: 'কাটিং', icon: <Scissors size={32} />, color: 'bg-black dark:bg-white', desc: 'র-কাট লট ম্যানেজমেন্ট' },
+                { id: 'Swing', label: 'সেলাই', icon: <Layers size={32} />, color: 'bg-black dark:bg-white', desc: 'ফ্যাক্টরি ফ্লোর অপারেশন' },
+                { id: 'Stone', label: 'স্টোন', icon: <Hammer size={32} />, color: 'bg-black dark:bg-white', desc: 'স্টোন ইউনিট কন্ট্রোল' },
+                { id: 'Pata', label: 'পাতা', icon: <Package size={32} />, color: 'bg-black dark:bg-white', desc: 'লজিস্টিকস এবং স্টোরেজ' }
             ]
         },
         {
             title: "অপারেশন ও মজুরি (OPERATIONS)",
             items: [
-                { id: 'Outside', label: 'বাইরের কাজ', icon: <Truck size={32} />, color: 'bg-indigo-500', desc: 'এক্সটার্নাল ইউনিট প্রোডাকশন' },
-                { id: 'Accounts', label: 'হিসাব', icon: <DollarSign size={32} />, color: 'bg-emerald-600', desc: 'ক্যাশ এবং লেজার বুক' },
-                { id: 'Reports', label: 'রিপোর্ট', icon: <BarChart2 size={32} />, color: 'bg-slate-600', desc: 'বিভাগীয় রিপোর্ট এবং এনালাইসিস' }
+                { id: 'Outside', label: 'বাইরের কাজ', icon: <Truck size={32} />, color: 'bg-black dark:bg-white', desc: 'এক্সটার্নাল ইউনিট প্রোডাকশন' },
+                { id: 'Accounts', label: 'হিসাব', icon: <DollarSign size={32} />, color: 'bg-black dark:bg-white', desc: 'ক্যাশ এবং লেজার বুক' },
+                { id: 'Reports', label: 'রিপোর্ট', icon: <BarChart2 size={32} />, color: 'bg-black dark:bg-white', desc: 'বিভাগীয় রিপোর্ট এবং এনালাইসিস' }
             ]
         },
         {
             title: "সিস্টেম অডিট (AUDIT)",
             items: [
-                { id: 'Settings', label: 'সেটিংস', icon: <Settings size={32} />, color: 'bg-slate-600', desc: 'মাস্টার সেটআপ কন্ট্রোল' },
-                { id: 'Security', label: 'নিরাপত্তা', icon: <Shield size={32} />, color: 'bg-black', desc: 'সিকিউরিটি এবং অডিট ভল্ট' }
+                { id: 'Settings', label: 'সেটিংস', icon: <Settings size={32} />, color: 'bg-black dark:bg-white', desc: 'মাস্টার সেটআপ কন্ট্রোল' },
+                { id: 'Security', label: 'নিরাপত্তা', icon: <Shield size={32} />, color: 'bg-black dark:bg-white', desc: 'সিকিউরিটি এবং অডিট ভল্ট' }
             ]
         }
     ];
@@ -87,7 +87,7 @@ const MenuPanel = ({ setActivePanel, user, t, showNotify }) => {
                                         >
                                             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-black/5 to-transparent rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-1000"></div>
                                             <div className="flex items-center gap-10 md:gap-14 relative z-10">
-                                                <div className={`w-20 h-20 md:w-28 md:h-28 ${item.color} text-white rounded-[2rem] md:rounded-[3rem] flex items-center justify-center shadow-2xl group-hover:rotate-6 transition-all duration-700 border-8 border-white/20`}>
+                                                <div className={`w-20 h-20 md:w-28 md:h-28 ${item.color} text-white dark:text-black rounded-[2rem] md:rounded-[3rem] flex items-center justify-center shadow-2xl group-hover:rotate-6 transition-all duration-700 border-8 border-white/20`}>
                                                     {item.icon}
                                                 </div>
                                                 <div className="space-y-2">

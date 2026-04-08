@@ -391,9 +391,9 @@ const Sidebar = ({ activePanel, setActivePanel, user, setUser, isOpen, setIsSide
                                 return (
                                     <button
                                         key={item.id} onClick={() => navigate(item.id)}
-                                        className={`w-full flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all group relative ${active ? "bg-blue-600 text-white shadow-xl shadow-blue-900/20" : "text-black dark:text-white hover:text-white hover:bg-white/[0.05]"}`}
+                                        className={`w-full flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all group relative ${active ? "bg-black text-white dark:bg-white dark:text-black shadow-xl" : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/5"}`}
                                     >
-                                        <div className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all ${active ? "bg-white/20" : "bg-slate-100 dark:bg-white/5 group-hover:bg-slate-200 dark:group-hover:bg-white/10"}`}>
+                                        <div className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all ${active ? "bg-white/20 dark:bg-black/10" : "bg-slate-100 dark:bg-white/5 group-hover:bg-slate-200 dark:group-hover:bg-white/10"}`}>
                                             <Icon size={18} strokeWidth={active ? 2.5 : 2} className="shrink-0" />
                                         </div>
                                         <div className="flex flex-col items-start leading-none space-y-1">
