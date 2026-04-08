@@ -663,7 +663,6 @@ const AppContent = () => {
 
                         <div className="flex-1 overflow-y-auto px-4 md:px-8 py-6 md:py-8 relative custom-scrollbar">
                             <div className="max-w-[1400px] mx-auto space-y-8 animate-fade-up">
-                                {activePanel === "Menu" && <MenuPanel masterData={masterData} setActivePanel={setActivePanel} user={user} t={t} showNotify={showNotify} />}
                                 {activePanel === "Overview" && <Overview masterData={masterData} user={user} setActivePanel={setActivePanel} t={t} syncStatus={syncStatus} />}
                                 {activePanel === "Cutting" && <CuttingPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} logAction={logAction} setActivePanel={setActivePanel} t={t} />}
                                 {activePanel === "Swing" && <FactoryPanel type="sewing" masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} setActivePanel={setActivePanel} />}
@@ -723,6 +722,7 @@ const AppContent = () => {
                     </main>
                 </div>
             )}
+            {activePanel === "Menu" && <MenuPanel masterData={masterData} setActivePanel={setActivePanel} user={user} t={t} showNotify={showNotify} />}
             {trackingId && <div className="fixed inset-0 z-[1000]"><TrackingView trackId={trackingId} masterData={masterData} onClose={() => setTrackingId(null)} isDarkMode={isDarkMode} /></div>}
             {showQR && <QRScanner onScanSuccess={(data) => setTrackingId(data)} onClose={() => setShowQR(false)} />}
             {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
