@@ -15,7 +15,7 @@ import WorkerSummary from "../WorkerSummary";
 import WeeklyInvoice from "../WeeklyInvoice";
 import BusinessIntel from "../BusinessIntel";
 
-const ReportsPanel = ({ masterData, user, setActivePanel, t, logAction, showNotify }) => {
+const ReportsPanel = ({ masterData, user, setActivePanel, t, logAction, showNotify, onSyncGoogle }) => {
   const [activeTab, setActiveTab] = useState(
     user?.role?.toLowerCase() === "admin" ? "intel" : "summary",
   );
@@ -265,6 +265,18 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t, logAction, showNoti
             <Database size={14} /> ডাটা নোড (Total Nodes): {(masterData.productions || []).length + (masterData.deliveries || []).length}
         </div>
       </div>
+
+      {/* Google Sheets Sync Action (Admin Only) */}
+      {isAdmin && (
+          <div className="flex justify-end -mt-4 mb-2 no-print">
+              <button 
+                onClick={onSyncGoogle}
+                className="px-6 py-3 bg-emerald-600 text-white rounded-xl text-[10px] font-bold uppercase tracking-widest flex items-center gap-2 shadow-lg hover:bg-emerald-700 hover:-translate-y-1 active:scale-95 transition-all border-b-4 border-emerald-800"
+              >
+                <Database size={14} /> গুগল শিটে সিঙ্ক করুন (Google Sync)
+              </button>
+          </div>
+      )}
 
       {/* Main Tab Navigation */}
       <div className="bg-white dark:bg-slate-900 !p-1.5 flex flex-wrap gap-1 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm overflow-x-auto no-scrollbar">

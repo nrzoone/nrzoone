@@ -520,6 +520,37 @@ const AppContent = () => {
         else showNotify("ভুল আইডি বা পাসওয়ার্ড!", "error");
     };
 
+    const handleSyncToGoogleSheets = async () => {
+        const url = masterData.settings?.googleSheetsUrl;
+        if (!url) {
+            showNotify("গুগল শিট URL সেট করা নেই! সেটিংস চেক করুন।", "error");
+            return;
+        }
+
+        try {
+            showNotify("গুগল শিটে ডেটা পাঠানো হচ্ছে...", "info");
+            // Standard fetch for Google Apps Script Web App
+            await fetch(url, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    workerDocs: masterData.workerDocs || [],
+                    productions: masterData.productions || [],
+                    inventory: masterData.inventory || {},
+                    expenses: masterData.expenses || [],
+                    deliveries: masterData.deliveries || []
+                })
+            });
+            
+            showNotify("গুগল শিট সিঙ্ক রিকোয়েস্ট পাঠানো হয়েছে!", "success");
+            logAction(user, 'SYNC_GOOGLE_SHEETS', 'Manual data sync to Google Sheets');
+        } catch (error) {
+            console.error("Sync error:", error);
+            showNotify("সিঙ্ক করতে সমস্যা হয়েছে! ইন্টারনেট কানেকশন চেক করুন।", "error");
+        }
+    };
+
     // Voice Command Hub
     useEffect(() => {
         const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -600,7 +631,7 @@ const AppContent = () => {
                                     <div className="flex items-center gap-2">
                                         <div className={`w-1.5 h-1.5 rounded-full ${syncStatus === 'syncing' ? 'bg-amber-500 animate-pulse' : syncStatus === 'error' ? 'bg-rose-500' : 'bg-emerald-500'}`}></div>
                                         <span className={`text-[9px] font-bold uppercase tracking-widest ${syncStatus === 'error' ? 'text-rose-500' : 'text-black dark:text-white'}`}>
-                                            {syncStatus === 'syncing' ? 'সিঙ্কিং হচ্ছে...' : syncStatus === 'error' ? 'সিঙ্ক ত্রুটি (Sync Error)' : 'সিস্টেম সুরক্ষিত (V5.0)'}
+                                            {syncStatus === 'syncing' ? 'সিঙ্কিং হচ্ছে...' : syncStatus === 'error' ? 'সিঙ্ক ত্রুটি (Sync Error)' : 'সিস্টেম সুরক্ষিত (V5.2)'}
                                         </span>
                                     </div>
                                 </div>
@@ -643,7 +674,7 @@ const AppContent = () => {
                                 {activePanel === "Accounts" && <ExpensePanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} setActivePanel={setActivePanel} />}
                                 {activePanel === "Attendance" && <AttendancePanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} setActivePanel={setActivePanel} />}
                                 {activePanel === "WorkerSummary" && <WorkerSummary masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} setActivePanel={setActivePanel} />}
-                                {activePanel === "Reports" && <ReportsPanel masterData={masterData} t={t} user={user} setActivePanel={setActivePanel} logAction={logAction} showNotify={showNotify} />}
+                                {activePanel === "Reports" && <ReportsPanel masterData={masterData} t={t} user={user} setActivePanel={setActivePanel} logAction={logAction} showNotify={showNotify} onSyncGoogle={handleSyncToGoogleSheets} />}
                                 {activePanel === "Settings" && <SettingsPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} syncStatus={syncStatus} user={user} t={t} setActivePanel={setActivePanel} logs={logs} downloadBackup={downloadBackup} />}
                                 {activePanel === "Security" && <SecurityPanel masterData={masterData} setActivePanel={setActivePanel} syncStatus={syncStatus} logs={logs} downloadBackup={downloadBackup} user={user} t={t} />}
                                 {activePanel === "Notifications" && (

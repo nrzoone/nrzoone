@@ -206,16 +206,20 @@ export const useMasterData = () => {
     useEffect(() => {
         if (!db || !masterData || isLoading) return;
 
+        // Immediately set syncing state to indicate changes are pending
+        setSyncStatus('syncing');
+
         const timer = setTimeout(async () => {
             try {
-                // Relaxed condition: Only block save if we are loading or db is missing
-                if (Object.keys(masterData).length < 5) return;
+                // Ensure we have valid data to save
+                if (Object.keys(masterData).length < 5) {
+                    setSyncStatus('synced');
+                    return;
+                }
 
                 console.info("💾 CLOUD SYNC: Timer triggered. Preparing to save...");
-                setSyncStatus('syncing');
                 
                 // Ensure we don't save logs in the main document
-                // Use a deep clone to prevent any state changes from affecting the write midway
                 const dataToSave = JSON.parse(JSON.stringify(masterData));
                 if (dataToSave.auditLogs) delete dataToSave.auditLogs; 
                 
@@ -228,8 +232,6 @@ export const useMasterData = () => {
                 
                 if (sizeInBytes > 950000) {
                     console.error(`🔥 CRITICAL: Database size (${sizeInKb}KB) exceeds Firestore 1MB limit!`);
-                } else if (sizeInBytes > 800000) {
-                    console.warn(`⚠️ WARNING: Database size (${sizeInKb}KB) is reaching the 1MB limit.`);
                 }
 
                 console.info("☁️ FIREBASE: Initiating setDoc write...");
@@ -241,19 +243,8 @@ export const useMasterData = () => {
             } catch (e) {
                 console.error("❌ MASTER DATA SYNC FAILED:", e);
                 setSyncStatus('error');
-                
-                const errorCode = e.code || "";
-                const errorMsg = e.message || "Unknown error";
-                
-                if (errorCode === 'resource-exhausted' || errorMsg.includes('quota')) {
-                    alert("⚠️ ডাটা স্টোরেজ পূর্ণ! (Storage Full / Quota Exceeded). অনুগ্রহ করে পুরনো ডাটা ডিলিট করুন।");
-                } else if (errorCode === 'permission-denied') {
-                    alert("⚠️ পারমিশন নেই! (Permission Denied). আপনার লগইন স্ট্যাটাস চেক করুন।");
-                } else {
-                    alert(`⚠️ ডাটা সেভ হয়নি! (Sync Error: ${errorCode || errorMsg}). অনুগ্রহ করে ইন্টারনেট চেক করুন।`);
-                }
             }
-        }, 2000); // Increased debounce to 2.0s for better reliability
+        }, 2000);
 
         return () => clearTimeout(timer);
     }, [masterData, isLoading]);
