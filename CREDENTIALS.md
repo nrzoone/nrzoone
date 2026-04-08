@@ -1,30 +1,15 @@
-# 🛡️ NRZONE Factory ERP: System Credentials & Access Guide
+# 🛡️ NRZONE Factory ERP: FINAL Credentials
 
-এই ডকুমেন্টে আপনার NRZONE ড্যাশবোর্ডের যাবতীয় এক্সেস এবং সিকিউরিটি ডিটেইলস দেওয়া হয়েছে।
-
----
-
-## 🔐 1. ইউনিজ আইডি ও পাসওয়ার্ড
-| ইউজার নাম | পাসওয়ার্ড |
+| এক্সেস ফিল্ড | তথ্য |
 | :--- | :--- |
-| **NRZONE** | `Irham@#` |
-| **ADMIN** | `NRZONE123` |
-| **MANAGER** | `MGR456` |
+| **Primary Admin** | `NRZONE` / `Irham@#` |
+| **Admin Backup** | `ADMIN` / `NRZONE123` |
+| **Manager** | `MANAGER` / `MGR456` |
+| **Firebase ID** | `nrzoone-factory` |
+| **Local Link** | `http://localhost:3333` |
+| **GitHub Repo** | `https://github.com/nrzoone/nrzoone` |
 
 ---
 
-## ☁️ 2. ব্যাক-এন্ড (Firebase)
-- **Project:** `nrzoone-pro`
-- **Database:** Cloud Firestore
-
----
-
-## 🛠️ 3. টার্মিনাল কমান্ড
-```bash
-cd /Users/macbook/Desktop/nrzoone
-/usr/local/bin/npm run dev
-```
-
----
-
-*NRZONE Factory Management System - Secured & Protected*
+### **সার্ভার কমান্ড:**
+`cd /Users/macbook/Desktop/nrzoone && /usr/local/bin/npm run dev`
