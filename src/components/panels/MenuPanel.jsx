@@ -48,9 +48,9 @@ const MenuPanel = ({ setActivePanel, user, t, showNotify }) => {
                         <div className="w-20 h-20 md:w-32 md:h-32 bg-black text-white rounded-[2.5rem] md:rounded-[4rem] flex items-center justify-center shadow-[0_40px_80px_-15px_rgba(0,0,0,0.3)] border-8 border-white/10">
                             <LayoutGrid size={48} className="md:w-16 md:h-16" />
                         </div>
-                        <div className="space-y-2">
-                            <h1 className="text-6xl md:text-9xl font-black italic tracking-tightest uppercase leading-[1.1] text-black dark:text-white dark:text-white">মেনু হাব</h1>
-                            <p className="text-[11px] md:text-[13px] font-black text-black dark:text-white dark:text-white uppercase tracking-[0.6em] italic">NRZONE NEURAL INTERFACE V5.0 — ELITE ACCESS</p>
+                        <div className="space-y-4">
+                            <h1 className="text-5xl md:text-8xl font-black tracking-tighter uppercase leading-none text-black dark:text-white">মেনু হাব</h1>
+                            <p className="text-[10px] md:text-[12px] font-bold text-black/60 dark:text-white/60 uppercase tracking-[0.3em]">NRZONE NEURAL INTERFACE V5.2 — ELITE ACCESS</p>
                         </div>
                     </div>
                     <button 
@@ -74,9 +74,9 @@ const MenuPanel = ({ setActivePanel, user, t, showNotify }) => {
 
                         return (
                             <div key={i} className="animate-elite" style={{ animationDelay: `${i * 150}ms` }}>
-                                <div className="flex items-center gap-10 mb-12 md:mb-16 opacity-40">
-                                    <h3 className="text-[12px] md:text-[14px] font-black uppercase tracking-[0.8em] text-black dark:text-white dark:text-white whitespace-nowrap italic">{cat.title}</h3>
-                                    <div className="h-px bg-black dark:bg-white flex-1 opacity-20"></div>
+                                <div className="flex items-center gap-6 mb-10 opacity-60">
+                                    <h3 className="text-[11px] md:text-[13px] font-bold uppercase tracking-[0.4em] text-black dark:text-white whitespace-nowrap">{cat.title}</h3>
+                                    <div className="h-[2px] bg-black/10 dark:bg-white/10 flex-1"></div>
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 md:gap-14">
                                     {filteredItems.map((item, idx) => (
@@ -91,8 +91,8 @@ const MenuPanel = ({ setActivePanel, user, t, showNotify }) => {
                                                     {item.icon}
                                                 </div>
                                                 <div className="space-y-2">
-                                                    <h4 className="text-3xl md:text-5xl font-black italic uppercase tracking-tightest text-black dark:text-white dark:text-white leading-snug">{item.label}</h4>
-                                                    <p className="text-[11px] font-black text-black dark:text-white dark:text-white uppercase tracking-widest leading-none italic">{item.desc}</p>
+                                                    <h4 className="text-2xl md:text-4xl font-black uppercase tracking-tighter text-black dark:text-white leading-tight">{item.label}</h4>
+                                                    <p className="text-[10px] font-bold text-black/50 dark:text-white/50 uppercase tracking-widest leading-none">{item.desc}</p>
                                                 </div>
                                             </div>
                                             <ChevronRight size={32} className="text-slate-400 dark:text-slate-500 group-hover:text-black dark:text-white dark:group-hover:text-white group-hover:translate-x-4 transition-all shrink-0" />
