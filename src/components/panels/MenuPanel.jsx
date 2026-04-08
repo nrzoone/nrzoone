@@ -41,21 +41,21 @@ const MenuPanel = ({ setActivePanel, user, t, showNotify }) => {
     ];
 
     return (
-        <div className="fixed inset-0 z-[500] bg-white/40 dark:bg-black/40 backdrop-blur-3xl p-6 md:p-24 overflow-y-auto mesh-bg animate-fade-in font-outfit text-black">
+        <div className="fixed inset-0 z-[500] bg-slate-50 dark:bg-slate-950 p-6 md:p-24 overflow-y-auto animate-fade-in font-outfit text-black">
             <div className="max-w-7xl mx-auto pb-48">
                 <div className="flex justify-between items-end mb-24 md:mb-32 animate-elite">
                     <div className="flex items-center gap-10">
-                        <div className="w-20 h-20 md:w-32 md:h-32 bg-black text-white rounded-[2.5rem] md:rounded-[4rem] flex items-center justify-center shadow-[0_40px_80px_-15px_rgba(0,0,0,0.3)] border-8 border-white/10">
+                        <div className="w-20 h-20 md:w-32 md:h-32 bg-slate-950 text-white dark:bg-white dark:text-black rounded-[2.5rem] md:rounded-[4rem] flex items-center justify-center shadow-2xl border-2 border-slate-200 dark:border-slate-800">
                             <LayoutGrid size={48} className="md:w-16 md:h-16" />
                         </div>
                         <div className="space-y-4">
-                            <h1 className="text-5xl md:text-8xl font-black tracking-tighter uppercase leading-none text-black dark:text-white">মেনু হাব</h1>
-                            <p className="text-[10px] md:text-[12px] font-bold text-black/60 dark:text-white/60 uppercase tracking-[0.3em]">NRZONE NEURAL INTERFACE V5.2 — ELITE ACCESS</p>
+                            <h1 className="text-5xl md:text-8xl font-black uppercase tracking-normal leading-none text-slate-950 dark:text-white">মেনু হাব</h1>
+                            <p className="text-[10px] md:text-[12px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.3em]">NRZONE NEURAL INTERFACE V5.2 — ELITE ACCESS</p>
                         </div>
                     </div>
                     <button 
                         onClick={() => setActivePanel('Overview')}
-                        className="w-20 h-20 md:w-28 md:h-28 rounded-full bg-black text-white shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all group border-8 border-white/20"
+                        className="w-20 h-20 md:w-28 md:h-28 rounded-full bg-slate-950 text-white dark:bg-white dark:text-black shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all group"
                     >
                         <X size={40} className="group-hover:rotate-90 transition-transform duration-700" />
                     </button>
@@ -74,28 +74,27 @@ const MenuPanel = ({ setActivePanel, user, t, showNotify }) => {
 
                         return (
                             <div key={i} className="animate-elite" style={{ animationDelay: `${i * 150}ms` }}>
-                                <div className="flex items-center gap-6 mb-10 opacity-60">
-                                    <h3 className="text-[11px] md:text-[13px] font-bold uppercase tracking-[0.4em] text-black dark:text-white whitespace-nowrap">{cat.title}</h3>
-                                    <div className="h-[2px] bg-black/10 dark:bg-white/10 flex-1"></div>
+                                <div className="flex items-center gap-6 mb-10">
+                                    <h3 className="text-[11px] md:text-[13px] font-black uppercase tracking-[0.4em] text-slate-950 dark:text-white whitespace-nowrap">{cat.title}</h3>
+                                    <div className="h-[2px] bg-slate-200 dark:bg-slate-800 flex-1"></div>
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 md:gap-14">
                                     {filteredItems.map((item, idx) => (
                                         <button
                                             key={idx}
                                             onClick={() => setActivePanel(item.id)}
-                                            className="glass-card group hover:scale-[1.05] active:scale-[0.95] transition-all text-left flex items-center justify-between !p-12 md:!p-16 relative overflow-hidden"
+                                            className="bg-white dark:bg-slate-900 rounded-[var(--radius-saas)] shadow-sm hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all text-left flex items-center justify-between p-10 md:p-12 border border-slate-100 dark:border-slate-800"
                                         >
-                                            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-black/5 to-transparent rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-1000"></div>
                                             <div className="flex items-center gap-10 md:gap-14 relative z-10">
-                                                <div className={`w-20 h-20 md:w-28 md:h-28 ${item.color} text-white dark:text-black rounded-[2rem] md:rounded-[3rem] flex items-center justify-center shadow-2xl group-hover:rotate-6 transition-all duration-700 border-8 border-white/20`}>
+                                                <div className={`w-16 h-16 md:w-24 md:h-24 ${item.color} text-white dark:text-black rounded-2xl flex items-center justify-center shadow-lg group-hover:rotate-3 transition-all duration-700`}>
                                                     {item.icon}
                                                 </div>
-                                                <div className="space-y-2">
-                                                    <h4 className="text-2xl md:text-4xl font-black uppercase tracking-tighter text-black dark:text-white leading-tight">{item.label}</h4>
-                                                    <p className="text-[10px] font-bold text-black/50 dark:text-white/50 uppercase tracking-widest leading-none">{item.desc}</p>
+                                                <div className="space-y-1">
+                                                    <h4 className="text-xl md:text-3xl font-black uppercase tracking-tight text-slate-950 dark:text-white leading-tight">{item.label}</h4>
+                                                    <p className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest leading-none">{item.desc}</p>
                                                 </div>
                                             </div>
-                                            <ChevronRight size={32} className="text-slate-400 dark:text-slate-500 group-hover:text-black dark:text-white dark:group-hover:text-white group-hover:translate-x-4 transition-all shrink-0" />
+                                            <ChevronRight size={24} className="text-slate-300 dark:text-slate-600 group-hover:text-slate-950 dark:group-hover:text-white transition-all" />
                                         </button>
                                     ))}
                                 </div>
@@ -104,11 +103,11 @@ const MenuPanel = ({ setActivePanel, user, t, showNotify }) => {
                     })}
                 </div>
 
-                <div className="mt-48 pt-20 border-t border-black/5 dark:border-white/5 flex flex-col md:flex-row justify-between items-center opacity-40 gap-10 italic text-black dark:text-white dark:text-white">
-                    <p className="text-[11px] font-black uppercase tracking-[0.6em]">NRZONE NEURAL ENGINE V5.2 // SECURE BOOTH</p>
+                <div className="mt-48 pt-20 border-t border-slate-200 dark:border-slate-800 flex flex-col md:flex-row justify-between items-center opacity-60 gap-10 text-slate-600 dark:text-slate-400">
+                    <p className="text-[11px] font-bold uppercase tracking-[0.6em]">NRZONE NEURAL ENGINE V5.2 // SECURE BOOTH</p>
                     <div className="flex gap-16">
-                        <button onClick={() => setActivePanel('Security')} className="text-[11px] font-black uppercase tracking-[0.6em] hover:opacity-100 italic">SYSTEM LOGS</button>
-                        <button onClick={() => showNotify('NRZONE NEURAL ENGINE: STATUS ONLINE // LATENCY 12MS')} className="text-[11px] font-black uppercase tracking-[0.6em] hover:opacity-100 italic">GATEWAY STATUS</button>
+                        <button onClick={() => setActivePanel('Security')} className="text-[11px] font-bold uppercase tracking-[0.6em] hover:text-slate-950 dark:hover:text-white">SYSTEM LOGS</button>
+                        <button onClick={() => showNotify('NRZONE NEURAL ENGINE: STATUS ONLINE')} className="text-[11px] font-bold uppercase tracking-[0.6em] hover:text-slate-950 dark:hover:text-white">GATEWAY STATUS</button>
                     </div>
                 </div>
             </div>
