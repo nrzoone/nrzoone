@@ -41,7 +41,7 @@ const MenuPanel = ({ setActivePanel, user, t, showNotify }) => {
     ];
 
     return (
-        <div className="fixed inset-0 z-[500] bg-slate-50 dark:bg-slate-950 p-6 md:p-24 overflow-y-auto animate-fade-in font-outfit text-black">
+        <div className="fixed inset-0 z-[9999] bg-slate-50 dark:bg-slate-950 p-6 md:p-24 overflow-y-auto animate-fade-in font-outfit text-black">
             <div className="max-w-7xl mx-auto pb-48">
                 <div className="flex justify-between items-end mb-24 md:mb-32 animate-elite">
                     <div className="flex items-center gap-10">
