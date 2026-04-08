@@ -415,6 +415,7 @@ const FactoryPanel = ({
         rBorka: receiveModal.issueBorka,
         rHijab: receiveModal.issueHijab,
         waste: 0,
+        penalty: 0,
         date: new Date().toISOString().split("T")[0]
       });
     }
@@ -425,6 +426,7 @@ const FactoryPanel = ({
     const rBorka = Number(receiveState.rBorka || 0);
     const rHijab = Number(receiveState.rHijab || 0);
     const wasteMaterial = Number(receiveState.waste || 0);
+    const penaltyAmount = Number(receiveState.penalty || 0);
     
     if (rBorka > receiveModal.issueBorka || rHijab > receiveModal.issueHijab)
       return showNotify("ইস্যুর চেয়ে বেশি জমা সম্ভব নয়!", "error");
@@ -449,6 +451,7 @@ const FactoryPanel = ({
             receivedBorka: rBorka,
             receivedHijab: rHijab,
             wasteMaterial: wasteMaterial, 
+            penalty: penaltyAmount,
             shortageBorka: Math.max(0, p.issueBorka - rBorka),
             shortageHijab: Math.max(0, p.issueHijab - rHijab),
             totalShortage: (p.issueBorka - rBorka) + (p.issueHijab - rHijab),
@@ -464,19 +467,18 @@ const FactoryPanel = ({
     syncToSheet({
       type: `${receiveModal.type.toUpperCase()}_RECEIVE`,
       worker: receiveModal.worker,
-      detail: `${receiveModal.design}: Rec B:${rBorka} H:${rHijab}`,
+      detail: `${receiveModal.design}: Rec B:${rBorka} H:${rHijab} | Fine: ${penaltyAmount}`,
       amount: 0,
     });
     
-    // Audit Log Integration
     logAction(
       user,
       `${receiveModal.type.toUpperCase()}_RECEIVE`,
-      `Received from ${receiveModal.worker}: Lot #${receiveModal.lotNo} - B:${rBorka} H:${rHijab}`
+      `Received from ${receiveModal.worker}: Lot #${receiveModal.lotNo}. Fine: ৳${penaltyAmount}`
     );
 
     setReceiveModal(null);
-    showNotify("হিসাব জমা নেওয়া হয়েছে!");
+    showNotify(penaltyAmount > 0 ? `হিসাব জমা হয়েছে (জরিমানা: ৳${penaltyAmount})` : "হিসাব জমা নেওয়া হয়েছে!");
 
     // Automated Production Alert
     const designData = masterData.designs?.find(d => d.name === receiveModal.design);
@@ -1331,6 +1333,18 @@ const FactoryPanel = ({
                   placeholder="পিছ বা গ্রাম..."
                   className="w-full text-center text-xl font-bold bg-transparent outline-none border-b border-rose-200 dark:border-rose-900 focus:border-rose-500 transition-all text-black dark:text-white"
                 />
+              </div>
+
+              <div className="bg-rose-50/50 dark:bg-rose-950/20 p-5 rounded-xl border border-rose-100 dark:border-rose-900/50">
+                  <label className="text-[10px] font-bold text-rose-600 uppercase mb-2 block tracking-widest text-center italic">জরিমানা (৳) / Fine Penalty</label>
+                  <input
+                      name="penalty"
+                      type="number"
+                      placeholder="৳ 0.00"
+                      value={receiveState.penalty}
+                      onChange={(e) => setReceiveState(p => ({ ...p, penalty: Number(e.target.value || 0) }))}
+                      className="w-full text-center text-2xl font-black bg-transparent outline-none border-none text-rose-600 placeholder:text-rose-300"
+                  />
               </div>
 
               <div className="bg-slate-50 dark:bg-slate-800 p-5 rounded-xl border border-slate-100 dark:border-slate-700">

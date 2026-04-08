@@ -199,18 +199,19 @@ export const getStats = (masterData, type) => {
         const design = masterData.designs.find(d => d.name === b.design);
         const netBorka = (b.receivedBorka || 0);
         const netHijab = (b.receivedHijab || 0);
+        const penalty = Number(b.penalty || 0);
         const multiplier = masterData.multipliers?.[type] || 1.0;
 
+        let earnings = 0;
         if (type === 'sewing') {
             const bRate = (design?.sewingRate || 0) * multiplier;
             const hRate = (design?.hijabRate || design?.sewingRate || 0) * multiplier;
-            return acc + (netBorka * bRate) + (netHijab * hRate);
+            earnings = (netBorka * bRate) + (netHijab * hRate);
         } else if (type === 'stone') {
             const rate = (design?.stoneRate || 0) * multiplier;
-            return acc + ((netBorka + netHijab) * rate);
-        } else {
-            return acc;
+            earnings = ((netBorka + netHijab) * rate);
         }
+        return acc + earnings - penalty;
     }, 0);
 
     // Monthly worker attendance bill for this department

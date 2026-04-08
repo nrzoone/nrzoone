@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { db } from '../firebase';
 import { doc, setDoc, onSnapshot } from 'firebase/firestore';
 
@@ -95,10 +95,18 @@ export const useMasterData = () => {
         return initialData;
     });
 
-    const [syncStatus, setSyncStatus] = useState('syncing'); 
+    const [syncStatus, setSyncStatus] = useState('synced'); 
     const [isOnline, setIsOnline] = useState(window.navigator.onLine);
-
     const [logs, setLogs] = useState([]);
+    const lastSavedData = useRef('');
+
+    // Pre-initialize ref with local storage data to avoid immediate sync on mount
+    useEffect(() => {
+        const saved = localStorage.getItem('nrzone_data');
+        if (saved) {
+            lastSavedData.current = saved;
+        }
+    }, []);
 
     useEffect(() => {
         const handleOnline = () => setIsOnline(true);
@@ -159,6 +167,7 @@ export const useMasterData = () => {
                             
                             if (pStr !== mStr) {
                                 localStorage.setItem('nrzone_data', mStr);
+                                lastSavedData.current = mStr; // Prevent sync-loop by marking cloud data as 'already saved'
                                 return merged;
                             }
                             return prev;
@@ -206,7 +215,16 @@ export const useMasterData = () => {
     useEffect(() => {
         if (!db || !masterData || isLoading) return;
 
-        // Immediately set syncing state to indicate changes are pending
+        const currentDataStr = JSON.stringify(masterData);
+        
+        // IF no actual change happened, skip setting 'syncing' status
+        if (currentDataStr === lastSavedData.current) {
+            // Ensure status settles as synced
+            if (syncStatus === 'syncing') setSyncStatus('synced');
+            return;
+        }
+
+        // Immediately set syncing state to indicate local changes are pending
         setSyncStatus('syncing');
 
         const timer = setTimeout(async () => {
@@ -220,7 +238,7 @@ export const useMasterData = () => {
                 console.info("💾 CLOUD SYNC: Timer triggered. Preparing to save...");
                 
                 // Ensure we don't save logs in the main document
-                const dataToSave = JSON.parse(JSON.stringify(masterData));
+                const dataToSave = JSON.parse(currentDataStr);
                 if (dataToSave.auditLogs) delete dataToSave.auditLogs; 
                 
                 // Firestore 1MB Check
@@ -237,12 +255,26 @@ export const useMasterData = () => {
                 console.info("☁️ FIREBASE: Initiating setDoc write...");
                 await setDoc(doc(db, COLLECTION_NAME, DOC_ID), { content: dataToSave }, { merge: true });
                 
+                // Update the ref to prevent redundant sync status triggers
+                lastSavedData.current = currentDataStr;
+                
                 localStorage.setItem('nrzone_data', serialized);
                 setSyncStatus('synced');
                 console.info("✅ SUCCESS: Data safely synced to cloud.");
             } catch (e) {
                 console.error("❌ MASTER DATA SYNC FAILED:", e);
                 setSyncStatus('error');
+                
+                const errorCode = e.code || "";
+                const errorMsg = e.message || "Unknown error";
+                
+                if (errorCode === 'resource-exhausted' || errorMsg.includes('quota')) {
+                    alert("⚠️ ডাটা স্টোরেজ পূর্ণ! (Storage Full / Quota Exceeded). অনুগ্রহ করে পুরনো ডাটা ডিলিট করুন।");
+                } else if (errorCode === 'permission-denied') {
+                    alert("⚠️ পারমিশন নেই! (Permission Denied). আপনার লগইন স্ট্যাটাস চেক করুন।");
+                } else {
+                    alert(`⚠️ ডাটা সেভ হয়নি! (Sync Error: ${errorCode || errorMsg}). অনুগ্রহ করে ইন্টারনেট চেক করুন।`);
+                }
             }
         }, 2000);
 
