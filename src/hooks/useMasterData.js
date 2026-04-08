@@ -150,11 +150,16 @@ export const useMasterData = () => {
                     const cloud = snap.data()?.content;
                     if (cloud) {
                         setMasterData(prev => {
-                            // Enhanced Merge strategy
+                            // SAFER MERGE STRATEGY: 
+                            // We merge Cloud -> Local, but for critical arrays (productions, attendance, etc.)
+                            // we ensure we don't lose local data if cloud is empty but local isn't.
+                            
                             const merged = { ...initialData };
-                            Object.keys(cloud).forEach(k => {
+                            const keysToMerge = Object.keys(cloud);
+                            
+                            keysToMerge.forEach(k => {
                                 if (cloud[k] !== undefined && cloud[k] !== null) {
-                                    // Depth 1 merge for objects
+                                    // Deep merge for objects (depth 1)
                                     if (typeof cloud[k] === 'object' && !Array.isArray(cloud[k])) {
                                         merged[k] = { ...initialData[k], ...cloud[k] };
                                     } else {
@@ -162,8 +167,21 @@ export const useMasterData = () => {
                                     }
                                 }
                             });
+
+                            // CRITICAL RECORD PROTECTION:
+                            // If local (prev) has data in these keys but merged (cloud) doesn't, 
+                            // it means cloud is potentially behind. We preserve local data.
+                            const recordKeys = ['productions', 'attendance', 'pataEntries', 'workerDocs', 'expenses', 'cashEntries'];
+                            recordKeys.forEach(key => {
+                                if (Array.isArray(prev[key]) && prev[key].length > 0) {
+                                    if (!Array.isArray(merged[key]) || merged[key].length < prev[key].length) {
+                                        console.warn(`🛡️ Preserving local ${key} records (${prev[key].length}) over cloud data.`);
+                                        merged[key] = prev[key];
+                                    }
+                                }
+                            });
                             
-                            // Remove legacy auditLogs from content
+                            // Remove legacy auditLogs
                             if (merged.auditLogs) delete merged.auditLogs;
                             
                             const pStr = JSON.stringify(prev);
@@ -171,16 +189,19 @@ export const useMasterData = () => {
                             
                             if (pStr !== mStr) {
                                 localStorage.setItem('nrzone_data', mStr);
-                                lastSavedData.current = mStr; // Prevent sync-loop by marking cloud data as 'already saved'
+                                lastSavedData.current = mStr; 
                                 return merged;
                             }
                             return prev;
                         });
                     }
                 } else {
-                    // Initialize empty cloud doc if missing
-                    console.warn("☁️ Cloud document missing. Initializing...");
-                    setDoc(doc(db, COLLECTION_NAME, DOC_ID), { content: initialData }).catch(console.error);
+                    // Initialize empty cloud doc ONLY if local is also empty
+                    console.warn("☁️ Cloud document missing. Verifying local data...");
+                    const localData = localStorage.getItem('nrzone_data');
+                    if (!localData || localData.length < 500) {
+                         setDoc(doc(db, COLLECTION_NAME, DOC_ID), { content: initialData }).catch(console.error);
+                    }
                 }
                 setSyncStatus('synced');
             } catch (err) {
