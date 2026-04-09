@@ -155,11 +155,10 @@ export const useMasterData = () => {
                             // we ensure we don't lose local data if cloud is empty but local isn't.
                             
                             const merged = { ...initialData };
-                            const keysToMerge = Object.keys(cloud);
+                            const cloudKeys = Object.keys(cloud);
                             
-                            keysToMerge.forEach(k => {
+                            cloudKeys.forEach(k => {
                                 if (cloud[k] !== undefined && cloud[k] !== null) {
-                                    // Deep merge for objects (depth 1)
                                     if (typeof cloud[k] === 'object' && !Array.isArray(cloud[k])) {
                                         merged[k] = { ...initialData[k], ...cloud[k] };
                                     } else {
@@ -168,20 +167,26 @@ export const useMasterData = () => {
                                 }
                             });
 
-                            // CRITICAL RECORD PROTECTION:
-                            // If local (prev) has data in these keys but merged (cloud) doesn't, 
-                            // it means cloud is potentially behind. We preserve local data.
-                            const recordKeys = ['productions', 'attendance', 'pataEntries', 'workerDocs', 'expenses', 'cashEntries'];
-                            recordKeys.forEach(key => {
-                                if (Array.isArray(prev[key]) && prev[key].length > 0) {
-                                    if (!Array.isArray(merged[key]) || merged[key].length < prev[key].length) {
-                                        console.warn(`🛡️ Preserving local ${key} records (${prev[key].length}) over cloud data.`);
-                                        merged[key] = prev[key];
+                            // IRONCLAD PROTECTION:
+                            // We verify EVERY key. If local (prev) has content but cloud (merged) is thinner,
+                            // we reject the cloud's deletion of records.
+                            const allKeys = Object.keys(prev);
+                            allKeys.forEach(key => {
+                                const localVal = prev[key];
+                                const cloudVal = merged[key];
+
+                                if (Array.isArray(localVal) && localVal.length > 0) {
+                                    if (!Array.isArray(cloudVal) || cloudVal.length < localVal.length) {
+                                        console.warn(`🛡️ Data Guard: Preserving local '${key}' (${localVal.length} items) - Cloud only had ${cloudVal?.length || 0}`);
+                                        merged[key] = localVal;
                                     }
+                                } else if (localVal && typeof localVal === 'object' && Object.keys(localVal).length > 0) {
+                                     if (!cloudVal || Object.keys(cloudVal).length < Object.keys(localVal).length) {
+                                        merged[key] = localVal;
+                                     }
                                 }
                             });
                             
-                            // Remove legacy auditLogs
                             if (merged.auditLogs) delete merged.auditLogs;
                             
                             const pStr = JSON.stringify(prev);
@@ -196,12 +201,8 @@ export const useMasterData = () => {
                         });
                     }
                 } else {
-                    // Initialize empty cloud doc ONLY if local is also empty
-                    console.warn("☁️ Cloud document missing. Verifying local data...");
-                    const localData = localStorage.getItem('nrzone_data');
-                    if (!localData || localData.length < 500) {
-                         setDoc(doc(db, COLLECTION_NAME, DOC_ID), { content: initialData }).catch(console.error);
-                    }
+                    // Cloud missing: If local has data, DO NOT reset.
+                    console.warn("☁️ Cloud doc missing. Checking if we need to seed it from local...");
                 }
                 setSyncStatus('synced');
             } catch (err) {
