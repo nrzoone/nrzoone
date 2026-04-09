@@ -81,7 +81,7 @@ const COLLECTION_NAME = "nrzone_pro";
 const DOC_ID = "factory_data_v1";
 const LOGS_DOC_ID = "factory_logs_v1";
 
-export const useMasterData = () => {
+export const useMasterData = (user) => {
     const [isLoading, setIsLoading] = useState(true);
     const [masterData, setMasterData] = useState(() => {
         const saved = localStorage.getItem('nrzone_data');
