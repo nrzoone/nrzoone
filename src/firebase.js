@@ -5,13 +5,13 @@ import { getStorage } from "firebase/storage";
 import { getAnalytics } from "firebase/analytics";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyBk3ZHBi2aMpfbfg2QbMSvBOqOo14TZHcU",
-    authDomain: "nrzoone-factory.firebaseapp.com",
-    projectId: "nrzoone-factory",
-    storageBucket: "nrzoone-factory.firebasestorage.app",
-    messagingSenderId: "848880445721",
-    appId: "1:848880445721:web:35dac54e2a11e478cd7d88",
-    measurementId: "G-42G5F7HQ40"
+    apiKey: "AIzaSyBWjr3ad9H821NvY9okMxpLQwSPGeP-RlE",
+    authDomain: "nrzone-erp.firebaseapp.com",
+    projectId: "nrzone-erp",
+    storageBucket: "nrzone-erp.firebasestorage.app",
+    messagingSenderId: "973006454627",
+    appId: "1:973006454627:web:e1c76ae963ebf843139d56",
+    measurementId: "G-TT4TFGSPJK"
 };
 
 // Initialize Firebase with safety check
