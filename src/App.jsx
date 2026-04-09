@@ -615,14 +615,14 @@ const AppContent = () => {
                     <Sidebar activePanel={activePanel} setActivePanel={setActivePanel} user={user} setUser={setUser} isOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} t={t} isDarkMode={isDarkMode} masterData={masterData} />
                     
                     <main className={`flex-1 flex flex-col min-w-0 h-screen overflow-hidden relative transition-all duration-700 mesh-bg lg:ml-[320px]`}>
-                        {/* Header Section - Modern SaaS Style */}
-                        <header className="h-20 md:h-24 flex items-center justify-between px-6 md:px-10 z-40 relative no-print bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl border-b border-slate-100 dark:border-slate-800 shadow-sm">
+                        {/* Header Section - Modern Responsive SaaS Style */}
+                        <header className="h-20 md:h-24 flex items-center justify-between px-4 md:px-10 z-40 relative no-print bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl border-b border-slate-100 dark:border-slate-800 shadow-sm">
                             <div className="flex items-center gap-4 md:gap-6">
                                 <button 
                                     onClick={() => setIsSidebarOpen(true)}
-                                    className="w-10 h-10 rounded-xl bg-slate-950 text-white flex items-center justify-center hover:scale-105 active:scale-95 transition-all lg:hidden"
+                                    className="w-10 h-10 rounded-xl bg-slate-950 text-white flex items-center justify-center hover:scale-105 active:scale-95 transition-all lg:hidden shadow-lg"
                                 >
-                                    <Menu size={20} />
+                                    <Menu size={18} />
                                 </button>
                                 <div className="space-y-0.5">
                                     <h2 className="text-xl md:text-2xl font-bold tracking-tight text-black dark:text-white uppercase leading-tight">
