@@ -239,76 +239,44 @@ export const useMasterData = () => {
 
     // Save Logic - Main Data
     useEffect(() => {
-        if (!db || !masterData || isLoading) return;
+        if (!db || !masterData || !user || isLoading) return;
 
         const currentDataStr = JSON.stringify(masterData);
+        if (currentDataStr === lastSavedData.current) return;
         
-        // IF no actual change happened, skip setting 'syncing' status
-        if (currentDataStr === lastSavedData.current) {
-            // Force settlement to green if it was stuck in yellow
-            if (syncStatus === 'syncing') {
-                const settleTimer = setTimeout(() => setSyncStatus('synced'), 500);
-                return () => clearTimeout(settleTimer);
-            }
-            return;
-        }
-
-        // Immediately set syncing state to indicate local changes are pending
         setSyncStatus('syncing');
 
         const timer = setTimeout(async () => {
             try {
-                // Ensure we have valid data to save
-                if (Object.keys(masterData).length < 5) {
-                    setSyncStatus('synced');
-                    return;
-                }
+                if (Object.keys(masterData).length < 5) return;
 
-                console.info("💾 CLOUD SYNC: Timer triggered. Preparing to save...");
+                console.info("📤 CLOUD SYNC: Finalizing payload...");
                 
-                // Ensure we don't save logs in the main document
                 const dataToSave = JSON.parse(currentDataStr);
                 if (dataToSave.auditLogs) delete dataToSave.auditLogs; 
-                
-                // Firestore 1MB Check
-                const serialized = JSON.stringify(dataToSave);
-                const sizeInBytes = new Blob([serialized]).size;
-                const sizeInKb = (sizeInBytes / 1024).toFixed(2);
-                
-                console.info(`📦 PAYLOAD SIZE: ${sizeInKb} KB`);
-                
-                if (sizeInBytes > 950000) {
-                    console.error(`🔥 CRITICAL: Database size (${sizeInKb}KB) exceeds Firestore 1MB limit!`);
-                }
 
-                console.info("☁️ FIREBASE: Initiating setDoc write...");
-                await setDoc(doc(db, COLLECTION_NAME, DOC_ID), { content: dataToSave }, { merge: true });
-                
-                // Update the ref to prevent redundant sync status triggers
+                await setDoc(doc(db, COLLECTION_NAME, DOC_ID), { 
+                    content: dataToSave,
+                    updatedAt: serverTimestamp(),
+                    updatedBy: user.name || 'Admin',
+                    backup: "true"
+                }, { merge: true });
+
+                console.log("✅ CLOUD SYNC SUCCESSFUL! (সফলভাবে ক্লাউডে সেভ হয়েছে)");
                 lastSavedData.current = currentDataStr;
-                
-                localStorage.setItem('nrzone_data', serialized);
                 setSyncStatus('synced');
-                console.info("✅ SUCCESS: Data safely synced to cloud.");
-            } catch (e) {
-                console.error("❌ MASTER DATA SYNC FAILED:", e);
+            } catch (error) {
+                console.error("❌ CLOUD SYNC ERROR (সেভ ব্যর্থ হয়েছে):", error);
                 setSyncStatus('error');
-                
-                const errorCode = e.code || "";
-                const errorMsg = e.message || "Unknown error";
-                
-                if (errorCode === 'resource-exhausted' || errorMsg.includes('quota')) {
-                    alert("⚠️ ডাটা স্টোরেজ পূর্ণ! (Storage Full / Quota Exceeded). অনুগ্রহ করে পুরনো ডাটা ডিলিট করুন।");
-                } else if (errorCode === 'permission-denied') {
-                    alert("⚠️ পারমিশন নেই! (Permission Denied). আপনার লগইন স্ট্যাটাস চেক করুন।");
-                } else {
-                    alert(`⚠️ ডাটা সেভ হয়নি! (Sync Error: ${errorCode || errorMsg}). অনুগ্রহ করে ইন্টারনেট চেক করুন।`);
+                if (error.code === 'permission-denied') {
+                    console.error("🔒 HINT: Update your Firestore Security Rules to allow public writes for Spark plan setup!");
                 }
             }
-        }, 2000);
+        }, 1500);
 
         return () => clearTimeout(timer);
-    }, [masterData, isLoading]);
+    }, [masterData, db, user, isLoading]);
+
 
     // Save Logic - Logs
     useEffect(() => {
