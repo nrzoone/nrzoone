@@ -39,6 +39,7 @@ const ExpensePanel = ({
   const isManager = role === "manager";
   const [selectedCategory, setSelectedCategory] = useState("Tea/Snacks");
   const [editExpense, setEditExpense] = useState(null);
+  const [receivePaymentModal, setReceivePaymentModal] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
 
   const getAllWorkerNames = () => {
@@ -84,6 +85,16 @@ const ExpensePanel = ({
     (sum, e) => sum + Number(e.amount),
     0,
   );
+
+  const clientBalances = (masterData.clients || []).map(client => {
+     let billed = 0;
+     let paid = 0;
+     (masterData.clientTransactions || []).filter(t => t.client === client).forEach(t => {
+        if(t.type === 'BILL') billed += Number(t.amount);
+        if(t.type === 'PAYMENT') paid += Number(t.amount);
+     });
+     return { client, billed, paid, due: billed - paid };
+  }).sort((a,b) => b.due - a.due);
 
   const handleUpdateExpense = (e) => {
     e.preventDefault();
@@ -140,6 +151,27 @@ const ExpensePanel = ({
     f.reset();
     setActiveTab("daily");
     showNotify("ক্যাশ-ইন সফলভাবে যোগ করা হয়েছে!");
+  };
+
+  const handleReceiveClientPayment = (e) => {
+     e.preventDefault();
+     const f = e.target;
+     const amt = Number(f.amount.value);
+     if (amt <= 0) return;
+     const client = receivePaymentModal;
+     const note = f.note.value;
+     const dt = new Date().toLocaleDateString("en-GB");
+
+     const txn = { id: `txn_${Date.now()}_P`, date: dt, client, type: 'PAYMENT', amount: amt, note };
+     const cash = { id: `CASH-${Date.now()}`, date: dt, description: `B2B PAYMENT: ${client} - ${note}`, amount: amt };
+
+     setMasterData(prev => ({
+       ...prev,
+       clientTransactions: [txn, ...(prev.clientTransactions || [])],
+       cashEntries: [cash, ...(prev.cashEntries || [])]
+     }));
+     setReceivePaymentModal(null);
+     showNotify(`${client} থেকে ৳${amt.toLocaleString()} পেমেন্ট ফাণ্ডে যুক্ত করা হয়েছে!`, 'success');
   };
 
   if (showPrint) {
@@ -266,6 +298,7 @@ const ExpensePanel = ({
             { id: 'daily', label: 'ডেইলি খরচ' },
             { id: 'new', label: 'টাকা খরচ (Out)' },
             isAdmin && { id: 'cashIn', label: 'টাকা গ্রহণ (In)' },
+            isAdmin && { id: 'clientLedger', label: 'বকেয়া হিসাব (Receivable)' },
             { id: 'worker', label: 'শিল্পী বিবরণ' }
           ].filter(Boolean).map(v => (
             <button
@@ -408,6 +441,50 @@ const ExpensePanel = ({
         </div>
       )}
 
+      {activeTab === "clientLedger" && (
+        <div className="space-y-8 animate-fade-up">
+           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {clientBalances.map((item, idx) => (
+                  <div key={idx} className="saas-card bg-white dark:bg-slate-900 shadow-sm flex flex-col justify-between group h-64 border-l-4 border-l-blue-600 hover:border-l-rose-500 hover:border-slate-300 dark:hover:border-slate-700 transition-all">
+                      <div className="flex justify-between items-start mb-6">
+                        <div>
+                           <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-2">B2B Client</p>
+                           <h3 className="text-xl font-bold tracking-tight text-black dark:text-white leading-tight uppercase max-w-[200px]">{item.client}</h3>
+                        </div>
+                        <div className="w-10 h-10 bg-slate-50 dark:bg-slate-800 flex items-center justify-center rounded-xl shadow-inner group-hover:scale-110 transition-transform">
+                          <UserCheck size={18} />
+                        </div>
+                      </div>
+                      
+                      <div className="grid grid-cols-2 gap-4 pb-4 border-b border-slate-100 dark:border-slate-800">
+                         <div>
+                            <p className="text-[8px] font-bold uppercase text-slate-400 tracking-widest">Total Billed</p>
+                            <p className="font-bold text-black dark:text-white">৳ {item.billed.toLocaleString()}</p>
+                         </div>
+                         <div className="text-right">
+                            <p className="text-[8px] font-bold uppercase text-slate-400 tracking-widest">Total Paid</p>
+                            <p className="font-bold text-emerald-500">৳ {item.paid.toLocaleString()}</p>
+                         </div>
+                      </div>
+
+                      <div className="flex justify-between items-center mt-4">
+                         <div>
+                            <p className="text-[9px] font-bold uppercase text-rose-500 tracking-widest mb-1">DUE BALANCE</p>
+                            <p className="font-black text-2xl text-rose-600 leading-none tracking-tighter">৳ {item.due.toLocaleString()}</p>
+                         </div>
+                         <button 
+                            onClick={() => setReceivePaymentModal(item.client)}
+                            className="bg-slate-950 text-white px-5 py-3 rounded-lg text-[9px] font-bold uppercase tracking-widest shadow-xl hover:bg-black transition-all"
+                         >
+                            Receive
+                         </button>
+                      </div>
+                  </div>
+              ))}
+           </div>
+        </div>
+      )}
+
       {activeTab === "worker" && <WorkerSummary masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} />}
 
       <div className="flex justify-center pt-24 pb-12">
@@ -458,6 +535,37 @@ const ExpensePanel = ({
                    <div className="flex gap-4">
                       <button type="button" onClick={() => setEditExpense(null)} className="flex-1 py-6 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] bg-white border-2 border-black text-black dark:text-white hover:bg-black hover:text-white transition-all shadow-lg">বাতিল (Cancel)</button>
                       <button type="submit" className="flex-[2] py-6 rounded-full font-black text-[10px] uppercase tracking-[0.2em] bg-blue-600 text-white shadow-2xl border-b-[10px] border-blue-900 transition-all active:scale-95">Update Ledger</button>
+                   </div>
+                </form>
+           </div>
+        </div>
+      )}
+
+      {receivePaymentModal && (
+        <div className="fixed inset-0 bg-slate-950/40 backdrop-blur-sm z-[300] flex items-center justify-center p-4">
+           <div className="saas-card bg-white dark:bg-slate-900 w-full max-w-lg rounded-2xl shadow-2xl p-10 animate-fade-up">
+                <div className="text-center space-y-3 mb-8">
+                   <div className="mx-auto w-16 h-16 bg-emerald-600 text-white rounded-2xl flex items-center justify-center shadow-2xl rotate-3 mb-4">
+                    <Wallet size={28} />
+                  </div>
+                  <h3 className="text-2xl font-black uppercase text-black dark:text-white leading-none">Receive Payment</h3>
+                  <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Deposit to Main Balance</p>
+                  <p className="bg-slate-100 dark:bg-slate-800 text-black dark:text-white py-2 px-4 rounded-full text-xs font-bold uppercase inline-block shadow-inner">
+                     From: <span className="text-blue-600">{receivePaymentModal}</span>
+                  </p>
+                </div>
+                <form onSubmit={handleReceiveClientPayment} className="space-y-6">
+                   <div className="space-y-2">
+                      <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Amount (BDT)</label>
+                      <input name="amount" type="number" placeholder="৳ 0.00" className="premium-input !h-16 text-3xl font-black text-center !bg-slate-50 dark:!bg-slate-800" required autoFocus />
+                   </div>
+                   <div className="space-y-2">
+                      <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Note / Reference</label>
+                      <input name="note" placeholder="E.g. Bank Transfer / Cash" className="premium-input !h-12 uppercase text-sm font-bold" required />
+                   </div>
+                   <div className="flex gap-4 pt-4">
+                      <button type="button" onClick={() => setReceivePaymentModal(null)} className="flex-1 py-4 rounded-xl font-bold uppercase text-[10px] tracking-widest hover:bg-slate-50 dark:hover:bg-slate-800 transition-all border border-slate-200 dark:border-slate-800">Cancel</button>
+                      <button type="submit" className="flex-[2] py-4 bg-emerald-600 text-white rounded-xl shadow-xl font-bold uppercase text-[11px] tracking-widest hover:bg-emerald-700 transition-all border-b-4 border-emerald-800 active:scale-95">Confirm Received</button>
                    </div>
                 </form>
            </div>

@@ -63,10 +63,12 @@ const InventoryPanel = ({
     const logs = masterData.rawInventory || [];
     const stock = {};
     logs.forEach((log) => {
-      const key = log.color ? `${log.item} (${log.color})` : log.item;
+      const clientOwner = log.client || 'FACTORY';
+      const key = log.color ? `${log.item}-${clientOwner} (${log.color})` : `${log.item}-${clientOwner}`;
       if (!stock[key])
         stock[key] = {
           name: log.item,
+          client: clientOwner,
           color: log.color || null,
           qty: 0,
           unit: log.unit || "গজ",
@@ -81,6 +83,7 @@ const InventoryPanel = ({
   const filteredInventory = inventory.filter(
     (i) =>
       i.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      i.client.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (i.color && i.color.toLowerCase().includes(searchTerm.toLowerCase())),
   );
 
@@ -91,6 +94,7 @@ const InventoryPanel = ({
     const color = form.color?.value || "";
     const qty = Number(form.qty.value);
 
+    const clientName = form.clientOwner?.value || "FACTORY";
     if (!item || qty <= 0) return;
 
     const newEntry = {
@@ -99,11 +103,12 @@ const InventoryPanel = ({
         ? new Date(form.date.value).toLocaleDateString("en-GB")
         : new Date().toLocaleDateString("en-GB"),
       item,
+      client: clientName,
       color,
       qty,
       unit: form.unit ? form.unit.value : "গজ",
-      type: transactionType,
-      note: form.note ? form.note.value : "",
+      type: transactionType === "adj" ? "out" : transactionType,
+      note: transactionType === "adj" ? `STOCK ADJUSTMENT/WASTE: ${form.note?.value || ""}` : (form.note ? form.note.value : ""),
     };
 
     setMasterData((prev) => ({
@@ -122,6 +127,10 @@ const InventoryPanel = ({
     const form = e.target;
     if (!form.design.value || form.qtyBorka.value < 0) return;
 
+    const clientName = form.receiver.value || "Unknown";
+    const qtyB = Number(form.qtyBorka.value) || 0;
+    const qtyH = Number(form.qtyHijab.value) || 0;
+
     setMasterData(prev => ({
         ...prev,
         deliveries: [{
@@ -130,13 +139,13 @@ const InventoryPanel = ({
             design: form.design.value,
             color: form.color.value || "",
             size: form.size.value || "",
-            receiver: form.receiver.value || "Unknown",
-            qtyBorka: Number(form.qtyBorka.value) || 0,
-            qtyHijab: Number(form.qtyHijab.value) || 0,
-            status: "Delivered"
+            receiver: clientName,
+            qtyBorka: qtyB,
+            qtyHijab: qtyH,
+            note: form.note?.value || ""
         }, ...(prev.deliveries || [])]
     }));
-    showNotify("পণ্য সফলভাবে ডেলিভারি দেওয়া হয়েছে!");
+    showNotify("পণ্য ডেলিভারি সম্পন্ন হয়েছে!");
     form.reset();
   };
 
@@ -174,6 +183,12 @@ const InventoryPanel = ({
               className="px-6 py-4 bg-rose-500/10 text-rose-600 rounded-xl font-bold uppercase text-[10px] tracking-widest hover:bg-rose-500 hover:text-white transition-all border border-rose-500/20"
             >
               স্টক আউট (OUT)
+            </button>
+            <button
+              onClick={() => { setTransactionType("adj"); setShowModal(true); }}
+              className="px-6 py-4 bg-amber-500 text-white rounded-xl font-bold uppercase text-[10px] tracking-widest hover:bg-amber-600 transition-all shadow-xl flex items-center gap-2"
+            >
+              <Minus size={16} strokeWidth={3} /> এডজাস্টমেন্ট (ADJ)
             </button>
             <button
               onClick={() => { setTransactionType("in"); setShowModal(true); }}
@@ -263,9 +278,13 @@ const InventoryPanel = ({
                     ) : (
                         filteredInventory.map((item, idx) => (
                             <div key={idx} className="saas-card border-transparent hover:border-slate-950 dark:hover:border-white transition-all group">
-                                <h4 className="text-lg font-bold tracking-tight text-black dark:text-white dark:text-white uppercase truncate mb-1">
-                                    {item.name}
-                                </h4>
+                                <div className="flex justify-between items-start mb-1">
+                                  <h4 className="text-lg font-bold tracking-tight text-black dark:text-white dark:text-white uppercase truncate">
+                                      {item.name}
+                                  </h4>
+                                  {item.client !== 'FACTORY' && <span className="px-2 py-0.5 bg-blue-100 dark:bg-blue-900/50 text-blue-600 rounded text-[8px] font-black uppercase tracking-widest">B2B: {item.client}</span>}
+                                  {item.client === 'FACTORY' && <span className="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 text-slate-500 rounded text-[8px] font-black uppercase tracking-widest">FACTORY</span>}
+                                </div>
                                 <p className="text-[9px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest mb-6 italic truncate">
                                     {item.color || "STANDARD GRADE"}
                                 </p>
@@ -290,8 +309,11 @@ const InventoryPanel = ({
                     <h3 className="text-2xl font-bold uppercase tracking-tight text-black dark:text-white dark:text-white mb-6">নতুন ডেসপ্যাচ <span className="text-blue-600">(Dispatch)</span></h3>
                     <form onSubmit={handleDelivery} className="space-y-6">
                         <div className="space-y-1.5">
-                            <label className="text-[10px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest ml-1">শোরুম / গ্রাহকের নাম (Receiver)</label>
-                            <input name="receiver" className="premium-input !h-12 text-sm uppercase font-bold" placeholder="E.G. NRZ MIRPUR STORE" required />
+                            <label className="text-[10px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest ml-1">ক্লায়েন্টের নাম (Client / Receiver)</label>
+                            <select name="receiver" className="premium-input !h-12 text-sm uppercase font-bold" required>
+                                <option value="">ক্লায়েন্ট নির্বাচন করুন...</option>
+                                {(masterData.clients || []).map(c => <option key={c} value={c}>{c}</option>)}
+                            </select>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="space-y-1.5">
@@ -430,27 +452,43 @@ const InventoryPanel = ({
                   <Database size={24} />
                 </div>
                 <div>
-                    <h3 className="text-2xl font-bold text-black dark:text-white dark:text-white uppercase leading-none">
-                        স্টক {transactionType === "in" ? "যোগ (Entry)" : "কমানো (Out)"}
+                    <h3 className="text-2xl font-black text-black dark:text-white uppercase leading-none">
+                        {transactionType === "in" ? "স্টক এন্ট্রি (In)" : transactionType === "adj" ? "স্টক এডজাস্টমেন্ট (Adj)" : "স্টক ইস্যু (Out)"}
                     </h3>
-                    <p className="text-[10px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest mt-2 italic leading-none">Inventory Adjustments Protocol</p>
+                    <p className="text-[10px] font-bold text-black dark:text-white uppercase tracking-widest mt-2 italic leading-none">
+                      {transactionType === "adj" ? "Removing Old/Damaged/Short Stock" : "Inventory Management Protocol"}
+                    </p>
                 </div>
               </div>
 
               <form onSubmit={handleTransaction} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-1.5">
+                        <label className="text-[10px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest ml-1">মালিকানা (Owner)</label>
+                        <select name="clientOwner" className="premium-input !h-12 text-sm uppercase font-bold" required>
+                            <option value="FACTORY">ফ্যাক্টরি নিজস্ব (FACTORY)</option>
+                            {(masterData.clients || []).map(c => <option key={c} value={c}>{c}</option>)}
+                        </select>
+                    </div>
+                    <div className="space-y-1.5">
                         <label className="text-[10px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest ml-1">আইটেম (Material)</label>
                         <input name="item" list="items-list" className="premium-input !h-12 text-sm uppercase font-bold" placeholder="MATERIAL..." required />
                     </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-1.5">
-                        <label className="text-[10px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest ml-1">তারিখ (Date)</label>
+                        <label className="text-[10px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest ml-1">গ্রেড / কালার</label>
+                        <input name="color" className="premium-input !h-12 text-sm uppercase font-bold" placeholder="E.G. GRADE-A..." />
+                    </div>
+                    <div className="space-y-1.5">
+                        <label className="text-[10px] font-bold text-black dark:text-white uppercase tracking-widest ml-1">তারিখ (Date)</label>
                         <input name="date" type="date" className="premium-input !h-12 text-xs text-center !bg-slate-50 dark:!bg-slate-800/50 border-slate-200 dark:border-slate-700" defaultValue={new Date().toISOString().split("T")[0]} required />
                     </div>
                 </div>
+
                 <div className="space-y-1.5">
-                    <label className="text-[10px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest ml-1">গ্রেড / কালার (Classification)</label>
-                    <input name="color" className="premium-input !h-12 text-sm uppercase font-bold" placeholder="E.G. GRADE-A..." />
+                    <label className="text-[10px] font-bold text-black dark:text-white uppercase tracking-widest ml-1">নোট / কারণ (Reason for Adjustment)</label>
+                    <input name="note" className="premium-input !h-12 text-sm uppercase font-bold" placeholder={transactionType === 'adj' ? "E.G. OLD STOCK / DAMAGED / SHORT..." : "EXTERNAL NOTES..."} />
                 </div>
 
                 <div className="flex bg-slate-950 rounded-xl overflow-hidden shadow-2xl border-b-4 border-blue-600">

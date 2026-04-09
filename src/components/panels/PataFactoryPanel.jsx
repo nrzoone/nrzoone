@@ -56,9 +56,18 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
         pataQty: '',
         stonePackets: '',
         paperRolls: '',
+        client: 'FACTORY',
         note: '',
         date: new Date().toISOString().split('T')[0]
     });
+
+    // Auto-generate Lot ID for Pata Factory
+    useEffect(() => {
+        if (showModal && !entryData.lotNo) {
+            const count = masterData.pataEntries?.length || 0;
+            setEntryData(prev => ({ ...prev, lotNo: `PT-${1000 + count}` }));
+        }
+    }, [showModal, masterData.pataEntries]);
 
     const handleQRScan = (data) => {
         if (data) {
@@ -119,24 +128,39 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
         showNotify('পেমেন্ট সফল ভাবে রেকর্ড করা হয়েছে!');
     };
 
-    const rawStock = useMemo(() => {
-        const stock = { stone: 0, roll: 0 };
+    const rawStockByClient = useMemo(() => {
+        const stocks = {};
         (masterData.rawInventory || []).forEach(log => {
-            if (log.item.toLowerCase().includes('stone')) {
-                if (log.type === 'in') stock.stone += Number(log.qty);
-                else stock.stone -= Number(log.qty);
+            const client = log.client || 'FACTORY';
+            if (!stocks[client]) stocks[client] = { stone: 0, roll: 0 };
+            
+            const isStone = log.item.toLowerCase().includes('stone');
+            const isRoll = log.item.toLowerCase().includes('roll');
+            
+            if (isStone) {
+                if (log.type === 'in') stocks[client].stone += Number(log.qty);
+                else stocks[client].stone -= Number(log.qty);
             }
-            if (log.item.toLowerCase().includes('roll')) {
-                if (log.type === 'in') stock.roll += Number(log.qty);
-                else stock.roll -= Number(log.qty);
+            if (isRoll) {
+                if (log.type === 'in') stocks[client].roll += Number(log.qty);
+                else stocks[client].roll -= Number(log.qty);
             }
         });
-        return stock;
+        return stocks;
     }, [masterData.rawInventory]);
+
+    const rawStock = entryData.client ? (rawStockByClient[entryData.client] || { stone: 0, roll: 0 }) : { stone: 0, roll: 0 };
 
     const handleSaveIssue = (shouldPrint) => {
         if (!entryData.worker || !entryData.design || !entryData.lotNo || !entryData.pataQty) {
             return showNotify('কারিগর, ডিজাইন, লট নম্বর এবং পরিমাণ আবশ্যক!', 'error');
+        }
+
+        if (!isAdmin && Number(entryData.stonePackets || 0) > rawStock.stone) {
+            return showNotify(`পর্যাপ্ত পাথর নেই! স্টকে আছে: ${rawStock.stone} প্যাকেট (Only Admin can bypass)`, 'error');
+        }
+        if (!isAdmin && Number(entryData.paperRolls || 0) > rawStock.roll) {
+            return showNotify(`পর্যাপ্ত পেপার রোল নেই! স্টকে আছে: ${rawStock.roll} রোল (Only Admin can bypass)`, 'error');
         }
 
         const newEntry = {
@@ -150,6 +174,7 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
             pataQty: Number(entryData.pataQty),
             stonePackets: Number(entryData.stonePackets || 0),
             paperRolls: Number(entryData.paperRolls || 0),
+            client: entryData.client || 'FACTORY',
             status: 'Pending',
             note: entryData.note
         };
@@ -160,20 +185,22 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                 newInventory.unshift({
                     id: Date.now() + 1,
                     date: new Date().toLocaleDateString('en-GB'),
-                    item: "Stone Packet",
+                    item: "পাথর প্যাকেট (Stone)",
+                    client: newEntry.client,
                     qty: newEntry.stonePackets,
                     type: "out",
-                    note: `Pata Work Issue: ${newEntry.worker} (Lot: ${newEntry.lotNo})`
+                    note: `Pata Work Issue: ${newEntry.worker} (Client: ${newEntry.client})`
                 });
             }
             if (newEntry.paperRolls > 0) {
                 newInventory.unshift({
                     id: Date.now() + 2,
                     date: new Date().toLocaleDateString('en-GB'),
-                    item: "Paper Roll",
+                    item: "পেপার রোল (Paper)",
+                    client: newEntry.client,
                     qty: newEntry.paperRolls,
                     type: "out",
-                    note: `Pata Work Issue: ${newEntry.worker} (Lot: ${newEntry.lotNo})`
+                    note: `Pata Work Issue: ${newEntry.worker} (Client: ${newEntry.client})`
                 });
             }
             return {
@@ -225,12 +252,37 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
             amount: amount
         });
 
+        // B2B Conditional Billing Logic
+        if (item.client && item.client !== "FACTORY") {
+            const designObj = (masterData.designs || []).find(d => d.name === item.design);
+            const pataRate = designObj?.clientRates?.[item.client]?.pata;
+
+            if (pataRate && Number(pataRate) > 0) {
+                const billAmount = receivedQty * Number(pataRate);
+                if (billAmount > 0) {
+                    const b2bBill = {
+                        id: `b2b_pata_${Date.now()}`,
+                        date: new Date().toLocaleDateString("en-GB"),
+                        client: item.client,
+                        type: 'BILL',
+                        amount: billAmount,
+                        note: `P-BILL: PATA of ${receivedQty} PCS (${item.design})`
+                    };
+                    setMasterData(prev => ({
+                        ...prev,
+                        clientTransactions: [b2bBill, ...(prev.clientTransactions || [])]
+                    }));
+                }
+            }
+        }
+
         setReceiveModal(null);
         logAction(user, 'PATA_RECEIVE', `Received from ${item.worker}: ${receivedQty} Pcs.`);
         showNotify('পাতা কাজ সফলভাবে জমা নেওয়া হয়েছে!');
     };
 
     const handleDelete = (id) => {
+        if (!isAdmin) return showNotify('শুধুমাত্র এডমিন রেকর্ড মুছতে পারবেন!', 'error');
         if (!window.confirm('মুছে ফেলতে চান?')) return;
         setMasterData(prev => ({
             ...prev,
@@ -519,7 +571,18 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="space-y-1.5">
+                        <label className="text-[10px] font-bold uppercase text-black dark:text-white tracking-widest ml-1">মালিকানা (Client Owner)</label>
+                        <select 
+                           className="premium-input !h-12 text-sm uppercase font-bold" 
+                           value={entryData.client} 
+                           onChange={(e) => setEntryData(p => ({ ...p, client: e.target.value }))}
+                        >
+                            <option value="FACTORY">FACTORY (নিজস্ব)</option>
+                            {(masterData.clients || []).map(c => <option key={c} value={c}>{c}</option>)}
+                        </select>
+                    </div>
                     <div className="space-y-1.5">
                         <label className="text-[10px] font-bold uppercase text-black dark:text-white tracking-widest ml-1">কারিগর (Worker)</label>
                         <select className="premium-input !h-12 text-sm uppercase font-bold" value={entryData.worker} onChange={(e) => setEntryData(p => ({ ...p, worker: e.target.value }))}>
@@ -534,9 +597,11 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                             {(masterData.designs || []).map(d => <option key={d.name} value={d.name}>{d.name}</option>)}
                         </select>
                     </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-1.5">
-                        <label className="text-[10px] font-bold uppercase text-black dark:text-white tracking-widest ml-1">লট নম্বর (Lot ID)</label>
-                        <input className="premium-input !h-12 text-sm uppercase text-center font-black !bg-slate-950 !text-white !border-none" placeholder="LOT NO..." value={entryData.lotNo} onChange={(e) => setEntryData(p => ({ ...p, lotNo: e.target.value }))} />
+                        <label className="text-[10px] font-bold uppercase text-black dark:text-white tracking-widest ml-1">লট নম্বর (Lot ID - Auto)</label>
+                        <input className="premium-input !h-12 text-sm uppercase text-center font-black !bg-slate-950 !text-white !border-none" placeholder="LOT NO..." value={entryData.lotNo} onChange={(e) => setEntryData(p => ({ ...p, lotNo: e.target.value }))} readOnly />
                     </div>
                     <div className="space-y-1.5">
                         <label className="text-[10px] font-bold uppercase text-black dark:text-white tracking-widest ml-1">তারিখ (Issue Date)</label>

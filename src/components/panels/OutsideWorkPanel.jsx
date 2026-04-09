@@ -47,6 +47,8 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
 
     const [entryData, setEntryData] = useState({
         worker: '',
+        client: 'FACTORY',
+        design: '',
         task: '',
         borkaQty: '',
         hijabQty: '',
@@ -65,6 +67,8 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
                 id: `outside_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
                 date: entryData.date ? new Date(entryData.date).toLocaleDateString('en-GB') : new Date().toLocaleDateString('en-GB'),
                 worker: entryData.worker,
+                client: entryData.client || 'FACTORY',
+                design: entryData.design || 'N/A',
                 task: entryData.task,
                 borkaQty: Number(entryData.borkaQty || 0),
                 hijabQty: Number(entryData.hijabQty || 0),
@@ -93,7 +97,7 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
             }
             logAction(user, 'OUTSIDE_ISSUE', `${newEntry.worker} - ${newEntry.task}. Qty: B:${newEntry.borkaQty} H:${newEntry.hijabQty}`);
             setShowModal(false);
-            setEntryData({ worker: '', task: '', borkaQty: '', hijabQty: '', rate: '', note: '', date: new Date().toISOString().split('T')[0] });
+            setEntryData({ worker: '', client: 'FACTORY', design: '', task: '', borkaQty: '', hijabQty: '', rate: '', note: '', date: new Date().toISOString().split('T')[0] });
             showNotify('বাইরের কাজ সফলভাবে ইস্যু হয়েছে!');
         } catch (error) {
             console.error("Save error:", error);
@@ -138,6 +142,30 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
             detail: `${receiveModal.task} Received - B:${rBorka} H:${rHijab} Total: ${totalAmount}`,
             amount: totalAmount
         });
+
+        // B2B Conditional Billing Logic
+        if (receiveModal.client && receiveModal.client !== "FACTORY") {
+            const designObj = (masterData.designs || []).find(d => d.name === receiveModal.design);
+            const outworkRate = designObj?.clientRates?.[receiveModal.client]?.outwork;
+
+            if (outworkRate && Number(outworkRate) > 0) {
+                const billAmount = (rBorka + rHijab) * Number(outworkRate);
+                if (billAmount > 0) {
+                    const b2bBill = {
+                        id: `b2b_out_${Date.now()}`,
+                        date: new Date().toLocaleDateString("en-GB"),
+                        client: receiveModal.client,
+                        type: 'BILL',
+                        amount: billAmount,
+                        note: `O-BILL: OUTWORK (${receiveModal.task}) of ${rBorka + rHijab} PCS (${receiveModal.design})`
+                    };
+                    setMasterData(prev => ({
+                        ...prev,
+                        clientTransactions: [b2bBill, ...(prev.clientTransactions || [])]
+                    }));
+                }
+            }
+        }
 
         setReceiveModal(null);
         logAction(user, 'OUTSIDE_RECEIVE', `Received from ${receiveModal.worker}: ${receiveModal.task}. Total Bill: ${totalAmount}৳`);
@@ -448,6 +476,20 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
                                     <select className="premium-input !h-12 text-sm uppercase" value={entryData.worker} onChange={(e) => setEntryData(p => ({ ...p, worker: e.target.value }))}>
                                         <option value="">কারিগর নির্বাচন করুন...</option>
                                         {(masterData.outsideWorkers || []).map(w => <option key={w} value={w}>{w}</option>)}
+                                    </select>
+                                </div>
+                                <div className="space-y-1">
+                                    <label className="text-[10px] font-bold text-black dark:text-white dark:text-white ml-1 uppercase tracking-widest">মালিকানা (Client Owner)</label>
+                                    <select className="premium-input !h-12 text-sm uppercase" value={entryData.client} onChange={(e) => setEntryData(p => ({ ...p, client: e.target.value }))}>
+                                        <option value="FACTORY">ফ্যাক্টরি নিজস্ব (FACTORY)</option>
+                                        {(masterData.clients || []).map(c => <option key={c} value={c}>{c}</option>)}
+                                    </select>
+                                </div>
+                                <div className="space-y-1">
+                                    <label className="text-[10px] font-bold text-black dark:text-white dark:text-white ml-1 uppercase tracking-widest">ডিজাইন স্টাইল (Design/Style)</label>
+                                    <select className="premium-input !h-12 text-sm uppercase" value={entryData.design} onChange={(e) => setEntryData(p => ({ ...p, design: e.target.value }))}>
+                                        <option value="">ডিজাইন নির্বাচন করুন...</option>
+                                        {(masterData.designs || []).map(d => <option key={d.name} value={d.name}>{d.name}</option>)}
                                     </select>
                                 </div>
                                 <div className="space-y-1">

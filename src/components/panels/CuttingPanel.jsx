@@ -64,7 +64,10 @@ const CuttingPanel = ({
     design: "",
     color: "",
     cutterName: "",
+    client: "",
     lotNo: "",
+    materialName: "ফেব্রিক রোল (Fabric)",
+    totalYards: "",
     date: new Date().toISOString().split("T")[0],
     sizes: [{ size: "", borka: "", hijab: "" }],
   });
@@ -101,6 +104,7 @@ const CuttingPanel = ({
       color: entryData.color || "N/A",
       size: s.size,
       cutterName: entryData.cutterName || "N/A",
+      client: entryData.client || "FACTORY",
       lotNo: entryData.lotNo || "N/A",
       borka: Number(s.borka || 0),
       hijab: Number(s.hijab || 0),
@@ -108,9 +112,20 @@ const CuttingPanel = ({
       timestamp: new Date().toISOString()
     }));
 
+    const rawDeduction = Number(entryData.totalYards) > 0 ? {
+      id: Date.now() + 1,
+      date: new Date(entryData.date).toLocaleDateString("en-GB"),
+      item: entryData.materialName,
+      client: entryData.client || "FACTORY",
+      qty: Number(entryData.totalYards),
+      type: "out",
+      note: `CUTTING LOT #${entryData.lotNo} - ${entryData.design}`
+    } : null;
+
     setMasterData((prev) => ({
       ...prev,
       cuttingStock: [...newEntries, ...(prev.cuttingStock || [])],
+      rawInventory: rawDeduction ? [rawDeduction, ...(prev.rawInventory || [])] : (prev.rawInventory || [])
     }));
 
     logAction(user, 'CUTTING_ENTRY', `Lot #${entryData.lotNo} added. Total items: ${newEntries.length}`);
@@ -123,7 +138,10 @@ const CuttingPanel = ({
       design: "",
       color: "",
       cutterName: "",
+      client: "",
       lotNo: (parseInt(entryData.lotNo) + 1).toString(),
+      materialName: "ফেব্রিক রোল (Fabric)",
+      totalYards: "",
       date: new Date().toISOString().split("T")[0],
       sizes: [{ size: "", borka: "", hijab: "" }],
     });
@@ -281,19 +299,23 @@ const CuttingPanel = ({
                                     <p className="text-[9px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest leading-none">ডিজাইন আইডি (Design)</p>
                                     <h4 className="text-2xl font-bold tracking-tight text-black dark:text-white dark:text-white uppercase leading-none">{item.design}</h4>
                                 </div>
-                                <div className="w-12 h-12 bg-slate-950 text-white rounded-xl flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform font-bold text-xs">
-                                    #{item.lotNo}
+                                <div className="w-12 h-12 bg-slate-950 text-white rounded-xl flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform font-bold text-xs flex-col leading-none text-center">
+                                    <span className="text-[10px]">#{item.lotNo}</span>
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-xl border border-slate-100 dark:border-slate-800">
-                                    <p className="text-[9px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest mb-1 italic">রঙ (Color)</p>
+                            <div className="grid grid-cols-3 gap-4">
+                                <div className="bg-slate-50 dark:bg-slate-800/50 p-3 rounded-xl border border-slate-100 dark:border-slate-800">
+                                    <p className="text-[8px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest mb-1 italic">রঙ</p>
                                     <p className="text-sm font-bold text-black dark:text-white dark:text-white truncate uppercase">{item.color}</p>
                                 </div>
-                                <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-xl border border-slate-100 dark:border-slate-800">
-                                    <p className="text-[9px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest mb-1 italic">ইস্যুর তারিখ</p>
+                                <div className="bg-slate-50 dark:bg-slate-800/50 p-3 rounded-xl border border-slate-100 dark:border-slate-800">
+                                    <p className="text-[8px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest mb-1 italic">তারিখ</p>
                                     <p className="text-sm font-bold text-black dark:text-white dark:text-white truncate italic">{item.date}</p>
+                                </div>
+                                <div className="bg-slate-50 dark:bg-slate-800/50 p-3 rounded-xl border border-slate-100 dark:border-slate-800">
+                                    <p className="text-[8px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest mb-1 italic">ক্লায়েন্ট</p>
+                                    <p className="text-sm font-bold text-black dark:text-white dark:text-white truncate uppercase">{item.client || '-'}</p>
                                 </div>
                             </div>
                             
@@ -494,14 +516,55 @@ const CuttingPanel = ({
                         </div>
                     </div>
 
-                    <div className="space-y-1.5">
-                      <label className="text-[10px] font-bold uppercase text-black dark:text-white dark:text-white tracking-widest ml-1">কাটার এর নাম (Cutter Name)</label>
-                      <input 
-                        className="premium-input !h-12 text-sm font-bold uppercase" 
-                        placeholder="কাটার এর নাম লিখুন..."
-                        value={entryData.cutterName} 
-                        onChange={(e) => setEntryData(p => ({ ...p, cutterName: e.target.value }))}
-                      />
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-1.5">
+                          <label className="text-[10px] font-bold uppercase text-black dark:text-white dark:text-white tracking-widest ml-1">কাটার এর নাম (Cutter)</label>
+                          <input 
+                            className="premium-input !h-12 text-sm font-bold uppercase" 
+                            placeholder="কাটার এর নাম লিখুন..."
+                            value={entryData.cutterName} 
+                            onChange={(e) => setEntryData(p => ({ ...p, cutterName: e.target.value }))}
+                          />
+                        </div>
+                        <div className="space-y-1.5">
+                          <label className="text-[10px] font-bold uppercase text-black dark:text-white dark:text-white tracking-widest ml-1">ক্লায়েন্ট (Client Ownership)</label>
+                          <select 
+                            className="premium-input !h-12 text-sm font-bold uppercase" 
+                            value={entryData.client} 
+                            onChange={(e) => setEntryData(p => ({ ...p, client: e.target.value }))}
+                          >
+                            <option value="FACTORY">FACTORY (নিজস্ব)</option>
+                            {(masterData.clients || []).map(c => <option key={c} value={c}>{c}</option>)}
+                          </select>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-1.5">
+                           <label className="text-[10px] font-bold uppercase text-black dark:text-white dark:text-white tracking-widest ml-1">কাপড় / মেটেরিয়াল</label>
+                           <input 
+                             list="material-list"
+                             className="premium-input !h-12 text-sm font-bold uppercase" 
+                             placeholder="কাপড় নির্বাচন করুন..."
+                             value={entryData.materialName} 
+                             onChange={(e) => setEntryData(p => ({ ...p, materialName: e.target.value }))}
+                           />
+                           <datalist id="material-list">
+                              <option value="ফেব্রিক রোল (Fabric)" />
+                              <option value="লি linen (Fabric)" />
+                              <option value="দুবাই চেরি (Fabric)" />
+                           </datalist>
+                        </div>
+                        <div className="space-y-1.5">
+                           <label className="text-[10px] font-bold uppercase text-rose-500 tracking-widest ml-1 animate-pulse">মোট কত গজ লেগেছে?</label>
+                           <input 
+                             type="number"
+                             className="premium-input !h-12 text-lg font-black text-rose-600 bg-rose-50 dark:bg-rose-900/10 border-rose-200" 
+                             placeholder="0.00 গজ"
+                             value={entryData.totalYards} 
+                             onChange={(e) => setEntryData(p => ({ ...p, totalYards: e.target.value }))}
+                           />
+                        </div>
                     </div>
                   </div>
 

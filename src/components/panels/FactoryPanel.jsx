@@ -256,6 +256,7 @@ const FactoryPanel = ({
               lotNo,
               design,
               color,
+              client: cutItems[0]?.client || 'FACTORY',
               hasStoneRate: hasStone,
               hasSewingRate: hasSewing,
               totalAvailable: curRB + curRH,
@@ -351,11 +352,15 @@ const FactoryPanel = ({
     if (validIssues.length === 0)
       return showNotify("অন্তত একটি সংখ্যা দিন!", "error");
 
+    const lotInfo = availableLots.find(l => l.lotNo === lotNo && l.design === design && l.color === color);
+    const clientName = lotInfo?.client || "FACTORY";
+
     const newEntries = validIssues.map((s) => ({
       id: `prod_${Date.now()}_${Math.random()}`,
       date: new Date(date).toLocaleDateString("en-GB"),
       type: type,
       worker,
+      client: clientName,
       design,
       color,
       lotNo,
@@ -428,8 +433,8 @@ const FactoryPanel = ({
     const wasteMaterial = Number(receiveState.waste || 0);
     const penaltyAmount = Number(receiveState.penalty || 0);
     
-    if (rBorka > receiveModal.issueBorka || rHijab > receiveModal.issueHijab)
-      return showNotify("ইস্যুর চেয়ে বেশি জমা সম্ভব নয়!", "error");
+    if (!isAdmin && (rBorka > receiveModal.issueBorka || rHijab > receiveModal.issueHijab))
+      return showNotify("ইস্যুর চেয়ে বেশি জমা সম্ভব নয়! (Admin can bypass)", "error");
 
     const totalWasted = (receiveModal.issueBorka - rBorka) + (receiveModal.issueHijab - rHijab);
     const totalIssued = receiveModal.issueBorka + receiveModal.issueHijab;
@@ -470,6 +475,30 @@ const FactoryPanel = ({
       detail: `${receiveModal.design}: Rec B:${rBorka} H:${rHijab} | Fine: ${penaltyAmount}`,
       amount: 0,
     });
+
+    // B2B Conditional Billing Logic
+    if (receiveModal.client && receiveModal.client !== "FACTORY") {
+        const designObj = (masterData.designs || []).find(d => d.name === receiveModal.design);
+        const stageRate = designObj?.clientRates?.[receiveModal.client]?.[receiveModal.type]; // 'sewing' or 'stone'
+
+        if (stageRate && Number(stageRate) > 0) {
+            const billAmount = (rBorka + rHijab) * Number(stageRate);
+            if (billAmount > 0) {
+                const b2bBill = {
+                    id: `b2b_bill_${Date.now()}`,
+                    date: new Date().toLocaleDateString("en-GB"),
+                    client: receiveModal.client,
+                    type: 'BILL',
+                    amount: billAmount,
+                    note: `S-BILL: ${receiveModal.type.toUpperCase()} of ${rBorka + rHijab} PCS (${receiveModal.design})`
+                };
+                setMasterData(prev => ({
+                    ...prev,
+                    clientTransactions: [b2bBill, ...(prev.clientTransactions || [])]
+                }));
+            }
+        }
+    }
     
     logAction(
       user,

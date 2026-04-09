@@ -56,6 +56,7 @@ import InventoryPanel from "./components/panels/InventoryPanel";
 import ExpensePanel from "./components/panels/ExpensePanel";
 import OutsideWorkPanel from "./components/panels/OutsideWorkPanel";
 import SecurityPanel from "./components/panels/SecurityPanel";
+import ClientDashboard from "./components/panels/ClientDashboard";
 
 import MenuPanel from "./components/panels/MenuPanel";
 import { useMasterData } from "./hooks/useMasterData";
@@ -102,7 +103,7 @@ class ErrorBoundary extends React.Component {
     render() {
         if (this.state.hasError) {
             return (
-                <div className="min-h-screen bg-slate-950 text-white flex flex-col items-center justify-center p-12 text-center font-outfit">
+                <div className="min-h-screen bg-slate-950 text-white flex flex-col items-center justify-center p-6 md:p-12 text-center font-outfit">
                     <div className="relative mb-12">
                         <AlertTriangle size={64} className="text-amber-500 animate-pulse" />
                         <div className="absolute inset-0 blur-3xl bg-amber-500 opacity-20 animate-pulse"></div>
@@ -184,7 +185,7 @@ const LoginView = ({ onLogin, masterData }) => {
             <div className="absolute inset-x-0 top-0 h-64 bg-gradient-to-b from-white/50 to-transparent pointer-events-none"></div>
             
             {/* Left Section: Branding */}
-            <div className="w-full md:w-1/2 bg-slate-950 flex flex-col items-center justify-center p-12 relative min-h-[40vh] md:min-h-screen">
+            <div className="w-full md:w-1/2 bg-slate-950 flex flex-col items-center justify-center p-6 md:p-12 relative min-h-[40vh] md:min-h-screen">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-900/20 via-slate-950 to-slate-950 opacity-60"></div>
                 
                 <div className="relative z-10 flex flex-col items-center text-center animate-fade-up">
@@ -209,7 +210,7 @@ const LoginView = ({ onLogin, masterData }) => {
 
             {/* Right Section: Login */}
             <div className="w-full md:w-1/2 p-6 md:p-24 flex items-center justify-center relative">
-                 <div className="w-full max-w-md bg-white rounded-3xl p-10 md:p-14 shadow-2xl space-y-10 border border-slate-100">
+                 <div className="w-full max-w-md bg-white rounded-3xl p-6 md:p-14 shadow-2xl space-y-8 md:space-y-10 border border-slate-100">
                     <div className="space-y-2">
                         <h3 className="text-3xl font-black text-black tracking-tight">লগইন করুন</h3>
                         <p className="text-xs font-bold uppercase text-black dark:text-white tracking-widest">Secure Access Required</p>
@@ -269,14 +270,14 @@ const TrackingView = ({ trackId, masterData, onClose, isDarkMode }) => {
     if (!item) return <div className="min-h-screen flex items-center justify-center bg-black text-rose-500 font-black uppercase">Tracking ID Not Found <button onClick={onClose} className="ml-4 bg-white text-black p-2 rounded">Close</button></div>;
 
     return (
-        <div className="min-h-screen bg-white p-8 md:p-20 font-outfit italic animate-fade-up">
+        <div className="min-h-screen bg-white p-4 md:p-20 font-outfit italic animate-fade-up">
             <div className="max-w-4xl mx-auto space-y-12">
                 <div className="flex justify-between items-center">
                     <Logo size="sm" white={false} customUrl={masterData.settings?.logo} />
                     <button onClick={onClose} className="p-4 bg-slate-100 rounded-full hover:bg-black hover:text-white transition-all"><X size={20} /></button>
                 </div>
 
-                <div className="bg-black text-white p-12 rounded-[5rem] shadow-3xl text-center flex flex-col items-center">
+                <div className="bg-black text-white p-8 md:p-12 rounded-[3rem] md:rounded-[5rem] shadow-3xl text-center flex flex-col items-center">
                     <Logo size="md" white={true} customUrl={masterData.settings?.logo} />
                     <p className="text-[10px] font-black uppercase tracking-[0.6em] text-black dark:text-white mt-6 mb-6">Status</p>
                     <h2 className="text-4xl md:text-7xl font-black uppercase italic tracking-tighter">{item.status === 'Pending' ? 'In Production' : 'Completed'}</h2>
@@ -365,7 +366,7 @@ const Sidebar = ({ activePanel, setActivePanel, user, setUser, isOpen, setIsSide
     return (
         <aside className={`fixed inset-y-0 left-0 z-[200] w-[280px] md:w-[320px] flex flex-col bg-white dark:bg-slate-950 border-r border-slate-200 dark:border-white/5 transition-all duration-700 cubic-bezier(0.19, 1, 0.22, 1) font-inter ${isOpen ? 'translate-x-0' : '-translate-x-full shadow-none'} lg:translate-x-0`}>
             {/* Dark Sidebar Brand */}
-            <div className="p-12 md:p-16 flex flex-col items-center relative overflow-hidden">
+            <div className="p-6 md:p-16 flex flex-col items-center relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-b from-blue-500/10 to-transparent pointer-events-none"></div>
                 <Logo size="sm" white={isDarkMode} customUrl={masterData.settings?.logo} />
                 <div className="mt-8 h-1 w-12 bg-black/10 dark:bg-white/20 rounded-full"></div>
@@ -516,6 +517,9 @@ const AppContent = () => {
             localStorage.setItem('nrzone_user', JSON.stringify(u));
             showNotify(`স্বাগতম, ${u.name}!`); 
             logAction(u, 'LOGIN', 'User logged in successfully');
+            if (u.role === 'client') {
+                setActivePanel('ClientDashboard');
+            }
         }
         else showNotify("ভুল আইডি বা পাসওয়ার্ড!", "error");
     };
@@ -565,6 +569,9 @@ const AppContent = () => {
             const command = event.results[event.results.length - 1][0].transcript.toLowerCase();
             console.log("Voice Command:", command);
             
+            const isClient = user?.role === 'client';
+            if (isClient) return; // Ignore panel switching for clients
+
             if (command.includes('ড্যাশবোর্ড') || command.includes('মুখ্য')) setActivePanel('Overview');
             if (command.includes('কাটিং')) setActivePanel('Cutting');
             if (command.includes('সেলাই')) setActivePanel('Swing');
@@ -582,7 +589,7 @@ const AppContent = () => {
     }, [isListening, user]);
 
     if (isLoading || !masterData) return (
-        <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center p-20 animate-fade-in transition-all duration-1000">
+        <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center p-6 md:p-20 animate-fade-in transition-all duration-1000">
             <div className="mb-12 animate-pulse scale-110">
                 <Logo size="lg" white customUrl={masterData?.settings?.logo} />
             </div>
@@ -612,18 +619,20 @@ const AppContent = () => {
                         />
                     )}
                     
-                    <Sidebar activePanel={activePanel} setActivePanel={setActivePanel} user={user} setUser={setUser} isOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} t={t} isDarkMode={isDarkMode} masterData={masterData} />
+                    {user?.role !== 'client' && <Sidebar activePanel={activePanel} setActivePanel={setActivePanel} user={user} setUser={setUser} isOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} t={t} isDarkMode={isDarkMode} masterData={masterData} />}
                     
-                    <main className={`flex-1 flex flex-col min-w-0 h-screen overflow-hidden relative transition-all duration-700 mesh-bg lg:ml-[320px]`}>
+                    <main className={`flex-1 flex flex-col min-w-0 h-screen overflow-hidden relative transition-all duration-700 mesh-bg ${user?.role !== 'client' ? 'lg:ml-[320px]' : ''}`}>
                         {/* Header Section - Modern Responsive SaaS Style */}
                         <header className="h-20 md:h-24 flex items-center justify-between px-4 md:px-10 z-40 relative no-print bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl border-b border-slate-100 dark:border-slate-800 shadow-sm">
                             <div className="flex items-center gap-4 md:gap-6">
-                                <button 
-                                    onClick={() => setIsSidebarOpen(true)}
-                                    className="w-10 h-10 rounded-xl bg-slate-950 text-white flex items-center justify-center hover:scale-105 active:scale-95 transition-all lg:hidden shadow-lg"
-                                >
-                                    <Menu size={18} />
-                                </button>
+                                {user?.role !== 'client' && (
+                                    <button 
+                                        onClick={() => setIsSidebarOpen(true)}
+                                        className="w-10 h-10 rounded-xl bg-slate-950 text-white flex items-center justify-center hover:scale-105 active:scale-95 transition-all lg:hidden shadow-lg"
+                                    >
+                                        <Menu size={18} />
+                                    </button>
+                                )}
                                 <div className="space-y-0.5">
                                     <h2 className="text-xl md:text-2xl font-bold tracking-tight text-black dark:text-white uppercase leading-tight">
                                         {t?.(activePanel?.toLowerCase()) || activePanel}
@@ -643,13 +652,15 @@ const AppContent = () => {
                                     <p className="text-sm font-bold uppercase text-black dark:text-white leading-none">{user?.name || 'অпераটর'}</p>
                                 </div>
                                 <div className="flex gap-2">
-                                    <button 
-                                        onClick={() => setActivePanel("Settings")}
-                                        className="w-10 h-10 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-center hover:bg-slate-50 dark:hover:bg-slate-700 transition-all group"
-                                        title="সেটিংস"
-                                    >
-                                        <Settings size={18} className="group-hover:rotate-45 transition-transform text-black dark:text-white" />
-                                    </button>
+                                    {user?.role !== 'client' && (
+                                        <button 
+                                            onClick={() => setActivePanel("Settings")}
+                                            className="w-10 h-10 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-center hover:bg-slate-50 dark:hover:bg-slate-700 transition-all group"
+                                            title="সেটিংস"
+                                        >
+                                            <Settings size={18} className="group-hover:rotate-45 transition-transform text-black dark:text-white" />
+                                        </button>
+                                    )}
                                     <button 
                                         onClick={() => setIsDarkMode(!isDarkMode)}
                                         className="w-10 h-10 rounded-xl bg-slate-950 text-white shadow-lg flex items-center justify-center hover:bg-black transition-all"
@@ -663,19 +674,25 @@ const AppContent = () => {
 
                         <div className="flex-1 overflow-y-auto px-4 md:px-8 py-6 md:py-8 relative custom-scrollbar">
                             <div className="max-w-[1400px] mx-auto space-y-8 animate-fade-up">
-                                {activePanel === "Overview" && <Overview masterData={masterData} user={user} setActivePanel={setActivePanel} t={t} syncStatus={syncStatus} />}
-                                {activePanel === "Cutting" && <CuttingPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} logAction={logAction} setActivePanel={setActivePanel} t={t} />}
-                                {activePanel === "Swing" && <FactoryPanel type="sewing" masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} setActivePanel={setActivePanel} />}
-                                {activePanel === "Stone" && <FactoryPanel type="stone" masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} setActivePanel={setActivePanel} />}
-                                {activePanel === "Pata" && <PataFactoryPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} setActivePanel={setActivePanel} />}
-                                {activePanel === "Outside" && <OutsideWorkPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} setActivePanel={setActivePanel} />}
-                                {activePanel === "Stock" && <InventoryPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} setActivePanel={setActivePanel} logAction={logAction} />}
-                                {activePanel === "Accounts" && <ExpensePanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} setActivePanel={setActivePanel} />}
-                                {activePanel === "Attendance" && <AttendancePanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} setActivePanel={setActivePanel} />}
-                                {activePanel === "WorkerSummary" && <WorkerSummary masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} setActivePanel={setActivePanel} />}
-                                {activePanel === "Reports" && <ReportsPanel masterData={masterData} t={t} user={user} setActivePanel={setActivePanel} logAction={logAction} showNotify={showNotify} onSyncGoogle={handleSyncToGoogleSheets} />}
-                                {activePanel === "Settings" && <SettingsPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} syncStatus={syncStatus} user={user} t={t} setActivePanel={setActivePanel} logs={logs} downloadBackup={downloadBackup} />}
-                                {activePanel === "Security" && <SecurityPanel masterData={masterData} setActivePanel={setActivePanel} syncStatus={syncStatus} logs={logs} downloadBackup={downloadBackup} user={user} t={t} />}
+                                {activePanel === "ClientDashboard" && <ClientDashboard masterData={masterData} user={user} setMasterData={setMasterData} showNotify={showNotify} />}
+                                
+                                {user?.role !== 'client' && (
+                                    <>
+                                        {activePanel === "Overview" && <Overview masterData={masterData} user={user} setActivePanel={setActivePanel} t={t} syncStatus={syncStatus} />}
+                                        {activePanel === "Cutting" && <CuttingPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} logAction={logAction} setActivePanel={setActivePanel} t={t} />}
+                                        {activePanel === "Swing" && <FactoryPanel type="sewing" masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} setActivePanel={setActivePanel} />}
+                                        {activePanel === "Stone" && <FactoryPanel type="stone" masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} setActivePanel={setActivePanel} />}
+                                        {activePanel === "Pata" && <PataFactoryPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} setActivePanel={setActivePanel} />}
+                                        {activePanel === "Outside" && <OutsideWorkPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} setActivePanel={setActivePanel} />}
+                                        {activePanel === "Stock" && <InventoryPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} setActivePanel={setActivePanel} logAction={logAction} />}
+                                        {activePanel === "Accounts" && <ExpensePanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} setActivePanel={setActivePanel} />}
+                                        {activePanel === "Attendance" && <AttendancePanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} setActivePanel={setActivePanel} />}
+                                        {activePanel === "WorkerSummary" && <WorkerSummary masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} setActivePanel={setActivePanel} />}
+                                        {activePanel === "Reports" && <ReportsPanel masterData={masterData} t={t} user={user} setActivePanel={setActivePanel} logAction={logAction} showNotify={showNotify} onSyncGoogle={handleSyncToGoogleSheets} />}
+                                        {activePanel === "Settings" && <SettingsPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} syncStatus={syncStatus} user={user} t={t} setActivePanel={setActivePanel} logs={logs} downloadBackup={downloadBackup} />}
+                                        {activePanel === "Security" && <SecurityPanel masterData={masterData} setActivePanel={setActivePanel} syncStatus={syncStatus} logs={logs} downloadBackup={downloadBackup} user={user} t={t} />}
+                                    </>
+                                )}
                                 {activePanel === "Notifications" && (
                                     <div className="space-y-8 pb-24 animate-fade-up px-2">
                                          <div className="flex justify-between items-center mb-10">
@@ -710,7 +727,7 @@ const AppContent = () => {
                             </div>
                         </div>
 
-                        {activePanel !== "Menu" && (
+                        {activePanel !== "Menu" && user?.role !== 'client' && (
                             <button 
                                 onClick={() => setActivePanel("Menu")} 
                                 className="fixed bottom-10 right-10 w-20 h-20 bg-slate-950 text-white rounded-2xl shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all z-[200] border-4 border-white dark:border-slate-900 group no-print"

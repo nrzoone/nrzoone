@@ -251,14 +251,27 @@ const SettingsPanel_V2 = ({
     }
   };
 
-  const handleAddListItem = (category, value) => {
+  const handleAddListItem = (category, value, createPortal = false) => {
     if (!value.trim()) return;
     setMasterData((prev) => {
         const list = Array.isArray(prev[category]) ? prev[category] : [];
-        return {
+        const newState = {
             ...prev,
             [category]: [...list, value.toUpperCase()],
         };
+        
+        if (createPortal && category === 'clients') {
+            const userId = value.toUpperCase().replace(/[^A-Z0-9]/g, '_');
+            newState.users = [...(prev.users || []), {
+                id: userId,
+                password: "login123",
+                name: value.toUpperCase(),
+                role: "client"
+            }];
+            setTimeout(() => showNotify(`Portal created! ID: ${userId} | PW: login123`, "success"), 500);
+        }
+        
+        return newState;
     });
     setShowAddModal(false);
   };
@@ -436,28 +449,21 @@ const SettingsPanel_V2 = ({
     setShowAddModal(false);
   };
 
-  const handleAddDesign = (
-    name,
-    sewingRate,
-    stoneRate,
-    pataRate,
-    hijabRate,
-    materialCost,
-    sellingPrice,
-  ) => {
-    if (!name.trim()) return;
+  const handleAddDesign = (data) => {
+    if (!data.name.trim()) return;
     setMasterData((prev) => ({
       ...prev,
       designs: [
         ...(prev.designs || []),
         {
-          name,
-          sewingRate: Number(sewingRate) || 0,
-          stoneRate: Number(stoneRate) || 0,
-          pataRate: Number(pataRate) || 0,
-          hijabRate: Number(hijabRate) || 0,
-          materialCost: Number(materialCost) || 0,
-          sellingPrice: Number(sellingPrice) || 0,
+          name: data.name,
+          sewingRate: Number(data.sewingRate) || 0,
+          stoneRate: Number(data.stoneRate) || 0,
+          pataRate: Number(data.pataRate) || 0,
+          hijabRate: Number(data.hijabRate) || 0,
+          materialCost: Number(data.materialCost) || 0,
+          sellingPrice: Number(data.sellingPrice) || 0,
+          clientRates: data.clientRates || {},
           image: tempImgUrl || "",
         },
       ],
@@ -840,6 +846,7 @@ const SettingsPanel_V2 = ({
             {activeTab === 'sizes' && <ListSection category="sizes" title="সিস্টেম সাইজ (Sizes)" items={masterData.sizes} icon={<Package />} />}
             {activeTab === 'cutters' && <ListSection category="cutters" title="মাস্টার কাটিং (Masters)" items={masterData.cutters} icon={<Scissors />} />}
             {activeTab === 'pataTypes' && <ListSection category="pataTypes" title="পাতা ট্যাক্সোনমি (Type)" items={masterData.pataTypes} icon={<LayoutGrid />} />}
+            {activeTab === 'clients' && <ListSection category="clients" title="ক্লায়েন্ট তালিকা (Clients)" items={masterData.clients} icon={<Users />} />}
             {activeTab === 'designers' && <ListSection category="designers" title="ব্র্যান্ড এবং ডিজাইনার (Brands)" items={masterData.designers} icon={<Star />} />}
             {activeTab === 'designs' && renderDesignsList()}
          </div>
@@ -851,6 +858,7 @@ const SettingsPanel_V2 = ({
             { label: t("sizes") || "Sizes", cat: "sizes", items: masterData.sizes, icon: Package, sub: "Physical Spec" },
             { label: "Masters / Cutters", cat: "cutters", items: masterData.cutters, icon: Scissors, sub: "Cutting Unit" },
             { label: "Pata Taxonomy", cat: "pataTypes", items: masterData.pataTypes, icon: LayoutGrid, sub: "Unit Logic" },
+            { label: "ক্লায়েন্ট তালিকা", cat: "clients", items: masterData.clients, icon: Users, sub: "Client Directory" },
             { label: "ব্র্যান্ড / ডিজাইনার", cat: "designers", items: masterData.designers, icon: Star, sub: "Brand Identity" }
             ].map((sec) => (
             <button key={sec.label} onClick={() => setActiveTab(sec.cat)} className="flex items-center justify-between p-8 bg-white dark:bg-slate-900 rounded-[2rem] border-2 border-slate-50 dark:border-slate-800 hover:border-blue-600 transition-all group text-left shadow-xl hover:-translate-y-1">
@@ -1279,14 +1287,20 @@ const SettingsPanel_V2 = ({
                         }
                     }} 
                   />
+                  {showAddModal === 'clients' && (
+                     <div className="flex items-center gap-3 pt-2">
+                        <input type="checkbox" id="client-portal-access" className="w-5 h-5 accent-blue-600" defaultChecked />
+                        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest leading-tight">Create Client Portal Access (Auto User Generation: login123)</label>
+                     </div>
+                  )}
                   <div className="flex gap-4 pt-6">
                      <button onClick={() => setShowAddModal(false)} className="flex-1 py-4 rounded-2xl font-bold uppercase text-[10px] tracking-widest text-black dark:text-white hover:bg-slate-50 dark:hover:bg-slate-800 transition-all border border-slate-100 dark:border-slate-800">Cancel</button>
                      <button 
                         onClick={() => {
                             const val = document.getElementById("generic-item-input").value;
+                            const createPortal = document.getElementById("client-portal-access")?.checked;
                             if(val) {
-                                handleAddListItem(showAddModal, val);
-                                setShowAddModal(false);
+                                handleAddListItem(showAddModal, val, createPortal);
                             }
                         }} 
                         className="flex-[2] py-4 rounded-2xl bg-blue-600 text-white font-bold uppercase text-[11px] tracking-[0.2em] shadow-xl hover:bg-blue-700 hover:-translate-y-1 active:scale-95 transition-all border-b-4 border-blue-800"
@@ -1441,6 +1455,37 @@ const SettingsPanel_V2 = ({
                       <input id="design-sell" type="number" className="premium-input !h-12 border-emerald-200 dark:border-emerald-900/50 text-emerald-600 font-bold" defaultValue={editDesignModal?.sellingPrice || 0} />
                     </div>
                  </div>
+
+                 {masterData.clients?.length > 0 && (
+                    <div className="space-y-4 pt-4 border-t border-slate-100 dark:border-slate-800 animate-fade-up">
+                      <div className="flex justify-between items-center">
+                        <label className="text-[10px] font-black text-blue-500 uppercase ml-2 tracking-widest italic font-mono">B2B Client Pricing Model</label>
+                        <div className="flex gap-4 text-[7px] font-bold uppercase text-slate-400 mr-4">
+                           <span>Sewing</span>
+                           <span>Stone</span>
+                           <span>Pata</span>
+                           <span>Outwork</span>
+                        </div>
+                      </div>
+                      <div className="space-y-3">
+                          {(masterData.clients || []).map(client => {
+                            const cRate = editDesignModal?.clientRates?.[client] || {};
+                            const isLegacy = typeof cRate === 'number';
+                            return (
+                             <div key={client} className="flex flex-col md:flex-row md:items-center gap-2 bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-100 dark:border-slate-700">
+                                <span className="text-[10px] font-black uppercase truncate md:w-32" title={client}>{client}</span>
+                                <div className="flex-1 grid grid-cols-4 gap-2">
+                                  <input id={`design-client-${client.replace(/[^a-zA-Z0-9]/g,'-')}-sewing`} type="number" className="premium-input !h-9 !text-[10px] !text-center !bg-white dark:!bg-slate-900" placeholder="Sew" defaultValue={isLegacy ? cRate : (cRate.sewing || 0)} />
+                                  <input id={`design-client-${client.replace(/[^a-zA-Z0-9]/g,'-')}-stone`} type="number" className="premium-input !h-9 !text-[10px] !text-center !bg-white dark:!bg-slate-900" placeholder="Sto" defaultValue={isLegacy ? 0 : (cRate.stone || 0)} />
+                                  <input id={`design-client-${client.replace(/[^a-zA-Z0-9]/g,'-')}-pata`} type="number" className="premium-input !h-9 !text-[10px] !text-center !bg-white dark:!bg-slate-900" placeholder="Pat" defaultValue={isLegacy ? 0 : (cRate.pata || 0)} />
+                                  <input id={`design-client-${client.replace(/[^a-zA-Z0-9]/g,'-')}-outwork`} type="number" className="premium-input !h-9 !text-[10px] !text-center !bg-white dark:!bg-slate-900" placeholder="Out" defaultValue={isLegacy ? 0 : (cRate.outwork || 0)} />
+                                </div>
+                             </div>
+                            );
+                          })}
+                      </div>
+                    </div>
+                 )}
               </div>
             </div>
 
@@ -1455,19 +1500,33 @@ const SettingsPanel_V2 = ({
               >Cancel</button>
               <button 
                 onClick={() => {
+                  const clientRatesObj = {};
+                  (masterData.clients || []).forEach(client => {
+                     const cid = client.replace(/[^a-zA-Z0-9]/g,'-');
+                     const sew = Number(document.getElementById(`design-client-${cid}-sewing`)?.value || 0);
+                     const sto = Number(document.getElementById(`design-client-${cid}-stone`)?.value || 0);
+                     const pat = Number(document.getElementById(`design-client-${cid}-pata`)?.value || 0);
+                     const out = Number(document.getElementById(`design-client-${cid}-outwork`)?.value || 0);
+                     
+                     if (sew || sto || pat || out) {
+                        clientRatesObj[client] = { sewing: sew, stone: sto, pata: pat, outwork: out };
+                     }
+                  });
+
                   const data = {
                     name: document.getElementById("design-name").value.trim().toUpperCase(),
                     sewingRate: Number(document.getElementById("design-sewing").value),
                     stoneRate: Number(document.getElementById("design-stone").value),
                     pataRate: Number(document.getElementById("design-pata").value),
                     sellingPrice: Number(document.getElementById("design-sell").value),
+                    clientRates: clientRatesObj,
                     image: tempImgUrl
                   };
                   
                   if (!data.name) return alert("স্টাইল নাম আবশ্যক!");
                   
                   if(editDesignModal) handleUpdateDesignFull(editDesignModal.index, data);
-                  else handleAddDesign(data.name, data.sewingRate, data.stoneRate, data.pataRate, 0, 0, data.sellingPrice);
+                  else handleAddDesign(data);
                 }} 
                 className="flex-[2] h-16 rounded-2xl bg-slate-950 text-white font-bold uppercase text-[11px] tracking-[0.2em] shadow-2xl hover:bg-black transition-all active:scale-95 border-b-4 border-slate-800"
               >{editDesignModal ? 'Update Component' : 'Deploy Style'}</button>
