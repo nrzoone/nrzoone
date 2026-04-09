@@ -143,7 +143,17 @@ const InventoryPanel = ({
             qtyBorka: qtyB,
             qtyHijab: qtyH,
             note: form.note?.value || ""
-        }, ...(prev.deliveries || [])]
+        }, ...(prev.deliveries || [])],
+        cuttingStock: (prev.cuttingStock || []).map(lot => {
+          if (lot.design === form.design.value && lot.color === (form.color.value || "") && lot.size === (form.size.value || "")) {
+            return {
+              ...lot,
+              borka: Math.max(0, lot.borka - qtyB),
+              hijab: Math.max(0, lot.hijab - qtyH)
+            };
+          }
+          return lot;
+        })
     }));
     showNotify("পণ্য ডেলিভারি সম্পন্ন হয়েছে!");
     form.reset();

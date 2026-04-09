@@ -314,7 +314,7 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify }) => {
                             <div key={`p-${i}`} className="p-5 bg-slate-50 dark:bg-slate-800/20 border border-slate-100 dark:border-slate-800 rounded-xl relative overflow-hidden group">
                                 <div className="absolute top-0 right-0 p-3 bg-blue-600 text-white text-[8px] font-bold uppercase tracking-widest rounded-bl-xl shadow-lg">In Pata Work</div>
                                 <h4 className="font-black text-sm uppercase mb-1">Lot #{lot.lotNo} - {lot.design}</h4>
-                                <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-4">Worker: {lot.worker} • Qty: {lot.pataQty}</p>
+                                <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-4">Quantity: {lot.pataQty} Pcs • Issued: {lot.date}</p>
                                 <div className="w-full bg-slate-200 dark:bg-slate-700 h-1 rounded-full"><div className="w-1/2 h-full bg-blue-500 rounded-full animate-pulse"></div></div>
                             </div>
                         ))}
