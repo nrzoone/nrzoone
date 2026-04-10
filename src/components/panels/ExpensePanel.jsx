@@ -41,6 +41,7 @@ const ExpensePanel = ({
   const [editExpense, setEditExpense] = useState(null);
   const [receivePaymentModal, setReceivePaymentModal] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedClientLedger, setSelectedClientLedger] = useState(null);
 
   const getAllWorkerNames = () => {
     const cat = masterData.workerCategories || {};
@@ -259,7 +260,7 @@ const ExpensePanel = ({
     <div className="space-y-10 pb-32 animate-fade-up px-1 md:px-4">
       {/* SaaS Financial HUD */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-        <div className="saas-card !p-8 flex items-center gap-8 group transition-all hover:border-emerald-500/30">
+        <div className="saas-card !p-5 md:!p-8 flex items-center gap-6 md:gap-8 group transition-all hover:border-emerald-500/30">
           <div className="w-16 h-16 bg-emerald-500 text-white rounded-2xl flex items-center justify-center shadow-xl shadow-emerald-500/20 group-hover:scale-110 transition-transform">
             <TrendingUp size={28} />
           </div>
@@ -268,7 +269,7 @@ const ExpensePanel = ({
             <p className="text-[10px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest leading-none italic">Available Cash</p>
           </div>
         </div>
-        <div className="saas-card !p-8 flex items-center gap-8 group transition-all hover:border-rose-500/30">
+        <div className="saas-card !p-5 md:!p-8 flex items-center gap-6 md:gap-8 group transition-all hover:border-rose-500/30">
           <div className="w-16 h-16 bg-rose-600 text-white rounded-2xl flex items-center justify-center shadow-xl shadow-rose-500/20 group-hover:scale-110 transition-transform">
             <TrendingDown size={28} />
           </div>
@@ -279,7 +280,7 @@ const ExpensePanel = ({
         </div>
         <button 
           onClick={() => setShowPrint(true)}
-          className="saas-card !p-8 flex items-center gap-8 group transition-all bg-slate-950 text-white hover:bg-black border-none shadow-2xl"
+          className="saas-card !p-5 md:!p-8 flex items-center gap-6 md:gap-8 group transition-all bg-slate-950 text-white hover:bg-black border-none shadow-2xl"
         >
           <div className="w-16 h-16 bg-white/10 text-white rounded-2xl flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
             <Printer size={28} />
@@ -441,47 +442,101 @@ const ExpensePanel = ({
         </div>
       )}
 
-      {activeTab === "clientLedger" && (
+       {activeTab === "clientLedger" && (
         <div className="space-y-8 animate-fade-up">
-           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {clientBalances.map((item, idx) => (
-                  <div key={idx} className="saas-card bg-white dark:bg-slate-900 shadow-sm flex flex-col justify-between group h-64 border-l-4 border-l-blue-600 hover:border-l-rose-500 hover:border-slate-300 dark:hover:border-slate-700 transition-all">
-                      <div className="flex justify-between items-start mb-6">
-                        <div>
-                           <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-2">B2B Client</p>
-                           <h3 className="text-xl font-bold tracking-tight text-black dark:text-white leading-tight uppercase max-w-[200px]">{item.client}</h3>
+           {!selectedClientLedger ? (
+             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {clientBalances.map((item, idx) => (
+                    <div key={idx} className="saas-card bg-white dark:bg-slate-900 shadow-sm flex flex-col justify-between group h-[300px] border-l-4 border-l-blue-600 hover:border-l-rose-500 hover:border-slate-300 dark:hover:border-slate-700 transition-all cursor-pointer" onClick={() => setSelectedClientLedger(item.client)}>
+                        <div className="flex justify-between items-start mb-6">
+                          <div>
+                             <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-2">B2B Client</p>
+                             <h3 className="text-xl font-bold tracking-tight text-black dark:text-white leading-tight uppercase max-w-[200px]">{item.client}</h3>
+                          </div>
+                          <div className="w-10 h-10 bg-slate-50 dark:bg-slate-800 flex items-center justify-center rounded-xl shadow-inner group-hover:scale-110 transition-transform">
+                            <UserCheck size={18} />
+                          </div>
                         </div>
-                        <div className="w-10 h-10 bg-slate-50 dark:bg-slate-800 flex items-center justify-center rounded-xl shadow-inner group-hover:scale-110 transition-transform">
-                          <UserCheck size={18} />
+                        
+                        <div className="grid grid-cols-2 gap-4 pb-4 border-b border-slate-100 dark:border-slate-800">
+                           <div>
+                              <p className="text-[8px] font-bold uppercase text-slate-400 tracking-widest">Total Billed</p>
+                              <p className="font-bold text-black dark:text-white">৳ {item.billed.toLocaleString()}</p>
+                           </div>
+                           <div className="text-right">
+                              <p className="text-[8px] font-bold uppercase text-slate-400 tracking-widest">Total Paid</p>
+                              <p className="font-bold text-emerald-500">৳ {item.paid.toLocaleString()}</p>
+                           </div>
                         </div>
-                      </div>
-                      
-                      <div className="grid grid-cols-2 gap-4 pb-4 border-b border-slate-100 dark:border-slate-800">
-                         <div>
-                            <p className="text-[8px] font-bold uppercase text-slate-400 tracking-widest">Total Billed</p>
-                            <p className="font-bold text-black dark:text-white">৳ {item.billed.toLocaleString()}</p>
-                         </div>
-                         <div className="text-right">
-                            <p className="text-[8px] font-bold uppercase text-slate-400 tracking-widest">Total Paid</p>
-                            <p className="font-bold text-emerald-500">৳ {item.paid.toLocaleString()}</p>
-                         </div>
-                      </div>
-
-                      <div className="flex justify-between items-center mt-4">
-                         <div>
-                            <p className="text-[9px] font-bold uppercase text-rose-500 tracking-widest mb-1">DUE BALANCE</p>
-                            <p className="font-black text-2xl text-rose-600 leading-none tracking-tighter">৳ {item.due.toLocaleString()}</p>
-                         </div>
-                         <button 
-                            onClick={() => setReceivePaymentModal(item.client)}
-                            className="bg-slate-950 text-white px-5 py-3 rounded-lg text-[9px] font-bold uppercase tracking-widest shadow-xl hover:bg-black transition-all"
-                         >
-                            Receive
-                         </button>
-                      </div>
-                  </div>
-              ))}
-           </div>
+  
+                        <div className="flex justify-between items-center mt-4">
+                           <div>
+                              <p className="text-[9px] font-bold uppercase text-rose-500 tracking-widest mb-1">DUE BALANCE</p>
+                              <p className="font-black text-2xl text-rose-600 leading-none tracking-tighter">৳ {item.due.toLocaleString()}</p>
+                           </div>
+                           <div className="flex gap-2">
+                            <button 
+                                onClick={(e) => { e.stopPropagation(); setReceivePaymentModal(item.client); }}
+                                className="bg-emerald-600 text-white px-4 py-2 rounded-lg text-[8px] font-bold uppercase tracking-widest shadow-xl hover:bg-emerald-700 transition-all"
+                            >
+                                Pay
+                            </button>
+                            <button 
+                                className="bg-slate-950 text-white px-4 py-2 rounded-lg text-[8px] font-bold uppercase tracking-widest shadow-xl hover:bg-emerald-700 transition-all"
+                            >
+                                Ledger
+                            </button>
+                           </div>
+                        </div>
+                    </div>
+                ))}
+             </div>
+           ) : (
+             <div className="saas-card bg-white dark:bg-slate-900 animate-fade-in relative">
+                <button 
+                  onClick={() => setSelectedClientLedger(null)}
+                  className="absolute top-6 right-6 p-2 bg-slate-100 dark:bg-slate-800 rounded-xl hover:bg-slate-950 hover:text-white transition-all"
+                >
+                  <X size={20} />
+                </button>
+                <div className="mb-10">
+                   <h3 className="text-2xl font-black uppercase text-blue-600 mb-1">{selectedClientLedger}</h3>
+                   <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">Complete Transaction History</p>
+                </div>
+                
+                <div className="overflow-x-auto">
+                    <table className="w-full text-left border-collapse">
+                        <thead>
+                            <tr className="border-b-2 border-slate-100 dark:border-slate-800">
+                                <th className="py-4 text-[10px] font-black uppercase tracking-widest">Date</th>
+                                <th className="py-4 text-[10px] font-black uppercase tracking-widest">Type</th>
+                                <th className="py-4 text-[10px] font-black uppercase tracking-widest">Note</th>
+                                <th className="py-4 text-right text-[10px] font-black uppercase tracking-widest">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-50 dark:divide-slate-800">
+                            {(masterData.clientTransactions || [])
+                                .filter(t => t.client === selectedClientLedger)
+                                .sort((a,b) => new Date(b.date?.split('/').reverse().join('-')) - new Date(a.date?.split('/').reverse().join('-')))
+                                .map((t, idx) => (
+                                    <tr key={idx} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                                        <td className="py-4 text-[11px] font-bold uppercase">{t.date}</td>
+                                        <td className="py-4 text-[11px] font-bold uppercase">
+                                            <span className={`px-2 py-0.5 rounded ${t.type === 'BILL' ? 'bg-rose-50 text-rose-600 border border-rose-100' : 'bg-emerald-50 text-emerald-600 border border-emerald-100'}`}>
+                                                {t.type}
+                                            </span>
+                                        </td>
+                                        <td className="py-4 text-[10px] font-medium uppercase text-slate-500 max-w-xs truncate">{t.note}</td>
+                                        <td className={`py-4 text-right font-black ${t.type === 'BILL' ? 'text-rose-600' : 'text-emerald-600'}`}>
+                                            ৳ {t.amount?.toLocaleString()}
+                                        </td>
+                                    </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+             </div>
+           )}
         </div>
       )}
 

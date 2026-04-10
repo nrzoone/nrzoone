@@ -57,6 +57,28 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
         date: new Date().toISOString().split('T')[0]
     });
 
+    const rawStockByClient = useMemo(() => {
+        const stocks = {};
+        (masterData.rawInventory || []).forEach(log => {
+            const c = log.client || 'FACTORY';
+            if (!stocks[c]) stocks[c] = { fabric: 0, stone: 0, roll: 0 };
+            const item = (log.item || '').toLowerCase();
+            if (item.includes('fabric') || item.includes('কাপড়')) {
+                if (log.type === 'in') stocks[c].fabric += Number(log.qty);
+                else stocks[c].fabric -= Number(log.qty);
+            } else if (item.includes('stone') || item.includes('পাথর')) {
+                if (log.type === 'in') stocks[c].stone += Number(log.qty);
+                else stocks[c].stone -= Number(log.qty);
+            } else if (item.includes('roll') || item.includes('রোল')) {
+                if (log.type === 'in') stocks[c].roll += Number(log.qty);
+                else stocks[c].roll -= Number(log.qty);
+            }
+        });
+        return stocks;
+    }, [masterData.rawInventory]);
+
+    const currentClientStock = rawStockByClient[entryData.client] || { fabric: 0, stone: 0, roll: 0 };
+
     const handleSaveIssue = async (shouldPrint) => {
         if (!entryData.worker || !entryData.task || (!entryData.borkaQty && !entryData.hijabQty)) {
             return showNotify('কারিগর, কাজ এবং পরিমাণ আবশ্যক!', 'error');
@@ -493,7 +515,13 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
                                     </select>
                                 </div>
                                 <div className="space-y-1">
-                                    <label className="text-[10px] font-bold text-black dark:text-white dark:text-white ml-1 uppercase tracking-widest">কাজের ধরন (Task Type)</label>
+                                    <div className="flex justify-between items-center px-1">
+                                        <label className="text-[10px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest">কাজের ধরন (Task Type)</label>
+                                        <div className="flex gap-2">
+                                            <span className="text-[8px] font-bold bg-blue-100 text-blue-600 px-1.5 py-0.5 rounded uppercase">F: {currentClientStock.fabric}</span>
+                                            <span className="text-[8px] font-bold bg-amber-100 text-amber-600 px-1.5 py-0.5 rounded uppercase">S: {currentClientStock.stone}</span>
+                                        </div>
+                                    </div>
                                     <select className="premium-input !h-12 text-sm uppercase" value={entryData.task} onChange={(e) => setEntryData(p => ({ ...p, task: e.target.value }))}>
                                         <option value="">কাজের ধরন নির্বাচন করুন...</option>
                                         {(masterData.outsideTasks || []).map(t => <option key={t} value={t}>{t}</option>)}

@@ -80,6 +80,25 @@ const CuttingPanel = ({
       .filter((n) => !isNaN(n));
     return numbers.length > 0 ? (Math.max(...numbers) + 1).toString() : "101";
   }, [masterData.cuttingStock]);
++
++  const rawStockByClient = useMemo(() => {
++    const stocks = {};
++    (masterData.rawInventory || []).forEach(log => {
++        const c = log.client || 'FACTORY';
++        if (!stocks[c]) stocks[c] = {};
++        if (!stocks[c][log.item]) stocks[c][log.item] = 0;
++        if (log.type === 'in') stocks[c][log.item] += Number(log.qty);
++        else stocks[c][log.item] -= Number(log.qty);
++    });
++    return stocks;
++  }, [masterData.rawInventory]);
++
++  const clientStock = useMemo(() => {
++    const c = entryData.client || 'FACTORY';
++    const item = entryData.materialName;
++    if (!item) return 0;
++    return rawStockByClient[c]?.[item] || 0;
++  }, [rawStockByClient, entryData.client, entryData.materialName]);
 
   React.useEffect(() => {
     if (!entryData.lotNo) {
@@ -539,9 +558,16 @@ const CuttingPanel = ({
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-1.5">
-                           <label className="text-[10px] font-bold uppercase text-black dark:text-white dark:text-white tracking-widest ml-1">কাপড় / মেটেরিয়াল</label>
+                           <div className="flex justify-between items-center mb-1">
+                             <label className="text-[10px] font-bold uppercase text-black dark:text-white dark:text-white tracking-widest ml-1">কাপড় / মেটেরিয়াল</label>
+                             {entryData.client && (
+                               <span className={`text-[9px] font-black px-2 py-0.5 rounded-md ${clientStock <= 0 ? 'bg-rose-100 text-rose-600' : 'bg-blue-100 text-blue-600'}`}>
+                                 স্টক: {clientStock} গজ
+                               </span>
+                             )}
+                           </div>
                            <input 
                              list="material-list"
                              className="premium-input !h-12 text-sm font-bold uppercase" 

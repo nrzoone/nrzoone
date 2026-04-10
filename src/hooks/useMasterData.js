@@ -49,6 +49,7 @@ const initialData = {
     rawInventory: [],
     deliveries: [],
     outsideWorkEntries: [],
+    productionRequests: [],
     outsideWorkers: ["REPAIR MAN 1", "BUTTON EXPERT"],
     outsideTasks: ["BUTTON", "CHAIN", "REPAIR", "KAZ", "OTHERS"],
     adminNotes: [],

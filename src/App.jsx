@@ -59,6 +59,7 @@ import SecurityPanel from "./components/panels/SecurityPanel";
 import ClientDashboard from "./components/panels/ClientDashboard";
 
 import MenuPanel from "./components/panels/MenuPanel";
+import ClientLedgerPanel from "./components/panels/ClientLedgerPanel";
 import { useMasterData } from "./hooks/useMasterData";
 import { Toast } from "./components/UIComponents";
 import { useTranslation } from "./utils/translations";
@@ -316,7 +317,7 @@ const MENU_CATEGORIES = [
         label: "মূল সিস্টেম (CORE)",
         items: [
             { id: "Overview", label: "ড্যাশবোর্ড", icon: Activity, sub: "লাইভ মনিটর" },
-            { id: "Menu", label: "মুখ্য মেনু", icon: LayoutGrid, sub: "সব বিভাগ" },
+            { id: "ClientLedger", label: "ক্লায়েন্ট লেজার", icon: LayoutGrid, sub: "সব হিসাব" },
         ]
     },
     {
@@ -672,7 +673,7 @@ const AppContent = () => {
                             </div>
                         </header>
 
-                        <div className="flex-1 overflow-y-auto px-4 md:px-8 py-6 md:py-8 relative custom-scrollbar">
+                        <div className="flex-1 overflow-y-auto px-2 md:px-8 py-6 md:py-8 relative custom-scrollbar">
                             <div className="max-w-[1400px] mx-auto space-y-8 animate-fade-up">
                                 {activePanel === "ClientDashboard" && <ClientDashboard masterData={masterData} user={user} setMasterData={setMasterData} showNotify={showNotify} />}
                                 
@@ -689,8 +690,9 @@ const AppContent = () => {
                                         {activePanel === "Attendance" && <AttendancePanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} setActivePanel={setActivePanel} />}
                                         {activePanel === "WorkerSummary" && <WorkerSummary masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} setActivePanel={setActivePanel} />}
                                         {activePanel === "Reports" && <ReportsPanel masterData={masterData} t={t} user={user} setActivePanel={setActivePanel} logAction={logAction} showNotify={showNotify} onSyncGoogle={handleSyncToGoogleSheets} />}
-                                        {activePanel === "Settings" && <SettingsPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} syncStatus={syncStatus} user={user} t={t} setActivePanel={setActivePanel} logs={logs} downloadBackup={downloadBackup} />}
-                                        {activePanel === "Security" && <SecurityPanel masterData={masterData} setActivePanel={setActivePanel} syncStatus={syncStatus} logs={logs} downloadBackup={downloadBackup} user={user} t={t} />}
+                                        { activePanel === "Settings" && <SettingsPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} syncStatus={syncStatus} user={user} t={t} setActivePanel={setActivePanel} logs={logs} downloadBackup={downloadBackup} />}
+                                        { activePanel === "Security" && <SecurityPanel masterData={masterData} setActivePanel={setActivePanel} syncStatus={syncStatus} logs={logs} downloadBackup={downloadBackup} user={user} t={t} />}
+                                        { (activePanel === "Menu" || activePanel === "ClientLedger") && <ClientLedgerPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} setActivePanel={setActivePanel} />}
                                     </>
                                 )}
                                 {activePanel === "Notifications" && (
@@ -727,17 +729,17 @@ const AppContent = () => {
                             </div>
                         </div>
 
-                        {activePanel !== "Menu" && user?.role !== 'client' && (
+                        {activePanel !== "ClientLedger" && user?.role !== 'client' && (
                             <button 
-                                onClick={() => setActivePanel("Menu")} 
+                                onClick={() => setActivePanel("ClientLedger")} 
                                 className="fixed bottom-10 right-10 w-20 h-20 bg-slate-950 text-white rounded-2xl shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all z-[200] border-4 border-white dark:border-slate-900 group no-print"
-                                title="মেনু ওপেন করুন"
+                                title="ক্লায়েন্ট লেজার ওপেন করুন"
                             >
                                 <LayoutGrid size={28} className="group-hover:rotate-12 transition-transform" />
                             </button>
                         )}
                     </main>
-                    {activePanel === "Menu" && <MenuPanel masterData={masterData} setActivePanel={setActivePanel} user={user} t={t} showNotify={showNotify} />}
+                    {/* {activePanel === "Menu" && <MenuPanel masterData={masterData} setActivePanel={setActivePanel} user={user} t={t} showNotify={showNotify} />} */}
                 </div>
             )}
             {trackingId && <div className="fixed inset-0 z-[1000]"><TrackingView trackId={trackingId} masterData={masterData} onClose={() => setTrackingId(null)} isDarkMode={isDarkMode} /></div>}

@@ -85,7 +85,7 @@ const Overview = ({ masterData, stats: propStats, setActivePanel, t, user, syncS
                 {[
                     { label: "মোট কারিগর", value: (masterData.workerDocs || []).length, trend: "+4.2%", icon: Users, id: "Settings", color: "text-blue-600", bg: "bg-blue-50 dark:bg-blue-900/10" },
                     { label: "চলমান কাজ", value: (masterData.productions || []).length + (masterData.pataEntries || []).length, trend: "+12.1%", icon: Activity, id: "Cutting", color: "text-emerald-600", bg: "bg-emerald-50 dark:bg-emerald-900/10" },
-                    { label: "আর্থিক হিসাব (৳)", value: `${((masterData.expenses || []).reduce((acc, e) => acc + Number(e.amount || 0), 0) / 1000).toFixed(1)}k`, trend: "+8.4%", icon: DollarSign, id: "Accounts", color: "text-indigo-600", bg: "bg-indigo-50 dark:bg-indigo-900/10" },
+                    { label: "ফ্যাক্টরি ব্যালেন্স (৳)", value: `${(((masterData.cashEntries || []).reduce((acc, c) => acc + Number(c.amount || 0), 0) - (masterData.expenses || []).reduce((acc, e) => acc + Number(e.amount || 0), 0)) / 1000).toFixed(1)}k`, trend: "+8.4%", icon: DollarSign, id: "Accounts", color: "text-indigo-600", bg: "bg-indigo-50 dark:bg-indigo-900/10" },
                     { label: "পেন্ডিং লট", value: (masterData.productions || []).filter(p => p.status === 'Pending').length, trend: "-2.1%", icon: Package, id: "Cutting", color: "text-amber-600", bg: "bg-amber-50 dark:bg-amber-900/10" }
                 ].map((kpi, idx) => (
                     <div key={idx} className="saas-card group cursor-pointer" onClick={() => setActivePanel(kpi.id)}>

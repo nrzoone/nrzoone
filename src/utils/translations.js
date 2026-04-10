@@ -169,7 +169,8 @@ export const translations = {
         fault: "Operational Fault",
         dbLatency: "Database Latency",
         systemCapacity: "Neural Capacity",
-        storageAllocated: "Unlimited Cloud Encrypted"
+        storageAllocated: "Unlimited Cloud Encrypted",
+        clientledger: "Client Ledger"
     },
     BN: {
         mainMenu: "প্রধান মেনু",
@@ -351,7 +352,8 @@ export const translations = {
         productionMatrix: "উৎপাদন ম্যাট্রিক্স",
         auditArchives: "অডিট আর্কাইভস",
         strategicMaintenance: "কৌশলগত ব্যবস্থাপনা",
-        config: "কনফিগুরেশন"
+        config: "কনফিগুরেশন",
+        clientledger: "ক্লায়েন্ট লেজার"
     }
 };
 
