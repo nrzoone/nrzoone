@@ -50,7 +50,7 @@ const MenuPanel = ({ setActivePanel, user, t, showNotify }) => {
                         </div>
                         <div className="space-y-4">
                             <h1 className="text-5xl md:text-8xl font-black uppercase tracking-normal leading-none text-slate-950 dark:text-white">মেনু হাব</h1>
-                            <p className="text-[10px] md:text-[12px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.3em]">NRZONE NEURAL INTERFACE V5.2 — ELITE ACCESS</p>
+                            <p className="text-[10px] md:text-[12px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.3em]">NRZOONE WOMEN'S CLOTHING — ELITE ACCESS</p>
                         </div>
                     </div>
                     <button 
@@ -104,7 +104,7 @@ const MenuPanel = ({ setActivePanel, user, t, showNotify }) => {
                 </div>
 
                 <div className="mt-48 pt-20 border-t border-slate-200 dark:border-slate-800 flex flex-col md:flex-row justify-between items-center opacity-60 gap-10 text-slate-600 dark:text-slate-400">
-                    <p className="text-[11px] font-bold uppercase tracking-[0.6em]">NRZONE NEURAL ENGINE V5.2 // SECURE BOOTH</p>
+                    <p className="text-[11px] font-bold uppercase tracking-[0.6em]">NRZOONE COUTURE ENGINE V5.2 // SECURE BOOTH</p>
                     <div className="flex gap-16">
                         <button onClick={() => setActivePanel('Security')} className="text-[11px] font-bold uppercase tracking-[0.6em] hover:text-slate-950 dark:hover:text-white">SYSTEM LOGS</button>
                         <button onClick={() => showNotify('NRZONE NEURAL ENGINE: STATUS ONLINE')} className="text-[11px] font-bold uppercase tracking-[0.6em] hover:text-slate-950 dark:hover:text-white">GATEWAY STATUS</button>

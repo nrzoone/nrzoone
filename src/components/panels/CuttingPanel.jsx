@@ -80,25 +80,25 @@ const CuttingPanel = ({
       .filter((n) => !isNaN(n));
     return numbers.length > 0 ? (Math.max(...numbers) + 1).toString() : "101";
   }, [masterData.cuttingStock]);
-+
-+  const rawStockByClient = useMemo(() => {
-+    const stocks = {};
-+    (masterData.rawInventory || []).forEach(log => {
-+        const c = log.client || 'FACTORY';
-+        if (!stocks[c]) stocks[c] = {};
-+        if (!stocks[c][log.item]) stocks[c][log.item] = 0;
-+        if (log.type === 'in') stocks[c][log.item] += Number(log.qty);
-+        else stocks[c][log.item] -= Number(log.qty);
-+    });
-+    return stocks;
-+  }, [masterData.rawInventory]);
-+
-+  const clientStock = useMemo(() => {
-+    const c = entryData.client || 'FACTORY';
-+    const item = entryData.materialName;
-+    if (!item) return 0;
-+    return rawStockByClient[c]?.[item] || 0;
-+  }, [rawStockByClient, entryData.client, entryData.materialName]);
+
+  const rawStockByClient = useMemo(() => {
+    const stocks = {};
+    (masterData.rawInventory || []).forEach(log => {
+        const c = log.client || 'FACTORY';
+        if (!stocks[c]) stocks[c] = {};
+        if (!stocks[c][log.item]) stocks[c][log.item] = 0;
+        if (log.type === 'in') stocks[c][log.item] += Number(log.qty);
+        else stocks[c][log.item] -= Number(log.qty);
+    });
+    return stocks;
+  }, [masterData.rawInventory]);
+
+  const clientStock = useMemo(() => {
+    const c = entryData.client || 'FACTORY';
+    const item = entryData.materialName;
+    if (!item) return 0;
+    return rawStockByClient[c]?.[item] || 0;
+  }, [rawStockByClient, entryData.client, entryData.materialName]);
 
   React.useEffect(() => {
     if (!entryData.lotNo) {
@@ -167,8 +167,8 @@ const CuttingPanel = ({
   };
 
   const handleDelete = (id) => {
-    if (user?.role?.toLowerCase() === 'worker') {
-      showNotify("আপনার তথ্য ডিলিট করার অনুমতি নেই!", "error");
+    if (user?.role?.toLowerCase() !== 'admin') {
+      showNotify("শুধুমাত্র এডমিন ডিলিট করার অনুমতি আছে!", "error");
       return;
     }
     if (!window.confirm("Are you sure? This node will be purged.")) return;
@@ -362,11 +362,13 @@ const CuttingPanel = ({
                             >
                                 সুইং এ পাঠান (Swing)
                             </button>
-                            <button 
-                                onClick={() => handleDelete(item.id)} 
-                                className="w-11 h-11 bg-white dark:bg-slate-900 rounded-xl flex items-center justify-center text-rose-500 hover:bg-rose-500 hover:text-white transition-all shadow-sm border border-slate-200 dark:border-slate-700" title="ডিলিট">
-                                <Trash2 size={16} />
-                            </button>
+                            {user?.role === 'admin' && (
+                                <button 
+                                    onClick={() => handleDelete(item.id)} 
+                                    className="w-11 h-11 bg-white dark:bg-slate-900 rounded-xl flex items-center justify-center text-rose-500 hover:bg-rose-500 hover:text-white transition-all shadow-sm border border-slate-200 dark:border-slate-700" title="ডিলিট">
+                                    <Trash2 size={16} />
+                                </button>
+                            )}
                         </div>
                     </div>
                   ))

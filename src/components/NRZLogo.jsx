@@ -1,52 +1,61 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 const NRZLogo = ({ size = "md", white = true, customUrl = null }) => {
-  const [imgError, setImgError] = useState(false);
-  
   const sizes = {
-    sm: { w: 100, h: 50, iconSize: 45, text: "text-xl", sub: "text-[5px]" },
-    md: { w: 220, h: 110, iconSize: 85, text: "text-4xl", sub: "text-[9px]" },
-    lg: { w: 350, h: 180, iconSize: 140, text: "text-6xl", sub: "text-[12px]" },
-    xl: { w: 500, h: 260, iconSize: 200, text: "text-8xl", sub: "text-[16px]" },
+    sm: { container: "w-24", icon: 32, text: "text-lg", sub: "text-[5px]", gap: "gap-1" },
+    md: { container: "w-48", icon: 64, text: "text-3xl", sub: "text-[9px]", gap: "gap-2" },
+    lg: { container: "w-72", icon: 120, text: "text-5xl", sub: "text-[12px]", gap: "gap-3" },
+    xl: { container: "w-96", icon: 180, text: "text-7xl", sub: "text-[16px]", gap: "gap-4" },
   };
 
   const s = sizes[size] || sizes.md;
-  const logoPath = customUrl || "/logo_main.png";
 
   return (
-    <div className={`flex flex-col items-center justify-center ${white ? "text-white" : "text-black"}`} style={{ width: s.w }}>
-        {(!imgError && logoPath) ? (
-          <img 
-            src={logoPath} 
-            alt="Company Logo" 
-            onError={() => setImgError(true)}
-            style={{ 
-              width: s.iconSize, 
-              height: 'auto', 
-              maxHeight: s.iconSize * 0.8,
-              objectFit: 'contain',
-              filter: (white && !customUrl) ? 'brightness(0) invert(1) drop-shadow(0 0 10px rgba(255,255,255,0.2))' : 'none'
-            }} 
-            className="mb-2"
+    <div className={`flex flex-col items-center justify-center ${s.container} ${white ? "text-white" : "text-slate-950"}`}>
+      <div className="relative group">
+        {/* Premium Sewing Machine SVG */}
+        <svg 
+          width={s.icon} 
+          height={s.icon} 
+          viewBox="0 0 24 24" 
+          fill="none" 
+          stroke="currentColor" 
+          strokeWidth="1.2" 
+          strokeLinecap="round" 
+          strokeLinejoin="round"
+          className="transition-transform duration-500 group-hover:rotate-6 group-hover:scale-110"
+        >
+          {/* Main Body */}
+          <path d="M4 18h16" />
+          <path d="M6 18V7c0-1.1.9-2 2-2h8c1.1 0 2 .9 2 2v3" />
+          <path d="M14 10h6v2" />
+          <path d="M12 12h10" />
+          {/* Needle & Stylized Thread Loop */}
+          <path d="M11 5v11" className="animate-pulse" />
+          <circle cx="17" cy="14" r="2" />
+          <path 
+            d="M2 14c4-6 8-6 12 0s8 6 12 0" 
+            stroke="currentColor"
+            strokeWidth="0.5"
+            className="opacity-40" 
+            style={{ strokeDasharray: '2, 2' }}
           />
-        ) : (
-          <div className={`mb-4 flex items-center justify-center rounded-[2rem] border-2 ${white ? 'bg-white/5 border-white/20 text-white' : 'bg-black/5 border-black/20 text-black'}`} style={{ width: s.iconSize, height: s.iconSize * 0.7 }}>
-             <div className="flex flex-col items-center gap-1">
-                <div className="w-10 h-10 rounded-full bg-current opacity-20 animate-pulse flex items-center justify-center">
-                    <span className="text-[10px] font-black">NZ</span>
-                </div>
-                <p className="text-[7px] font-black uppercase tracking-[0.3em]">NRZOONE</p>
-             </div>
-          </div>
-        )}
-        <div className="text-center relative">
-          <h1 className={`font-black uppercase italic tracking-[-0.06em] leading-none ${s.text}`} style={{ fontFamily: "serif" }}>
-            NRZO<span className="opacity-70 mx-[-0.05em]">O</span>NE
-          </h1>
-          <p className={`font-black uppercase tracking-[0.45em] opacity-75 italic ${s.sub} mt-1 whitespace-nowrap`}>
+        </svg>
+        <div className={`absolute -inset-4 bg-current opacity-[0.03] blur-2xl rounded-full scale-0 group-hover:scale-100 transition-transform duration-700`}></div>
+      </div>
+
+      <div className={`text-center space-y-1 ${s.gap} mt-4`}>
+        <h1 className={`${s.text} font-black uppercase italic tracking-tighter leading-none`}>
+          NRZO<span className="text-blue-500">O</span>NE
+        </h1>
+        <div className="flex items-center justify-center gap-2">
+          <div className="h-[1px] flex-1 bg-current opacity-20"></div>
+          <p className={`${s.sub} font-black uppercase tracking-[0.4em] opacity-60 whitespace-nowrap`}>
             WOMEN'S CLOTHING
           </p>
+          <div className="h-[1px] flex-1 bg-current opacity-20"></div>
         </div>
+      </div>
     </div>
   );
 };

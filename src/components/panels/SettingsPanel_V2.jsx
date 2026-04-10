@@ -190,6 +190,52 @@ const SettingsPanel_V2 = ({
     }
   };
 
+  const handleMasterReset = (isTotal = false) => {
+    const msg = isTotal 
+      ? "🚨 WARNING: This will DELETE EVERYTHING (Workers, Designs, Users, and all Transactions). This CANNOT be undone. Are you absolutely sure?"
+      : "⚠️ WARNING: This will clear all WORKERS and TRANSACTIONAL data (Lots, Payments, Deliveries, Inventory) but keep your DESIGNS and RATES. Continue?";
+    
+    if (confirm(msg)) {
+      if (confirm("FINAL CONFIRMATION: Are you sure you want to proceed with the deletion?")) {
+        setMasterData(prev => {
+          const transactionalKeys = [
+            'cuttingStock', 'productions', 'pataEntries', 'pataStockTransfer', 
+            'rawInventory', 'deliveries', 'outsideWorkEntries', 'expenses', 
+            'cashEntries', 'workerPayments', 'workerAdvances', 'clientTransactions', 
+            'productionRequests', 'attendance', 'auditLogs', 'notifications'
+          ];
+          
+          const workerKeys = {
+            workerCategories: { sewing: [], stone: [], pata: [], monthly: [] },
+            workerWages: { sewing: {}, stone: {}, pata: {}, monthly: {} },
+            workerDocs: [],
+            workerBiometrics: {}
+          };
+
+          if (isTotal) {
+            // Full Reset (except super admin)
+            return {
+              ...prev,
+              ...transactionalKeys.reduce((acc, k) => ({ ...acc, [k]: [] }), {}),
+              ...workerKeys,
+              designs: [],
+              clients: [],
+              users: prev.users.filter(u => u.id === 'NRZONE')
+            };
+          } else {
+            // Transactional + Worker Reset (Keeping Designs/Rates/Colors/Sizes)
+            return {
+              ...prev,
+              ...transactionalKeys.reduce((acc, k) => ({ ...acc, [k]: [] }), {}),
+              ...workerKeys
+            };
+          }
+        });
+        showNotify(isTotal ? "System fully reset to factory settings!" : "Workers and transactional data cleared. Designs and rates preserved.");
+      }
+    }
+  };
+
   const registerAdminBiometric = async () => {
     try {
         const challenge = crypto.getRandomValues(new Uint8Array(32));
@@ -1148,6 +1194,34 @@ const SettingsPanel_V2 = ({
             </div>
          </div>
       </div>
+
+      <div className="saas-card bg-rose-50 dark:bg-rose-950/20 border-2 border-rose-500/20 p-8 rounded-2xl">
+         <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+            <div className="text-center md:text-left">
+               <h4 className="text-xl font-black uppercase text-rose-500 italic mb-1 flex items-center gap-2">
+                 <ShieldAlert size={20} /> Danger Zone: Factory Reset
+               </h4>
+               <p className="text-[10px] font-bold text-rose-400 uppercase tracking-widest leading-relaxed max-w-md italic">
+                 সব এন্ট্রি করা তথ্য (Lots, Payments, Deliveries) এক ক্লিকে মুছে ফেলুন। এই কাজ রিস্টোর করা সম্ভব নয়।
+               </p>
+            </div>
+            <div className="flex gap-4">
+               <button 
+                  onClick={() => handleMasterReset(false)} 
+                  className="px-6 py-4 bg-rose-500 text-white rounded-xl font-black uppercase text-[10px] tracking-widest shadow-xl hover:bg-rose-600 transition-all active:scale-95 border-b-4 border-rose-700"
+               >
+                  Clear All Entries
+               </button>
+               <button 
+                  onClick={() => handleMasterReset(true)} 
+                  className="px-6 py-4 bg-slate-950 text-white rounded-xl font-black uppercase text-[10px] tracking-widest shadow-xl hover:bg-black transition-all active:scale-95 border-b-4 border-slate-800"
+               >
+                  Total Wipe (Zero Start)
+               </button>
+            </div>
+         </div>
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
          {['productions', 'cuttingStock', 'pataEntries', 'deliveries', 'attendance'].map(key => (
             <div key={key} className="saas-card flex justify-between items-center group hover:border-rose-500 transition-all">

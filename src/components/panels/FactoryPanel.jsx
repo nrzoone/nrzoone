@@ -785,12 +785,31 @@ const FactoryPanel = ({
                         <Printer size={16} />
                       </button>
                       {isAdmin && (
-                        <button
-                          onClick={() => setEditModal(p)}
-                          className="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-800 text-black dark:text-white hover:bg-blue-600 hover:text-white transition-all border border-slate-100 dark:border-slate-800"
-                        >
-                          <Settings size={16} />
-                        </button>
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => setEditModal(p)}
+                            className="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-800 text-black dark:text-white hover:bg-blue-600 hover:text-white transition-all border border-slate-100 dark:border-slate-800"
+                            title="এডিট"
+                          >
+                            <Settings size={16} />
+                          </button>
+                          <button
+                            onClick={() => {
+                              if (window.confirm("আপনি কি নিশ্চিত যে এই রেকর্ডটি মুছে ফেলতে চান? এটি স্টকের ওপর প্রভাব ফেলতে পারে।")) {
+                                setMasterData(prev => ({
+                                  ...prev,
+                                  productions: (prev.productions || []).filter(item => item.id !== p.id)
+                                }));
+                                logAction(user, 'PROD_DELETE', `Deleted ${p.type} entry: ${p.design} Lot #${p.lotNo}`);
+                                showNotify("রেকর্ডটি মুছে ফেলা হয়েছে!", "info");
+                              }
+                            }}
+                            className="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-800 text-rose-500 hover:bg-rose-500 hover:text-white transition-all border border-slate-100 dark:border-slate-800"
+                            title="ডিলিট"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
                       )}
                     </div>
                   </div>
@@ -836,12 +855,32 @@ const FactoryPanel = ({
                           <p className="text-xl font-bold text-emerald-600">৳{p.rate}</p>
                        </div>
                     </div>
-                    <button
-                        onClick={() => setPrintSlip(p)}
-                        className="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-800 text-black dark:text-white hover:bg-slate-950 hover:text-white transition-all"
-                      >
-                        <Printer size={16} />
-                      </button>
+                    <div className="flex gap-2">
+                      <button
+                          onClick={() => setPrintSlip(p)}
+                          className="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-800 text-black dark:text-white hover:bg-slate-950 hover:text-white transition-all"
+                        >
+                          <Printer size={16} />
+                        </button>
+                        {isAdmin && (
+                          <button
+                             onClick={() => {
+                              if (window.confirm("রেকর্ডটি মুছে ফেললে প্রোডাকশন হিস্ট্রি থেকে এটি চিরতরে চলে যাবে। আপনি কি নিশ্চিত?")) {
+                                setMasterData(prev => ({
+                                  ...prev,
+                                  productions: (prev.productions || []).filter(item => item.id !== p.id)
+                                }));
+                                logAction(user, 'PROD_HISTORY_DELETE', `Deleted history entry: ${p.design} Lot #${p.lotNo}`);
+                                showNotify("পুরাতন রেকর্ডটি মুছে ফেলা হয়েছে!");
+                              }
+                            }}
+                             className="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-800 text-rose-500 hover:bg-rose-500 hover:text-white transition-all"
+                             title="ডিলিট"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        )}
+                    </div>
                   </div>
                 </div>
               ))

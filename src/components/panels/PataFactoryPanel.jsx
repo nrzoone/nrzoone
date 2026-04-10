@@ -25,7 +25,8 @@ import {
   Activity,
   User,
   ChevronRight,
-  ShieldCheck
+  ShieldCheck,
+  Download
 } from "lucide-react";
 
 import { syncToSheet } from '../../utils/syncUtils';
@@ -46,6 +47,7 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
     const [payModal, setPayModal] = useState(null);
     const [ledgerModal, setLedgerModal] = useState(null);
     const [view, setView] = useState('active');
+    const [showRestockModal, setShowRestockModal] = useState(false);
 
     const [entryData, setEntryData] = useState({
         worker: '',
@@ -281,6 +283,34 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
         showNotify('পাতা কাজ সফলভাবে জমা নেওয়া হয়েছে!');
     };
 
+    const handleRestock = (e) => {
+        e.preventDefault();
+        const f = e.target;
+        const qty = Number(f.qty.value);
+        const item = f.item.value; // "পাথর প্যাকেট (Stone)" or "পেপার রোল (Paper)"
+        const client = f.client.value;
+        const date = new Date().toLocaleDateString('en-GB');
+
+        if (qty <= 0) return;
+
+        setMasterData(prev => ({
+            ...prev,
+            rawInventory: [{
+                id: Date.now(),
+                date,
+                item,
+                client,
+                qty,
+                type: 'in',
+                note: `QUICK RESTOCK: ${f.note.value || 'MANUAL ADJ'}`
+            }, ...(prev.rawInventory || [])]
+        }));
+
+        setShowRestockModal(false);
+        logAction(user, 'INVENTORY_RESTOCK', `Added ${qty} ${item} for ${client}`);
+        showNotify(`${item} স্টকে যোগ করা হয়েছে!`);
+    };
+
     const handleDelete = (id) => {
         if (!isAdmin) return showNotify('শুধুমাত্র এডমিন রেকর্ড মুছতে পারবেন!', 'error');
         if (!window.confirm('মুছে ফেলতে চান?')) return;
@@ -290,6 +320,32 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
         }));
         logAction(user, 'PATA_DELETE', `Deleted record ID: ${id}`);
         showNotify('এন্ট্রি মুছে ফেলা হয়েছে!');
+    };
+
+    const deleteInventoryLog = (id) => {
+        if (!isAdmin) return showNotify('শুধুমাত্র এডমিন ইনভেন্টরি মুছতে পারবেন!', 'error');
+        if (!window.confirm('ইনভেন্টরি রেকর্ডটি মুছে ফেলতে চান?')) return;
+        setMasterData(prev => ({
+            ...prev,
+            rawInventory: (prev.rawInventory || []).filter(item => item.id !== id)
+        }));
+        showNotify('ইনভেন্টরি রেকর্ড মুছে ফেলা হয়েছে!');
+    };
+
+    const clearNegativeStock = () => {
+        if (!isAdmin) return showNotify('শুধুমাত্র এডমিন স্টক ক্লিন করতে পারবেন!', 'error');
+        if (!window.confirm('আপনি কি নিশ্চিত যে সব মাইনাস এন্ট্রি মুছে ফেলে স্টক ক্লিন করতে চান?')) return;
+        
+        setMasterData(prev => ({
+            ...prev,
+            rawInventory: (prev.rawInventory || []).filter(log => {
+                const isMaterial = log.item.toLowerCase().includes('stone') || log.item.toLowerCase().includes('roll');
+                return !isMaterial; // This clears ALL Stone/Roll logs to start fresh.
+            })
+        }));
+        
+        logAction(user, 'INVENTORY_CLEAN', 'Admin cleared all raw material logs to fix negative stock.');
+        showNotify('সব পাথর এবং রোল এন্ট্রি ক্লিন করা হয়েছে! স্টক এখন ০।');
     };
 
     if (printSlip) {
@@ -325,13 +381,17 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
       {/* HUD Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <div className="bg-slate-950 p-6 rounded-xl text-white shadow-xl group overflow-hidden relative">
+            <div className="absolute inset-0 bg-blue-600/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
             <div className="flex justify-between items-start mb-6 relative z-10">
                 <div className="w-12 h-12 bg-white/10 text-white rounded-xl flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
                     <Database size={20} />
                 </div>
-                <div className="text-right">
-                    <p className="text-3xl font-bold tracking-tight leading-none">{rawStock.stone}</p>
-                    <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest mt-2 leading-none">পাথর প্যাকেট (Stone)</p>
+                <div className="flex items-center gap-4">
+                    {isAdmin && <button onClick={() => setShowRestockModal('পাথর প্যাকেট (Stone)')} className="w-8 h-8 rounded-lg bg-white/10 text-white flex items-center justify-center hover:bg-blue-600 transition-all"><Plus size={16} /></button>}
+                    <div className="text-right">
+                        <p className="text-3xl font-bold tracking-tight leading-none">{rawStock.stone}</p>
+                        <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest mt-2 leading-none">পাথর প্যাকেট (Stone)</p>
+                    </div>
                 </div>
             </div>
             <div className="h-1 w-full bg-white/10 rounded-full overflow-hidden relative z-10">
@@ -339,14 +399,17 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
             </div>
         </div>
 
-        <div className="saas-card !p-6 flex items-center gap-6 group">
-            <div className="w-14 h-14 bg-indigo-50 dark:bg-indigo-900/10 text-indigo-600 rounded-xl flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
-                <Layers size={24} />
+        <div className="saas-card bg-white dark:bg-slate-900 border-l-4 border-l-indigo-600 !p-6 flex items-center justify-between group h-full">
+            <div className="flex items-center gap-6">
+                <div className="w-14 h-14 bg-indigo-50 dark:bg-indigo-900/10 text-indigo-600 rounded-xl flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
+                    <Layers size={24} />
+                </div>
+                <div>
+                    <p className="text-3xl font-bold tracking-tight text-black dark:text-white leading-none mb-1">{rawStock.roll}</p>
+                    <p className="text-[10px] font-bold text-black dark:text-white uppercase tracking-widest leading-none">পেপ্যার রোল (Rolls)</p>
+                </div>
             </div>
-            <div>
-                <p className="text-3xl font-bold tracking-tight text-black dark:text-white leading-none mb-1">{rawStock.roll}</p>
-                <p className="text-[10px] font-bold text-black dark:text-white uppercase tracking-widest leading-none">পেপ্যার রোল (Rolls)</p>
-            </div>
+            {isAdmin && <button onClick={() => setShowRestockModal('পেপার রোল (Paper)')} className="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center hover:bg-indigo-600 hover:text-white transition-all"><Plus size={16} /></button>}
         </div>
 
         <div className="saas-card !p-6 flex items-center gap-6 group">
@@ -376,7 +439,8 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
           {[
             { id: 'active', label: 'চলমান লিস্ট (Active)' },
             { id: 'history', label: 'পুরাতন রেকর্ড (History)' },
-            (isAdmin || isManager) && { id: 'payments', label: 'পেমেন্ট ও লেজার' }
+            (isAdmin || isManager) && { id: 'payments', label: 'পেমেন্ট ও লেজার' },
+            isAdmin && { id: 'inventory_history', label: 'ইনভেন্টরি লগ' }
           ].filter(Boolean).map(v => (
             <button
               key={v.id}
@@ -399,6 +463,14 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
             />
           </div>
           <div className="flex gap-2">
+              {view === 'inventory_history' && isAdmin && (
+                <button 
+                  onClick={clearNegativeStock}
+                  className="px-6 h-11 bg-rose-600 text-white rounded-xl font-bold text-[10px] uppercase tracking-widest shadow-lg hover:bg-rose-700 transition-all flex items-center gap-2"
+                >
+                   <Trash2 size={16} /> এক ক্লিকে স্টক ক্লিন করুন
+                </button>
+              )}
               <button 
                 onClick={() => setShowQR(true)}
                 className="w-11 h-11 bg-white dark:bg-slate-800 text-black dark:text-white border border-slate-200 dark:border-slate-700 rounded-xl flex items-center justify-center hover:bg-slate-950 hover:text-white transition-all shadow-sm"
@@ -421,7 +493,54 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
 
       {/* Main Content View */}
       <div className="animate-fade-up">
-        {view === 'payments' ? (
+        {view === 'inventory_history' ? (
+            <div className="saas-card bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 overflow-hidden shadow-2xl">
+                <div className="overflow-x-auto">
+                    <table className="w-full text-left order-collapse">
+                        <thead>
+                            <tr className="border-b-2 border-slate-100 dark:border-slate-800">
+                                <th className="p-6 text-[10px] font-black uppercase tracking-widest text-slate-400">তারিখ</th>
+                                <th className="p-6 text-[10px] font-black uppercase tracking-widest text-slate-400">আইটেম</th>
+                                <th className="p-6 text-[10px] font-black uppercase tracking-widest text-slate-400">ধরণ</th>
+                                <th className="p-6 text-[10px] font-black uppercase tracking-widest text-slate-400">পরিমাণ</th>
+                                <th className="p-6 text-[10px] font-black uppercase tracking-widest text-slate-400">ক্লায়েন্ট</th>
+                                <th className="p-6 text-right text-[10px] font-black uppercase tracking-widest text-slate-400">অ্যাকশন</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-50 dark:divide-slate-800">
+                            {(masterData.rawInventory || [])
+                                .filter(log => log.item.toLowerCase().includes('stone') || log.item.toLowerCase().includes('roll'))
+                                .map((log, idx) => (
+                                <tr key={idx} className="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
+                                    <td className="p-6 text-[11px] font-black italic">{log.date}</td>
+                                    <td className="p-6">
+                                        <p className="text-[11px] font-bold uppercase">{log.item}</p>
+                                        <p className="text-[8px] font-bold text-slate-400 mt-1 uppercase italic">{log.note}</p>
+                                    </td>
+                                    <td className="p-6">
+                                        <span className={`px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest ${log.type === 'in' ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'}`}>
+                                            {log.type === 'in' ? 'RESTOCK (IN)' : 'ISSUE (OUT)'}
+                                        </span>
+                                    </td>
+                                    <td className="p-6 font-black text-lg italic">{log.qty}</td>
+                                    <td className="p-6"><span className="px-3 py-1 bg-slate-100 dark:bg-slate-800 rounded-lg text-[9px] font-bold uppercase tracking-widest">{log.client}</span></td>
+                                    <td className="p-6 text-right">
+                                        <button onClick={() => deleteInventoryLog(log.id)} className="w-10 h-10 bg-rose-50 text-rose-500 rounded-xl hover:bg-rose-600 hover:text-white transition-all flex items-center justify-center border border-rose-100 shadow-sm ml-auto">
+                                            <Trash2 size={16} />
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                            {(masterData.rawInventory || []).filter(log => log.item.toLowerCase().includes('stone') || log.item.toLowerCase().includes('roll')).length === 0 && (
+                                <tr>
+                                    <td colSpan="6" className="py-20 text-center text-slate-400 italic font-bold uppercase text-[10px] tracking-widest">বর্তমানে কোনো ইনভেন্টরি লগ পাওয়া যায়নি</td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        ) : view === 'payments' ? (
              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {workers.map((w, idx) => {
                     const due = getWorkerDue(w);
@@ -790,6 +909,39 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                     </div>
                 </div>
             </div>
+          </div>
+        )}
+      </AnimatePresence>
+      {/* RESTOCK MODAL */}
+      <AnimatePresence>
+        {showRestockModal && (
+          <div className="fixed inset-0 z-[1000] bg-slate-950/40 backdrop-blur-md flex items-center justify-center p-4">
+            <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="w-full max-w-md bg-white dark:bg-slate-900 rounded-xl shadow-2xl p-10 relative border border-slate-100 dark:border-slate-800">
+                <button onClick={() => setShowRestockModal(false)} className="absolute top-6 right-6 text-slate-400 hover:text-black dark:text-white"><X size={20} /></button>
+                <div className="text-center space-y-8">
+                    <div className="mx-auto w-14 h-14 bg-indigo-600 text-white rounded-xl flex items-center justify-center"><Download size={28} /></div>
+                    <div className="space-y-1">
+                        <h3 className="text-2xl font-bold uppercase">Quick <span className="text-indigo-600">Restock</span></h3>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{showRestockModal}</p>
+                    </div>
+                    <form onSubmit={handleRestock} className="space-y-6">
+                        <input name="item" type="hidden" value={showRestockModal} />
+                        <div className="space-y-1.5 text-left">
+                            <label className="text-[10px] font-bold uppercase text-slate-400 tracking-widest ml-1">Client / Owner</label>
+                            <select name="client" className="premium-input !h-12 text-sm font-bold uppercase">
+                                <option value="FACTORY">FACTORY</option>
+                                {(masterData.clients || []).map(c => <option key={c} value={c}>{c}</option>)}
+                            </select>
+                        </div>
+                        <div className="space-y-1.5 text-left">
+                            <label className="text-[10px] font-bold uppercase text-slate-400 tracking-widest ml-1">Restock Quantity</label>
+                            <input name="qty" type="number" placeholder="0" className="w-full text-center text-5xl font-bold bg-slate-50 dark:bg-slate-800/50 py-6 rounded-xl border-none outline-none" autoFocus />
+                        </div>
+                        <input name="note" placeholder="REFERENCE / CHALLAN" className="premium-input !h-12 uppercase text-[10px] font-bold" />
+                        <button type="submit" className="w-full py-4 bg-slate-950 text-white rounded-xl font-bold text-[10px] uppercase tracking-widest shadow-xl hover:bg-black transition-all">কনফার্ম এন্ট্রি (Commit)</button>
+                    </form>
+                </div>
+            </motion.div>
           </div>
         )}
       </AnimatePresence>

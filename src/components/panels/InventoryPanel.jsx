@@ -216,7 +216,8 @@ const InventoryPanel = ({
             { id: "overview", label: "তৈরি মাল (Finished)" },
             { id: "raw", label: "কাঁচামাল (Inventory)" },
             { id: "delivery", label: "পণ্য ডেলিভারি (Delivery)" },
-            { id: "requisitions", label: "অনুরোধ (Requests)" }
+            { id: "requisitions", label: "অনুরোধ (Requests)" },
+            { id: "history", label: "হিস্ট্রি লগ (Audit Log)" }
         ].map((v) => (
           <button
             key={v.id}
@@ -433,6 +434,59 @@ const InventoryPanel = ({
                         </div>
                     ))
                 )}
+            </div>
+        )}
+        {view === "history" && (
+            <div className="saas-card bg-white dark:bg-slate-900 shadow-xl overflow-hidden animate-fade-up">
+                 <div className="overflow-x-auto">
+                    <table className="w-full text-left">
+                        <thead className="border-b border-slate-100 dark:border-slate-800">
+                             <tr>
+                                <th className="p-6 text-[10px] font-bold uppercase tracking-widest text-slate-400">তারিখ</th>
+                                <th className="p-6 text-[10px] font-bold uppercase tracking-widest text-slate-400">আইটেম (Item)</th>
+                                <th className="p-6 text-[10px] font-bold uppercase tracking-widest text-slate-400">পরিমাণ (Qty)</th>
+                                <th className="p-6 text-[10px] font-bold uppercase tracking-widest text-slate-400">ধরণ</th>
+                                {user?.role === 'admin' && <th className="p-6 text-right text-[10px] font-bold uppercase tracking-widest text-slate-400">Action</th>}
+                             </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-50 dark:divide-slate-800">
+                            {(masterData.rawInventory || []).slice(0, 100).map((log, idx) => (
+                                <tr key={log.id || idx} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                                    <td className="p-6 text-xs font-bold italic">{log.date}</td>
+                                    <td className="p-6">
+                                        <p className="text-sm font-black uppercase">{log.item} {log.color ? `(${log.color})` : ""}</p>
+                                        <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">OWNER: {log.client || 'FACTORY'}</p>
+                                    </td>
+                                    <td className="p-6 font-black text-lg">{log.qty} {log.unit}</td>
+                                    <td className="p-6">
+                                        <span className={`px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest ${log.type === 'in' ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'}`}>
+                                            {log.type === 'in' ? 'IN' : 'OUT'}
+                                        </span>
+                                    </td>
+                                    {user?.role === 'admin' && (
+                                        <td className="p-6 text-right">
+                                            <button 
+                                                onClick={() => {
+                                                    if (window.confirm("আপনি কি নিশ্চিত যে এই ইনভেন্টরি এন্ট্রিটি চিরতরে মুছে ফেলতে চান?")) {
+                                                        setMasterData(prev => ({
+                                                            ...prev,
+                                                            rawInventory: (prev.rawInventory || []).filter(item => item.id !== log.id)
+                                                        }));
+                                                        logAction(user, 'INV_LOG_DELETE', `Deleted ${log.type} of ${log.qty} ${log.item}`);
+                                                        showNotify("ইনভেন্টরি এন্ট্রি মুছে ফেলা হয়েছে!");
+                                                    }
+                                                }}
+                                                className="w-10 h-10 bg-slate-100 dark:bg-slate-800 text-rose-500 rounded-xl flex items-center justify-center hover:bg-rose-500 hover:text-white transition-all shadow-sm"
+                                            >
+                                                <X size={16} />
+                                            </button>
+                                        </td>
+                                    )}
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                 </div>
             </div>
         )}
       </div>

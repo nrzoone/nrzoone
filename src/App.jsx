@@ -182,85 +182,93 @@ const LoginView = ({ onLogin, masterData }) => {
     const [showPass, setShowPass] = useState(false);
 
     return (
-        <div className="min-h-screen flex flex-col md:flex-row bg-[var(--bg-primary)] font-outfit overflow-hidden mesh-bg">
-            <div className="absolute inset-x-0 top-0 h-64 bg-gradient-to-b from-white/50 to-transparent pointer-events-none"></div>
-            
-            {/* Left Section: Branding */}
-            <div className="w-full md:w-1/2 bg-slate-950 flex flex-col items-center justify-center p-6 md:p-12 relative min-h-[40vh] md:min-h-screen">
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-900/20 via-slate-950 to-slate-950 opacity-60"></div>
+        <div className="min-h-screen flex flex-col md:flex-row bg-white font-outfit overflow-hidden">
+            {/* Branding Section (Black) */}
+            <div className="w-full md:w-1/2 bg-black flex flex-col items-center justify-center p-8 md:p-32 relative min-h-[40vh] md:min-h-screen rounded-b-[4rem] md:rounded-none">
+                <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/black-felt.png')] pointer-events-none"></div>
                 
-                <div className="relative z-10 flex flex-col items-center text-center animate-fade-up">
-                    <div className="mb-12 relative">
-                        <div className="absolute inset-0 blur-3xl bg-blue-500/20 animate-pulse"></div>
+                <div className="relative z-10 flex flex-col items-center animate-fade-in text-center gap-12">
+                    <div className="transform hover:scale-105 transition-transform duration-1000">
                         <Logo size="xl" white={true} customUrl={masterData.settings?.logo} />
                     </div>
-                    <div className="space-y-6">
-                        <h2 className="text-5xl md:text-7xl font-black tracking-tight text-white uppercase leading-tight">
-                            NRZOONE<br/><span className="text-blue-500">FACTORY ERP</span>
+                    <div className="space-y-4">
+                        <h2 className="text-xl md:text-3xl font-black text-white uppercase tracking-[0.5em] leading-none">
+                            FACTORY MANAGEMENT
                         </h2>
-                        <p className="text-[11px] font-bold tracking-[0.6em] text-black dark:text-white uppercase">প্রফেশনাল ম্যানুফ্যাকচারিং সিস্টেম</p>
-                        <div className="h-1.5 w-24 bg-white/10 mx-auto rounded-full mt-10 overflow-hidden">
-                           <div className="h-full bg-blue-500 w-1/2 animate-[shimmer_2s_infinite]"></div>
-                        </div>
                     </div>
                 </div>
-                <div className="absolute bottom-10 left-10 text-[9px] font-bold uppercase text-white/10 tracking-[0.4em] hidden md:block">
-                    INDUSTRIAL GRADE ERP // v5.2 // 2026
+
+                <div className="absolute top-12 left-12 hidden md:block">
+                   <p className="text-[10px] font-black text-white tracking-[0.5em] opacity-40">NRZOONE / ERP SYSTEM</p>
                 </div>
             </div>
 
-            {/* Right Section: Login */}
-            <div className="w-full md:w-1/2 p-6 md:p-24 flex items-center justify-center relative">
-                 <div className="w-full max-w-md bg-white rounded-3xl p-6 md:p-14 shadow-2xl space-y-8 md:space-y-10 border border-slate-100">
-                    <div className="space-y-2">
-                        <h3 className="text-3xl font-black text-black tracking-tight">লগইন করুন</h3>
-                        <p className="text-xs font-bold uppercase text-black dark:text-white tracking-widest">Secure Access Required</p>
+            {/* Login Form Section (White/Dark) */}
+            <div className="w-full md:w-1/2 flex flex-col items-center justify-center p-8 md:p-24 bg-white relative">
+                <div className="absolute top-12 right-12 hidden md:block">
+                    <p className="text-[10px] font-black text-black/20 uppercase tracking-[0.3em]">Create an account</p>
+                </div>
+
+                <div className="w-full max-w-sm space-y-16 animate-fade-up" style={{ animationDelay: '200ms' }}>
+                    <div className="space-y-4">
+                        <h2 className="text-6xl md:text-7xl font-light text-black tracking-tighter leading-none">
+                            Login
+                        </h2>
                     </div>
 
-                    <div className="space-y-8">
+                    <div className="space-y-10">
+                        {/* ID Input */}
                         <div className="space-y-3">
-                            <label className="text-[11px] font-bold uppercase text-black dark:text-white tracking-wider block ml-1">ইউজার আইডি (ID)</label>
+                            <label className="text-[10px] font-black uppercase text-black/40 tracking-widest ml-1">Email / ID</label>
                             <input 
                                 type="text"
                                 value={id}
                                 onChange={(e) => setId(e.target.value)}
-                                className="premium-input !py-4"
-                                placeholder="ADMIN-ID"
+                                className="w-full bg-transparent border-b border-black/10 py-4 px-1 text-black font-medium focus:outline-none focus:border-black transition-all"
+                                placeholder="mark.johnson@gmail.com"
                             />
                         </div>
 
+                        {/* Password Input */}
                         <div className="space-y-3">
-                            <label className="text-[11px] font-bold uppercase text-black dark:text-white tracking-wider block ml-1">পাসওয়ার্ড (Password)</label>
+                            <label className="text-[10px] font-black uppercase text-black/40 tracking-widest ml-1">Password</label>
                             <div className="relative">
                                 <input 
                                     type={showPass ? "text" : "password"}
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    className="premium-input !py-4"
-                                    placeholder="••••••••"
+                                    className="w-full bg-transparent border-b border-black/10 py-4 px-1 text-black font-medium focus:outline-none focus:border-black transition-all"
+                                    placeholder="••••••••••••"
                                 />
-                                <button onClick={() => setShowPass(!showPass)} className="absolute right-5 top-1/2 -translate-y-1/2 text-black dark:text-white hover:text-black transition-colors">
-                                    {showPass ? <EyeOff size={20} /> : <Eye size={20} />}
+                                <button onClick={() => setShowPass(!showPass)} className="absolute right-2 top-1/2 -translate-y-1/2 text-black/20 hover:text-black transition-colors">
+                                    {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
                                 </button>
+                            </div>
+                            <div className="flex justify-between items-center pt-2">
+                                <div className="flex items-center gap-2 cursor-pointer group">
+                                    <div className="w-4 h-4 border border-black/20 rounded flex items-center justify-center group-hover:border-black transition-colors">
+                                        <div className="w-2 h-2 bg-black opacity-0 group-hover:opacity-10 transition-opacity rounded-sm"></div>
+                                    </div>
+                                    <span className="text-[10px] font-bold text-black/40 uppercase tracking-widest">Remember me</span>
+                                </div>
+                                <span className="text-[10px] font-bold text-black/40 uppercase tracking-widest cursor-pointer hover:text-black transition-colors">Forgot?</span>
                             </div>
                         </div>
                     </div>
 
-                    <div className="pt-4">
+                    <div className="pt-8">
                         <button 
                             onClick={() => onLogin(id, password)}
-                            className="action-btn-primary !w-full !py-4 bg-slate-950 hover:bg-black text-white rounded-2xl shadow-xl"
+                            className="w-full md:w-32 py-5 md:h-32 md:rounded-full bg-black text-white text-[10px] font-black uppercase tracking-[0.2em] shadow-3xl hover:scale-110 active:scale-95 transition-all flex items-center justify-center"
                         >
-                            <ShieldCheck size={20} /> সিস্টেম এক্সেস
+                            Sign In
                         </button>
                     </div>
+                </div>
 
-                    <div className="text-center pt-4">
-                        <p className="text-[10px] font-bold uppercase text-slate-300 tracking-widest">
-                            NRZOONE INTEGRATED v5.2
-                        </p>
-                    </div>
-                 </div>
+                <div className="absolute bottom-12 text-center md:text-left">
+                    <p className="text-[9px] font-black uppercase tracking-[0.6em] text-black/10">© GoldenGaree 2026. All rights reserved.</p>
+                </div>
             </div>
         </div>
     );
