@@ -54,16 +54,16 @@ const Overview = ({ masterData, stats: propStats, setActivePanel, t, user, syncS
         <div className="space-y-12 animate-fade-up pb-32">
             
             {/* Header Section */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-12 px-2">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-3 md:gap-6 mb-8 md:mb-12 px-1 md:px-2">
                 <div className="space-y-1">
-                     <h1 className="text-3xl font-extrabold text-black dark:text-white dark:text-white">
+                     <h1 className="text-2xl md:text-3xl font-extrabold text-black dark:text-white">
                         এনআরজোন <span className="text-blue-600">ফ্যাক্টরি ড্যাশবোর্ড</span>
                     </h1>
-                    <p className="text-[10px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest italic">
+                    <p className="text-[9px] md:text-[10px] font-bold text-black dark:text-white uppercase tracking-widest italic">
                         INDUSTRIAL ERP // LIVE OPERATIONAL HUB v5.2
                     </p>
                 </div>
-                <div className="flex bg-white dark:bg-slate-900 p-1 rounded-xl shadow-sm border border-slate-100 dark:border-slate-800">
+                <div className="flex bg-white dark:bg-slate-900 p-0.5 rounded-xl shadow-sm border border-slate-100 dark:border-slate-800">
                     {[
                         { id: "Daily", label: "দৈনিক" },
                         { id: "Weekly", label: "সাপ্তাহিক" },
@@ -72,7 +72,7 @@ const Overview = ({ masterData, stats: propStats, setActivePanel, t, user, syncS
                         <button 
                             key={tf.id}
                             onClick={() => setTimeframe(tf.id)}
-                            className={`px-6 py-2.5 rounded-xl text-xs font-bold transition-all ${timeframe === tf.id ? 'bg-blue-600 text-white shadow-lg' : 'text-black dark:text-white dark:text-white hover:text-black'}`}
+                            className={`px-4 md:px-6 py-1.5 md:py-2.5 rounded-lg md:rounded-xl text-[10px] md:text-xs font-bold transition-all ${timeframe === tf.id ? 'bg-blue-600 text-white shadow-lg' : 'text-black dark:text-white hover:bg-slate-50 dark:hover:bg-slate-800'}`}
                         >
                             {tf.label}
                         </button>
@@ -81,7 +81,7 @@ const Overview = ({ masterData, stats: propStats, setActivePanel, t, user, syncS
             </div>
 
             {/* KPI Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
                 {[
                     { label: "মোট কারিগর", value: (masterData.workerDocs || []).length, trend: "+4.2%", icon: Users, id: "Settings", color: "text-blue-600", bg: "bg-blue-50 dark:bg-blue-900/10" },
                     { label: "চলমান কাজ", value: (masterData.productions || []).length + (masterData.pataEntries || []).length, trend: "+12.1%", icon: Activity, id: "Cutting", color: "text-emerald-600", bg: "bg-emerald-50 dark:bg-emerald-900/10" },
@@ -89,23 +89,23 @@ const Overview = ({ masterData, stats: propStats, setActivePanel, t, user, syncS
                     { label: "পেন্ডিং লট", value: (masterData.productions || []).filter(p => p.status === 'Pending').length, trend: "-2.1%", icon: Package, id: "Cutting", color: "text-amber-600", bg: "bg-amber-50 dark:bg-amber-900/10" }
                 ].map((kpi, idx) => (
                     <div key={idx} className="saas-card group cursor-pointer" onClick={() => setActivePanel(kpi.id)}>
-                        <div className="flex justify-between items-start mb-6">
-                            <div className={`w-12 h-12 ${kpi.bg} ${kpi.color} rounded-xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110`}>
-                                <kpi.icon size={22} />
+                        <div className="flex justify-between items-start mb-3 md:mb-6">
+                            <div className={`w-8 h-8 md:w-12 md:h-12 ${kpi.bg} ${kpi.color} rounded-lg md:rounded-xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110`}>
+                                <kpi.icon size={16} className="md:w-[22px] md:h-[22px]" />
                             </div>
-                            <div className="flex items-center gap-1 px-2.5 py-1 bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 rounded-full text-[10px] font-bold">
+                            <div className="flex items-center gap-1 px-1.5 py-0.5 md:px-2.5 md:py-1 bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 rounded-full text-[8px] md:text-[10px] font-bold">
                                 {kpi.trend}
                             </div>
                         </div>
                         <div className="space-y-1">
-                            <p className="text-[10px] font-bold uppercase text-black dark:text-white dark:text-white tracking-wider leading-none">{kpi.label}</p>
-                            <h3 className="text-3xl font-bold text-black dark:text-white dark:text-white leading-tight">{kpi.value}</h3>
+                            <p className="text-[8px] md:text-[10px] font-bold uppercase text-black dark:text-white tracking-wider leading-none">{kpi.label}</p>
+                            <h3 className="text-lg md:text-3xl font-bold text-black dark:text-white leading-tight">{kpi.value}</h3>
                         </div>
                     </div>
                 ))}
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-12">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6 md:mt-12">
                 <div className="space-y-6">
                     <div className="saas-card bg-white dark:bg-slate-900">
                         <h3 className="text-[11px] font-bold uppercase mb-8 tracking-widest flex items-center gap-3 text-black dark:text-white dark:text-white">

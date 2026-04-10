@@ -182,92 +182,108 @@ const LoginView = ({ onLogin, masterData }) => {
     const [showPass, setShowPass] = useState(false);
 
     return (
-        <div className="min-h-screen flex flex-col md:flex-row bg-white font-outfit overflow-hidden">
-            {/* Branding Section (Black) */}
-            <div className="w-full md:w-1/2 bg-black flex flex-col items-center justify-center p-8 md:p-32 relative min-h-[40vh] md:min-h-screen rounded-b-[4rem] md:rounded-none">
-                <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/black-felt.png')] pointer-events-none"></div>
+        <div className="min-h-screen flex flex-col md:flex-row bg-white dark:bg-slate-950 font-outfit overflow-hidden">
+            {/* Branding Section with Custom Pattern */}
+            <div className="w-full md:w-1/2 bg-slate-950 flex flex-col items-center justify-center p-8 md:p-32 relative min-h-[45vh] md:min-h-screen rounded-b-[4rem] md:rounded-none z-10 overflow-hidden shadow-2xl">
+                {/* Modern Geometric Pattern Overlay */}
+                <div className="absolute inset-0 opacity-20 pointer-events-none" 
+                    style={{ 
+                        backgroundImage: `radial-gradient(circle at 2px 2px, #475569 1px, transparent 0)`,
+                        backgroundSize: '32px 32px'
+                    }}>
+                </div>
+                <div className="absolute -top-24 -left-24 w-96 h-96 bg-blue-600/10 blur-[100px] rounded-full"></div>
                 
-                <div className="relative z-10 flex flex-col items-center animate-fade-in text-center gap-12">
-                    <div className="transform hover:scale-105 transition-transform duration-1000">
+                <div className="relative z-10 flex flex-col items-center animate-fade-in text-center gap-6 md:gap-12">
+                    <div className="transform hover:scale-110 transition-transform duration-700">
                         <Logo size="xl" white={true} customUrl={masterData.settings?.logo} />
                     </div>
-                    <div className="space-y-4">
-                        <h2 className="text-xl md:text-3xl font-black text-white uppercase tracking-[0.5em] leading-none">
-                            FACTORY MANAGEMENT
-                        </h2>
+                    <div className="space-y-4 px-4">
+                        <h1 className="text-3xl md:text-5xl font-black text-white uppercase tracking-tighter leading-none">
+                            NRZOONE
+                        </h1>
+                        <p className="text-[10px] md:text-xs font-black text-blue-500 uppercase tracking-[0.4em] opacity-100">
+                           FACTORY MANAGEMENT
+                        </p>
                     </div>
                 </div>
 
                 <div className="absolute top-12 left-12 hidden md:block">
-                   <p className="text-[10px] font-black text-white tracking-[0.5em] opacity-40">NRZOONE / ERP SYSTEM</p>
+                   <p className="text-[10px] font-black text-white/40 tracking-[0.5em] uppercase">Enterprise // V5.2</p>
                 </div>
             </div>
 
-            {/* Login Form Section (White/Dark) */}
-            <div className="w-full md:w-1/2 flex flex-col items-center justify-center p-8 md:p-24 bg-white relative">
+            {/* Login Form Section */}
+            <div className="w-full md:w-1/2 flex flex-col items-center justify-center p-8 md:p-24 bg-white dark:bg-slate-950 relative">
                 <div className="absolute top-12 right-12 hidden md:block">
-                    <p className="text-[10px] font-black text-black/20 uppercase tracking-[0.3em]">Create an account</p>
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] cursor-pointer hover:text-slate-950 transition-all">Create an account</p>
                 </div>
 
-                <div className="w-full max-w-sm space-y-16 animate-fade-up" style={{ animationDelay: '200ms' }}>
+                <div className="w-full max-w-sm space-y-12 md:space-y-16 animate-fade-up">
                     <div className="space-y-4">
-                        <h2 className="text-6xl md:text-7xl font-light text-black tracking-tighter leading-none">
+                        <h2 className="text-5xl md:text-7xl font-bold text-slate-950 dark:text-white tracking-tighter leading-none">
                             Login
                         </h2>
                     </div>
 
-                    <div className="space-y-10">
+                    <div className="space-y-8 md:space-y-10">
                         {/* ID Input */}
                         <div className="space-y-3">
-                            <label className="text-[10px] font-black uppercase text-black/40 tracking-widest ml-1">Email / ID</label>
-                            <input 
-                                type="text"
-                                value={id}
-                                onChange={(e) => setId(e.target.value)}
-                                className="w-full bg-transparent border-b border-black/10 py-4 px-1 text-black font-medium focus:outline-none focus:border-black transition-all"
-                                placeholder="mark.johnson@gmail.com"
-                            />
+                            <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">Email / Member ID</label>
+                            <div className="bg-slate-50 dark:bg-slate-900 rounded-2xl p-1 border border-transparent focus-within:border-slate-950 dark:focus-within:border-white transition-all shadow-sm">
+                                <input 
+                                    type="text"
+                                    value={id}
+                                    onChange={(e) => setId(e.target.value)}
+                                    className="w-full bg-transparent py-4 px-5 text-slate-950 dark:text-white font-bold focus:outline-none placeholder:text-slate-300 text-sm md:text-base"
+                                    placeholder="mark.johnson@gmail.com"
+                                />
+                            </div>
                         </div>
 
                         {/* Password Input */}
                         <div className="space-y-3">
-                            <label className="text-[10px] font-black uppercase text-black/40 tracking-widest ml-1">Password</label>
-                            <div className="relative">
+                            <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">Password</label>
+                            <div className="bg-slate-50 dark:bg-slate-900 rounded-2xl p-1 border border-transparent focus-within:border-slate-950 dark:focus-within:border-white transition-all shadow-sm relative">
                                 <input 
                                     type={showPass ? "text" : "password"}
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    className="w-full bg-transparent border-b border-black/10 py-4 px-1 text-black font-medium focus:outline-none focus:border-black transition-all"
+                                    className="w-full bg-transparent py-4 px-5 text-slate-950 dark:text-white font-bold focus:outline-none placeholder:text-slate-300 text-sm md:text-base"
                                     placeholder="••••••••••••"
                                 />
-                                <button onClick={() => setShowPass(!showPass)} className="absolute right-2 top-1/2 -translate-y-1/2 text-black/20 hover:text-black transition-colors">
-                                    {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
+                                <button onClick={() => setShowPass(!showPass)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-300 hover:text-slate-950 transition-colors">
+                                    {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
                                 </button>
                             </div>
-                            <div className="flex justify-between items-center pt-2">
+                            <div className="flex justify-between items-center pt-2 px-1">
                                 <div className="flex items-center gap-2 cursor-pointer group">
-                                    <div className="w-4 h-4 border border-black/20 rounded flex items-center justify-center group-hover:border-black transition-colors">
-                                        <div className="w-2 h-2 bg-black opacity-0 group-hover:opacity-10 transition-opacity rounded-sm"></div>
+                                    <div className="w-5 h-5 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg flex items-center justify-center transition-all group-hover:bg-slate-950 dark:group-hover:bg-white">
+                                        <CheckCircle size={12} className="text-white dark:text-black opacity-0 group-hover:opacity-100 transition-opacity" />
                                     </div>
-                                    <span className="text-[10px] font-bold text-black/40 uppercase tracking-widest">Remember me</span>
+                                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Remember me</span>
                                 </div>
-                                <span className="text-[10px] font-bold text-black/40 uppercase tracking-widest cursor-pointer hover:text-black transition-colors">Forgot?</span>
+                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest cursor-pointer hover:text-slate-950 dark:hover:text-white transition-colors">Forgot Pass?</span>
                             </div>
                         </div>
                     </div>
 
-                    <div className="pt-8">
+                    <div className="pt-4 md:pt-8 flex flex-col md:flex-row items-center justify-between gap-8">
                         <button 
                             onClick={() => onLogin(id, password)}
-                            className="w-full md:w-32 py-5 md:h-32 md:rounded-full bg-black text-white text-[10px] font-black uppercase tracking-[0.2em] shadow-3xl hover:scale-110 active:scale-95 transition-all flex items-center justify-center"
+                            className="w-full md:w-auto px-12 py-5 bg-slate-950 dark:bg-white text-white dark:text-slate-950 text-[11px] font-black uppercase tracking-[0.2em] rounded-2xl md:rounded-[2rem] shadow-2xl hover:scale-105 active:scale-95 transition-all text-center"
                         >
-                            Sign In
+                            Sign In Now
                         </button>
+                        <div className="flex items-center gap-2">
+                             <span className="text-[10px] font-bold text-slate-300 uppercase italic">Powering NRZONE</span>
+                             <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+                        </div>
                     </div>
                 </div>
 
-                <div className="absolute bottom-12 text-center md:text-left">
-                    <p className="text-[9px] font-black uppercase tracking-[0.6em] text-black/10">© GoldenGaree 2026. All rights reserved.</p>
+                <div className="absolute bottom-12 text-center w-full px-8">
+                    <p className="text-[9px] font-bold uppercase tracking-[0.4em] text-slate-300">Don't have any account? <span className="text-slate-950 dark:text-white font-black cursor-pointer">Sign Up</span></p>
                 </div>
             </div>
         </div>
@@ -632,7 +648,7 @@ const AppContent = () => {
                     
                     <main className={`flex-1 flex flex-col min-w-0 h-screen overflow-hidden relative transition-all duration-700 mesh-bg ${user?.role !== 'client' ? 'lg:ml-[320px]' : ''}`}>
                         {/* Header Section - Modern Responsive SaaS Style */}
-                        <header className="h-20 md:h-24 flex items-center justify-between px-4 md:px-10 z-40 relative no-print bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl border-b border-slate-100 dark:border-slate-800 shadow-sm">
+                        <header className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-100 dark:border-slate-800 px-2 md:px-8 py-2 md:py-4 sticky top-0 z-[100] transition-all no-print shadow-sm flex items-center justify-between">
                             <div className="flex items-center gap-4 md:gap-6">
                                 {user?.role !== 'client' && (
                                     <button 
@@ -681,7 +697,7 @@ const AppContent = () => {
                             </div>
                         </header>
 
-                        <div className="flex-1 overflow-y-auto px-2 md:px-8 py-6 md:py-8 relative custom-scrollbar">
+                        <div className="flex-1 overflow-y-auto px-1 md:px-8 py-4 md:py-8 relative custom-scrollbar">
                             <div className="max-w-[1400px] mx-auto space-y-8 animate-fade-up">
                                 {activePanel === "ClientDashboard" && <ClientDashboard masterData={masterData} user={user} setMasterData={setMasterData} showNotify={showNotify} />}
                                 
