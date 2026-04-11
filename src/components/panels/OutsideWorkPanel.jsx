@@ -28,8 +28,44 @@ const QR_Slip_Theme = {
 
 const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActivePanel, t, logAction }) => {
     const [showModal, setShowModal] = useState(false);
-    const [view, setView] = useState('active'); // 'active' or 'history'
+    const [view, setView] = useState('active'); // 'active', 'history', 'b2b_incoming'
     const [searchTerm, setSearchTerm] = useState('');
+
+    const incomingOrders = useMemo(() => {
+        return (masterData.productionRequests || []).filter(r => r.status === 'Pending Review');
+    }, [masterData.productionRequests]);
+
+    const handleAcceptB2BOrder = (order) => {
+        const worker = prompt("Enter Contractor/Worker Name for this Outside Work:", "");
+        if (!worker) return;
+        
+        const rate = prompt("Enter Payment Rate for this Outside Work (Tk):", "0");
+        if (rate === null) return;
+
+        const newEntry = {
+            id: `outside_b2b_${Date.now()}`,
+            date: new Date().toLocaleDateString('en-GB'),
+            worker: worker,
+            client: order.client || 'FACTORY',
+            design: order.design || 'N/A',
+            task: 'B2B ORDER',
+            borkaQty: Number(order.totalBorka || 0),
+            hijabQty: Number(order.totalHijab || 0),
+            rate: Number(rate),
+            note: `PULLED FROM B2B ORDER: ${order.design}`,
+            status: 'Pending',
+            receivedDate: null,
+            totalAmount: 0,
+            paidAmount: 0
+        };
+
+        setMasterData(prev => ({
+            ...prev,
+            outsideWorkEntries: [newEntry, ...(prev.outsideWorkEntries || [])],
+            productionRequests: (prev.productionRequests || []).map(r => r.id === order.id ? { ...r, status: 'In Production (Outside)', lotNo: newEntry.id } : r)
+        }));
+        showNotify(`B2B Order successfully assigned to Outside Contractor: ${worker}`);
+    };
     const [payModal, setPayModal] = useState(null);
     const [receiveModal, setReceiveModal] = useState(null);
     const [noteModal, setNoteModal] = useState(null);
@@ -165,7 +201,7 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
             amount: totalAmount
         });
 
-        // B2B Conditional Billing Logic
+        // B2B Conditional Billing & Ready Stock Logic
         if (receiveModal.client && receiveModal.client !== "FACTORY") {
             const designObj = (masterData.designs || []).find(d => d.name === receiveModal.design);
             const outworkRate = designObj?.clientRates?.[receiveModal.client]?.outwork;
@@ -183,7 +219,16 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
                     };
                     setMasterData(prev => ({
                         ...prev,
-                        clientTransactions: [b2bBill, ...(prev.clientTransactions || [])]
+                        clientTransactions: [b2bBill, ...(prev.clientTransactions || [])],
+                        finishedStock: [{
+                            id: `fs_out_${Date.now()}`,
+                            design: receiveModal.design,
+                            color: receiveModal.color || 'MIX',
+                            client: receiveModal.client,
+                            qty: rBorka + rHijab,
+                            date: new Date().toLocaleDateString("en-GB"),
+                            type: `OUT: ${receiveModal.task}`
+                        }, ...(prev.finishedStock || [])]
                     }));
                 }
             }
@@ -367,6 +412,7 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
                 <div className="flex flex-wrap gap-1 w-full lg:w-auto overflow-x-auto no-scrollbar">
                     {[
                         { id: 'active', label: 'চলমান কাজ (Running)' },
+                        { id: 'b2b_incoming', label: 'বি২বি ইনকামিং (Orders)' },
                         { id: 'history', label: 'জমা হওয়া কাজ (History)' }
                     ].map(v => (
                         <button
@@ -404,7 +450,48 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
 
             {/* Main Deployment Display */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {(view === 'active' ? activeEntries : historyEntries).length === 0 ? (
+                {view === 'b2b_incoming' ? (
+                    <>
+                        {incomingOrders.length === 0 ? (
+                            <div className="col-span-full h-80 flex flex-col items-center justify-center bg-white dark:bg-slate-900 rounded-xl border-2 border-dashed border-slate-100 dark:border-slate-800 italic">
+                                <Box size={40} className="text-slate-200 mb-4 animate-pulse" />
+                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">বর্তমানে কোনো বি২বি অর্ডার নেই</p>
+                            </div>
+                        ) : (
+                            incomingOrders.map((req, i) => (
+                                <div key={i} className="saas-card bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl shadow-sm hover:border-blue-500 transition-all flex flex-col group p-6 space-y-6 animate-fade-up">
+                                    <div className="flex justify-between items-start">
+                                        <div>
+                                            <p className="text-[9px] font-black text-blue-600 uppercase tracking-widest mb-1 italic tracking-[0.2em]">OUTSIDE UNIT ASSIGNMENT</p>
+                                            <h4 className="text-xl font-black uppercase italic leading-none">{req.design}</h4>
+                                        </div>
+                                        <div className="text-right">
+                                            <p className="text-xs font-black text-slate-400 uppercase">{req.client}</p>
+                                            <p className="text-[9px] font-bold text-slate-300 font-mono mt-1">{req.date}</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl flex justify-between items-end">
+                                        <div>
+                                            <p className="text-[8px] font-black uppercase text-slate-400 mb-1">Total Pieces</p>
+                                            <p className="text-2xl font-black italic">{Number(req.totalBorka || 0) + Number(req.totalHijab || 0)} <span className="text-xs font-bold leading-none">PCS</span></p>
+                                        </div>
+                                        <div className="text-right">
+                                            <p className="text-[10px] font-black text-emerald-500 uppercase italic">FABRIC SENT</p>
+                                        </div>
+                                    </div>
+
+                                    <button 
+                                        onClick={() => handleAcceptB2BOrder(req)}
+                                        className="w-full py-4 bg-blue-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg hover:bg-blue-700 active:scale-95 transition-all flex items-center justify-center gap-3"
+                                    >
+                                        <ExternalLink size={16} /> বাইরের কাজের দায়িত্ব দিন
+                                    </button>
+                                </div>
+                            ))
+                        )}
+                    </>
+                ) : (view === 'active' ? activeEntries : historyEntries).length === 0 ? (
                     <div className="col-span-full h-80 flex flex-col items-center justify-center bg-white dark:bg-slate-900 rounded-xl border-2 border-dashed border-slate-100 dark:border-slate-800 italic">
                         <Box size={40} className="text-slate-200 mb-4" />
                         <p className="text-[10px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest leading-none">বর্তমানে কোনো রেকর্ড পাওয়া যায়নি</p>

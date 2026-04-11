@@ -63,14 +63,20 @@ const ExpensePanel = ({
   const expenses = masterData.expenses || [];
   const cashEntries = masterData.cashEntries || [];
 
-  const totalCashIn = cashEntries.reduce(
+  const totalCashIn = (cashEntries || []).reduce(
     (sum, entry) => sum + Number(entry.amount),
     0,
   );
-  const totalExpenses = expenses.reduce(
+  
+  const workerPaymentTotal = (masterData.workerTransactions || [])
+    .filter(t => t.type === 'PAYMENT')
+    .reduce((sum, t) => sum + Number(t.amount), 0);
+
+  const totalExpenses = (expenses || []).reduce(
     (sum, entry) => sum + Number(entry.amount),
     0,
-  );
+  ) + Number(workerPaymentTotal);
+
   const currentBalance = totalCashIn - totalExpenses;
 
   const filteredExpenses = expenses.filter((e) => {
@@ -208,8 +214,8 @@ const ExpensePanel = ({
         <div className="max-w-4xl mx-auto space-y-12">
           <div className="no-print flex flex-col md:flex-row justify-between items-center gap-6 bg-slate-50 p-6 md:p-10 rounded-[2rem] border-2 border-slate-100 shadow-xl">
              <div className="flex flex-col items-center md:items-start">
-                 <h2 className="text-2xl font-black italic">REPORT HUB</h2>
-                 <p className="text-[10px] font-bold opacity-40">Ready for daily audit sequence</p>
+                 <h2 className="text-2xl font-black italic">TREASURY AUDIT</h2>
+                 <p className="text-[10px] font-bold opacity-40">Verification of Global Factory Liquidity</p>
              </div>
              <div className="flex gap-4 w-full md:w-auto">
                 <button 
@@ -237,7 +243,7 @@ const ExpensePanel = ({
                     NRZOONE ACCOUNTING
                     </h1>
                     <p className="text-[11px] font-black uppercase tracking-[0.5em] text-slate-400 leading-none">
-                    Elite Financial Record // Internal Only
+                    Global Treasury & Account Management Center
                     </p>
                 </div>
               </div>
@@ -306,7 +312,7 @@ const ExpensePanel = ({
             <Wallet size={24} />
           </div>
           <div className="relative z-10">
-            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mb-4">NET LIQUIDITY</p>
+            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mb-4">TOTAL FACTORY LIQUIDITY</p>
             <h2 className="text-4xl font-black tracking-tighter text-black dark:text-white leading-none">৳{currentBalance.toLocaleString()}</h2>
           </div>
         </div>

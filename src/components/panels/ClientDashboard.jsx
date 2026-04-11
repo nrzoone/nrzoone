@@ -7,11 +7,15 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 
 const ClientDashboard = ({ masterData, user, setMasterData, showNotify }) => {
-  const clientName = user.name;
+  const isAdmin = user?.role === 'admin' || user?.role === 'manager';
+  const [selectedClient, setSelectedClient] = useState(isAdmin ? null : user.name);
+  const clientName = selectedClient || '';
+
   // -- Modals --
   const [showMaterialModal, setShowMaterialModal] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [showOrderModal, setShowOrderModal] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
 
   // -- Advanced Order State --
   const [orderForm, setOrderForm] = useState({
@@ -74,35 +78,27 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify }) => {
   }, [masterData.cuttingStock, masterData.productionRequests, clientName]);
 
   const readyStock = useMemo(() => {
-    // Received productions - Delivered
-    const received = {};
-    (masterData.productions || [])
-      .filter(p => (p.client || '').toUpperCase() === clientName.toUpperCase() && p.status === 'Received')
-      .forEach(p => {
-         const key = `${p.design}_${p.color || 'MIX'}`;
-         if (!received[key]) received[key] = { design: p.design, color: p.color || 'MIX', borka: 0, hijab: 0 };
-         received[key].borka += Number(p.receivedBorka || 0);
-         received[key].hijab += Number(p.receivedHijab || 0);
+    const stocks = {};
+    (masterData.finishedStock || [])
+      .filter(s => (s.client || '').toUpperCase() === clientName.toUpperCase())
+      .forEach(s => {
+          const key = `${s.design}_${s.color || 'MIX'}`;
+          if (!stocks[key]) stocks[key] = { design: s.design, color: s.color || 'MIX', qty: 0 };
+          stocks[key].qty += Number(s.qty || 0);
       });
-
+    
+    // Deduct already delivered items from the finished stock log
     (masterData.deliveries || [])
-      .filter(d => (d.receiver || d.client || '').toUpperCase() === clientName.toUpperCase())
+      .filter(d => (d.client || '').toUpperCase() === clientName.toUpperCase())
       .forEach(d => {
-         const key = `${d.design}_${d.color || 'MIX'}`;
-         if (received[key]) {
-             // Unified reduction: if Borka/Hijab counts exist, use them; 
-             // otherwise, fallback to proportional total quantity reduction
-             const dTotal = Number(d.qty || (Number(d.qtyBorka || 0) + Number(d.qtyHijab || 0)));
-             const dPcsBorka = Number(d.qtyBorka || (dTotal > 0 && received[key].borka > 0 ? dTotal : 0));
-             const dPcsHijab = Number(d.qtyHijab || (dTotal > 0 && received[key].hijab > 0 && !d.qtyBorka ? dTotal : 0));
-
-             received[key].borka -= dPcsBorka;
-             received[key].hijab -= dPcsHijab;
-         }
+          const key = `${d.design}_${d.color || 'MIX'}`;
+          if (stocks[key]) {
+              stocks[key].qty -= Number(d.qty || 0);
+          }
       });
 
-    return Object.values(received).filter(r => r.borka > 0 || r.hijab > 0);
-  }, [masterData.productions, masterData.deliveries, clientName]);
+    return Object.values(stocks).filter(s => s.qty > 0);
+  }, [masterData.finishedStock, masterData.deliveries, clientName]);
 
   const financials = useMemo(() => {
     let billed = 0, paid = 0;
@@ -237,9 +233,11 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify }) => {
       amount,
       note: `CLIENT PAYMENT INFO: ${ref}`
     };
+    const cash = { id: `CASH-${Date.now()}`, date: new Date().toLocaleDateString("en-GB"), description: `B2B PAYMENT: ${clientName}`, amount: Number(amount) };
     setMasterData(prev => ({
       ...prev,
-      clientTransactions: [txn, ...(prev.clientTransactions || [])]
+      clientTransactions: [txn, ...(prev.clientTransactions || [])],
+      cashEntries: [cash, ...(prev.cashEntries || [])]
     }));
     setShowPaymentModal(false);
     showNotify("পেমেন্ট অডিট কিউতে পাঠানো হয়েছে!", "success");
@@ -299,13 +297,68 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify }) => {
                     `🔢 Qty: ${qty} PCS\n` +
                     `💰 Total Bill: ৳ ${(rate * qty).toLocaleString()}\n` +
                     `👤 Receiver: ${delivery.receiver}\n` +
-                    `📅 Date: ${date}`;
+                    `📅 Date: ${date}\n\n` +
+                    `*Current Outstanding Dashboard Balance: ৳ ${(financials.due + (rate * qty)).toLocaleString()}*`;
         shareToWhatsApp(msg);
     }
   };
 
+  if (isAdmin && !selectedClient) {
+    const clients = [...new Set((masterData.productionRequests || []).map(r => r.client))].filter(Boolean);
+    const filteredClients = clients.filter(c => c.toLowerCase().includes(searchTerm.toLowerCase()));
+
+    return (
+      <div className="min-h-screen pb-32 animate-fade-up font-outfit px-4 md:px-10">
+        <div className="py-12 text-center space-y-4">
+           <h2 className="text-4xl font-black italic uppercase tracking-tighter">B2B <span className="text-blue-600">CLIENT HUB</span></h2>
+           <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em]">Select a client to view 360° Dashboard</p>
+        </div>
+
+        <div className="max-w-xl mx-auto mb-12 relative group">
+            <Search size={18} className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-all" />
+            <input 
+              placeholder="সার্চ ক্লায়েন্ট (Search Client Name)..." 
+              className="w-full h-16 bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 rounded-[2rem] pl-16 pr-8 text-sm font-bold shadow-xl focus:border-blue-500 outline-none transition-all placeholder:text-slate-300"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredClients.length === 0 ? (
+                <div className="col-span-full py-20 bg-slate-50 dark:bg-slate-800/50 rounded-[3rem] border-2 border-dashed border-slate-100 dark:border-slate-800 text-center italic text-slate-400">
+                    No active B2B clients found.
+                </div>
+            ) : (
+                filteredClients.map((c, i) => (
+                    <button 
+                      key={i} 
+                      onClick={() => setSelectedClient(c)}
+                      className="saas-card group !p-8 bg-white dark:bg-slate-900 hover:border-blue-500 transition-all flex flex-col items-start gap-4 text-left shadow-2xl"
+                    >
+                        <div className="w-12 h-12 bg-blue-50 dark:bg-blue-900/20 text-blue-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform"><User size={24} /></div>
+                        <div>
+                            <h4 className="text-xl font-black uppercase italic leading-none truncate w-full">{c}</h4>
+                            <p className="text-[9px] font-black text-slate-400 mt-2 uppercase tracking-widest leading-none italic">View Performance Dashboard</p>
+                        </div>
+                    </button>
+                ))
+            )}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen pb-32 animate-fade-up font-outfit text-slate-950 dark:text-white px-1 md:px-6">
+      {isAdmin && (
+        <button 
+          onClick={() => setSelectedClient(null)}
+          className="mb-6 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-blue-600 hover:underline"
+        >
+          <ArrowLeft size={14} /> Back to Client Hub
+        </button>
+      )}
       {/* SaaS Compact Header */}
       <div className="saas-card bg-slate-950 text-white !border-none relative overflow-hidden group mb-6 !p-6 md:!p-10 rounded-[2.5rem] shadow-3xl">
          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-blue-900/40 via-transparent to-transparent opacity-60 pointer-events-none"></div>
@@ -436,7 +489,7 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify }) => {
                                   </div>
                                   <div className="flex items-center gap-4">
                                       <div className="text-right">
-                                          <p className="text-xl font-black italic">{Number(s.borka) + Number(s.hijab)} <span className="text-[9px] text-slate-400">PCS</span></p>
+                                          <p className="text-xl font-black italic">{s.qty} <span className="text-[9px] text-slate-400">PCS</span></p>
                                       </div>
                                       <button 
                                         onClick={() => { setActiveDispatch(s); setShowDispatchModal(true); }}
@@ -527,114 +580,113 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify }) => {
       <AnimatePresence>
         {showOrderModal && (
           <div className="fixed inset-0 bg-slate-950/70 backdrop-blur-2xl z-[1000] flex items-center justify-center p-4 overflow-y-auto">
-             <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="bg-white dark:bg-slate-900 w-full max-w-2xl p-10 md:p-14 rounded-[3.5rem] shadow-3xl space-y-12 border border-slate-100 dark:border-slate-800 relative">
-                <button onClick={() => setShowOrderModal(false)} className="absolute top-10 right-10 text-slate-400 hover:text-black transition-colors"><X size={28} /></button>
-                <div className="text-center space-y-4">
-                   <div className="w-20 h-20 bg-blue-600 text-white rounded-[2rem] flex items-center justify-center mx-auto shadow-3xl rotate-12 mb-6"><ShoppingCart size={36} /></div>
-                   <h3 className="text-4xl font-black uppercase tracking-tight italic text-black dark:text-white">PRODUCTION PROTOCOL</h3>
-                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.5em] leading-none italic">Define Order Specifications & Material Drawdown</p>
+             <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="bg-white dark:bg-slate-900 w-full max-w-xl p-8 rounded-[2.5rem] shadow-3xl space-y-8 border border-slate-100 dark:border-slate-800 relative">
+                <button onClick={() => setShowOrderModal(false)} className="absolute top-8 right-8 text-slate-400 hover:text-black transition-colors"><X size={24} /></button>
+                <div className="text-center space-y-2">
+                   <div className="w-16 h-16 bg-blue-600 text-white rounded-2xl flex items-center justify-center mx-auto shadow-xl rotate-6 mb-4"><ShoppingCart size={28} /></div>
+                   <h3 className="text-2xl font-black uppercase tracking-tight italic text-black dark:text-white">NEW PRODUCTION</h3>
+                   <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.4em] leading-none italic">Entity: {clientName}</p>
                 </div>
-                <form onSubmit={handleSubmitOrder} className="space-y-10">
-                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                       <div className="space-y-3">
-                           <label className="text-[11px] font-black text-slate-500 uppercase tracking-widest ml-4 italic">Design Node</label>
-                           <select value={orderForm.design} onChange={e => setOrderForm(p => ({...p, design: e.target.value}))} className="premium-input !h-16 font-black uppercase text-xs" required>
-                              <option value="">SELECT DESIGN ARCHIVE...</option>
-                              {(masterData.designs || []).map(d => <option key={d.name} value={d.name}>{d.name}</option>)}
-                           </select>
+
+                 <form onSubmit={handleSubmitOrder} className="space-y-6">
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2 italic">Design</label>
+                            <select value={orderForm.design} onChange={e => setOrderForm(p => ({...p, design: e.target.value}))} className="premium-input !h-12 font-black uppercase text-[11px]" required>
+                               <option value="">SELECT...</option>
+                               {(masterData.designs || []).map(d => <option key={d.name} value={d.name}>{d.name}</option>)}
+                            </select>
+                        </div>
+                        <div className="space-y-2">
+                           <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2 italic">Fabric (YDS)</label>
+                           <input type="number" value={orderForm.fabricGoj} onChange={e => setOrderForm(p => ({...p, fabricGoj: e.target.value}))} className="premium-input !h-12 text-center font-black text-lg !bg-slate-950 !text-white !border-none" placeholder="0.00" required />
+                        </div>
+                    </div>
+
+                    <div className="bg-slate-50 dark:bg-slate-800/50 p-5 rounded-3xl border border-slate-100 dark:border-slate-800 space-y-4">
+                       <div className="flex justify-between items-center mb-2">
+                          <h4 className="text-[9px] font-black uppercase text-slate-400 tracking-[0.2em] italic">Size Configuration</h4>
+                          <button type="button" onClick={() => setOrderForm(p => ({...p, sizes: [...p.sizes, { size: '', borka: '', hijab: '' }]}))} className="w-8 h-8 bg-slate-950 text-white rounded-lg flex items-center justify-center hover:scale-110 shadow-lg"><Plus size={14} /></button>
                        </div>
-                       <div className="space-y-3">
-                          <label className="text-[11px] font-black text-slate-500 uppercase tracking-widest ml-4 italic">Material DRAWDOWN (YDS)</label>
-                          <input type="number" value={orderForm.fabricGoj} onChange={e => setOrderForm(p => ({...p, fabricGoj: e.target.value}))} className="premium-input !h-16 text-center font-black text-2xl !bg-slate-950 !text-white !border-none" placeholder="0.00" required />
+                       <div className="space-y-2 max-h-[180px] overflow-y-auto no-scrollbar pr-2">
+                          {orderForm.sizes.map((s, idx) => (
+                             <div key={idx} className="grid grid-cols-12 gap-2 items-center bg-white dark:bg-slate-900 p-2 rounded-xl border border-slate-100 dark:border-slate-800 group relative">
+                                <div className="col-span-4 flex items-center gap-2">
+                                   <select value={s.size} onChange={e => { const ns = [...orderForm.sizes]; ns[idx].size = e.target.value; setOrderForm(p => ({...p, sizes: ns})); }} className="w-full bg-slate-50 dark:bg-slate-950 h-10 rounded-lg text-[10px] font-black uppercase border-none outline-none text-center" required>
+                                       <option value="">SIZE</option>
+                                       {(masterData.sizes || []).map(z => <option key={z} value={z}>{z}</option>)}
+                                   </select>
+                                </div>
+                                <div className="col-span-3 flex items-center gap-1 px-2 border-l border-slate-100 dark:border-slate-800">
+                                   <input type="number" value={s.borka} onChange={e => { const ns = [...orderForm.sizes]; ns[idx].borka = e.target.value; setOrderForm(p => ({...p, sizes: ns})); }} className="w-full text-center text-lg font-black bg-transparent border-none outline-none" placeholder="B:0" />
+                                </div>
+                                <div className="col-span-3 flex items-center gap-1 px-2 border-l border-slate-100 dark:border-slate-800">
+                                    <input type="number" value={s.hijab} onChange={e => { const ns = [...orderForm.sizes]; ns[idx].hijab = e.target.value; setOrderForm(p => ({...p, sizes: ns})); }} className="w-full text-center text-lg font-black bg-transparent border-none outline-none" placeholder="H:0" />
+                                </div>
+                                <div className="col-span-2 flex justify-end">
+                                   {orderForm.sizes.length > 1 && (
+                                      <button type="button" onClick={() => setOrderForm(p => ({...p, sizes: p.sizes.filter((_, i) => i !== idx)}))} className="w-8 h-8 flex items-center justify-center text-rose-500 hover:bg-rose-50 rounded-lg transition-all"><X size={14} /></button>
+                                   )}
+                                </div>
+                             </div>
+                          ))}
                        </div>
-                   </div>
+                    </div>
 
-                   <div className="bg-slate-50 dark:bg-slate-800/50 p-8 rounded-[2.5rem] border-2 border-slate-100 dark:border-slate-800 space-y-6">
-                      <div className="flex justify-between items-center mb-4">
-                         <h4 className="text-[11px] font-black uppercase text-slate-400 tracking-[0.2em] italic">Size Matrix Configuration</h4>
-                         <button type="button" onClick={() => setOrderForm(p => ({...p, sizes: [...p.sizes, { size: '', borka: '', hijab: '' }]}))} className="w-10 h-10 bg-slate-950 text-white rounded-xl flex items-center justify-center hover:scale-110 shadow-xl transition-all"><Plus size={18} /></button>
-                      </div>
-                      <div className="space-y-4 max-h-[300px] overflow-y-auto no-scrollbar pr-2">
-                         {orderForm.sizes.map((s, idx) => (
-                            <div key={idx} className="grid grid-cols-12 gap-4 items-center bg-white dark:bg-slate-900 p-4 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm relative overflow-hidden group">
-                               <div className="col-span-12 md:col-span-3 flex items-center gap-3">
-                                  <select value={s.size} onChange={e => { const ns = [...orderForm.sizes]; ns[idx].size = e.target.value; setOrderForm(p => ({...p, sizes: ns})); }} className="w-full bg-slate-50 dark:bg-slate-950 h-12 rounded-xl text-[10px] font-black uppercase border-none outline-none text-center" required>
-                                      <option value="">SIZE</option>
-                                      {(masterData.sizes || []).map(z => <option key={z} value={z}>{z}</option>)}
-                                  </select>
-                               </div>
-                               <div className="col-span-5 md:col-span-4 flex items-center gap-4 px-4 border-l-2 border-slate-50 dark:border-slate-800">
-                                  <span className="text-[9px] font-black text-slate-300 uppercase">BORKA</span>
-                                  <input type="number" value={s.borka} onChange={e => { const ns = [...orderForm.sizes]; ns[idx].borka = e.target.value; setOrderForm(p => ({...p, sizes: ns})); }} className="w-full text-center text-2xl font-black bg-transparent border-none outline-none" placeholder="0" />
-                               </div>
-                               <div className="col-span-5 md:col-span-4 flex items-center gap-4 px-4 border-l-2 border-slate-50 dark:border-slate-800">
-                                   <span className="text-[9px] font-black text-slate-300 uppercase">HIJAB</span>
-                                   <input type="number" value={s.hijab} onChange={e => { const ns = [...orderForm.sizes]; ns[idx].hijab = e.target.value; setOrderForm(p => ({...p, sizes: ns})); }} className="w-full text-center text-2xl font-black bg-transparent border-none outline-none" placeholder="0" />
-                               </div>
-                               <div className="col-span-2 md:col-span-1 flex justify-end">
-                                  {orderForm.sizes.length > 1 && (
-                                     <button type="button" onClick={() => setOrderForm(p => ({...p, sizes: p.sizes.filter((_, i) => i !== idx)}))} className="w-10 h-10 flex items-center justify-center text-rose-500 hover:bg-rose-50 rounded-xl transition-all"><X size={18} /></button>
-                                  )}
-                               </div>
-                            </div>
-                         ))}
-                      </div>
-                   </div>
+                    <div className="space-y-2">
+                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2 italic">Notes</label>
+                       <textarea value={orderForm.note} onChange={e => setOrderForm(p => ({...p, note: e.target.value}))} className="premium-input !h-20 !pt-3 uppercase text-[10px] font-black italic tracking-widest shadow-inner !bg-slate-50 dark:!bg-slate-800" placeholder="ENTER INSTRUCTIONS..." />
+                    </div>
 
-                   <div className="space-y-3">
-                      <label className="text-[11px] font-black text-slate-500 uppercase tracking-widest ml-4 italic">Production Memo (Notes)</label>
-                      <textarea value={orderForm.note} onChange={e => setOrderForm(p => ({...p, note: e.target.value}))} className="premium-input !h-28 !pt-6 uppercase text-[11px] font-black italic tracking-widest shadow-inner !bg-slate-50 dark:!bg-slate-800" placeholder="ENTER SPECIFIC MATERIAL OR CUTTING INSTRUCTIONS..." />
-                   </div>
-
-                   <div className="flex gap-6 pt-6">
-                      <button type="button" onClick={() => setShowOrderModal(false)} className="flex-1 py-6 font-black text-[12px] uppercase tracking-[0.4em] text-slate-400 hover:text-black transition-all">ABORT</button>
-                      <button type="submit" className="flex-[2] py-6 bg-blue-600 text-white rounded-[2rem] font-black text-[12px] uppercase tracking-[0.4em] shadow-3xl border-b-[8px] border-blue-900 active:scale-95 transition-all">COMMIT ORDER</button>
-                   </div>
-                </form>
+                    <div className="flex gap-4 pt-4">
+                       <button type="button" onClick={() => setShowOrderModal(false)} className="flex-1 py-4 font-black text-[10px] uppercase tracking-[0.4em] text-slate-400 hover:text-black transition-all">ABORT</button>
+                       <button type="submit" className="flex-[3] py-4 bg-blue-600 text-white rounded-[1.5rem] font-black text-[10px] uppercase tracking-[0.4em] shadow-xl border-b-[6px] border-blue-900 active:scale-95 transition-all">COMMIT ORDER</button>
+                    </div>
+                 </form>
              </motion.div>
           </div>
         )}
 
         {showMaterialModal && (
           <div className="fixed inset-0 bg-slate-950/70 backdrop-blur-2xl z-[1000] flex items-center justify-center p-4 overflow-y-auto">
-             <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="bg-white dark:bg-slate-900 w-full max-w-xl p-12 rounded-[3.5rem] shadow-3xl space-y-12 border border-slate-100 dark:border-slate-800 relative">
-                <button onClick={() => setShowMaterialModal(false)} className="absolute top-10 right-10 text-slate-400 hover:text-black transition-colors"><X size={28} /></button>
-                <div className="text-center space-y-4">
-                   <div className="w-20 h-20 bg-emerald-600 text-white rounded-[2rem] flex items-center justify-center mx-auto shadow-3xl -rotate-12 mb-6"><Archive size={36} /></div>
-                   <h3 className="text-3xl font-black uppercase tracking-tight italic text-black dark:text-white">STOCK INJECTION</h3>
-                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.5em] leading-none italic">Update Your Factory Inventory Portfolio</p>
+             <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="bg-white dark:bg-slate-900 w-full max-w-md p-10 rounded-[2.5rem] shadow-3xl space-y-8 border border-slate-100 dark:border-slate-800 relative">
+                <button onClick={() => setShowMaterialModal(false)} className="absolute top-8 right-8 text-slate-400 hover:text-black transition-colors"><X size={24} /></button>
+                <div className="text-center space-y-2">
+                   <div className="w-16 h-16 bg-emerald-600 text-white rounded-2xl flex items-center justify-center mx-auto shadow-xl -rotate-6 mb-4"><Archive size={28} /></div>
+                   <h3 className="text-2xl font-black uppercase tracking-tight italic text-black dark:text-white">STOCK DEPOSIT</h3>
+                   <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.4em] leading-none italic">Log Material Injection</p>
                 </div>
-                <form onSubmit={handleDepositMaterial} className="space-y-10">
-                   <div className="space-y-3">
-                       <label className="text-[11px] font-black text-slate-500 uppercase tracking-widest ml-4 italic">Material Identity</label>
-                       <input name="item" list="mat-list-v" className="premium-input !h-16 uppercase font-black text-xs" placeholder="E.G. DUBAI CHERRY / STONE PACK" required />
+                <form onSubmit={handleDepositMaterial} className="space-y-6">
+                   <div className="space-y-2">
+                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2 italic">Identity</label>
+                       <input name="item" list="mat-list-v" className="premium-input !h-12 uppercase font-black text-[11px]" placeholder="E.G. FABRIC ROLL" required />
                        <datalist id="mat-list-v">
                           <option value="ফেব্রিক রোল (Fabric)" />
                           <option value="পাথর (STONE PACK)" />
                           <option value="বোর্ড পিন (BOARD PIN)" />
                        </datalist>
                    </div>
-                   <div className="grid grid-cols-2 gap-8">
-                       <div className="space-y-3">
-                          <label className="text-[11px] font-black text-slate-500 uppercase tracking-widest ml-4 italic">Quantity</label>
-                          <input name="qty" type="number" className="premium-input !h-16 text-center font-black text-2xl !bg-slate-950 !text-white !border-none" placeholder="0" required />
+                   <div className="grid grid-cols-2 gap-4">
+                       <div className="space-y-2">
+                          <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2 italic">Qty</label>
+                          <input name="qty" type="number" className="premium-input !h-12 text-center font-black text-xl !bg-slate-950 !text-white !border-none" placeholder="0" required />
                        </div>
-                       <div className="space-y-3">
-                          <label className="text-[11px] font-black text-slate-500 uppercase tracking-widest ml-4 italic">Metric Unit</label>
-                          <select name="unit" className="premium-input !h-16 font-black uppercase text-xs">
+                       <div className="space-y-2">
+                          <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2 italic">Unit</label>
+                          <select name="unit" className="premium-input !h-12 font-black uppercase text-[10px]">
                              <option value="গজ">গজ (YDS)</option>
                              <option value="প্যাকেট">প্যাকেট (PKT)</option>
                              <option value="রোল">রোল (ROLL)</option>
                           </select>
                        </div>
                    </div>
-                   <div className="space-y-3">
-                       <label className="text-[11px] font-black text-slate-500 uppercase tracking-widest ml-4 italic">Reference / Note</label>
-                       <input name="note" className="premium-input !h-16 uppercase text-[11px] font-black italic tracking-widest shadow-inner !bg-slate-50 dark:!bg-slate-800" placeholder="E.G. JET BLACK PREMIUM" required />
+                   <div className="space-y-2">
+                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2 italic">Note</label>
+                       <input name="note" className="premium-input !h-12 uppercase text-[10px] font-black italic tracking-widest shadow-inner !bg-slate-50 dark:!bg-slate-800" placeholder="E.G. JET BLACK" required />
                    </div>
-                   <div className="flex gap-6 pt-6">
-                      <button type="button" onClick={() => setShowMaterialModal(false)} className="flex-1 py-6 font-black text-[12px] uppercase tracking-[0.4em] text-slate-400 hover:text-black transition-all">ABORT</button>
-                      <button type="submit" className="flex-[2] py-6 bg-emerald-600 text-white rounded-[2rem] font-black text-[12px] uppercase tracking-[0.4em] shadow-3xl border-b-[8px] border-emerald-900 active:scale-95 transition-all">DEPOSIT STOCK</button>
+                   <div className="flex gap-4 pt-4">
+                      <button type="button" onClick={() => setShowMaterialModal(false)} className="flex-1 py-4 font-black text-[10px] text-slate-400">ABORT</button>
+                      <button type="submit" className="flex-[3] py-4 bg-emerald-600 text-white rounded-[1.5rem] font-black text-[10px] uppercase shadow-xl border-b-[6px] border-emerald-900 active:scale-95 transition-all">INJECT STOCK</button>
                    </div>
                 </form>
              </motion.div>
@@ -643,79 +695,70 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify }) => {
 
         {showPaymentModal && (
           <div className="fixed inset-0 bg-slate-950/70 backdrop-blur-2xl z-[1000] flex items-center justify-center p-4 overflow-y-auto">
-             <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="bg-white dark:bg-slate-900 w-full max-w-xl p-12 rounded-[3.5rem] shadow-3xl space-y-12 border border-slate-100 dark:border-slate-800 relative">
-                <button onClick={() => setShowPaymentModal(false)} className="absolute top-10 right-10 text-slate-400 hover:text-black transition-colors"><X size={28} /></button>
-                <div className="text-center space-y-4">
-                   <div className="w-20 h-20 bg-rose-600 text-white rounded-[2rem] flex items-center justify-center mx-auto shadow-3xl -rotate-6 mb-6"><DollarSign size={36} /></div>
-                   <h3 className="text-3xl font-black uppercase tracking-tight italic text-black dark:text-white">SYNC FINANCIALS</h3>
-                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.5em] leading-none italic">Log Payment Settlement for Factory Verification</p>
+             <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="bg-white dark:bg-slate-900 w-full max-w-md p-10 rounded-[2.5rem] shadow-3xl space-y-8 border border-slate-100 dark:border-slate-800 relative">
+                <button onClick={() => setShowPaymentModal(false)} className="absolute top-8 right-8 text-slate-400 hover:text-black transition-colors"><X size={24} /></button>
+                <div className="text-center space-y-2">
+                   <div className="w-16 h-16 bg-rose-600 text-white rounded-2xl flex items-center justify-center mx-auto shadow-xl rotate-3 mb-4"><DollarSign size={28} /></div>
+                   <h3 className="text-2xl font-black uppercase tracking-tight italic text-black dark:text-white">FINANCE SYNC</h3>
+                   <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.4em] leading-none italic">Log Fund Settlement</p>
                 </div>
-                <form onSubmit={handlePaySubmission} className="space-y-10">
-                   <div className="space-y-3">
-                      <label className="text-[11px] font-black text-slate-500 uppercase tracking-widest ml-4 italic">Deposit Amount (BDT)</label>
-                      <input name="amount" type="number" className="premium-input !h-28 text-5xl font-black text-center !bg-slate-950 !text-white !border-none !rounded-[2rem]" placeholder="৳ 0.00" required autoFocus />
+                <form onSubmit={handlePaySubmission} className="space-y-6">
+                   <div className="space-y-2">
+                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2 italic">Amount (BDT)</label>
+                      <input name="amount" type="number" className="premium-input !h-16 text-3xl font-black text-center !bg-slate-950 !text-white !border-none !rounded-[1.5rem]" placeholder="৳ 0.00" required autoFocus />
                    </div>
-                   <div className="space-y-3">
-                      <label className="text-[11px] font-black text-slate-500 uppercase tracking-widest ml-4 italic">Reference / TrxID / Method</label>
-                      <input name="ref" className="premium-input !h-16 uppercase text-[11px] font-black italic tracking-widest shadow-inner !bg-slate-50 dark:!bg-slate-800" placeholder="E.G. BKASH / BANK / CASH" required />
+                   <div className="space-y-2">
+                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2 italic">Reference / Method</label>
+                      <input name="ref" className="premium-input !h-12 uppercase text-[10px] font-black italic tracking-widest shadow-inner !bg-slate-50 dark:!bg-slate-800" placeholder="BKASH / BANK / CASH" required />
                    </div>
-                   <div className="flex gap-6 pt-6">
-                      <button type="button" onClick={() => setShowPaymentModal(false)} className="flex-1 py-6 font-black text-[12px] uppercase tracking-[0.4em] text-slate-400 hover:text-black transition-all">ABORT</button>
-                      <button type="submit" className="flex-[2] py-6 bg-emerald-600 text-white rounded-[2rem] font-black text-[12px] uppercase tracking-[0.4em] shadow-3xl border-b-[8px] border-emerald-900 active:scale-95 transition-all">SUBMIT AUDIT</button>
+                   <div className="flex gap-4 pt-4">
+                      <button type="button" onClick={() => setShowPaymentModal(false)} className="flex-1 py-4 font-black text-[10px] text-slate-400">ABORT</button>
+                      <button type="submit" className="flex-[3] py-4 bg-emerald-600 text-white rounded-[1.5rem] font-black text-[10px] uppercase shadow-xl border-b-[6px] border-emerald-900 active:scale-95 transition-all">SYNC FUND</button>
                    </div>
                 </form>
              </motion.div>
           </div>
         )}
+
         {showDispatchModal && (
           <div className="fixed inset-0 bg-slate-950/70 backdrop-blur-2xl z-[1000] flex items-center justify-center p-4 overflow-y-auto">
-             <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="bg-white dark:bg-slate-900 w-full max-w-xl p-12 rounded-[3.5rem] shadow-3xl space-y-12 border border-slate-100 dark:border-slate-800 relative">
-                <button onClick={() => setShowDispatchModal(false)} className="absolute top-10 right-10 text-slate-400 hover:text-black transition-colors"><X size={28} /></button>
-                <div className="text-center space-y-4">
-                   <div className="w-20 h-20 bg-slate-950 text-white rounded-[2rem] flex items-center justify-center mx-auto shadow-3xl -rotate-6 mb-6"><Truck size={36} /></div>
-                   <h3 className="text-3xl font-black uppercase tracking-tight italic text-black dark:text-white">SELF DISPATCH</h3>
-                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.5em] leading-none italic">Authorize Goods Release & Automated Billing</p>
+             <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="bg-white dark:bg-slate-900 w-full max-w-md p-10 rounded-[2.5rem] shadow-3xl space-y-8 border border-slate-100 dark:border-slate-800 relative">
+                <button onClick={() => setShowDispatchModal(false)} className="absolute top-8 right-8 text-slate-400 hover:text-black transition-colors"><X size={24} /></button>
+                <div className="text-center space-y-2">
+                   <div className="w-16 h-16 bg-slate-950 text-white rounded-2xl flex items-center justify-center mx-auto shadow-xl -rotate-6 mb-4"><Truck size={28} /></div>
+                   <h3 className="text-2xl font-black uppercase tracking-tight italic text-black dark:text-white">SELF DISPATCH</h3>
+                   <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.4em] leading-none italic">Goods Authorization</p>
                 </div>
-                <form onSubmit={handleDispatch} className="space-y-10">
+                <form onSubmit={handleDispatch} className="space-y-6">
                    <input type="hidden" name="design" value={activeDispatch?.design} />
                    <input type="hidden" name="color" value={activeDispatch?.color} />
                    
-                   <div className="p-6 bg-slate-50 dark:bg-slate-800/50 rounded-3xl border border-slate-100 dark:border-slate-800">
-                      <p className="text-[10px] font-black uppercase text-slate-400 mb-2">Item Portfolio</p>
-                      <h4 className="text-xl font-black italic uppercase">{activeDispatch?.design} <span className="text-xs text-blue-500">// {activeDispatch?.color}</span></h4>
+                   <div className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-800">
+                      <h4 className="text-sm font-black italic uppercase text-blue-600">{activeDispatch?.design} <span className="text-[10px] text-slate-400 opacity-50">// {activeDispatch?.color}</span></h4>
                    </div>
 
-                   <div className="grid grid-cols-2 gap-8 text-center">
-                       <div className="space-y-3">
-                           <label className="text-[11px] font-black text-slate-500 uppercase tracking-widest italic">Borka Pcs</label>
-                           <input name="borka" type="number" max={activeDispatch?.borka} className="premium-input !h-20 text-4xl font-black text-center" placeholder="0" required />
+                   <div className="grid grid-cols-2 gap-4">
+                       <div className="space-y-2">
+                           <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest italic">Total PCS</label>
+                           <input name="qty" type="number" max={activeDispatch?.qty} className="premium-input !h-12 text-center font-black !bg-slate-950 !text-white !border-none" placeholder="0" required />
                        </div>
-                       <div className="space-y-3">
-                           <label className="text-[11px] font-black text-slate-500 uppercase tracking-widest italic">Hijab Pcs</label>
-                           <input name="hijab" type="number" max={activeDispatch?.hijab} className="premium-input !h-20 text-4xl font-black text-center" placeholder="0" required />
+                       <div className="space-y-2">
+                           <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest italic">Rate</label>
+                           <input name="rate" type="number" defaultValue={(masterData.designs?.find(d => d.name === activeDispatch?.design)?.clientRates?.[clientName]?.fullBody) || 0} className="premium-input !h-12 text-center font-black !bg-blue-600 !text-white !border-none" placeholder="৳ 0.00" required />
                        </div>
                    </div>
 
-                   <div className="grid grid-cols-2 gap-8">
-                      <div className="space-y-3">
-                          <label className="text-[11px] font-black text-slate-500 uppercase tracking-widest italic">Total Qty (PCS)</label>
-                          <input name="qty" type="number" className="premium-input !h-16 text-center font-black !bg-slate-950 !text-white !border-none" placeholder="0" required />
-                      </div>
-                      <div className="space-y-3">
-                          <label className="text-[11px] font-black text-slate-500 uppercase tracking-widest italic">Rate per Pc</label>
-                          <input name="rate" type="number" className="premium-input !h-16 text-center font-black !bg-blue-600 !text-white !border-none" placeholder="৳ 0.00" required />
-                      </div>
+                   <div className="space-y-2">
+                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest italic">Carrier</label>
+                       <input name="receiver" className="premium-input !h-12 uppercase text-[10px] font-black italic tracking-widest shadow-inner !bg-slate-50 dark:!bg-slate-800" placeholder="RIDER / HUB NAME" required />
+                       <input name="note" type="hidden" value="SELF DISPATCH" />
+                       <input name="borka" type="hidden" value="0" />
+                       <input name="hijab" type="hidden" value="0" />
                    </div>
 
-                   <div className="space-y-3">
-                       <label className="text-[11px] font-black text-slate-500 uppercase tracking-widest italic">Receiver / Carrier Details</label>
-                       <input name="receiver" className="premium-input !h-16 uppercase text-[11px] font-black italic tracking-widest shadow-inner !bg-slate-50 dark:!bg-slate-800" placeholder="E.G. SELF HUB / RIDER NAME" required />
-                       <input name="note" type="hidden" value="MANUAL AUTHORIZATION" />
-                   </div>
-
-                   <div className="flex gap-6 pt-6">
-                      <button type="button" onClick={() => setShowDispatchModal(false)} className="flex-1 py-6 font-black text-[12px] uppercase tracking-[0.4em] text-slate-400 hover:text-black transition-all">ABORT</button>
-                      <button type="submit" className="flex-[2] py-6 bg-slate-950 text-white rounded-[2rem] font-black text-[12px] uppercase tracking-[0.4em] shadow-3xl border-b-[8px] border-slate-700 active:scale-95 transition-all">AUTHORIZE RELEASE</button>
+                   <div className="flex gap-4 pt-4">
+                      <button type="button" onClick={() => setShowDispatchModal(false)} className="flex-1 py-4 font-black text-[10px] text-slate-400">ABORT</button>
+                      <button type="submit" className="flex-[3] py-4 bg-slate-950 text-white rounded-[1.5rem] font-black text-[10px] uppercase shadow-xl border-b-[6px] border-slate-700 active:scale-95 transition-all">RELEASE</button>
                    </div>
                 </form>
              </motion.div>

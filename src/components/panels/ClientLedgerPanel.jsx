@@ -463,33 +463,46 @@ const ClientLedgerPanel = ({ masterData, setMasterData, showNotify, user, setAct
                         )}
                         {showActionModal === 'ORDER' && (
                             <div className="space-y-6">
+                                <div className="space-y-1">
+                                    <label className="text-[10px] font-black uppercase text-slate-400 ml-1">Order Date</label>
+                                    <input name="date" type="date" defaultValue={new Date().toISOString().split('T')[0]} className="premium-input !h-14 font-black bg-slate-100 text-black border-none" required />
+                                </div>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-1">
                                         <label className="text-[10px] font-black uppercase text-slate-400 ml-1">Design</label>
                                         <select name="design" className="premium-input !h-14 uppercase text-xs font-black">{(masterData.designs || []).map(d => <option key={d.name}>{d.name}</option>)}</select>
                                     </div>
                                     <div className="space-y-1">
-                                        <label className="text-[10px] font-black uppercase text-slate-400 ml-1">Fabric Goj (YDS)</label>
-                                        <input name="fabricGoj" type="number" placeholder="0.00" className="premium-input !h-14 font-black bg-slate-100 text-black border-none" required />
+                                        <label className="text-[10px] font-black uppercase text-slate-400 ml-1">Color</label>
+                                        <select name="color" className="premium-input !h-14 uppercase text-xs font-black">{(masterData.colors || []).map(c => <option key={c} value={c}>{c}</option>)}</select>
                                     </div>
                                 </div>
-                                <div className="space-y-3 bg-slate-50 dark:bg-slate-800 p-4 rounded-2xl border border-slate-100 dark:border-slate-800">
-                                    <p className="text-[9px] font-black text-slate-400 uppercase italic mb-2 text-center">Size Configuration (Borka + Hijab)</p>
-                                    <div className="grid grid-cols-12 gap-2 items-center mb-2">
-                                        <div className="col-span-4"><p className="text-[8px] font-black text-center text-slate-400">SIZE</p></div>
-                                        <div className="col-span-4"><p className="text-[8px] font-black text-center text-slate-400">BORKA</p></div>
-                                        <div className="col-span-4"><p className="text-[8px] font-black text-center text-slate-400">HIJAB</p></div>
-                                    </div>
-                                    {(masterData.sizes || []).slice(0, 3).map(sz => (
-                                        <div key={sz} className="grid grid-cols-12 gap-2 items-center mb-2">
-                                            <div className="col-span-4 font-black text-xs text-center">{sz}</div>
-                                            <div className="col-span-4"><input name={`borka_${sz}`} type="number" placeholder="0" className="w-full h-10 rounded-xl bg-white dark:bg-slate-900 text-center font-black text-sm outline-none" /></div>
-                                            <div className="col-span-4"><input name={`hijab_${sz}`} type="number" placeholder="0" className="w-full h-10 rounded-xl bg-white dark:bg-slate-900 text-center font-black text-sm outline-none" /></div>
-                                        </div>
-                                    ))}
-                                    <p className="text-[8px] text-center opacity-40">Only first 3 visible here - Admin use dashboard for full matrix</p>
+                                <div className="space-y-1">
+                                    <label className="text-[10px] font-black uppercase text-slate-400 ml-1">Fabric Drawdown (YDS)</label>
+                                    <input name="fabricGoj" type="number" step="0.01" placeholder="0.00" className="premium-input !h-14 font-black bg-blue-50 text-blue-600 border-none" required />
                                 </div>
-                                <div className="space-y-1"><label className="text-[10px] font-black uppercase text-slate-400 ml-1">Memo</label><input name="note" placeholder="INSTRUCTIONS" className="premium-input !h-14 uppercase text-xs font-black italic" /></div>
+                                <div className="space-y-3 bg-slate-50 dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-slate-800">
+                                    <p className="text-[10px] font-black text-slate-400 uppercase italic mb-4 text-center">Production Matrix (Borka / Hijab)</p>
+                                    <div className="max-h-[220px] overflow-y-auto pr-2 no-scrollbar space-y-3">
+                                        {(masterData.sizes || []).map(sz => (
+                                            <div key={sz} className="grid grid-cols-12 gap-3 items-center bg-white dark:bg-slate-900 p-3 rounded-xl shadow-sm border border-slate-50 dark:border-slate-800">
+                                                <div className="col-span-3 font-black text-xs text-center border-r border-slate-100 dark:border-slate-800">{sz}</div>
+                                                <div className="col-span-4 flex flex-col items-center">
+                                                    <span className="text-[8px] font-black text-slate-400 mb-1">BORKA</span>
+                                                    <input name={`borka_${sz}`} type="number" placeholder="0" className="w-full h-10 rounded-lg bg-white dark:bg-slate-950 text-center font-black text-sm outline-none border-none shadow-inner" />
+                                                </div>
+                                                <div className="col-span-4 flex flex-col items-center">
+                                                    <span className="text-[8px] font-black text-slate-400 mb-1">HIJAB</span>
+                                                    <input name={`hijab_${sz}`} type="number" placeholder="0" className="w-full h-10 rounded-lg bg-white dark:bg-slate-950 text-center font-black text-sm outline-none border-none shadow-inner" />
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                                <div className="space-y-1">
+                                    <label className="text-[10px] font-black uppercase text-slate-400 ml-1">Order Memo (Notes)</label>
+                                    <input name="note" placeholder="SPECIAL INSTRUCTIONS..." className="premium-input !h-14 uppercase text-[10px] font-black italic tracking-widest" />
+                                </div>
                             </div>
                         )}
                         {showActionModal === 'DELIVERY' && (

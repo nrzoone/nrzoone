@@ -256,7 +256,7 @@ const FactoryPanel = ({
               lotNo,
               design,
               color,
-              client: cutItems[0]?.client || 'FACTORY',
+              client: cutItems[0]?.client || "FACTORY",
               hasStoneRate: hasStone,
               hasSewingRate: hasSewing,
               totalAvailable: curRB + curRH,
@@ -476,7 +476,7 @@ const FactoryPanel = ({
       amount: 0,
     });
 
-    // B2B Conditional Billing Logic
+    // B2B Conditional Billing & Ready Stock Logic
     if (receiveModal.client && receiveModal.client !== "FACTORY") {
         const designObj = (masterData.designs || []).find(d => d.name === receiveModal.design);
         const stageRate = designObj?.clientRates?.[receiveModal.client]?.[receiveModal.type]; // 'sewing' or 'stone'
@@ -494,7 +494,16 @@ const FactoryPanel = ({
                 };
                 setMasterData(prev => ({
                     ...prev,
-                    clientTransactions: [b2bBill, ...(prev.clientTransactions || [])]
+                    clientTransactions: [b2bBill, ...(prev.clientTransactions || [])],
+                    finishedStock: [{
+                        id: Date.now() + 5,
+                        design: receiveModal.design,
+                        color: receiveModal.color || 'MIX',
+                        client: receiveModal.client,
+                        qty: rBorka + rHijab,
+                        date: new Date().toLocaleDateString("en-GB"),
+                        type: receiveModal.type // Track which stage finished it
+                    }, ...(prev.finishedStock || [])]
                 }));
             }
         }

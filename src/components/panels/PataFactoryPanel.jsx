@@ -46,8 +46,41 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
     const [receiveModal, setReceiveModal] = useState(null);
     const [payModal, setPayModal] = useState(null);
     const [ledgerModal, setLedgerModal] = useState(null);
-    const [view, setView] = useState('active');
+    const [view, setView] = useState('active'); // active, history, payments, inventory_history, b2b_incoming
     const [showRestockModal, setShowRestockModal] = useState(false);
+
+    const incomingOrders = useMemo(() => {
+        return (masterData.productionRequests || []).filter(r => r.status === 'Pending Review');
+    }, [masterData.productionRequests]);
+
+    const handleAcceptB2BOrder = (order) => {
+        const worker = prompt("Enter Worker Name for this B2B Order:", "");
+        if (!worker) return;
+        
+        const lotNo = `PT-B2B-${Date.now().toString().slice(-4)}`;
+        const newEntry = {
+            id: Date.now(),
+            date: new Date().toLocaleDateString('en-GB'),
+            worker: worker,
+            design: order.design,
+            color: 'MIX',
+            lotNo: lotNo,
+            pataType: 'Single',
+            pataQty: order.totalBorka || 0,
+            stonePackets: 0,
+            paperRolls: 0,
+            client: order.client,
+            status: 'Pending',
+            note: `PULLED FROM B2B ORDER: ${order.design}`
+        };
+
+        setMasterData(prev => ({
+            ...prev,
+            pataEntries: [newEntry, ...(prev.pataEntries || [])],
+            productionRequests: (prev.productionRequests || []).map(r => r.id === order.id ? { ...r, status: 'In Production (Pata)', lotNo } : r)
+        }));
+        showNotify(`B2B Order successfully pulled into Pata Lot #${lotNo}`);
+    };
 
     const [entryData, setEntryData] = useState({
         worker: '',
@@ -254,7 +287,7 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
             amount: amount
         });
 
-        // B2B Conditional Billing Logic
+        // B2B Conditional Billing & Ready Stock Logic
         if (item.client && item.client !== "FACTORY") {
             const designObj = (masterData.designs || []).find(d => d.name === item.design);
             const pataRate = designObj?.clientRates?.[item.client]?.pata;
@@ -272,7 +305,16 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                     };
                     setMasterData(prev => ({
                         ...prev,
-                        clientTransactions: [b2bBill, ...(prev.clientTransactions || [])]
+                        clientTransactions: [b2bBill, ...(prev.clientTransactions || [])],
+                        finishedStock: [{
+                            id: `fs_pata_${Date.now()}`,
+                            design: item.design,
+                            color: item.color || 'MIX',
+                            client: item.client,
+                            qty: receivedQty,
+                            date: new Date().toLocaleDateString("en-GB"),
+                            type: 'PATA'
+                        }, ...(prev.finishedStock || [])]
                     }));
                 }
             }
@@ -438,6 +480,7 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
         <div className="flex flex-wrap gap-1 w-full lg:w-auto overflow-x-auto no-scrollbar">
           {[
             { id: 'active', label: 'চলমান লিস্ট (Active)' },
+            { id: 'b2b_incoming', label: 'বি২বি ইনকামিং (Orders)' },
             { id: 'history', label: 'পুরাতন রেকর্ড (History)' },
             (isAdmin || isManager) && { id: 'payments', label: 'পেমেন্ট ও লেজার' },
             isAdmin && { id: 'inventory_history', label: 'ইনভেন্টরি লগ' }
@@ -539,6 +582,53 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                         </tbody>
                     </table>
                 </div>
+            </div>
+        ) : view === 'b2b_incoming' ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {incomingOrders.length === 0 ? (
+                    <div className="col-span-full py-32 flex flex-col items-center justify-center saas-card border-dashed">
+                        <Activity size={48} strokeWidth={1} className="text-slate-200 mb-4 animate-pulse" />
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">বর্তমানে কোনো বি২বি অর্ডার নেই</p>
+                    </div>
+                ) : (
+                    incomingOrders.map((req, i) => (
+                        <div key={i} className="saas-card bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl shadow-sm hover:border-blue-500 transition-all flex flex-col group p-6 space-y-6">
+                            <div className="flex justify-between items-start">
+                                <div>
+                                    <p className="text-[9px] font-black text-blue-600 uppercase tracking-widest mb-1 italic">B2B INCOMING (PATA)</p>
+                                    <h4 className="text-xl font-black uppercase italic leading-none">{req.design}</h4>
+                                </div>
+                                <div className="text-right">
+                                    <p className="text-xs font-black text-slate-400 uppercase">{req.client}</p>
+                                    <p className="text-[9px] font-bold text-slate-300 font-mono mt-1">{req.date}</p>
+                                </div>
+                            </div>
+                            
+                            <div className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl space-y-4">
+                                <div className="flex justify-between items-end">
+                                    <div>
+                                        <p className="text-[8px] font-black uppercase text-slate-400 mb-1">Total Pieces</p>
+                                        <p className="text-2xl font-black italic">{Number(req.totalBorka || 0) + Number(req.totalHijab || 0)} <span className="text-xs">PCS</span></p>
+                                    </div>
+                                    <div className="text-right">
+                                        <p className="text-[8px] font-black uppercase text-slate-400 mb-1">Fabric Status</p>
+                                        <p className="text-lg font-black italic text-emerald-500">SENT</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="space-y-4 border-t border-slate-100 dark:border-slate-800 pt-6">
+                                <p className="text-[10px] font-bold text-slate-500 line-clamp-2 italic uppercase leading-relaxed">Note: {req.note || 'No special requirements.'}</p>
+                                <button 
+                                    onClick={() => handleAcceptB2BOrder(req)}
+                                    className="w-full py-4 bg-blue-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg hover:bg-blue-700 active:scale-95 transition-all"
+                                >
+                                    অর্ডার পাতা ফ্যাক্টরিতে শুরু করুন (START PATA)
+                                </button>
+                            </div>
+                        </div>
+                    ))
+                )}
             </div>
         ) : view === 'payments' ? (
              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
