@@ -2,7 +2,8 @@ import React, { useState, useMemo } from 'react';
 import { 
   Truck, DollarSign, Package, Calendar, ArrowRight, Activity, 
   ShieldCheck, Download, Boxes, Plus, X, Wallet, Archive, 
-  History, ShoppingCart, Send, Layers, CheckCircle, Clock, BarChart2
+  History, ShoppingCart, Send, Layers, CheckCircle, Clock, BarChart2,
+  Search, User, ArrowLeft, ArrowUpRight
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 

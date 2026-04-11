@@ -19,6 +19,7 @@ import {
   Archive,
   Search,
   Wallet,
+  ArrowUpRight,
 } from "lucide-react";
 import WorkerSummary from "../WorkerSummary";
 import { syncToSheet } from "../../utils/syncUtils";
