@@ -318,8 +318,8 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify }) => {
                     <h2 className="text-2xl md:text-3xl font-black tracking-tight uppercase leading-none mb-1 italic">
                         B2B <span className="text-blue-500">CLIENT ARCHIVE</span>
                     </h2>
-                    <p className="text-[9px] font-black text-white/30 uppercase tracking-[0.6em] font-mono leading-none">
-                        ENTITY: {clientName} // SECURE NODE
+                    <p className="text-[8px] font-black text-white/30 uppercase tracking-[0.4em] font-mono leading-none">
+                        ENTITY: {clientName} // SECURE B2B NODE
                     </p>
                 </div>
             </div>
@@ -380,8 +380,8 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify }) => {
                                   <div className="space-y-2">
                                       <h4 className="text-lg font-black uppercase leading-none italic">{req.design}</h4>
                                       <div className="flex items-center gap-3 text-[9px] font-black uppercase text-slate-400 tracking-widest">
-                                          <span className="bg-white dark:bg-slate-950 px-2 py-1 rounded-md shadow-sm">৳ {req.fabricGoj}YDS</span>
-                                          <span className="bg-slate-950 text-white px-2 py-1 rounded-md shadow-sm">{req.totalBorka + req.totalHijab} PCS</span>
+                                          <span className="bg-white dark:bg-slate-950 px-2 py-0.5 rounded-md shadow-sm italic">🧵 {req.fabricGoj}YDS</span>
+                                          <span className="bg-slate-950 text-white px-2 py-0.5 rounded-md shadow-sm">📦 {req.totalBorka + req.totalHijab} PCS</span>
                                       </div>
                                   </div>
                                   <div className="text-right">

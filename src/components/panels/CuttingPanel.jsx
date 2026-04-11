@@ -38,7 +38,42 @@ const CuttingPanel = ({
   t,
   logAction,
 }) => {
-  const [activeTab, setActiveTab] = useState("Cutting Queue");
+  const [activeTab, setActiveTab] = useState("Incoming Orders"); // Incoming Orders, Cutting Queue, History
+
+  const incomingOrders = useMemo(() => {
+    return (masterData.productionRequests || []).filter(r => r.status === 'Pending Review' || r.status === 'In Cutting');
+  }, [masterData.productionRequests]);
+
+  const handleAcceptOrder = (order) => {
+    const lotNo = prompt("এ অর্ডারের জন্য লট নাম্বার দিন (Enter Lot Number):", order.lotNo || nextLotNo);
+    if (!lotNo) return;
+
+    setMasterData(prev => {
+        // We use the already deducted fabric from productionRequests submission
+        // But we add it to cuttingStock as a live lot
+        const newLot = {
+            id: `B2B_${order.id}`,
+            lotNo,
+            date: new Date().toLocaleDateString("en-GB"),
+            design: order.design,
+            client: order.client,
+            color: 'MIX',
+            borka: order.totalBorka || 0,
+            hijab: order.totalHijab || 0,
+            fabricGoj: order.fabricGoj || 0,
+            status: 'In Cutting',
+            stage: 'Cutting'
+        };
+
+        return {
+            ...prev,
+            cuttingStock: [newLot, ...(prev.cuttingStock || [])],
+            productionRequests: (prev.productionRequests || []).map(r => r.id === order.id ? { ...r, status: 'In Cutting', lotNo } : r)
+        };
+    });
+    showNotify(`B2B অর্ডার লট #${lotNo}-এ যুক্ত হয়েছে!`, "success");
+    logAction(user, 'B2B_ORDER_ACCEPT', `${order.client} এর (${order.design}) অর্ডারটি লট #${lotNo}-এ এক্সেপ্ট করা হয়েছে।`);
+  };
   const [showModal, setShowModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
