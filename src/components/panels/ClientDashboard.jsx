@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const ClientDashboard = ({ masterData, user, setMasterData, showNotify }) => {
+const ClientDashboard = ({ masterData, user, setMasterData, showNotify, logAction }) => {
   const isAdmin = user?.role === 'admin' || user?.role === 'manager';
   const [selectedClient, setSelectedClient] = useState(isAdmin ? null : user.name);
   const clientName = selectedClient || '';
@@ -115,20 +115,6 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify }) => {
 
   const totalDelivered = (clientDeliveries || []).reduce((sum, d) => sum + (Number(d?.qtyBorka || 0) + Number(d?.qtyHijab || 0)), 0);
 
-  // -- Audit Logger Helper --
-  const logAction = (user, action, details) => {
-    const log = {
-      timestamp: Date.now(),
-      user: user.name,
-      role: user.role,
-      action: action,
-      details: details
-    };
-    setMasterData(prev => ({
-      ...prev,
-      auditLogs: [log, ...(prev.auditLogs || []).slice(0, 100)]
-    }));
-  };
 
   // -- Handlers --
   const shareToWhatsApp = (message) => {
@@ -368,12 +354,12 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify }) => {
                     <button 
                       key={i} 
                       onClick={() => setSelectedClient(c)}
-                      className="saas-card group !p-8 bg-white dark:bg-slate-900 hover:border-blue-500 transition-all flex flex-col items-start gap-4 text-left shadow-2xl"
+                      className="saas-card group p-4 md:p-6 bg-white dark:bg-slate-900 hover:border-blue-500 transition-all flex flex-col items-start gap-3 text-left shadow-xl"
                     >
-                        <div className="w-12 h-12 bg-blue-50 dark:bg-blue-900/20 text-blue-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform"><User size={24} /></div>
+                        <div className="w-10 h-10 bg-blue-50 dark:bg-blue-900/20 text-blue-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform"><User size={20} /></div>
                         <div>
-                            <h4 className="text-xl font-black uppercase italic leading-none truncate w-full">{c}</h4>
-                            <p className="text-[9px] font-black text-slate-400 mt-2 uppercase tracking-widest leading-none italic">View Performance Dashboard</p>
+                            <h4 className="text-lg font-black uppercase italic leading-none truncate w-full">{c}</h4>
+                            <p className="text-[8px] font-black text-slate-400 mt-1.5 uppercase tracking-widest leading-none italic">View Performance Dashboard</p>
                         </div>
                     </button>
                 ))
@@ -394,54 +380,56 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify }) => {
         </button>
       )}
       {/* SaaS Compact Header */}
-      <div className="saas-card bg-slate-950 text-white !border-none relative overflow-hidden group mb-6 !p-6 md:!p-10 rounded-[2.5rem] shadow-3xl">
+      <div className="saas-card bg-slate-950 text-white !border-none relative overflow-hidden group mb-4 p-4 md:p-6 rounded-2xl shadow-xl">
          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-blue-900/40 via-transparent to-transparent opacity-60 pointer-events-none"></div>
-         <div className="relative z-10 flex flex-col lg:flex-row justify-between items-center gap-6">
-            <div className="flex items-center gap-6">
-                <div className="w-14 h-14 md:w-16 md:h-16 bg-blue-600/20 rounded-2xl flex items-center justify-center backdrop-blur-xl border border-white/10 shadow-2xl">
-                    <ShieldCheck size={32} className="text-blue-400" />
+         <div className="relative z-10 flex flex-col lg:flex-row justify-between items-center gap-4">
+            <div className="flex items-center gap-4">
+                <div className="w-12 h-12 md:w-14 md:h-14 bg-blue-600/20 rounded-xl flex items-center justify-center backdrop-blur-xl border border-white/10 shadow-2xl">
+                    <ShieldCheck size={24} className="text-blue-400" />
                 </div>
                 <div className="text-center lg:text-left">
-                    <h2 className="text-2xl md:text-3xl font-black tracking-tight uppercase leading-none mb-1 italic">
-                        B2B <span className="text-blue-500">CLIENT ARCHIVE</span>
+                    <h2 className="text-xl md:text-2xl font-black tracking-tight uppercase leading-none mb-1 italic">
+                        B2B <span className="text-blue-500">ARCHIVE</span>
                     </h2>
-                    <p className="text-[8px] font-black text-white/30 uppercase tracking-[0.4em] font-mono leading-none">
-                        ENTITY: {clientName} // SECURE B2B NODE
+                    <p className="text-[7px] md:text-[8px] font-black text-white/30 uppercase tracking-[0.4em] font-mono leading-none">
+                        ENTITY: {clientName}
                     </p>
                 </div>
             </div>
             
-            <div className="flex gap-4 w-full lg:w-auto flex-wrap justify-center">
-               <button onClick={() => setShowOrderModal(true)} className="flex-1 lg:flex-none px-8 py-4 bg-blue-600 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl flex items-center justify-center gap-3 hover:scale-105 active:scale-95 transition-all">
-                  <ShoppingCart size={16} /> NEW PRODUCTION
-               </button>
-               <button onClick={() => setShowMalEntryModal(true)} className="flex-1 lg:flex-none px-8 py-4 bg-slate-100 text-black rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl flex items-center justify-center gap-3 hover:scale-105 active:scale-95 transition-all border border-slate-200">
-                  <Plus size={16} /> MAL ENTRY
-               </button>
-               <button onClick={() => setShowPaymentModal(true)} className="flex-1 lg:flex-none px-8 py-4 bg-emerald-600 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl flex items-center justify-center gap-3 hover:scale-105 active:scale-95 transition-all">
-                  <Wallet size={16} /> SYNC PAYMENT
-               </button>
-            </div>
+            {isAdmin && (
+               <div className="flex gap-2 w-full lg:w-auto flex-wrap justify-center">
+                  <button onClick={() => setShowOrderModal(true)} className="flex-1 lg:flex-none px-4 md:px-6 py-2.5 md:py-3 bg-blue-600 text-white rounded-xl text-[9px] font-black uppercase tracking-widest shadow-xl flex items-center justify-center gap-2 hover:scale-105 active:scale-95 transition-all">
+                     <ShoppingCart size={14} /> NEW ORDER
+                  </button>
+                  <button onClick={() => setShowMalEntryModal(true)} className="flex-1 lg:flex-none px-4 md:px-6 py-2.5 md:py-3 bg-slate-100 text-black rounded-xl text-[9px] font-black uppercase tracking-widest shadow-xl flex items-center justify-center gap-2 hover:scale-105 active:scale-95 transition-all border border-slate-200">
+                     <Plus size={14} /> PRODUCTION
+                  </button>
+                  <button onClick={() => setShowPaymentModal(true)} className="flex-1 lg:flex-none px-4 md:px-6 py-2.5 md:py-3 bg-emerald-600 text-white rounded-xl text-[9px] font-black uppercase tracking-widest shadow-xl flex items-center justify-center gap-2 hover:scale-105 active:scale-95 transition-all">
+                     <Wallet size={14} /> PAYMENT
+                  </button>
+               </div>
+            )}
          </div>
       </div>
 
       {/* High-Density Analytics HUB */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-8">
-          <div className="saas-card bg-white dark:bg-slate-900 !p-4 md:!p-6 shadow-xl border-l-[6px] border-l-rose-500 group">
-              <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">TOTAL DEBT</p>
-              <h3 className="text-xl md:text-2xl font-black text-slate-950 dark:text-white italic tabular-nums">৳ {financials.due.toLocaleString()}</h3>
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-6">
+          <div className="saas-card bg-white dark:bg-slate-900 p-3 md:p-4 shadow-lg border-l-4 border-l-rose-500 group">
+              <p className="text-[7px] font-black text-slate-400 uppercase tracking-widest mb-0.5">CURRENT DEBT</p>
+              <h3 className="text-lg md:text-xl font-black text-slate-950 dark:text-white italic tabular-nums">৳ {financials.due.toLocaleString()}</h3>
           </div>
-          <div className="saas-card bg-white dark:bg-slate-900 !p-4 md:!p-6 shadow-xl border-l-[6px] border-l-emerald-500 group">
-              <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">SETTLED FUND</p>
-              <h3 className="text-xl md:text-2xl font-black text-slate-950 dark:text-white italic tabular-nums">৳ {financials.paid.toLocaleString()}</h3>
+          <div className="saas-card bg-white dark:bg-slate-900 p-3 md:p-4 shadow-lg border-l-4 border-l-emerald-500 group">
+              <p className="text-[7px] font-black text-slate-400 uppercase tracking-widest mb-0.5">SETTLED FUND</p>
+              <h3 className="text-lg md:text-xl font-black text-slate-950 dark:text-white italic tabular-nums">৳ {financials.paid.toLocaleString()}</h3>
           </div>
-          <div className="saas-card bg-white dark:bg-slate-900 !p-4 md:!p-6 shadow-xl border-l-[6px] border-l-blue-600 group">
-              <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">INVOICED VALUE</p>
-              <h3 className="text-xl md:text-2xl font-black text-slate-950 dark:text-white italic tabular-nums">৳ {financials.billed.toLocaleString()}</h3>
+          <div className="saas-card bg-white dark:bg-slate-900 p-3 md:p-4 shadow-lg border-l-4 border-l-blue-600 group">
+              <p className="text-[7px] font-black text-slate-400 uppercase tracking-widest mb-0.5">TOTAL BILLED</p>
+              <h3 className="text-lg md:text-xl font-black text-slate-950 dark:text-white italic tabular-nums">৳ {financials.billed.toLocaleString()}</h3>
           </div>
-          <div className="saas-card bg-white dark:bg-slate-900 !p-4 md:!p-6 shadow-xl border-l-[6px] border-l-slate-950 dark:border-l-white group">
-              <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">GLOBAL OUTPUT</p>
-              <h3 className="text-xl md:text-2xl font-black text-slate-950 dark:text-white italic tabular-nums">{totalDelivered.toLocaleString()} <span className="text-[10px] uppercase opacity-30">PCS</span></h3>
+          <div className="saas-card bg-white dark:bg-slate-900 p-3 md:p-4 shadow-lg border-l-4 border-l-slate-950 dark:border-l-white group">
+              <p className="text-[7px] font-black text-slate-400 uppercase tracking-widest mb-0.5">GLOBAL OUTPUT</p>
+              <h3 className="text-lg md:text-xl font-black text-slate-950 dark:text-white italic tabular-nums">{totalDelivered.toLocaleString()} <span className="text-[9px] uppercase opacity-30">PCS</span></h3>
           </div>
       </div>
 
@@ -547,15 +535,12 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify }) => {
                       {liveLots.length === 0 ? (
                           <p className="text-[10px] font-black text-slate-400 uppercase text-center py-6">No lots in active assembly.</p>
                       ) : (
-                          liveLots.map((lot, i) => (
-                              <div key={i} className="flex gap-4 items-start">
-                                  <div className="w-1.5 h-12 bg-amber-500/20 rounded-full flex flex-col justify-end">
-                                      <div className="w-full h-1/2 bg-amber-500 rounded-full animate-pulse"></div>
-                                  </div>
-                                  <div>
-                                      <p className="text-[9px] font-black text-amber-500 uppercase tracking-widest leading-none mb-1">{lot.stage}</p>
-                                      <p className="text-[11px] font-black uppercase italic leading-none">{lot.design}</p>
-                                      <p className="text-[9px] font-black text-slate-400 mt-2 uppercase">STATUS: {lot.status}</p>
+                          liveLots.map((lot, idx) => (
+                              <div key={idx} className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-800">
+                                  <p className="text-[10px] font-black uppercase italic">{lot.design} <span className="text-slate-400">// {lot.color}</span></p>
+                                  <div className="flex justify-between items-center mt-2">
+                                      <p className="text-[9px] font-black text-slate-400 uppercase">STATUS: {lot.status}</p>
+                                      <p className="text-sm font-black italic">{lot.lotNo}</p>
                                   </div>
                               </div>
                           ))
@@ -565,47 +550,47 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify }) => {
           </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <div className="saas-card bg-white dark:bg-slate-900 shadow-xl !p-0 overflow-hidden">
-               <div className="p-8 flex justify-between items-center border-b border-slate-50 dark:border-slate-800">
-                   <h3 className="text-xl font-black uppercase tracking-tight italic flex items-center gap-4">
-                       <Truck size={24} className="text-blue-600" /> DELIVERY FEED
+               <div className="p-4 md:p-6 flex justify-between items-center border-b border-slate-50 dark:border-slate-800">
+                   <h3 className="text-lg font-black uppercase tracking-tight italic flex items-center gap-3">
+                       <Truck size={20} className="text-blue-600" /> DELIVERY FEED
                    </h3>
-                   <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest bg-slate-50 dark:bg-slate-800 px-4 py-1.5 rounded-full">{clientDeliveries.length} RECS</span>
+                   <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest bg-slate-50 dark:bg-slate-800 px-3 py-1 rounded-full">{clientDeliveries.length} RECS</span>
                </div>
-               <div className="p-8 space-y-4 max-h-[400px] overflow-y-auto no-scrollbar">
+               <div className="p-4 md:p-6 space-y-3 max-h-[350px] overflow-y-auto no-scrollbar">
                    {clientDeliveries.map((d, i) => (
-                       <div key={i} className="p-5 bg-slate-50 dark:bg-slate-800/30 border border-slate-100 dark:border-slate-800 rounded-2xl flex justify-between items-center group hover:border-blue-500/20 transition-all">
-                           <div className="flex items-center gap-4">
-                               <div className="w-12 h-12 bg-white dark:bg-slate-950 rounded-xl flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
-                                   <Package size={20} className="text-blue-500" />
+                       <div key={i} className="p-3 md:p-4 bg-slate-50 dark:bg-slate-800/30 border border-slate-100 dark:border-slate-800 rounded-xl flex justify-between items-center group hover:border-blue-500/20 transition-all">
+                           <div className="flex items-center gap-3">
+                               <div className="w-10 h-10 bg-white dark:bg-slate-950 rounded-lg flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
+                                   <Package size={16} className="text-blue-500" />
                                </div>
                                <div>
-                                   <h4 className="text-sm font-black uppercase leading-none mb-1 italic">{d.design}</h4>
-                                   <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">{d.date}</p>
+                                   <h4 className="text-xs font-black uppercase leading-none mb-0.5 italic">{d.design}</h4>
+                                   <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest">{d.date}</p>
                                </div>
                            </div>
-                           <p className="text-xl font-black italic">{(d.qtyBorka || 0) + (d.qtyHijab || 0)} <span className="text-[9px] uppercase font-black text-slate-300">PCS</span></p>
+                           <p className="text-lg font-black italic">{(d.qtyBorka || 0) + (d.qtyHijab || 0)} <span className="text-[8px] uppercase font-black text-slate-300">PCS</span></p>
                        </div>
                    ))}
                </div>
           </div>
 
           <div className="saas-card bg-white dark:bg-slate-900 shadow-xl !p-0 overflow-hidden">
-               <div className="p-8 flex justify-between items-center border-b border-slate-50 dark:border-slate-800">
-                   <h3 className="text-xl font-black uppercase tracking-tight italic flex items-center gap-4 text-emerald-600">
-                       <Wallet size={24} /> LEDGER AUDIT
+               <div className="p-4 md:p-6 flex justify-between items-center border-b border-slate-50 dark:border-slate-800">
+                   <h3 className="text-lg font-black uppercase tracking-tight italic flex items-center gap-3 text-emerald-600">
+                       <Wallet size={20} /> LEDGER AUDIT
                    </h3>
-                   <button onClick={() => setShowPaymentModal(true)} className="p-2.5 bg-slate-950 text-white rounded-xl shadow-xl hover:scale-105 active:scale-95 transition-all"><Plus size={16} /></button>
+                   <button onClick={() => setShowPaymentModal(true)} className="p-2 bg-slate-950 text-white rounded-lg shadow-xl hover:scale-105 active:scale-95 transition-all"><Plus size={14} /></button>
                </div>
-               <div className="p-8 space-y-4 max-h-[400px] overflow-y-auto no-scrollbar">
+               <div className="p-4 md:p-6 space-y-3 max-h-[350px] overflow-y-auto no-scrollbar">
                    {clientTransactions.map((t, i) => (
-                       <div key={i} className={`p-5 rounded-3xl flex justify-between items-center ${t.type === 'PAYMENT' ? 'bg-emerald-50 dark:bg-emerald-900/10' : 'bg-slate-50 dark:bg-slate-800/30'}`}>
-                           <div className="space-y-2">
-                               <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-900 dark:text-white italic">{t.type === 'BILL' ? 'PRODUCTION INVOICE' : 'SETTLEMENT'}</h4>
-                               <p className="text-[9px] font-black text-slate-400 mt-1">{t.date}</p>
+                       <div key={i} className={`p-3 md:p-4 rounded-xl flex justify-between items-center ${t.type === 'PAYMENT' ? 'bg-emerald-50/50 dark:bg-emerald-900/10' : 'bg-slate-50 dark:bg-slate-800/30'}`}>
+                           <div>
+                               <h4 className="text-[9px] font-black uppercase tracking-widest text-slate-900 dark:text-white italic">{t.type === 'BILL' ? 'PRODUCTION INVOICE' : 'SETTLEMENT'}</h4>
+                               <p className="text-[8px] font-black text-slate-400 mt-0.5">{t.date}</p>
                            </div>
-                           <p className={`text-xl font-black italic tracking-tighter tabular-nums ${t.type === 'PAYMENT' ? 'text-emerald-600' : 'text-slate-950 dark:text-white'}`}>
+                           <p className={`text-lg font-black italic tracking-tighter tabular-nums ${t.type === 'PAYMENT' ? 'text-emerald-600' : 'text-slate-950 dark:text-white'}`}>
                                ৳ {t.amount?.toLocaleString()}
                            </p>
                        </div>

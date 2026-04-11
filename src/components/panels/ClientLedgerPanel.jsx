@@ -327,7 +327,7 @@ const ClientLedgerPanel = ({ masterData, setMasterData, showNotify, user, setAct
         </>
       ) : (
         <div className="space-y-12">
-            {/* Quick Actions Protocol */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {[
                     { id: 'MATERIAL', label: 'Receive Materials', icon: Layers, color: 'bg-orange-600' },
                     { id: 'MAL_ENTRY', label: 'Direct Mal Entry', icon: Package, color: 'bg-slate-800' },
@@ -343,19 +343,26 @@ const ClientLedgerPanel = ({ masterData, setMasterData, showNotify, user, setAct
                         <span className="text-[10px] font-black uppercase tracking-widest">{act.label}</span>
                     </button>
                 ))}
-                <button 
-                    onClick={() => setShowActionModal('ORDER')}
-                    className="col-span-1 md:col-span-4 bg-blue-600 p-6 rounded-2xl text-white flex items-center justify-center gap-6 shadow-xl hover:scale-105 transition-all border-b-8 border-blue-900"
-                >
-                    <Plus size={24} />
-                    <span className="text-sm font-black uppercase tracking-[0.2em]">Initiate Production Order</span>
-                </button>
             </div>
 
-            {/* Tab Navigation */}
+            <button 
+                onClick={() => setShowActionModal('ORDER')}
+                className="w-full bg-blue-600 p-6 rounded-2xl text-white flex items-center justify-center gap-6 shadow-xl hover:scale-105 transition-all border-b-8 border-blue-900"
+            >
+                <Plus size={24} />
+                <span className="text-sm font-black uppercase tracking-[0.2em]">Initiate Production Order</span>
+            </button>
+
+            {/* Tab Navigation Section */}
             <div className="flex gap-2 p-1 bg-slate-100 dark:bg-slate-800/50 rounded-2xl w-fit border border-slate-200 dark:border-slate-800 focus-within:ring-2 focus-within:ring-blue-500">
-                {['Overview', 'Stock Hub', 'Financial Ledger', 'Delivery Logs'].map(t => (
-                    <button key={t} onClick={() => setClientTab(t)} className={`px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${clientTab === t ? 'bg-slate-950 text-white shadow-xl' : 'text-slate-400 hover:text-slate-950'}`}>{t}</button>
+                {['Overview', 'Stock Hub', 'Financial Ledger', 'Delivery Logs'].map((t) => (
+                    <button 
+                        key={t} 
+                        onClick={() => setClientTab(t)} 
+                        className={`px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${clientTab === t ? 'bg-slate-950 text-white shadow-xl' : 'text-slate-400 hover:text-slate-950'}`}
+                    >
+                        {t}
+                    </button>
                 ))}
             </div>
 

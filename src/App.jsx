@@ -692,9 +692,9 @@ const AppContent = () => {
                             </div>
                         </header>
 
-                        <div className="flex-1 overflow-y-auto px-1 md:px-8 py-4 md:py-8 relative custom-scrollbar">
-                            <div className="max-w-[1400px] mx-auto space-y-8 animate-fade-up">
-                                {activePanel === "ClientDashboard" && <ClientDashboard masterData={masterData} user={user} setMasterData={setMasterData} showNotify={showNotify} />}
+                        <div className="flex-1 overflow-y-auto px-1 md:px-4 py-2 md:py-4 relative custom-scrollbar">
+                            <div className="max-w-[1400px] mx-auto space-y-4 md:space-y-6 animate-fade-up">
+                                {activePanel === "ClientDashboard" && <ClientDashboard masterData={masterData} user={user} setMasterData={setMasterData} showNotify={showNotify} logAction={logAction} />}
                                 
                                 {user?.role !== 'client' && (
                                     <>
@@ -705,7 +705,7 @@ const AppContent = () => {
                                         {activePanel === "Pata" && <PataFactoryPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} setActivePanel={setActivePanel} />}
                                         {activePanel === "Outside" && <OutsideWorkPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} setActivePanel={setActivePanel} />}
                                         {activePanel === "Stock" && <InventoryPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} setActivePanel={setActivePanel} logAction={logAction} />}
-                                        {activePanel === "Accounts" && <ExpensePanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} setActivePanel={setActivePanel} logAction={logAction} onSyncGoogle={handleSyncToGoogleSheets} initialTab={panelTab} />}
+                                        {activePanel === "Accounts" && <ExpensePanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} setActivePanel={setActivePanel} logAction={logAction} onSyncGoogle={handleSyncToGoogleSheets} initialTab={panelTab} logs={logs} />}
                                         {activePanel === "Attendance" && <AttendancePanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} setActivePanel={setActivePanel} />}
                                         { activePanel === "Settings" && <SettingsPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} syncStatus={syncStatus} user={user} t={t} setActivePanel={setActivePanel} logs={logs} downloadBackup={downloadBackup} />}
                                         { (activePanel === "Menu" || activePanel === "ClientLedger") && <ClientLedgerPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} setActivePanel={setActivePanel} />}

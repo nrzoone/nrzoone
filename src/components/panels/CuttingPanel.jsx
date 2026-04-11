@@ -49,29 +49,31 @@ const CuttingPanel = ({
     if (!lotNo) return;
 
     setMasterData(prev => {
-        // We use the already deducted fabric from productionRequests submission
-        // But we add it to cuttingStock as a live lot
-        const newLot = {
-            id: `B2B_${order.id}`,
+        const color = order.color || 'MIX';
+        
+        // Map each size from the order to a separate cutting stock entry
+        const newEntries = (order.sizes || []).map((s, idx) => ({
+            id: `B2B_${order.id}_${idx}`,
             lotNo,
             date: new Date().toLocaleDateString("en-GB"),
             design: order.design,
             client: order.client,
-            color: 'MIX',
-            borka: order.totalBorka || 0,
-            hijab: order.totalHijab || 0,
-            fabricGoj: order.fabricGoj || 0,
-            status: 'In Cutting',
+            color: color,
+            size: s.size,
+            borka: Number(s.borka || 0),
+            hijab: Number(s.hijab || 0),
+            fabricGoj: idx === 0 ? (order.fabricGoj || 0) : 0, // Only put fabric on the first row of the lot
+            status: 'Ready', // Important: status 'Ready' makes it available for FactoryPanel
             stage: 'Cutting'
-        };
+        }));
 
         return {
             ...prev,
-            cuttingStock: [newLot, ...(prev.cuttingStock || [])],
+            cuttingStock: [...newEntries, ...(prev.cuttingStock || [])],
             productionRequests: (prev.productionRequests || []).map(r => r.id === order.id ? { ...r, status: 'In Cutting', lotNo } : r)
         };
     });
-    showNotify(`B2B অর্ডার লট #${lotNo}-এ যুক্ত হয়েছে!`, "success");
+    showNotify(`B2B অর্ডার লট #${lotNo}-এ যুক্ত হয়েছে এবং সাইজ অনুযায়ী বিভক্ত হয়েছে!`, "success");
     logAction(user, 'B2B_ORDER_ACCEPT', `${order.client} এর (${order.design}) অর্ডারটি লট #${lotNo}-এ এক্সেপ্ট করা হয়েছে।`);
   };
   const [showModal, setShowModal] = useState(false);
@@ -247,52 +249,52 @@ const CuttingPanel = ({
   return (
     <div className="space-y-10 pb-32 animate-fade-up px-1 md:px-4 text-black">
       {/* SaaS Operational HUD */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-slate-950 p-6 rounded-xl text-white shadow-xl flex flex-col justify-between group overflow-hidden relative">
-            <div className="flex justify-between items-start mb-6 relative z-10">
-                <div className="w-14 h-14 bg-white/10 text-white rounded-xl flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
-                    <Package size={24} />
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+        <div className="bg-slate-950 p-4 md:p-6 rounded-xl text-white shadow-xl flex flex-col justify-between group overflow-hidden relative">
+            <div className="flex justify-between items-start mb-3 relative z-10">
+                <div className="w-10 h-10 bg-white/10 text-white rounded-lg flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
+                    <Package size={20} />
                 </div>
                 <div className="text-right">
-                    <p className="text-3xl font-bold tracking-tight leading-none">{stats.totalIssued.toLocaleString()}</p>
-                    <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest mt-1 uppercase leading-none">মোট ইস্যু (Total Issued)</p>
+                    <p className="text-xl md:text-2xl font-bold tracking-tight leading-none">{stats.totalIssued.toLocaleString()}</p>
+                    <p className="text-[7px] font-bold text-white/40 uppercase tracking-widest mt-0.5 leading-none">মোট ইস্যু</p>
                 </div>
             </div>
-            <div className="flex items-center gap-3 text-white/30 border-t border-white/10 pt-4 relative z-10">
+            <div className="flex items-center gap-2 text-white/30 border-t border-white/10 pt-3 relative z-10">
                 <div className="flex gap-1">
-                    {[1,2,3].map(i => <div key={i} className="w-2 h-1 bg-white/20 rounded-full animate-pulse" style={{ animationDelay: `${i*0.2}s` }}></div>)}
+                    {[1,2,3].map(i => <div key={i} className="w-1.5 h-1 bg-white/20 rounded-full animate-pulse" style={{ animationDelay: `${i*0.2}s` }}></div>)}
                 </div>
-                <p className="text-[8px] font-bold tracking-widest uppercase whitespace-nowrap">Production Stream Active</p>
+                <p className="text-[7px] font-bold tracking-widest uppercase whitespace-nowrap">Production Active</p>
             </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm flex items-center gap-6 group">
-            <div className="w-14 h-14 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
-                <Activity size={24} />
+        <div className="bg-white dark:bg-slate-900 p-4 md:p-6 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm flex items-center justify-between group">
+            <div className="text-left">
+                <p className="text-xl md:text-2xl font-bold tracking-tight text-black dark:text-white leading-none mb-1">{stats.inProduction.toLocaleString()}</p>
+                <p className="text-[7px] font-bold text-slate-400 uppercase tracking-widest leading-none">উৎপাদনে আছে</p>
             </div>
-            <div>
-                <p className="text-3xl font-bold tracking-tight text-black dark:text-white dark:text-white leading-none mb-1">{stats.inProduction.toLocaleString()}</p>
-                <p className="text-[10px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest leading-none">উৎপাদনে আছে (In-Production)</p>
-            </div>
-        </div>
-
-        <div className="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm flex items-center gap-6 group">
-            <div className="w-14 h-14 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
-                <CheckCircle size={24} />
-            </div>
-            <div>
-                <p className="text-3xl font-bold tracking-tight text-black dark:text-white dark:text-white leading-none mb-1">{stats.received.toLocaleString()}</p>
-                <p className="text-[10px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest leading-none">মোট জমা হয়েছে (Received)</p>
+            <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
+                <Activity size={20} />
             </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm flex items-center gap-6 group">
-            <div className="w-14 h-14 bg-rose-50 text-rose-600 rounded-xl flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
-                <Clock size={24} />
+        <div className="bg-white dark:bg-slate-900 p-4 md:p-6 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm flex items-center justify-between group">
+            <div className="text-left">
+                <p className="text-xl md:text-2xl font-bold tracking-tight text-black dark:text-white leading-none mb-1">{stats.received.toLocaleString()}</p>
+                <p className="text-[7px] font-bold text-slate-400 uppercase tracking-widest leading-none">মোট জমা</p>
             </div>
-            <div>
-                <p className="text-3xl font-bold tracking-tight text-black dark:text-white dark:text-white leading-none mb-1">{stats.pending.toLocaleString()}</p>
-                <p className="text-[10px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest leading-none">বাকি লট (Lots Pending)</p>
+            <div className="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-lg flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
+                <CheckCircle size={20} />
+            </div>
+        </div>
+
+        <div className="bg-white dark:bg-slate-900 p-4 md:p-6 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm flex items-center justify-between group">
+            <div className="text-left">
+                <p className="text-xl md:text-2xl font-bold tracking-tight text-black dark:text-white leading-none mb-1">{stats.pending.toLocaleString()}</p>
+                <p className="text-[7px] font-bold text-slate-400 uppercase tracking-widest leading-none">বাকি লট</p>
+            </div>
+            <div className="w-10 h-10 bg-rose-50 text-rose-600 rounded-lg flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
+                <Clock size={20} />
             </div>
         </div>
       </div>

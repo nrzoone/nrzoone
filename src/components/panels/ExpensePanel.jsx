@@ -40,6 +40,7 @@ const ExpensePanel = ({
    t,
    logAction,
    onSyncGoogle,
+   logs = [],
 }) => {
    const role = user?.role?.toLowerCase();
    const isAdmin = role === "admin";
@@ -211,68 +212,68 @@ const ExpensePanel = ({
 
          {/* 💰 1. Treasury Module (Financial Hub) */}
          {activeTab === 'treasury' && (
-            <div className="space-y-10 animate-fade-up">
-               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div className="saas-card !p-8 flex flex-col justify-between group h-64 relative overflow-hidden bg-white dark:bg-slate-900 shadow-xl border-emerald-500/10 hover:border-emerald-500/30">
+            <div className="space-y-6 md:space-y-8 animate-fade-up">
+               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+                  <div className="saas-card p-4 md:p-6 flex flex-col justify-between group h-48 md:h-56 relative overflow-hidden bg-white dark:bg-slate-900 shadow-xl border-emerald-500/10 hover:border-emerald-500/30">
                      <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:opacity-[0.1] transition-all duration-700"><TrendingUp size={180} /></div>
-                     <div className="w-14 h-14 bg-emerald-600 text-white rounded-2xl flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform"><Wallet size={24} /></div>
+                     <div className="w-10 h-10 md:w-12 md:h-12 bg-emerald-600 text-white rounded-xl flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform"><Wallet size={20} /></div>
                      <div className="relative z-10">
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 italic">Factory Liquid Capital</p>
-                        <h2 className="text-4xl font-black tracking-tighter text-black dark:text-white leading-none italic">৳{currentBalance.toLocaleString()}</h2>
+                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">Factory Liquid Capital</p>
+                        <h2 className="text-2xl md:text-3xl font-black tracking-tighter text-black dark:text-white leading-none italic">৳{currentBalance.toLocaleString()}</h2>
                      </div>
                   </div>
 
-                  <div className="saas-card !p-8 flex flex-col justify-between group h-64 relative overflow-hidden bg-white dark:bg-slate-900 shadow-xl border-rose-500/10 hover:border-rose-500/30">
+                  <div className="saas-card p-4 md:p-6 flex flex-col justify-between group h-48 md:h-56 relative overflow-hidden bg-white dark:bg-slate-900 shadow-xl border-rose-500/10 hover:border-rose-500/30">
                      <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:opacity-[0.1] transition-all duration-700"><TrendingDown size={180} /></div>
-                     <div className="w-14 h-14 bg-rose-600 text-white rounded-2xl flex items-center justify-center shadow-lg group-hover:rotate-0 transition-transform"><DollarSign size={24} /></div>
+                     <div className="w-10 h-10 md:w-12 md:h-12 bg-rose-600 text-white rounded-xl flex items-center justify-center shadow-lg group-hover:rotate-0 transition-transform"><DollarSign size={20} /></div>
                      <div className="relative z-10">
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 italic">Operational Burn Rate</p>
-                        <h2 className="text-4xl font-black tracking-tighter text-black dark:text-white leading-none italic">৳{totalExpenses.toLocaleString()}</h2>
+                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">Operational Burn Rate</p>
+                        <h2 className="text-2xl md:text-3xl font-black tracking-tighter text-black dark:text-white leading-none italic">৳{totalExpenses.toLocaleString()}</h2>
                      </div>
                   </div>
 
-                  <button onClick={() => setShowPrint(true)} className="saas-card !p-8 flex flex-col justify-between group h-64 relative overflow-hidden bg-slate-950 text-white border-none shadow-xl hover:scale-105 active:scale-95 transition-all">
-                     <div className="w-14 h-14 bg-white/10 text-white rounded-2xl flex items-center justify-center shadow-inner group-hover:bg-blue-600 transition-all"><Printer size={24} /></div>
+                  <button onClick={() => setShowPrint(true)} className="saas-card p-4 md:p-6 flex flex-col justify-between group h-48 md:h-56 relative overflow-hidden bg-slate-950 text-white border-none shadow-xl hover:scale-105 active:scale-95 transition-all">
+                     <div className="w-10 h-10 md:w-12 md:h-12 bg-white/10 text-white rounded-xl flex items-center justify-center shadow-inner group-hover:bg-blue-600 transition-all"><Printer size={20} /></div>
                      <div className="text-left relative z-10">
-                        <h2 className="text-3xl font-black text-white italic uppercase mb-2 leading-none tracking-tighter">GENERATE AUDIT</h2>
-                        <p className="text-[10px] font-black text-white/30 uppercase tracking-widest italic">Official Financial Transcript Registry</p>
+                        <h2 className="text-xl md:text-2xl font-black text-white italic uppercase mb-1 leading-none tracking-tighter">GENERATE AUDIT</h2>
+                        <p className="text-[9px] font-black text-white/30 uppercase tracking-widest italic">Official Financial Transcript Registry</p>
                      </div>
                   </button>
                </div>
 
-               <div className="saas-card !p-4 flex flex-col lg:flex-row items-center justify-between gap-6 border-slate-100 dark:border-slate-800 shadow-xl bg-white/50 dark:bg-slate-900/50 backdrop-blur-3xl">
-                  <div className="flex gap-2 overflow-x-auto no-scrollbar w-full lg:w-auto">
+               <div className="saas-card p-2 md:p-3 flex flex-col lg:flex-row items-center justify-between gap-4 border-slate-100 dark:border-slate-800 shadow-xl bg-white/50 dark:bg-slate-900/50 backdrop-blur-3xl">
+                  <div className="flex gap-1.5 overflow-x-auto no-scrollbar w-full lg:w-auto">
                      {['daily', 'all', 'new', isAdmin && 'cashIn'].filter(Boolean).map(v => (
-                        <button key={v} onClick={() => setCashSubTab(v)} className={`px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all duration-500 italic ${cashSubTab === v ? 'bg-black text-white shadow-lg scale-105' : 'bg-slate-50 text-slate-400 hover:text-black'}`}>
+                        <button key={v} onClick={() => setCashSubTab(v)} className={`px-4 py-2.5 rounded-xl text-[9px] md:text-[10px] font-black uppercase tracking-widest transition-all duration-500 italic ${cashSubTab === v ? 'bg-black text-white shadow-lg scale-105' : 'bg-slate-50 text-slate-400 hover:text-black'}`}>
                            {v === 'daily' ? ' DAILY LOG ' : v === 'all' ? ' INJECTION HISTORY ' : v === 'new' ? ' BURN $(-)$ ' : ' INJECT $(+)$ '}
                         </button>
                      ))}
                   </div>
-                  <div className="flex gap-4 w-full lg:w-auto items-center">
-                     <div className="relative flex-1 lg:w-80"><Search className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-300" size={18} /><input placeholder="SEARCH GLOBAL AUDIT..." className="premium-input !pl-16 !h-14 !text-[11px] !bg-slate-50 !border-none font-bold italic shadow-inner" value={searchTerm} onChange={e => setSearchTerm(e.target.value)} /></div>
-                     {cashSubTab === 'daily' && <input type="date" className="premium-input !h-14 !w-auto !bg-slate-950 !text-white !border-none text-center rounded-xl shadow-lg text-sm" value={summaryDate} onChange={e => setSummaryDate(e.target.value)} />}
+                  <div className="flex gap-3 w-full lg:w-auto items-center">
+                     <div className="relative flex-1 lg:w-64"><Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300" size={16} /><input placeholder="SEARCH..." className="premium-input !pl-14 !h-11 !text-[10px] !bg-slate-50 !border-none font-bold italic shadow-inner" value={searchTerm} onChange={e => setSearchTerm(e.target.value)} /></div>
+                     {cashSubTab === 'daily' && <input type="date" className="premium-input !h-11 !w-auto !bg-slate-950 !text-white !border-none text-center rounded-xl shadow-lg text-xs" value={summaryDate} onChange={e => setSummaryDate(e.target.value)} />}
                   </div>
                </div>
 
                {cashSubTab === 'daily' && (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
                      {filteredExpenses.map((exp, idx) => (
-                        <div key={exp.id || idx} className="saas-card !p-8 h-72 flex flex-col justify-between group hover:shadow-2xl hover:-translate-y-1 transition-all duration-500 relative overflow-hidden bg-white dark:bg-slate-800 shadow-lg animate-fade-up border-b-8 border-b-slate-50 dark:border-b-slate-950 italic" style={{ animationDelay: `${idx * 100}ms` }}>
-                           <div className="absolute top-0 right-0 p-12 opacity-[0.02] group-hover:opacity-10 transition-opacity"><DollarSign size={160} /></div>
+                        <div key={exp.id || idx} className="saas-card p-5 md:p-6 min-h-[14rem] flex flex-col justify-between group hover:shadow-2xl transition-all duration-500 relative overflow-hidden bg-white dark:bg-slate-800 shadow-lg animate-fade-up border-b-4 border-b-slate-50 dark:border-b-slate-950 italic" style={{ animationDelay: `${idx * 50}ms` }}>
+                           <div className="absolute top-0 right-0 p-8 opacity-[0.02] group-hover:opacity-10 transition-opacity"><DollarSign size={120} /></div>
                            <div className="relative z-10 flex flex-col flex-1">
-                              <div className="flex justify-between items-start mb-6">
-                                 <span className="px-4 py-1.5 bg-slate-950 text-white dark:bg-white dark:text-black rounded-lg text-[9px] font-black uppercase tracking-widest italic shadow-lg">{t(exp.category) || exp.category}</span>
+                              <div className="flex justify-between items-start mb-4">
+                                 <span className="px-3 py-1 bg-slate-950 text-white dark:bg-white dark:text-black rounded-lg text-[8px] font-black uppercase tracking-widest italic">{t(exp.category) || exp.category}</span>
                                  <div className="flex gap-2">
-                                    <button onClick={() => setEditExpense(exp)} className="w-10 h-10 bg-slate-50 dark:bg-slate-700 rounded-xl flex items-center justify-center text-slate-300 dark:text-slate-500 hover:bg-black hover:text-white transition-all shadow-md"><Edit2 size={14} /></button>
-                                    {isAdmin && <button onClick={() => handleDeleteExpense(exp.id)} className="w-10 h-10 bg-slate-50 dark:bg-slate-700 rounded-xl flex items-center justify-center text-slate-300 dark:text-slate-500 hover:bg-rose-600 hover:text-white transition-all shadow-md"><Trash2 size={14} /></button>}
+                                    <button onClick={() => setEditExpense(exp)} className="w-8 h-8 bg-slate-50 dark:bg-slate-700 rounded-lg flex items-center justify-center text-slate-300 dark:text-slate-500 hover:bg-black hover:text-white transition-all shadow-md"><Edit2 size={12} /></button>
+                                    {isAdmin && <button onClick={() => handleDeleteExpense(exp.id)} className="w-8 h-8 bg-slate-50 dark:bg-slate-700 rounded-lg flex items-center justify-center text-slate-300 dark:text-slate-500 hover:bg-rose-600 hover:text-white transition-all shadow-md"><Trash2 size={12} /></button>}
                                  </div>
                               </div>
-                              <h5 className="text-xl font-black uppercase leading-tight italic text-slate-950 dark:text-white mb-4 tracking-tighter truncate">{exp.description}</h5>
-                              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-3"><Calendar size={14} className="text-blue-600" /> {exp.date} // {exp.id?.slice(-8)}</p>
+                              <h5 className="text-base md:text-lg font-black uppercase leading-tight italic text-slate-950 dark:text-white mb-2 tracking-tighter truncate">{exp.description}</h5>
+                              <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2"><Calendar size={12} className="text-blue-600" /> {exp.date}</p>
                            </div>
-                           <div className="relative z-10 mt-auto flex justify-between items-end">
-                              <p className="text-5xl font-black italic tracking-tighter text-slate-950 dark:text-white">৳{exp.amount.toLocaleString()}</p>
-                              <ArrowUpRight className="text-blue-600 opacity-20 group-hover:opacity-100 group-hover:scale-150 transition-all duration-500" size={32} />
+                           <div className="relative z-10 mt-4 flex justify-between items-end">
+                              <p className="text-3xl md:text-4xl font-black italic tracking-tighter text-slate-950 dark:text-white">৳{exp.amount.toLocaleString()}</p>
+                              <ArrowUpRight className="text-blue-600 opacity-20 group-hover:opacity-100 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all duration-500" size={24} />
                            </div>
                         </div>
                      ))}
@@ -378,14 +379,14 @@ const ExpensePanel = ({
                      <div className="space-y-12">
                         <div className="flex items-center justify-between border-b-[10px] border-slate-50 dark:border-slate-800 pb-10 text-black dark:text-white"><h4 className="text-3xl font-black uppercase tracking-widest italic">Neural Activity Pulse</h4><Activity size={40} className="text-blue-600 animate-bounce" /></div>
                         <div className="space-y-4 max-h-[600px] overflow-y-auto pr-6 no-scrollbar">
-                           {(masterData.auditLogs || []).slice(0, 100).map((log, i) => (
+                           {(logs || []).slice(0, 100).map((log, i) => (
                               <div key={i} className="p-6 bg-slate-50 dark:bg-slate-800/50 rounded-[2rem] border-2 border-white dark:border-slate-700 shadow-xl hover:border-black dark:hover:border-white transition-all group flex flex-col gap-4 scale-95 hover:scale-100 duration-500">
                                  <div className="flex justify-between items-center"><span className="px-4 py-1.5 bg-slate-950 text-white dark:bg-white dark:text-black rounded-lg text-[9px] font-black uppercase tracking-widest shadow-lg group-hover:bg-blue-600 transition-colors">{log.action}</span><p className="text-[10px] font-black text-slate-400 font-mono tracking-tighter italic tabular-nums">{new Date(log.timestamp).toLocaleString()}</p></div>
                                  <p className="text-xl font-black text-slate-900 dark:text-slate-100 uppercase italic leading-none tracking-tighter">{log.details}</p>
                                  <div className="flex items-center gap-3 mt-1 pt-6 border-t border-slate-200 dark:border-slate-700"><div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-[10px] font-black text-white shadow-lg italic">{log.user?.[0]?.toUpperCase() || 'A'}</div><p className="text-[10px] font-black text-slate-400 uppercase tracking-widest italic">{log.user.toUpperCase()} // ROLE: {log.role || 'ADMIN'}</p></div>
                               </div>
                            ))}
-                           {(masterData.auditLogs || []).length === 0 && <div className="py-40 text-center opacity-10 flex flex-col items-center italic font-black uppercase tracking-[1em]"><ShieldCheck size={100} className="mb-10 text-black dark:text-white" /> VAULT EMPTY</div>}
+                           {(logs || []).length === 0 && <div className="py-40 text-center opacity-10 flex flex-col items-center italic font-black uppercase tracking-[1em]"><ShieldCheck size={100} className="mb-10 text-black dark:text-white" /> VAULT EMPTY</div>}
                         </div>
                      </div>
 

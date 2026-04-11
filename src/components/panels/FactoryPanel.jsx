@@ -57,7 +57,8 @@ const FactoryPanel = ({ type, masterData, setMasterData, showNotify, user, setAc
     lotNo: "",
     rate: "",
     date: new Date().toISOString().split("T")[0],
-    pataType: "Single"
+    pataType: "Single",
+    client: "FACTORY"
   });
 
   const [issueSizes, setIssueSizes] = useState([{ size: "", borka: "", hijab: "", pataQty: "" }]);
@@ -79,13 +80,28 @@ const FactoryPanel = ({ type, masterData, setMasterData, showNotify, user, setAc
     const dObj = (masterData.designs || []).find(d => d.name === design);
     const defaultRate = type === "sewing" ? dObj?.sewingRate || 0 : dObj?.stoneRate || 0;
     
+    // Auto-fill sizes from cuttingStock
+    const lotSizes = (masterData.cuttingStock || [])
+      .filter(l => l.design === design && l.color === color && l.lotNo === lotNo)
+      .map(l => ({
+          size: l.size || "",
+          borka: l.borka || "",
+          hijab: l.hijab || "",
+          pataQty: 0
+      }));
+
     setSelection(prev => ({
       ...prev,
       design,
       color,
       lotNo,
-      rate: defaultRate
+      rate: defaultRate,
+      client: (masterData.cuttingStock || []).find(l => l.design === design && l.color === color && l.lotNo === lotNo)?.client || 'FACTORY'
     }));
+
+    if (lotSizes.length > 0) {
+        setIssueSizes(lotSizes);
+    }
   };
 
   const handleIssue = () => {
@@ -111,7 +127,8 @@ const FactoryPanel = ({ type, masterData, setMasterData, showNotify, user, setAc
       status: "Pending",
       rate: Number(rate),
       receivedBorka: 0,
-      receivedHijab: 0
+      receivedHijab: 0,
+      client: selection.client || 'FACTORY'
     }));
 
     setMasterData(prev => ({
@@ -129,17 +146,59 @@ const FactoryPanel = ({ type, masterData, setMasterData, showNotify, user, setAc
     const rHijab = Number(receiveState.rHijab);
     const penalty = Number(receiveState.penalty || 0);
 
-    setMasterData(prev => ({
-      ...prev,
-      productions: prev.productions.map(p => p.id === receiveModal.id ? {
+    setMasterData(prev => {
+      const updatedProductions = prev.productions.map(p => p.id === receiveModal.id ? {
         ...p,
         status: "Received",
         receivedBorka: rBorka,
         receivedHijab: rHijab,
-        penalty,
+        penalty: penalty,
         receiveDate: new Date(receiveState.date).toLocaleDateString("en-GB")
-      } : p)
-    }));
+      } : p);
+
+      const newFinishedStock = {
+        id: `FIN_${Date.now()}`,
+        date: new Date(receiveState.date).toLocaleDateString("en-GB"),
+        design: receiveModal.design,
+        color: receiveModal.color,
+        size: receiveModal.size,
+        lotNo: receiveModal.lotNo,
+        client: receiveModal.client || 'FACTORY',
+        borka: rBorka,
+        hijab: rHijab,
+        source: type.toUpperCase()
+      };
+
+      return {
+        ...prev,
+        productions: updatedProductions,
+        finishedStock: [newFinishedStock, ...(prev.finishedStock || [])]
+      };
+    });
+
+    // Generate Client Bill if applicable
+    if (receiveModal.client && receiveModal.client !== 'FACTORY') {
+        const dObj = (masterData.designs || []).find(d => d.name === receiveModal.design);
+        const clientRate = type === "sewing" ? dObj?.clientSewingRate : dObj?.clientStoneRate;
+        const totalPcs = rBorka + rHijab;
+        const billAmount = totalPcs * (clientRate || 0);
+
+        if (billAmount > 0) {
+            const billEntry = {
+                id: `BILL_${Date.now()}`,
+                date: new Date(receiveState.date).toLocaleDateString("en-GB"),
+                client: receiveModal.client,
+                amount: billAmount,
+                type: 'BILL',
+                note: `${type.toUpperCase()} BILL: ${receiveModal.design} (${totalPcs} pcs @ ${clientRate}tk)`
+            };
+            setMasterData(prev => ({
+                ...prev,
+                clientTransactions: [billEntry, ...(prev.clientTransactions || [])]
+            }));
+            logAction(user, 'CLIENT_BILL_AUTO', `${receiveModal.client} billed ${billAmount}tk for ${receiveModal.design}`);
+        }
+    }
 
     setReceiveModal(null);
     showNotify("কাজ জমা নেওয়া হয়েছে!");
@@ -209,57 +268,57 @@ const FactoryPanel = ({ type, masterData, setMasterData, showNotify, user, setAc
   return (
     <div className="space-y-10 pb-32 animate-fade-up px-1 md:px-2 italic font-outfit text-black dark:text-white">
       {/* SaaS Operational HUD */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-slate-950 p-8 rounded-[2.5rem] text-white shadow-2xl relative overflow-hidden group">
-          <div className="absolute right-0 top-0 p-8 opacity-5 group-hover:scale-150 transition-transform"><Layers size={100} /></div>
-          <p className="text-[10px] font-black uppercase tracking-widest opacity-40 mb-4">ইউনিট টাইপ</p>
-          <p className="text-4xl font-black tracking-tighter italic">{type.toUpperCase()} UNIT</p>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+        <div className="bg-slate-950 p-4 md:p-6 rounded-xl text-white shadow-2xl relative overflow-hidden group">
+          <div className="absolute right-0 top-0 p-4 opacity-5 group-hover:scale-150 transition-transform"><Layers size={60} /></div>
+          <p className="text-[8px] font-black uppercase tracking-widest opacity-40 mb-1">ইউনিট টাইপ</p>
+          <p className="text-xl md:text-2xl font-black tracking-tighter italic">{type.toUpperCase()} UNIT</p>
         </div>
 
-        <button onClick={() => setView('active')} className={`bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border-4 flex items-center justify-between group transition-all text-left shadow-2xl ${view === 'active' ? 'border-amber-500' : 'border-slate-50 dark:border-slate-800'}`}>
+        <button onClick={() => setView('active')} className={`bg-white dark:bg-slate-900 p-4 md:p-6 rounded-xl border-2 flex items-center justify-between group transition-all text-left shadow-xl ${view === 'active' ? 'border-amber-500' : 'border-slate-50 dark:border-slate-800'}`}>
           <div>
-            <p className="text-4xl font-black tracking-tighter mb-1">{activeEntries.length}</p>
-            <p className="text-[10px] font-black uppercase tracking-widest opacity-40">চলমান কাজ</p>
+            <p className="text-2xl md:text-3xl font-black tracking-tighter mb-0.5">{activeEntries.length}</p>
+            <p className="text-[8px] font-black uppercase tracking-widest opacity-40">চলমান কাজ</p>
           </div>
-          <div className="w-16 h-16 bg-amber-500 text-white rounded-[1.5rem] flex items-center justify-center shadow-xl group-hover:rotate-12 transition-transform"><Clock size={32} /></div>
+          <div className="w-10 h-10 md:w-12 md:h-12 bg-amber-500 text-white rounded-lg flex items-center justify-center shadow-xl group-hover:rotate-12 transition-transform"><Clock size={20} /></div>
         </button>
 
-        <button onClick={() => setView('history')} className={`bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border-4 flex items-center justify-between group transition-all text-left shadow-2xl ${view === 'history' ? 'border-emerald-500' : 'border-slate-50 dark:border-slate-800'}`}>
+        <button onClick={() => setView('history')} className={`bg-white dark:bg-slate-900 p-4 md:p-6 rounded-xl border-2 flex items-center justify-between group transition-all text-left shadow-xl ${view === 'history' ? 'border-emerald-500' : 'border-slate-50 dark:border-slate-800'}`}>
           <div>
-            <p className="text-4xl font-black tracking-tighter mb-1">{historyEntries.length}</p>
-            <p className="text-[10px] font-black uppercase tracking-widest opacity-40">পুরাতন রেকর্ড</p>
+            <p className="text-2xl md:text-3xl font-black tracking-tighter mb-0.5">{historyEntries.length}</p>
+            <p className="text-[8px] font-black uppercase tracking-widest opacity-40">পুরাতন রেকর্ড</p>
           </div>
-          <div className="w-16 h-16 bg-emerald-500 text-white rounded-[1.5rem] flex items-center justify-center shadow-xl group-hover:rotate-12 transition-transform"><CheckCircle size={32} /></div>
+          <div className="w-10 h-10 md:w-12 md:h-12 bg-emerald-500 text-white rounded-lg flex items-center justify-center shadow-xl group-hover:rotate-12 transition-transform"><CheckCircle size={20} /></div>
         </button>
 
-        <div className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border-4 border-slate-50 dark:border-slate-800 shadow-2xl flex items-center justify-between group overflow-hidden relative">
+        <div className="bg-white dark:bg-slate-900 p-4 md:p-6 rounded-xl border-2 border-slate-50 dark:border-slate-800 shadow-xl flex items-center justify-between group overflow-hidden relative">
           <div>
-            <p className="text-3xl font-black tracking-tighter mb-1">৳{(workers.reduce((s,w) => s + getWorkerDue(w), 0)).toLocaleString()}</p>
-            <p className="text-[10px] font-black uppercase tracking-widest opacity-40 whitespace-nowrap">মোট বকেয়া মজুরি</p>
+            <p className="text-xl md:text-2xl font-black tracking-tighter mb-0.5">৳{(workers.reduce((s,w) => s + getWorkerDue(w), 0)).toLocaleString()}</p>
+            <p className="text-[8px] font-black uppercase tracking-widest opacity-40 whitespace-nowrap">মোট বকেয়া মজুরি</p>
           </div>
-          <div className="w-16 h-16 bg-slate-100 text-slate-400 rounded-[1.5rem] flex items-center justify-center group-hover:bg-slate-950 group-hover:text-white transition-all"><DollarSign size={32} /></div>
+          <div className="w-10 h-10 md:w-12 md:h-12 bg-slate-100 text-slate-400 rounded-lg flex items-center justify-center group-hover:bg-slate-950 group-hover:text-white transition-all"><DollarSign size={20} /></div>
         </div>
       </div>
 
       {/* Control Bar */}
-      <div className="bg-white dark:bg-slate-900 p-2 flex flex-col md:flex-row items-center justify-between gap-6 rounded-[2.5rem] border-4 border-slate-50 dark:border-slate-800 shadow-inner">
-        <div className="flex bg-slate-50 dark:bg-slate-800/50 p-1.5 rounded-[1.5rem] w-full md:w-auto">
+      <div className="bg-white dark:bg-slate-900 p-1 md:p-1.5 flex flex-col md:flex-row items-center justify-between gap-3 md:gap-4 rounded-xl border-2 border-slate-50 dark:border-slate-800 shadow-inner">
+        <div className="flex bg-slate-50 dark:bg-slate-800/50 p-1 rounded-lg w-full md:w-auto">
           {['active', 'history', 'payments'].map(v => (
-            <button key={v} onClick={() => setView(v)} className={`flex-1 md:flex-none px-10 py-3.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${view === v ? 'bg-slate-950 text-white shadow-xl' : 'text-slate-400'}`}>
+            <button key={v} onClick={() => setView(v)} className={`flex-1 md:flex-none px-6 md:px-8 py-2 md:py-2.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${view === v ? 'bg-slate-950 text-white shadow-lg' : 'text-slate-400'}`}>
               {v === 'active' ? 'চলমান' : v === 'history' ? 'পুরাতন' : 'পেমেন্ট'}
             </button>
           ))}
         </div>
 
-        <div className="flex items-center gap-4 px-2">
-          <div className="relative group">
-            <Search size={14} className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400" />
-            <input placeholder="লট, ডিজাইন বা কারিগর..." className="bg-slate-50 dark:bg-slate-800 h-14 pl-14 pr-6 rounded-2xl text-[11px] font-black uppercase outline-none w-64 border-2 border-transparent focus:border-black transition-all italic" value={lotSearch} onChange={(e) => setLotSearch(e.target.value)} />
+        <div className="flex items-center gap-2 md:gap-3 px-2 w-full md:w-auto">
+          <div className="relative group flex-1">
+            <Search size={12} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+            <input placeholder="খুঁজুন..." className="bg-slate-50 dark:bg-slate-800 h-10 md:h-11 pl-10 pr-4 rounded-xl text-[10px] font-black uppercase outline-none w-full md:w-48 border border-transparent focus:border-black transition-all italic" value={lotSearch} onChange={(e) => setLotSearch(e.target.value)} />
           </div>
-          <button onClick={() => setShowQR(true)} className="w-14 h-14 bg-slate-50 dark:bg-slate-800 text-slate-400 rounded-2xl flex items-center justify-center hover:bg-slate-950 hover:text-white transition-all"><Camera size={20} /></button>
+          <button onClick={() => setShowQR(true)} className="w-10 h-10 md:w-11 md:h-11 bg-slate-50 dark:bg-slate-800 text-slate-400 rounded-xl flex items-center justify-center hover:bg-slate-950 hover:text-white transition-all"><Camera size={16} /></button>
           {!isWorker && (
-            <button onClick={() => setShowIssueModal(true)} className="h-14 bg-slate-950 text-white px-8 rounded-2xl flex items-center gap-3 shadow-2xl font-black uppercase text-[10px] tracking-widest italic animate-pulse">
-              <Plus size={20} /> নতুন কাজ দিন
+            <button onClick={() => setShowIssueModal(true)} className="h-10 md:h-11 bg-slate-950 text-white px-4 md:px-6 rounded-xl flex items-center gap-2 shadow-xl font-black uppercase text-[9px] tracking-widest italic animate-pulse">
+              <Plus size={16} /> নতুন কাজ
             </button>
           )}
         </div>
@@ -298,33 +357,33 @@ const FactoryPanel = ({ type, masterData, setMasterData, showNotify, user, setAc
         ) : (
           (view === 'active' ? activeEntries : historyEntries).map((item, idx) => (
             <div key={item.id} className="flex flex-col h-full bg-white dark:bg-slate-900 border-4 border-slate-50 dark:border-slate-800 rounded-[3rem] p-10 shadow-xl hover:border-black transition-all group animate-fade-up">
-              <div className="flex justify-between items-start mb-8">
-                <div className="space-y-2">
-                  <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest italic">কারিগর</p>
-                  <h4 className="text-3xl font-black tracking-tighter uppercase italic truncate max-w-[200px]">{item.worker}</h4>
+              <div className="flex justify-between items-start mb-4 md:mb-6">
+                <div className="space-y-1">
+                  <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest italic">কারিগর</p>
+                  <h4 className="text-xl md:text-2xl font-black tracking-tighter uppercase italic truncate max-w-[150px] md:max-w-[200px]">{item.worker}</h4>
                 </div>
-                <div className={`w-14 h-14 bg-slate-50 dark:bg-slate-800 rounded-2xl flex items-center justify-center shadow-inner font-black text-[10px]`}>#{item.lotNo.slice(-3)}</div>
+                <div className={`w-10 h-10 md:w-12 md:h-12 bg-slate-50 dark:bg-slate-800 rounded-xl flex items-center justify-center shadow-inner font-black text-[9px]`}>#{item.lotNo.slice(-3)}</div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4 mb-8">
-                <div className="bg-slate-50 dark:bg-slate-800 p-6 rounded-[2rem] border border-white dark:border-slate-700">
-                  <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2 italic">মডেল ও রঙ</p>
-                  <p className="text-sm font-black uppercase italic truncate">{item.design} ({item.color})</p>
+              <div className="grid grid-cols-2 gap-3 mb-4 md:mb-6">
+                <div className="bg-slate-50 dark:bg-slate-800 p-3 md:p-4 rounded-xl border border-white dark:border-slate-700">
+                  <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">রঙ</p>
+                  <p className="text-xs font-black uppercase italic truncate">{item.color}</p>
                 </div>
-                <div className="bg-slate-50 dark:bg-slate-800 p-6 rounded-[2rem] border border-white dark:border-slate-700">
-                  <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2 italic">সাইজ</p>
-                  <p className="text-sm font-black uppercase italic truncate">{item.size}</p>
+                <div className="bg-slate-50 dark:bg-slate-800 p-3 md:p-4 rounded-xl border border-white dark:border-slate-700">
+                  <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">সাইজ</p>
+                  <p className="text-xs font-black uppercase italic truncate">{item.size}</p>
                 </div>
               </div>
 
-              <div className="flex justify-between items-center py-8 border-y-2 border-slate-50 dark:border-slate-800 border-dashed mb-8">
+              <div className="flex justify-between items-center py-4 md:py-6 border-y border-slate-50 dark:border-slate-800 border-dashed mb-4 md:mb-6">
                 <div>
-                  <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2 italic">পরিমাণ (QTY)</p>
-                  <p className="text-4xl font-black italic tracking-tighter">{item.issueBorka + item.issueHijab} <span className="text-xs opacity-40">PCS</span></p>
+                  <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">পরিমাণ</p>
+                  <p className="text-2xl md:text-3xl font-black italic tracking-tighter">{item.issueBorka + item.issueHijab} <span className="text-[10px] opacity-40">PCS</span></p>
                 </div>
                 <div className="text-right">
-                  <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2 italic">মজুরি রেট</p>
-                  <p className="text-2xl font-black italic text-emerald-500 tracking-tighter">৳{item.rate}</p>
+                  <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">মজুরি</p>
+                  <p className="text-xl md:text-2xl font-black italic text-emerald-500 tracking-tighter">৳{item.rate}</p>
                 </div>
               </div>
 
@@ -365,9 +424,14 @@ const FactoryPanel = ({ type, masterData, setMasterData, showNotify, user, setAc
                       <label className="text-[10px] font-black uppercase text-slate-400 ml-4">লট সিলেক্ট (Master Lot)</label>
                       <select className="premium-input !h-14 font-black uppercase italic" value={`${selection.design}|${selection.color}|${selection.lotNo}`} onChange={(e) => handleLotSelect(e.target.value)}>
                         <option value="">-- SELECT LOT --</option>
-                        {(masterData.cuttingStock || []).map(l => (
-                          <option key={`${l.design}|${l.color}|${l.lotNo}`} value={`${l.design}|${l.color}|${l.lotNo}`}>{l.design} | {l.color} | #{l.lotNo}</option>
-                        ))}
+                        {Array.from(new Set((masterData.cuttingStock || [])
+                          .filter(l => l.status === 'Ready') // Only show lots available for sewing
+                          .map(l => `${l.design}|${l.color}|${l.lotNo}`)))
+                          .map(key => {
+                            const [d, c, ln] = key.split("|");
+                            return <option key={key} value={key}>{d} | {c} | #{ln}</option>;
+                          })
+                        }
                       </select>
                     </div>
                     <div>

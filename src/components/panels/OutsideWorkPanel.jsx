@@ -147,17 +147,57 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
         const rHijab = Number(receiveModal.rHijabQty) || 0;
         const totalAmount = (rBorka + rHijab) * Number(receiveModal.rate);
 
-        setMasterData(prev => ({
-            ...prev,
-            outsideWorkEntries: prev.outsideWorkEntries.map(entry => entry.id === receiveModal.id ? {
+        setMasterData(prev => {
+            const updatedEntries = prev.outsideWorkEntries.map(entry => entry.id === receiveModal.id ? {
                 ...entry,
                 borkaQty: rBorka,
                 hijabQty: rHijab,
                 status: 'Received',
                 receivedDate: receiveModal.receiveDate ? new Date(receiveModal.receiveDate).toLocaleDateString('en-GB') : new Date().toLocaleDateString('en-GB'),
                 totalAmount: totalAmount
-            } : entry)
-        }));
+            } : entry);
+
+            const newFinishedStock = {
+                id: `FIN_OUT_${Date.now()}`,
+                date: new Date().toLocaleDateString('en-GB'),
+                design: receiveModal.design,
+                color: 'N/A',
+                size: receiveModal.size || 'N/A',
+                lotNo: receiveModal.lotNo,
+                client: receiveModal.client || 'FACTORY',
+                borka: rBorka,
+                hijab: rHijab,
+                source: 'OUTSIDE'
+            };
+
+            // Generate Client Bill for Outside Work if applicable
+            let updatedClientTransactions = [...(prev.clientTransactions || [])];
+            if (receiveModal.client && receiveModal.client !== 'FACTORY') {
+                const dObj = (prev.designs || []).find(d => d.name === receiveModal.design);
+                const clientRate = dObj?.clientOutsideRate || 10; 
+                const totalPcs = rBorka + rHijab;
+                const billAmount = totalPcs * clientRate;
+                
+                if (billAmount > 0) {
+                    updatedClientTransactions = [{
+                        id: `BILL_OUT_${Date.now()}`,
+                        date: new Date().toLocaleDateString('en-GB'),
+                        client: receiveModal.client,
+                        amount: billAmount,
+                        type: 'BILL',
+                        note: `OUTSIDE BILL: ${receiveModal.design} (${totalPcs} pcs @ ${clientRate}tk)`
+                    }, ...updatedClientTransactions];
+                    logAction(user, 'CLIENT_BILL_AUTO_OUTSIDE', `${receiveModal.client} billed ${billAmount}tk for Outside Work: ${receiveModal.design}`);
+                }
+            }
+
+            return {
+                ...prev,
+                outsideWorkEntries: updatedEntries,
+                finishedStock: [newFinishedStock, ...(prev.finishedStock || [])],
+                clientTransactions: updatedClientTransactions
+            };
+        });
 
         setReceiveModal(null);
         showNotify('কাজ জমা নেওয়া হয়েছে!');

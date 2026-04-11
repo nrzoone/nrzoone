@@ -446,7 +446,7 @@ const SettingsPanel_V2 = ({
   };
 
   const handleDeleteUser = (id) => {
-    if (id === "NRZO0NE") return alert("Cannot delete Super Admin");
+    if (id === "NRZONE") return alert("Cannot delete Super Admin");
     if (!confirm(`Delete user ${id}?`)) return;
     setMasterData((prev) => ({
       ...prev,
