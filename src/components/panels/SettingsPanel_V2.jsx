@@ -113,7 +113,7 @@ const SettingsPanel_V2 = ({
   const [activeTab, setActiveTab] = useState("users");
   const [editingItem, setEditingItem] = useState(null);
   const [showAddModal, setShowAddModal] = useState(false);
-  const [newWorkerDept, setNewWorkerDept] = useState("sewing");
+  const [newWorkerDept, setNewWorkerDept] = useState("cutting");
   const [uploading, setUploading] = useState(false);
   const [tempImgUrl, setTempImgUrl] = useState(null);
   const [editDesignModal, setEditDesignModal] = useState(null);
@@ -206,8 +206,8 @@ const SettingsPanel_V2 = ({
           ];
           
           const workerKeys = {
-            workerCategories: { sewing: [], stone: [], pata: [], monthly: [] },
-            workerWages: { sewing: {}, stone: {}, pata: {}, monthly: {} },
+            workerCategories: { cutting: [], sewing: [], stone: [], pata: [], monthly: [] },
+            workerWages: { cutting: {}, sewing: {}, stone: {}, pata: {}, monthly: {} },
             workerDocs: [],
             workerBiometrics: {}
           };
@@ -890,7 +890,6 @@ const SettingsPanel_V2 = ({
             </button>
             {activeTab === 'colors' && <ListSection category="colors" title="সিস্টেম কালার (Colors)" items={masterData.colors} icon={<Palette />} />}
             {activeTab === 'sizes' && <ListSection category="sizes" title="সিস্টেম সাইজ (Sizes)" items={masterData.sizes} icon={<Package />} />}
-            {activeTab === 'cutters' && <ListSection category="cutters" title="মাস্টার কাটিং (Masters)" items={masterData.cutters} icon={<Scissors />} />}
             {activeTab === 'pataTypes' && <ListSection category="pataTypes" title="পাতা ট্যাক্সোনমি (Type)" items={masterData.pataTypes} icon={<LayoutGrid />} />}
             {activeTab === 'clients' && <ListSection category="clients" title="ক্লায়েন্ট তালিকা (Clients)" items={masterData.clients} icon={<Users />} />}
             {activeTab === 'designers' && <ListSection category="designers" title="ব্র্যান্ড এবং ডিজাইনার (Brands)" items={masterData.designers} icon={<Star />} />}
@@ -902,7 +901,6 @@ const SettingsPanel_V2 = ({
             { label: "Styles & Designs", cat: "designs", items: masterData.designs, icon: Palette, sub: "Product Hub" },
             { label: t("colors") || "Colors", cat: "colors", items: masterData.colors, icon: LayoutGrid, sub: "Variant Mix" },
             { label: t("sizes") || "Sizes", cat: "sizes", items: masterData.sizes, icon: Package, sub: "Physical Spec" },
-            { label: "Masters / Cutters", cat: "cutters", items: masterData.cutters, icon: Scissors, sub: "Cutting Unit" },
             { label: "Pata Taxonomy", cat: "pataTypes", items: masterData.pataTypes, icon: LayoutGrid, sub: "Unit Logic" },
             { label: "ক্লায়েন্ট তালিকা", cat: "clients", items: masterData.clients, icon: Users, sub: "Client Directory" },
             { label: "ব্র্যান্ড / ডিজাইনার", cat: "designers", items: masterData.designers, icon: Star, sub: "Brand Identity" }

@@ -641,12 +641,15 @@ const CuttingPanel = ({
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-1.5">
                           <label className="text-[10px] font-bold uppercase text-black dark:text-white dark:text-white tracking-widest ml-1">কাটার এর নাম (Cutter)</label>
-                          <input 
+                          <select 
                             className="premium-input !h-12 text-sm font-bold uppercase" 
-                            placeholder="কাটার এর নাম লিখুন..."
                             value={entryData.cutterName} 
                             onChange={(e) => setEntryData(p => ({ ...p, cutterName: e.target.value }))}
-                          />
+                          >
+                            <option value="">মাস্টার নির্বাচন করুন...</option>
+                            {(masterData.workerCategories?.cutting || []).map(m => <option key={m} value={m}>{m}</option>)}
+                            <option value="EXTERNAL">বাইরের কারিগর (OTHER)</option>
+                          </select>
                         </div>
                         <div className="space-y-1.5">
                           <label className="text-[10px] font-bold uppercase text-black dark:text-white dark:text-white tracking-widest ml-1">ক্লায়েন্ট (Client Ownership)</label>
