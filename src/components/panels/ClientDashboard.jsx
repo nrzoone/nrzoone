@@ -116,6 +116,12 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify }) => {
   const totalDelivered = clientDeliveries.reduce((sum, d) => sum + (d.qtyBorka || 0) + (d.qtyHijab || 0), 0);
 
   // -- Handlers --
+  const shareToWhatsApp = (message) => {
+    const factoryNum = (masterData.settings?.whatsappNumber || '8801700000000').replace(/\D/g, "");
+    const formattedNum = factoryNum.startsWith("880") ? factoryNum : "880" + factoryNum.replace(/^0/, "");
+    window.open(`https://wa.me/${formattedNum}?text=${encodeURIComponent(message)}`, '_blank');
+  };
+
   const handleSubmitOrder = (e) => {
     e.preventDefault();
     const reqId = Date.now();
@@ -163,6 +169,18 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify }) => {
     setOrderForm({ design: '', fabricGoj: '', sizes: [{ size: '', borka: '', hijab: '' }], note: '' });
     showNotify("ভল্টে নতুন অর্ডার জমা হয়েছে!", "success");
     logAction(user, 'CLIENT_ORDER_ENTRY', `Order placed for ${orderForm.design}. Fabric: ${orderForm.fabricGoj}YDS`);
+
+    // WhatsApp Confirmation Option
+    if (window.confirm("অর্ডার কনফার্মেশন হোয়াটসঅ্যাপে পাঠাতে চান?")) {
+        const msg = `*NRZ0ONE PRODUCTION ORDER*\n\n` +
+                    `📌 Design: ${newRequest.design}\n` +
+                    `📦 Qty: ${totalBorka + totalHijab} PCS\n` +
+                    `🧵 Fabric: ${newRequest.fabricGoj}YDS\n` +
+                    `👤 Client: ${clientName}\n` +
+                    `📅 Date: ${newRequest.date}\n\n` +
+                    `_System generated request #${reqId}_`;
+        shareToWhatsApp(msg);
+    }
   };
 
   const handleDepositMaterial = (e) => {
@@ -184,18 +202,24 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify }) => {
     }));
     setShowMaterialModal(false);
     showNotify("মেটেরিয়াল স্টক আপডেট হয়েছে!", "success");
+
+    if (window.confirm("স্টোক ইনজেকশন রিপোর্ট হোয়াটসঅ্যাপে পাঠাতে চান?")) {
+        shareToWhatsApp(`*NRZ0ONE MATERIAL DEPOSIT*\n\nItem: ${newItem.item}\nQty: ${newItem.qty} ${newItem.unit}\nClient: ${clientName}\nRef: ${newItem.note}`);
+    }
   };
 
   const handlePaySubmission = (e) => {
     e.preventDefault();
     const f = e.target;
+    const amount = Number(f.amount.value);
+    const ref = f.ref.value;
     const txn = {
       id: `txn_${Date.now()}_CP`,
       date: new Date().toLocaleDateString("en-GB"),
       client: clientName,
       type: 'PAYMENT',
-      amount: Number(f.amount.value),
-      note: `CLIENT PAYMENT INFO: ${f.ref.value}`
+      amount,
+      note: `CLIENT PAYMENT INFO: ${ref}`
     };
     setMasterData(prev => ({
       ...prev,
@@ -203,6 +227,10 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify }) => {
     }));
     setShowPaymentModal(false);
     showNotify("পেমেন্ট অডিট কিউতে পাঠানো হয়েছে!", "success");
+
+    if (window.confirm("পেমেন্ট রিপোর্ট হোয়াটসঅ্যাপে পাঠাতে চান?")) {
+        shareToWhatsApp(`*NRZ0ONE PAYMENT RECEIPT*\n\nAmount: ৳ ${amount.toLocaleString()}\nMethod: ${ref}\nClient: ${clientName}\nStatus: VERIFICATION PENDING`);
+    }
   };
 
   const handleDispatch = (e) => {
@@ -245,8 +273,19 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify }) => {
     }));
 
     setShowDispatchModal(false);
-    showNotify("ডিসপ্যাচ সম্পন্ন হয়েছে এবং লেজারে বিল জেনারেট হয়েছে!", "success");
+    showNotify("ডিসপ্যাচ সম্পন্ন হয়েছে!", "success");
     logAction(user, 'CLIENT_SELF_DISPATCH', `${qty} PCS of ${design} dispatched by client.`);
+
+    if (window.confirm("ডিসপ্যাচ স্লিপ বা বিল হোয়াটসঅ্যাপে পাঠাতে চান?")) {
+        const msg = `*NRZ0ONE DISPATCH SLIP*\n\n` +
+                    `📦 Item: ${design}\n` +
+                    `🎨 Color: ${delivery.color}\n` +
+                    `🔢 Qty: ${qty} PCS\n` +
+                    `💰 Total Bill: ৳ ${(rate * qty).toLocaleString()}\n` +
+                    `👤 Receiver: ${delivery.receiver}\n` +
+                    `📅 Date: ${date}`;
+        shareToWhatsApp(msg);
+    }
   };
 
   return (
