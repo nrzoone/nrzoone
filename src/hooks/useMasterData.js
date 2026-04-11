@@ -152,14 +152,10 @@ export const useMasterData = (user) => {
                     const cloud = snap.data()?.content;
                     if (cloud) {
                         setMasterData(prev => {
-                            // SAFER MERGE STRATEGY: 
-                            // We merge Cloud -> Local, but for critical arrays (productions, attendance, etc.)
-                            // we ensure we don't lose local data if cloud is empty but local isn't.
-                            
                             const merged = { ...initialData };
-                            const cloudKeys = Object.keys(cloud);
                             
-                            cloudKeys.forEach(k => {
+                            // 1. Cloud to Merged Base
+                            Object.keys(cloud).forEach(k => {
                                 if (cloud[k] !== undefined && cloud[k] !== null) {
                                     if (typeof cloud[k] === 'object' && !Array.isArray(cloud[k])) {
                                         merged[k] = { ...initialData[k], ...cloud[k] };
@@ -169,23 +165,20 @@ export const useMasterData = (user) => {
                                 }
                             });
 
-                            // IRONCLAD PROTECTION:
-                            // We verify EVERY key. If local (prev) has content but cloud (merged) is thinner,
-                            // we reject the cloud's deletion of records.
+                            // 2. Ironclad Merger: Ensure local state that is richer than cloud is NOT dropped
                             const allKeys = Object.keys(prev);
                             allKeys.forEach(key => {
+                                if (initialData[key] === undefined) return; // Skip non-schema keys
+                                
                                 const localVal = prev[key];
                                 const cloudVal = merged[key];
 
                                 if (Array.isArray(localVal) && localVal.length > 0) {
                                     if (!Array.isArray(cloudVal) || cloudVal.length < localVal.length) {
-                                        console.warn(`🛡️ Data Guard: Preserving local '${key}' (${localVal.length} items) - Cloud only had ${cloudVal?.length || 0}`);
                                         merged[key] = localVal;
                                     }
-                                } else if (localVal && typeof localVal === 'object' && Object.keys(localVal).length > 0) {
-                                     if (!cloudVal || Object.keys(cloudVal).length < Object.keys(localVal).length) {
-                                        merged[key] = localVal;
-                                     }
+                                } else if (localVal && typeof localVal === 'object' && !Array.isArray(localVal)) {
+                                     merged[key] = { ...localVal, ...cloudVal };
                                 }
                             });
                             

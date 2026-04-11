@@ -106,14 +106,15 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify }) => {
 
   const financials = useMemo(() => {
     let billed = 0, paid = 0;
-    clientTransactions.forEach(t => {
+    (clientTransactions || []).forEach(t => {
+      if (!t) return;
       if (t.type === 'BILL') billed += Number(t.amount || 0);
       if (t.type === 'PAYMENT') paid += Number(t.amount || 0);
     });
     return { billed, paid, due: billed - paid };
   }, [clientTransactions]);
 
-  const totalDelivered = clientDeliveries.reduce((sum, d) => sum + (d.qtyBorka || 0) + (d.qtyHijab || 0), 0);
+  const totalDelivered = (clientDeliveries || []).reduce((sum, d) => sum + (Number(d?.qtyBorka || 0) + Number(d?.qtyHijab || 0)), 0);
 
   // -- Audit Logger Helper --
   const logAction = (user, action, details) => {
