@@ -90,8 +90,14 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify }) => {
       .forEach(d => {
          const key = `${d.design}_${d.color || 'MIX'}`;
          if (received[key]) {
-             received[key].borka -= Number(d.qtyBorka || 0);
-             received[key].hijab -= Number(d.qtyHijab || 0);
+             // Unified reduction: if Borka/Hijab counts exist, use them; 
+             // otherwise, fallback to proportional total quantity reduction
+             const dTotal = Number(d.qty || (Number(d.qtyBorka || 0) + Number(d.qtyHijab || 0)));
+             const dPcsBorka = Number(d.qtyBorka || (dTotal > 0 && received[key].borka > 0 ? dTotal : 0));
+             const dPcsHijab = Number(d.qtyHijab || (dTotal > 0 && received[key].hijab > 0 && !d.qtyBorka ? dTotal : 0));
+
+             received[key].borka -= dPcsBorka;
+             received[key].hijab -= dPcsHijab;
          }
       });
 
