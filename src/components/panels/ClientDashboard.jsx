@@ -115,6 +115,21 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify }) => {
 
   const totalDelivered = clientDeliveries.reduce((sum, d) => sum + (d.qtyBorka || 0) + (d.qtyHijab || 0), 0);
 
+  // -- Audit Logger Helper --
+  const logAction = (user, action, details) => {
+    const log = {
+      timestamp: Date.now(),
+      user: user.name,
+      role: user.role,
+      action: action,
+      details: details
+    };
+    setMasterData(prev => ({
+      ...prev,
+      auditLogs: [log, ...(prev.auditLogs || []).slice(0, 100)]
+    }));
+  };
+
   // -- Handlers --
   const shareToWhatsApp = (message) => {
     const factoryNum = (masterData.settings?.whatsappNumber || '8801700000000').replace(/\D/g, "");

@@ -57,6 +57,7 @@ const initialData = {
     notifications: [],
     workerDocs: [],
     workerAdvances: [],
+    clientTransactions: [],
     settings: { logo: "", whatsappNumber: "" },
     whatsappRequests: [],
     expenses: [],
