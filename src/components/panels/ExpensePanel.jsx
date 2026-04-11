@@ -771,7 +771,4 @@ const ExpensePanel = ({
 };
 
 export default ExpensePanel;
-};
-
-export default ExpensePanel;
 
