@@ -102,6 +102,7 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
         worker: '',
         client: 'FACTORY',
         design: '',
+        size: '',
         task: '',
         borkaQty: '',
         hijabQty: '',
@@ -145,6 +146,7 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
                 worker: entryData.worker,
                 client: entryData.client || 'FACTORY',
                 design: entryData.design || 'N/A',
+                size: entryData.size || 'N/A',
                 task: entryData.task,
                 borkaQty: Number(entryData.borkaQty || 0),
                 hijabQty: Number(entryData.hijabQty || 0),
@@ -271,6 +273,7 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
             ...editModal,
             worker: f.worker.value,
             task: f.task.value,
+            size: f.size?.value || 'N/A',
             borkaQty: Number(f.borka.value),
             hijabQty: Number(f.hijab.value),
             rate: Number(f.rate.value),
@@ -400,106 +403,78 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
                 </div>
             </div>
 
-
-      {showQR && (
-        <QRScanner
-          onScanSuccess={(code) => {
-             const lot = (masterData.outsideWorkEntries || []).find(p => String(p.id) === String(code) && p.status === 'Pending');
-             if (lot) {
-                setReceiveModal({ ...lot, rBorkaQty: lot.borkaQty, rHijabQty: lot.hijabQty, receiveDate: new Date().toISOString().split('T')[0] });
-                showNotify(`External ID #${code} Identified. Logistics Clear.`);
-             } else {
-                showNotify(`External ID #${code} not found in pending queue.`, "error");
-             }
-          }}
-          onClose={() => setShowQR(false)}
-        />
-      )}
-
-            {/* Control Bar - SaaS Pill Navigation */}
-            <div className="bg-white dark:bg-slate-900 !p-1.5 flex flex-col lg:flex-row items-center justify-between gap-6 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm mb-6">
-                <div className="flex flex-wrap gap-1 w-full lg:w-auto overflow-x-auto no-scrollbar">
+            {/* View Selection & Control Bar */}
+            <div className="bg-white dark:bg-slate-900 p-1.5 flex flex-col md:flex-row items-center justify-between gap-6 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm">
+                <div className="flex bg-slate-50 dark:bg-slate-800/50 p-1 rounded-lg w-full md:w-auto overflow-x-auto no-scrollbar">
                     {[
-                        { id: 'active', label: 'চলমান কাজ (Running)' },
-                        { id: 'b2b_incoming', label: 'বি২বি ইনকামিং (Orders)' },
-                        { id: 'history', label: 'জমা হওয়া কাজ (History)' }
-                    ].map(v => (
+                        { id: 'active', label: 'চলমান লিস্ট' },
+                        { id: 'history', label: 'পুরাতন রেকর্ড' },
+                        (isAdmin || isManager) && { id: 'b2b_incoming', label: 'বি২বি অর্ডার' }
+                    ].filter(Boolean).map(v => (
                         <button
                             key={v.id}
                             onClick={() => setView(v.id)}
-                            className={`px-6 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all ${view === v.id ? 'bg-slate-950 text-white shadow-lg' : 'text-black dark:text-white dark:text-white hover:text-black dark:text-white dark:hover:text-white'}`}
+                            className={`flex-1 md:flex-none px-8 py-2.5 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all ${view === v.id ? 'bg-white dark:bg-slate-950 text-black dark:text-white shadow-md' : 'text-slate-400 hover:text-slate-600'}`}
                         >
                             {v.label}
                         </button>
                     ))}
                 </div>
 
-                <div className="flex items-center gap-3 w-full lg:w-auto">
-                    <div className="relative group flex-1 lg:flex-none">
-                        <Search size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-black dark:text-white dark:text-white" />
+                <div className="flex items-center gap-4 w-full md:w-auto px-1.5">
+                    <div className="relative group flex-1 md:flex-none">
+                        <Search size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors" />
                         <input
-                            placeholder="কারিগর বা কাজ..."
-                            className="premium-input !pl-11 !h-11 !text-[10px] !bg-slate-50 dark:!bg-slate-800/50"
+                            placeholder="কারিগর বা কাজ খুঁজুন..."
+                            className="premium-input !pl-11 !h-11 !bg-slate-50 dark:!bg-slate-800/50 !border-none"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
                     </div>
+                    <button onClick={() => setShowQR(true)} className="w-11 h-11 bg-slate-50 dark:bg-slate-800 text-slate-500 rounded-xl flex items-center justify-center hover:bg-slate-950 hover:text-white transition-all shadow-sm"><Camera size={18} /></button>
                     {(isAdmin || isManager) && (
-                        <button 
-                            onClick={() => setShowModal(true)}
-                            className="w-11 h-11 bg-blue-600 text-white rounded-xl shadow-lg border border-blue-500 flex items-center justify-center hover:bg-blue-700 transition-all"
-                            title="নতুন কাজ ইস্যু করুন"
-                        >
-                            <Plus size={18} />
-                        </button>
+                        <button onClick={() => setShowModal(true)} className="w-11 h-11 bg-slate-950 text-white rounded-xl flex items-center justify-center hover:scale-105 transition-all shadow-lg shadow-black/10"><Plus size={20} /></button>
                     )}
                 </div>
             </div>
 
-
-            {/* Main Deployment Display */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* Content Display */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {view === 'b2b_incoming' ? (
-                    <>
-                        {incomingOrders.length === 0 ? (
-                            <div className="col-span-full h-80 flex flex-col items-center justify-center bg-white dark:bg-slate-900 rounded-xl border-2 border-dashed border-slate-100 dark:border-slate-800 italic">
-                                <Box size={40} className="text-slate-200 mb-4 animate-pulse" />
-                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">বর্তমানে কোনো বি২বি অর্ডার নেই</p>
-                            </div>
-                        ) : (
-                            incomingOrders.map((req, i) => (
-                                <div key={i} className="saas-card bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl shadow-sm hover:border-blue-500 transition-all flex flex-col group p-6 space-y-6 animate-fade-up">
-                                    <div className="flex justify-between items-start">
-                                        <div>
-                                            <p className="text-[9px] font-black text-blue-600 uppercase tracking-widest mb-1 italic tracking-[0.2em]">OUTSIDE UNIT ASSIGNMENT</p>
-                                            <h4 className="text-xl font-black uppercase italic leading-none">{req.design}</h4>
-                                        </div>
-                                        <div className="text-right">
-                                            <p className="text-xs font-black text-slate-400 uppercase">{req.client}</p>
-                                            <p className="text-[9px] font-bold text-slate-300 font-mono mt-1">{req.date}</p>
-                                        </div>
+                    incomingOrders.length === 0 ? (
+                        <div className="col-span-full py-32 flex flex-col items-center justify-center bg-white dark:bg-slate-900 rounded-xl border-2 border-dashed border-slate-100 dark:border-slate-800 italic">
+                            <Box size={40} className="text-slate-100 mb-4" />
+                            <p className="text-[10px] font-bold text-slate-300 uppercase tracking-widest leading-none">বর্তমানে কোনো বি২বি অর্ডার নেই</p>
+                        </div>
+                    ) : (
+                        incomingOrders.map((req, i) => (
+                            <div key={i} className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl shadow-sm hover:border-blue-500 transition-all flex flex-col group p-6 space-y-6">
+                                <div className="flex justify-between items-start">
+                                    <div>
+                                        <p className="text-[9px] font-black text-blue-600 uppercase tracking-widest mb-1 italic">B2B INCOMING (OUTSIDE)</p>
+                                        <h4 className="text-xl font-black uppercase italic leading-none">{req.design}</h4>
                                     </div>
-                                    
-                                    <div className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl flex justify-between items-end">
-                                        <div>
-                                            <p className="text-[8px] font-black uppercase text-slate-400 mb-1">Total Pieces</p>
-                                            <p className="text-2xl font-black italic">{Number(req.totalBorka || 0) + Number(req.totalHijab || 0)} <span className="text-xs font-bold leading-none">PCS</span></p>
-                                        </div>
-                                        <div className="text-right">
-                                            <p className="text-[10px] font-black text-emerald-500 uppercase italic">FABRIC SENT</p>
-                                        </div>
+                                    <div className="text-right">
+                                        <p className="text-xs font-black text-slate-400 uppercase">{req.client}</p>
+                                        <p className="text-[9px] font-bold text-slate-300 font-mono mt-1">{req.date}</p>
                                     </div>
-
+                                </div>
+                                <div className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl">
+                                    <p className="text-[8px] font-black uppercase text-slate-400 mb-1">Total Requirement</p>
+                                    <p className="text-2xl font-black italic">{Number(req.totalBorka || 0) + Number(req.totalHijab || 0)} <span className="text-xs">PCS</span></p>
+                                </div>
+                                <div className="space-y-4 pt-6 border-t border-slate-100 dark:border-slate-800">
+                                    <p className="text-[10px] font-bold text-slate-500 line-clamp-2 italic uppercase">Note: {req.note || 'No special requirements.'}</p>
                                     <button 
                                         onClick={() => handleAcceptB2BOrder(req)}
-                                        className="w-full py-4 bg-blue-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg hover:bg-blue-700 active:scale-95 transition-all flex items-center justify-center gap-3"
+                                        className="w-full py-4 bg-blue-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg hover:bg-blue-700 active:scale-95 transition-all"
                                     >
-                                        <ExternalLink size={16} /> বাইরের কাজের দায়িত্ব দিন
+                                        অর্ডার বাইরের কারিগরকে দিন (ASSIGN)
                                     </button>
                                 </div>
-                            ))
-                        )}
-                    </>
+                            </div>
+                        ))
+                    )
                 ) : (view === 'active' ? activeEntries : historyEntries).length === 0 ? (
                     <div className="col-span-full h-80 flex flex-col items-center justify-center bg-white dark:bg-slate-900 rounded-xl border-2 border-dashed border-slate-100 dark:border-slate-800 italic">
                         <Box size={40} className="text-slate-200 mb-4" />
@@ -586,10 +561,38 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
                             <p className="text-[10px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest italic leading-none">External Unit Deployment Protocol</p>
                         </div>
 
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            <div className="space-y-1.5 overflow-hidden">
+                                <label className="text-[10px] font-bold text-black dark:text-white dark:text-white ml-1 uppercase tracking-widest">মাস্টার লট সিঙ্ক (Lot No)</label>
+                                <div className="relative group">
+                                    <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-black dark:text-white dark:text-white group-hover:text-blue-600 transition-colors" />
+                                    <input className="premium-input !pl-12 !h-12 !border-blue-500/20" placeholder="লট নম্বর দিয়ে খুঁজুন..." value={lotSearch} onChange={(e) => handleLotSearch(e.target.value)} />
+                                </div>
+                            </div>
+                            <div className="space-y-1.5">
+                                <label className="text-[10px] font-bold text-black dark:text-white dark:text-white ml-1 uppercase tracking-widest">বাইরের কারিগর (Contractor)</label>
+                                <input className="premium-input !h-12 text-sm uppercase" placeholder="নাম লিখুন..." value={entryData.worker} onChange={(e) => setEntryData(p => ({ ...p, worker: e.target.value }))} />
+                            </div>
+                            <div className="space-y-1.5">
+                                <label className="text-[10px] font-bold text-black dark:text-white dark:text-white ml-1 uppercase tracking-widest">মালিকানা (Client Owner)</label>
+                                <input className="premium-input !h-12 text-sm uppercase font-bold bg-slate-50 dark:bg-slate-800" value={entryData.client} readOnly />
+                            </div>
+                        </div>
 
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div className="space-y-4">
+                                <div className="space-y-1">
+                                    <label className="text-[10px] font-bold text-black dark:text-white dark:text-white ml-1 uppercase tracking-widest">ডিজাইন আইডি (Design)</label>
                                     <select className="premium-input !h-12 text-sm uppercase" value={entryData.design} onChange={(e) => setEntryData(p => ({ ...p, design: e.target.value }))}>
                                         <option value="">ডিজাইন নির্বাচন করুন...</option>
                                         {(masterData.designs || []).map(d => <option key={d.name} value={d.name}>{d.name}</option>)}
+                                    </select>
+                                </div>
+                                <div className="space-y-1">
+                                    <label className="text-[10px] font-bold text-black dark:text-white dark:text-white ml-1 uppercase tracking-widest">সাইজ (Size Selection)</label>
+                                    <select className="premium-input !h-12 text-sm uppercase" value={entryData.size} onChange={(e) => setEntryData(p => ({ ...p, size: e.target.value }))}>
+                                        <option value="">সাইজ নির্বাচন করুন...</option>
+                                        {(masterData.sizes || []).map(s => <option key={s} value={s}>{s}</option>)}
                                     </select>
                                 </div>
                                 <div className="space-y-1">
@@ -597,7 +600,7 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
                                         <label className="text-[10px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest">কাজের ধরন (Task Type)</label>
                                         <div className="flex gap-2">
                                             <span className="text-[8px] font-bold bg-blue-100 text-blue-600 px-1.5 py-0.5 rounded uppercase">F: {currentClientStock.fabric}</span>
-                                            <span className="text-[8px] font-bold bg-amber-100 text-amber-600 px-1.5 py-0.5 rounded uppercase">S: {currentClientStock.stone}</span>
+                                            <span className="text-[8px] font-bold bg-emerald-100 text-emerald-600 px-1.5 py-0.5 rounded uppercase">S: {currentClientStock.stone}</span>
                                         </div>
                                     </div>
                                     <select className="premium-input !h-12 text-sm uppercase" value={entryData.task} onChange={(e) => setEntryData(p => ({ ...p, task: e.target.value }))}>
@@ -644,65 +647,37 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
                 </div>
             )}
 
-            {/* Settlement Modal */}
-            {payModal && (
-                <div className="fixed inset-0 bg-slate-950/20 backdrop-blur-md z-[1000] flex items-center justify-center p-4">
-                    <div className="bg-white dark:bg-slate-900 w-full max-w-lg rounded-xl shadow-2xl p-8 md:p-12 space-y-10 animate-fade-up relative">
-                        <div className="text-center space-y-3">
-                           <div className="mx-auto w-14 h-14 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center shadow-lg mb-4">
-                            <DollarSign size={24} />
-                          </div>
-                          <h3 className="text-2xl font-bold uppercase text-black dark:text-white dark:text-white leading-none">বকেয়া <span className="text-blue-600">পরিশোধProtocol</span></h3>
-                          <p className="text-[10px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest mb-2">{payModal.worker} - AUDIT SETTLEMENT</p>
-                        </div>
-                        <div className="bg-slate-50 dark:bg-slate-800/50 p-8 rounded-xl shadow-inner space-y-6 border border-slate-100 dark:border-slate-800">
-                            <div className="text-center space-y-2 border-b border-slate-200 dark:border-slate-700 pb-6">
-                                <label className="text-[10px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest block">পেমেন্ট পরিমাণ (Amount)</label>
-                                <input type="number" autoFocus className="w-full text-center text-6xl font-bold bg-transparent border-none text-black dark:text-white dark:text-white outline-none leading-none h-16" placeholder="0" value={paymentAmount} onChange={(e) => setPaymentAmount(e.target.value)} />
-                            </div>
-                            <div className="text-center space-y-2">
-                                <label className="text-[10px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest block">পরিশোধের তারিখ</label>
-                                <input type="date" className="w-full text-center text-sm font-bold bg-transparent border-none text-black dark:text-white dark:text-white outline-none" value={paymentDate} onChange={(e) => setPaymentDate(e.target.value)} />
-                            </div>
-                        </div>
-                        <div className="flex gap-4">
-                            <button onClick={() => setPayModal(null)} className="flex-1 py-4 rounded-xl bg-white border-2 border-black text-black dark:text-white font-black uppercase text-[10px] tracking-widest hover:bg-black hover:text-white transition-all shadow-lg">বাতিল</button>
-                            <button onClick={handlePayment} className="flex-[2] py-4 bg-emerald-600 text-white rounded-xl font-bold text-[10px] uppercase tracking-widest shadow-xl hover:bg-emerald-700 transition-all">পেমেন্ট নিশ্চিত করুন</button>
-                        </div>
-                    </div>
-                </div>
-            )}
-
-
-            {/* Receive Modal */}
+            {/* RECEIVE MODAL */}
             {receiveModal && (
-                <div className="fixed inset-0 bg-slate-950/20 backdrop-blur-md z-[1000] flex items-center justify-center p-4">
-                    <div className="bg-white dark:bg-slate-900 rounded-xl w-full max-w-2xl shadow-2xl p-8 md:p-10 animate-fade-up relative">
-                        <div className="flex justify-between items-center mb-8">
-                            <h3 className="text-2xl font-bold uppercase text-black dark:text-white dark:text-white">কাজ জমা <span className="text-blue-600">নিন (Receive)</span></h3>
-                            <button onClick={() => setReceiveModal(null)} className="p-2 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition-all text-black dark:text-white dark:text-white"><X size={20} /></button>
-                        </div>
+                <div className="fixed inset-0 bg-slate-950/40 backdrop-blur-md z-[1000] flex items-center justify-center p-4">
+                    <div className="bg-white dark:bg-slate-900 w-full max-w-lg rounded-xl shadow-2xl p-8 relative animate-fade-up border border-slate-100 dark:border-slate-800">
+                        <button onClick={() => setReceiveModal(null)} className="absolute top-6 right-6 text-slate-400 hover:text-black dark:text-white"><X size={20} /></button>
                         <form onSubmit={handleConfirmReceive} className="space-y-8">
-                            <div className="grid grid-cols-2 gap-6">
-                                <div className="bg-slate-50 dark:bg-slate-800/50 p-8 rounded-xl border border-slate-100 dark:border-slate-800 text-center">
-                                    <label className="text-[10px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest block mb-4">বোরকা জমা (Borka)</label>
-                                    <input type="number" className="w-full text-center text-5xl font-bold bg-transparent border-none outline-none text-black dark:text-white dark:text-white h-16" value={receiveModal.rBorkaQty} onChange={(e) => setReceiveModal({ ...receiveModal, rBorkaQty: e.target.value })} autoFocus />
+                            <div className="text-center space-y-2">
+                                <h3 className="text-2xl font-bold uppercase text-black dark:text-white">কাজ <span className="text-blue-600">জমা নিন</span></h3>
+                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{receiveModal.worker} - {receiveModal.task}</p>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-1.5">
+                                    <label className="text-[9px] font-bold uppercase text-slate-400 ml-1">বোরকা রিসিভ</label>
+                                    <input type="number" className="premium-input !h-12 text-center text-lg font-bold" value={receiveModal.rBorkaQty} onChange={(e) => setReceiveModal(p => ({ ...p, rBorkaQty: e.target.value }))} />
                                 </div>
-                                <div className="bg-slate-50 dark:bg-slate-800/50 p-8 rounded-xl border border-slate-100 dark:border-slate-800 text-center">
-                                    <label className="text-[10px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest block mb-4">হিজাব জমা (Hijab)</label>
-                                    <input type="number" className="w-full text-center text-5xl font-bold bg-transparent border-none outline-none text-black dark:text-white dark:text-white h-16" value={receiveModal.rHijabQty} onChange={(e) => setReceiveModal({ ...receiveModal, rHijabQty: e.target.value })} />
+                                <div className="space-y-1.5">
+                                    <label className="text-[9px] font-bold uppercase text-slate-400 ml-1">হিজাব রিসিভ</label>
+                                    <input type="number" className="premium-input !h-12 text-center text-lg font-bold" value={receiveModal.rHijabQty} onChange={(e) => setReceiveModal(p => ({ ...p, rHijabQty: e.target.value }))} />
                                 </div>
                             </div>
-                            <div className="bg-slate-50 dark:bg-slate-800/50 p-6 rounded-xl border border-slate-100 dark:border-slate-800">
-                                <label className="text-[10px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest text-center block mb-3">জমা দেওয়ার তারিখ</label>
-                                <input type="date" className="premium-input !h-12 font-bold !bg-white dark:!bg-slate-950 text-center" value={receiveModal.receiveDate} onChange={(e) => setReceiveModal({ ...receiveModal, receiveDate: e.target.value })} />
+
+                            <div className="space-y-1.5">
+                                <label className="text-[9px] font-bold uppercase text-slate-400 ml-1">জমার তারিখ</label>
+                                <input type="date" className="premium-input !h-12" value={receiveModal.receiveDate} onChange={(e) => setReceiveModal(p => ({ ...p, receiveDate: e.target.value }))} />
                             </div>
-                            <div className="flex flex-col md:flex-row gap-4">
-                                <button type="submit" className="flex-[2] py-4 bg-slate-950 text-white rounded-xl font-bold text-[10px] uppercase tracking-widest shadow-xl hover:bg-slate-800 transition-all">
-                                    নিশ্চিত করুন (Confirm)
-                                </button>
-                                <button name="print" type="submit" className="flex-1 py-4 bg-blue-600 text-white rounded-xl font-bold text-[10px] uppercase tracking-widest shadow-xl hover:bg-blue-700 transition-all flex items-center justify-center gap-2">
-                                    <Printer size={16} /> প্রিন্ট (Slip)
+
+                            <div className="flex flex-col gap-3 pt-4">
+                                <button type="submit" name="confirm" className="w-full py-4 bg-slate-950 text-white rounded-xl font-bold text-[10px] uppercase tracking-widest shadow-xl">নিশ্চিত করুন (Save)</button>
+                                <button type="submit" name="print" className="w-full py-4 bg-blue-600 text-white rounded-xl font-bold text-[10px] uppercase tracking-widest shadow-xl flex items-center justify-center gap-2">
+                                    <Printer size={16} /> সেভ ও প্রিন্ট করুন
                                 </button>
                             </div>
                         </form>
@@ -710,24 +685,52 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
                 </div>
             )}
 
+            {/* PAY MODAL */}
+            {payModal && (
+                <div className="fixed inset-0 bg-slate-950/40 backdrop-blur-md z-[1000] flex items-center justify-center p-4">
+                    <div className="bg-white dark:bg-slate-900 w-full max-w-md rounded-xl shadow-2xl p-10 relative animate-fade-up">
+                        <button onClick={() => setPayModal(null)} className="absolute top-6 right-6 text-slate-400 hover:text-black dark:text-white"><X size={20} /></button>
+                        <div className="text-center space-y-8">
+                            <div className="mx-auto w-14 h-14 bg-emerald-500 text-white rounded-xl flex items-center justify-center shadow-lg"><DollarSign size={28} /></div>
+                            <div className="space-y-1">
+                                <h3 className="text-2xl font-bold uppercase">বকেয়া <span className="text-emerald-500">পরিশোধ</span></h3>
+                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{payModal.worker} - {payModal.task}</p>
+                            </div>
+                            <div className="space-y-6">
+                                <div className="p-8 bg-slate-50 dark:bg-slate-800/50 rounded-xl">
+                                    <label className="text-[10px] font-bold uppercase text-slate-400 block mb-4">পরিশোধের পরিমাণ (৳)</label>
+                                    <input type="number" className="w-full text-center text-5xl font-bold bg-transparent outline-none text-black dark:text-white" value={paymentAmount} onChange={(e) => setPaymentAmount(e.target.value)} placeholder={(payModal.totalAmount - (payModal.paidAmount || 0))} />
+                                </div>
+                                <div className="space-y-1.5 text-left">
+                                    <label className="text-[9px] font-bold uppercase text-slate-400 ml-1">তারিখ</label>
+                                    <input type="date" className="premium-input !h-12" value={paymentDate} onChange={(e) => setPaymentDate(e.target.value)} />
+                                </div>
+                                <button onClick={handlePayment} className="w-full py-4 bg-slate-950 text-white rounded-xl font-bold text-[10px] uppercase tracking-widest shadow-xl">কনফার্ম পেমেন্ট</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
 
-            {/* Final Return Controller */}
+            {/* QR MODAL */}
+            {showQR && <QRScanner onScanSuccess={(data) => { handleLotSearch(data); setShowQR(false); }} onClose={() => setShowQR(false)} />}
+            
             <div className="pt-24 pb-12 flex justify-center">
                 <button
                     onClick={() => setActivePanel("Overview")}
-                    className="group relative flex items-center gap-6 bg-white dark:bg-slate-900 px-12 md:px-16 py-7 md:py-8 rounded-[var(--radius-saas)] border-2 border-slate-100 dark:border-slate-800 shadow-xl hover:border-slate-950 transition-all duration-500"
+                    className="group flex items-center gap-6 bg-white dark:bg-slate-900 px-12 py-7 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xl hover:border-slate-950 transition-all duration-500"
                 >
-                    <div className="p-3 bg-slate-950 text-white rounded-xl transition-transform shadow-lg group-hover:scale-110">
+                    <div className="p-3 bg-slate-950 text-white rounded-xl transition-transform shadow-lg group-hover:-translate-x-2">
                         <ArrowLeft size={20} strokeWidth={3} />
                     </div>
-                    <span className="text-lg font-bold tracking-tight text-black dark:text-white dark:text-white uppercase leading-none">
+                    <span className="text-lg font-bold tracking-tight text-black dark:text-white uppercase leading-none font-outfit">
                         ড্যাশবোর্ডে ফিরে যান
                     </span>
                 </button>
             </div>
-
         </div>
     );
 };
 
 export default OutsideWorkPanel;
+
