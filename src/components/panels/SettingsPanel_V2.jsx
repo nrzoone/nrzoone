@@ -429,6 +429,7 @@ const SettingsPanel_V2 = ({
           role: role || "manager",
         },
       ],
+      clients: (role === 'client' && !(prev.clients || []).includes(name || id)) ? [...(prev.clients || []), (name || id)] : (prev.clients || [])
     }));
     setShowAddModal(false);
   };
@@ -891,7 +892,23 @@ const SettingsPanel_V2 = ({
             {activeTab === 'colors' && <ListSection category="colors" title="সিস্টেম কালার (Colors)" items={masterData.colors} icon={<Palette />} />}
             {activeTab === 'sizes' && <ListSection category="sizes" title="সিস্টেম সাইজ (Sizes)" items={masterData.sizes} icon={<Package />} />}
             {activeTab === 'pataTypes' && <ListSection category="pataTypes" title="পাতা ট্যাক্সোনমি (Type)" items={masterData.pataTypes} icon={<LayoutGrid />} />}
-            {activeTab === 'clients' && <ListSection category="clients" title="ক্লায়েন্ট তালিকা (Clients)" items={masterData.clients} icon={<Users />} />}
+            {activeTab === 'clients' && (
+               <div className="space-y-6">
+                  <div className="p-8 bg-blue-600 rounded-[2rem] text-white flex flex-col md:flex-row items-center gap-8 shadow-2xl relative overflow-hidden group">
+                     <div className="absolute top-0 right-0 p-12 opacity-10 group-hover:rotate-12 transition-all">
+                        <Users size={160} />
+                     </div>
+                     <div className="w-20 h-20 bg-white/20 backdrop-blur-xl rounded-2xl flex items-center justify-center shadow-lg shrink-0">
+                        <ShieldCheck size={40} />
+                     </div>
+                     <div className="flex-1 text-center md:text-left relative z-10">
+                        <h3 className="text-2xl font-black uppercase tracking-tight mb-2">ক্লায়েন্ট পোর্টাল এক্সেস গাইড</h3>
+                        <p className="text-[11px] font-bold uppercase tracking-[0.2em] opacity-80 leading-relaxed">নতুন ক্লায়েন্ট যোগ করার সময় চেক-বক্সটি সিলেক্ট করুন। সিস্টেম অটোমেটিক আইডি এবং পাসওয়ার্ড (login123) তৈরি করে ইউজার লিস্টে বসিয়ে দেবে।</p>
+                     </div>
+                  </div>
+                  <ListSection category="clients" title="ক্লায়েন্ট তালিকা (Clients)" items={masterData.clients} icon={<Users />} />
+               </div>
+            )}
             {activeTab === 'designers' && <ListSection category="designers" title="ব্র্যান্ড এবং ডিজাইনার (Brands)" items={masterData.designers} icon={<Star />} />}
             {activeTab === 'designs' && renderDesignsList()}
          </div>
@@ -1326,6 +1343,7 @@ const SettingsPanel_V2 = ({
               <input id="new-user-name" className="premium-input !h-14" placeholder="FULL NAME" />
               <select id="new-user-role" className="premium-input !h-14">
                 <option value="worker">WORKER</option>
+                <option value="client">CLIENT (B2B)</option>
                 <option value="manager">MANAGER</option>
                 <option value="admin">ADMIN</option>
               </select>
@@ -1360,9 +1378,20 @@ const SettingsPanel_V2 = ({
                     }} 
                   />
                   {showAddModal === 'clients' && (
-                     <div className="flex items-center gap-3 pt-2">
-                        <input type="checkbox" id="client-portal-access" className="w-5 h-5 accent-blue-600" defaultChecked />
-                        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest leading-tight">Create Client Portal Access (Auto User Generation: login123)</label>
+                     <div className="p-6 bg-blue-600/10 border-2 border-blue-600/20 rounded-2xl flex items-center gap-5 group hover:bg-blue-600/20 transition-all cursor-pointer" onClick={() => {
+                        const cb = document.getElementById("client-portal-access");
+                        if(cb) cb.checked = !cb.checked;
+                     }}>
+                        <div className="w-10 h-10 bg-blue-600 text-white rounded-xl flex items-center justify-center shadow-lg">
+                           <ShieldCheck size={20} />
+                        </div>
+                        <div className="flex-1">
+                           <div className="flex items-center gap-3">
+                              <input type="checkbox" id="client-portal-access" className="w-5 h-5 accent-blue-600 cursor-pointer" defaultChecked />
+                              <label className="text-[11px] font-black text-blue-900 dark:text-blue-400 uppercase tracking-widest cursor-pointer">ক্লায়েন্ট পোর্টাল আইডি তৈরি করুন</label>
+                           </div>
+                           <p className="text-[9px] font-bold text-blue-600/60 uppercase tracking-widest mt-1 ml-8 italic">পাসওয়ার্ড অটো সেট হবে: login123</p>
+                        </div>
                      </div>
                   )}
                   <div className="flex gap-4 pt-6">
@@ -1512,15 +1541,31 @@ const SettingsPanel_V2 = ({
                  <div className="grid grid-cols-2 gap-6">
                     <div className="space-y-2">
                       <label className="text-[10px] font-black text-slate-400 uppercase ml-2 tracking-widest italic">Sewing Rate</label>
-                      <input id="design-sewing" type="number" className="premium-input !h-12 !bg-slate-50 dark:!bg-slate-800/50" defaultValue={editDesignModal?.sewingRate || 0} />
+                      <div className="flex gap-2">
+                        <input id="design-sewing" type="number" className="w-20 premium-input !h-10 !text-center !bg-white dark:!bg-slate-900 shadow-sm" defaultValue={editDesignModal?.sewingRate || 0} />
+                        <input id="design-client-sewing-default" type="number" className="w-20 premium-input !h-10 !text-center !bg-blue-600/5 !border-blue-600 text-blue-600 font-bold" defaultValue={editDesignModal?.defaultClientRates?.sewing || 0} />
+                      </div>
                     </div>
                     <div className="space-y-2">
                       <label className="text-[10px] font-black text-slate-400 uppercase ml-2 tracking-widest italic">Stone Rate</label>
-                      <input id="design-stone" type="number" className="premium-input !h-12 !bg-slate-50 dark:!bg-slate-800/50" defaultValue={editDesignModal?.stoneRate || 0} />
+                      <div className="flex gap-2">
+                        <input id="design-stone" type="number" className="w-20 premium-input !h-10 !text-center !bg-white dark:!bg-slate-900 shadow-sm" defaultValue={editDesignModal?.stoneRate || 0} />
+                        <input id="design-client-stone-default" type="number" className="w-20 premium-input !h-10 !text-center !bg-blue-600/5 !border-blue-600 text-blue-600 font-bold" defaultValue={editDesignModal?.defaultClientRates?.stone || 0} />
+                      </div>
                     </div>
                     <div className="space-y-2">
                       <label className="text-[10px] font-black text-slate-400 uppercase ml-2 tracking-widest italic">Pata Rate</label>
-                      <input id="design-pata" type="number" className="premium-input !h-12 !bg-slate-50 dark:!bg-slate-800/50" defaultValue={editDesignModal?.pataRate || 0} />
+                      <div className="flex gap-2">
+                        <input id="design-pata" type="number" className="w-20 premium-input !h-10 !text-center !bg-white dark:!bg-slate-900 shadow-sm" defaultValue={editDesignModal?.pataRate || 0} />
+                        <input id="design-client-pata-default" type="number" className="w-20 premium-input !h-10 !text-center !bg-blue-600/5 !border-blue-600 text-blue-600 font-bold" defaultValue={editDesignModal?.defaultClientRates?.pata || 0} />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black text-slate-400 uppercase ml-2 tracking-widest italic">Outwork (Worker)</label>
+                      <div className="flex gap-2">
+                        <input id="design-outside" type="number" className="w-20 premium-input !h-10 !text-center !bg-white dark:!bg-slate-900 shadow-sm" defaultValue={editDesignModal?.outsideRate || 0} />
+                        <input id="design-client-outside-default" type="number" className="w-20 premium-input !h-10 !text-center !bg-blue-600/5 !border-blue-600 text-blue-600 font-bold" defaultValue={editDesignModal?.defaultClientRates?.outwork || 0} />
+                      </div>
                     </div>
                     <div className="space-y-2">
                       <label className="text-[10px] font-black text-emerald-500 uppercase ml-2 tracking-widest italic font-mono">Retail Price</label>
@@ -1585,13 +1630,22 @@ const SettingsPanel_V2 = ({
                      }
                   });
 
+                  const defaultClientRates = {
+                    sewing: Number(document.getElementById("design-client-sewing-default")?.value || 0),
+                    stone: Number(document.getElementById("design-client-stone-default")?.value || 0),
+                    pata: Number(document.getElementById("design-client-pata-default")?.value || 0),
+                    outwork: Number(document.getElementById("design-client-outside-default")?.value || 0),
+                  };
+
                   const data = {
                     name: document.getElementById("design-name").value.trim().toUpperCase(),
                     sewingRate: Number(document.getElementById("design-sewing").value),
                     stoneRate: Number(document.getElementById("design-stone").value),
                     pataRate: Number(document.getElementById("design-pata").value),
+                    outsideRate: Number(document.getElementById("design-outside").value),
                     sellingPrice: Number(document.getElementById("design-sell").value),
                     clientRates: clientRatesObj,
+                    defaultClientRates,
                     image: tempImgUrl
                   };
                   
