@@ -479,7 +479,7 @@ const FactoryPanel = ({
     // B2B Conditional Billing & Ready Stock Logic
     if (receiveModal.client && receiveModal.client !== "FACTORY") {
         const designObj = (masterData.designs || []).find(d => d.name === receiveModal.design);
-        const stageRate = designObj?.clientRates?.[receiveModal.client]?.[receiveModal.type]; // 'sewing' or 'stone'
+        const stageRate = designObj?.clientRates?.[receiveModal.client]?.[receiveModal.type]; 
 
         if (stageRate && Number(stageRate) > 0) {
             const billAmount = (rBorka + rHijab) * Number(stageRate);
@@ -492,18 +492,23 @@ const FactoryPanel = ({
                     amount: billAmount,
                     note: `S-BILL: ${receiveModal.type.toUpperCase()} of ${rBorka + rHijab} PCS (${receiveModal.design})`
                 };
+
+                // Only push to finished stock if it's the final stage (Stone if exists, else Sewing)
+                const hasStoneWork = Number(designObj?.stoneRate || 0) > 0;
+                const isFinalStage = (receiveModal.type === 'stone') || (receiveModal.type === 'sewing' && !hasStoneWork);
+
                 setMasterData(prev => ({
                     ...prev,
                     clientTransactions: [b2bBill, ...(prev.clientTransactions || [])],
-                    finishedStock: [{
+                    finishedStock: isFinalStage ? [{
                         id: Date.now() + 5,
                         design: receiveModal.design,
                         color: receiveModal.color || 'MIX',
                         client: receiveModal.client,
                         qty: rBorka + rHijab,
                         date: new Date().toLocaleDateString("en-GB"),
-                        type: receiveModal.type // Track which stage finished it
-                    }, ...(prev.finishedStock || [])]
+                        type: receiveModal.type 
+                    }, ...(prev.finishedStock || [])] : (prev.finishedStock || [])
                 }));
             }
         }
