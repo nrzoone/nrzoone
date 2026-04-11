@@ -170,7 +170,12 @@ export const translations = {
         dbLatency: "Database Latency",
         systemCapacity: "Neural Capacity",
         storageAllocated: "Unlimited Cloud Encrypted",
-        clientledger: "Client Ledger"
+        clientledger: "Client Ledger",
+        accounts_treasury: "Treasury (Cash)",
+        accounts_partners: "Partners (B2B)",
+        accounts_workforce: "Workforce (Worker)",
+        accounts_analytics: "Analytics (Reports)",
+        accounts_system: "System (Security)"
     },
     BN: {
         mainMenu: "প্রধান মেনু",
@@ -353,7 +358,12 @@ export const translations = {
         auditArchives: "অডিট আর্কাইভস",
         strategicMaintenance: "কৌশলগত ব্যবস্থাপনা",
         config: "কনফিগুরেশন",
-        clientledger: "ক্লায়েন্ট লেজার"
+        clientledger: "ক্লায়েন্ট লেজার",
+        accounts_treasury: "ট্রেজারি (ক্যাশ)",
+        accounts_partners: "অংশীদার (বি২বি)",
+        accounts_workforce: "শ্রমিক (লেজার)",
+        accounts_analytics: "রিপোর্ট (অ্যানালিটিক্স)",
+        accounts_system: "সিস্টেম (নিরাপত্তা)"
     }
 };
 

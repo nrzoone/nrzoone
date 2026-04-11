@@ -75,6 +75,7 @@ const FactoryPanel = ({
     pataType: (masterData.pataTypes || ["Single"])[0],
     rate: "",
     worker: "",
+    client: "FACTORY",
     note: "",
   });
 
@@ -322,6 +323,7 @@ const FactoryPanel = ({
         design: lot.design,
         color: lot.color,
         lotNo: lot.lotNo,
+        client: lot.client || "FACTORY",
         rate:
           p.worker && (masterData.workerWages || {})[type]?.[p.worker] > 0
             ? masterData.workerWages[type][p.worker]
@@ -338,6 +340,24 @@ const FactoryPanel = ({
         }))
         .filter((s) => s.borka > 0 || s.hijab > 0);
       setIssueSizes(lotSizes);
+    }
+  };
+
+  const [lotSearchQuery, setLotSearchQuery] = useState("");
+
+  const handleLotSearch = (query) => {
+    setLotSearchQuery(query);
+    if (!query) return;
+
+    // Direct search in available lots for exact match or first match
+    const found = availableLots.find(l => 
+        l.lotNo.toLowerCase() === query.toLowerCase() || 
+        l.lotNo.toLowerCase().includes(query.toLowerCase())
+    );
+
+    if (found) {
+        const key = `${found.design}|${found.color}|${found.lotNo}`;
+        handleLotSelect(key);
     }
   };
 
@@ -1047,32 +1067,48 @@ const FactoryPanel = ({
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12">
               <div className="lg:col-span-6 space-y-8">
                 
-                {/* Lot Selection Box */}
-                <div className="bg-slate-50 p-6 md:p-8 rounded-xl border border-slate-100 relative group transition-all hover:border-slate-950">
-                  <div className="flex items-center gap-3 mb-4">
-                    <Search size={18} className="text-black dark:text-white" />
-                    <label className="text-xs font-black text-black dark:text-white uppercase tracking-widest">
-                      প্রাপ্য লট নির্বাচন করুন <span className="text-black dark:text-white text-[10px] ml-1">(Select Available Lot)</span>
-                    </label>
+                {/* Lot Search & Selection Box */}
+                <div className="bg-slate-50 p-6 md:p-8 rounded-xl border border-slate-100 relative group transition-all hover:border-slate-950 space-y-6">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase text-blue-600 tracking-widest ml-1">মাস্টার লট খুঁজুন (Search Master Lot)</label>
+                    <div className="relative">
+                        <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-600" />
+                        <input 
+                            className="premium-input !pl-12 !h-14 !text-lg !font-black !bg-white !border-blue-500/30" 
+                            placeholder="LOT #..." 
+                            value={lotSearchQuery}
+                            onChange={(e) => handleLotSearch(e.target.value)}
+                        />
+                    </div>
                   </div>
-                  <div className="relative">
-                    <select
-                      className="w-full bg-white px-6 py-4 border-2 border-slate-200 rounded-xl font-black text-sm uppercase outline-none focus:border-slate-950 transition-all appearance-none cursor-pointer"
-                      value={selectedLot}
-                      onChange={(e) => handleLotSelect(e.target.value)}
-                    >
-                      <option value="">-- লট নং / ডিজাইন... --</option>
-                      {availableLots.map((l) => (
-                        <option
-                          key={`${l.design}|${l.color}|${l.lotNo}`}
-                          value={`${l.design}|${l.color}|${l.lotNo}`}
-                        >
-                          {l.design} | {l.color} | #{l.lotNo} ({l.totalAvailable} পিস)
-                        </option>
-                      ))}
-                    </select>
-                    <ChevronRight size={20} className="absolute right-6 top-1/2 -translate-y-1/2 text-black dark:text-white pointer-events-none" />
+
+                  <div>
+                    <div className="flex items-center gap-3 mb-4">
+                      <Layers size={18} className="text-black dark:text-white" />
+                      <label className="text-xs font-black text-black dark:text-white uppercase tracking-widest">
+                        প্রাপ্য লট নির্বাচন করুন <span className="text-black dark:text-white text-[10px] ml-1">(Dropdown Selection)</span>
+                      </label>
+                    </div>
+                    <div className="relative">
+                      <select
+                        className="w-full bg-white px-6 py-4 border-2 border-slate-200 rounded-xl font-black text-sm uppercase outline-none focus:border-slate-950 transition-all appearance-none cursor-pointer"
+                        value={selectedLot}
+                        onChange={(e) => handleLotSelect(e.target.value)}
+                      >
+                        <option value="">-- লট নং / ডিজাইন... --</option>
+                        {availableLots.map((l) => (
+                          <option
+                            key={`${l.design}|${l.color}|${l.lotNo}`}
+                            value={`${l.design}|${l.color}|${l.lotNo}`}
+                          >
+                            {l.design} | {l.color} | #{l.lotNo} ({l.totalAvailable} পিস)
+                          </option>
+                        ))}
+                      </select>
+                      <ChevronRight size={20} className="absolute right-6 top-1/2 -translate-y-1/2 text-black dark:text-white pointer-events-none" />
+                    </div>
                   </div>
+
                   {availableLots.length === 0 && (
                     <div className="mt-4 p-4 bg-white border-2 border-dashed border-slate-200 rounded-xl flex items-center justify-center gap-2 text-black dark:text-white">
                        <Box size={16} /> <span className="text-[10px] font-black tracking-widest uppercase">কোন লট পাওয়া যায়নি</span>
@@ -1081,6 +1117,16 @@ const FactoryPanel = ({
                 </div>
 
                 <div className="bg-white space-y-6">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="bg-blue-50 p-4 rounded-xl border border-blue-100 flex flex-col justify-center">
+                        <p className="text-[10px] font-bold text-blue-600 uppercase tracking-widest mb-1">মালিকানা (Client)</p>
+                        <p className="text-sm font-black truncate text-blue-800 italic uppercase">{selection.client || "FACTORY"}</p>
+                    </div>
+                    <div className="bg-slate-50 dark:bg-slate-800 p-4 rounded-xl border border-slate-100 dark:border-slate-700 flex flex-col justify-center">
+                        <p className="text-[10px] font-bold text-black dark:text-white uppercase tracking-widest mb-1">লট নম্বর</p>
+                        <p className="text-sm font-black truncate text-black dark:text-white">#{selection.lotNo || "---"}</p>
+                    </div>
+                  </div>
                   <div className="space-y-2">
                     <label className="text-[10px] font-bold text-black dark:text-white uppercase flex items-center gap-2 mb-2 tracking-widest">
                       <User size={16} className="text-blue-600" /> কারিগর নির্বাচন করুন (Select Worker)

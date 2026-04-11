@@ -71,12 +71,6 @@ const BusinessIntel = ({ masterData }) => {
         <div className="space-y-6 md:space-y-12 pb-24 animate-fade-up px-2 italic text-black dark:text-white font-outfit">
             <div className="flex flex-col md:flex-row justify-between items-center gap-8">
                 <div className="flex items-center gap-6 md:gap-10">
-                    <button
-                        onClick={() => window.dispatchEvent(new CustomEvent('setActivePanel', { detail: 'Overview' }))}
-                        className="p-4 md:p-6 bg-white text-black dark:text-white rounded-[2rem] border-4 border-slate-50 shadow-2xl hover:bg-black hover:text-white transition-all group active:scale-95"
-                    >
-                        <ArrowLeft size={24} strokeWidth={3} className="group-hover:-translate-x-2 transition-transform" />
-                    </button>
                     <div className="flex items-center gap-6 md:gap-10">
                         <div className="bg-black rounded-[2.5rem] p-6 shadow-2xl border border-white/10 transition-transform hover:scale-110 active:scale-95 overflow-hidden group">
                            <NRZLogo size="md" white />

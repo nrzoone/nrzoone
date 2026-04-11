@@ -30,6 +30,23 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
     const [showModal, setShowModal] = useState(false);
     const [view, setView] = useState('active'); // 'active', 'history', 'b2b_incoming'
     const [searchTerm, setSearchTerm] = useState('');
+    const [lotSearch, setLotSearch] = useState('');
+
+    const handleLotSearch = (lotNo) => {
+        setLotSearch(lotNo);
+        const lotInfo = (masterData.cuttingStock || []).find(l => String(l.lotNo) === String(lotNo));
+        if (lotInfo) {
+            setEntryData(prev => ({
+                ...prev,
+                lotNo: lotInfo.lotNo,
+                design: lotInfo.design,
+                client: lotInfo.client || 'FACTORY',
+                borkaQty: lotInfo.borka || 0,
+                hijabQty: lotInfo.hijab || 0
+            }));
+            showNotify(`Lot #${lotNo} details synchronized!`, "success");
+        }
+    };
 
     const incomingOrders = useMemo(() => {
         return (masterData.productionRequests || []).filter(r => r.status === 'Pending Review');
@@ -123,6 +140,7 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
         try {
             const newEntry = {
                 id: `outside_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+                lotNo: entryData.lotNo || 'N/A',
                 date: entryData.date ? new Date(entryData.date).toLocaleDateString('en-GB') : new Date().toLocaleDateString('en-GB'),
                 worker: entryData.worker,
                 client: entryData.client || 'FACTORY',
@@ -219,16 +237,7 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
                     };
                     setMasterData(prev => ({
                         ...prev,
-                        clientTransactions: [b2bBill, ...(prev.clientTransactions || [])],
-                        finishedStock: [{
-                            id: `fs_out_${Date.now()}`,
-                            design: receiveModal.design,
-                            color: receiveModal.color || 'MIX',
-                            client: receiveModal.client,
-                            qty: rBorka + rHijab,
-                            date: new Date().toLocaleDateString("en-GB"),
-                            type: `OUT: ${receiveModal.task}`
-                        }, ...(prev.finishedStock || [])]
+                        clientTransactions: [b2bBill, ...(prev.clientTransactions || [])]
                     }));
                 }
             }
@@ -578,24 +587,6 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
                         </div>
 
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                            <div className="space-y-6">
-                                <div className="space-y-1">
-                                    <label className="text-[10px] font-bold text-black dark:text-white dark:text-white ml-1 uppercase tracking-widest">কারিগর (Contractor)</label>
-                                    <select className="premium-input !h-12 text-sm uppercase" value={entryData.worker} onChange={(e) => setEntryData(p => ({ ...p, worker: e.target.value }))}>
-                                        <option value="">কারিগর নির্বাচন করুন...</option>
-                                        {(masterData.outsideWorkers || []).map(w => <option key={w} value={w}>{w}</option>)}
-                                    </select>
-                                </div>
-                                <div className="space-y-1">
-                                    <label className="text-[10px] font-bold text-black dark:text-white dark:text-white ml-1 uppercase tracking-widest">মালিকানা (Client Owner)</label>
-                                    <select className="premium-input !h-12 text-sm uppercase" value={entryData.client} onChange={(e) => setEntryData(p => ({ ...p, client: e.target.value }))}>
-                                        <option value="FACTORY">ফ্যাক্টরি নিজস্ব (FACTORY)</option>
-                                        {(masterData.clients || []).map(c => <option key={c} value={c}>{c}</option>)}
-                                    </select>
-                                </div>
-                                <div className="space-y-1">
-                                    <label className="text-[10px] font-bold text-black dark:text-white dark:text-white ml-1 uppercase tracking-widest">ডিজাইন স্টাইল (Design/Style)</label>
                                     <select className="premium-input !h-12 text-sm uppercase" value={entryData.design} onChange={(e) => setEntryData(p => ({ ...p, design: e.target.value }))}>
                                         <option value="">ডিজাইন নির্বাচন করুন...</option>
                                         {(masterData.designs || []).map(d => <option key={d.name} value={d.name}>{d.name}</option>)}

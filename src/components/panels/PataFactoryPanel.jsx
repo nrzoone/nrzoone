@@ -104,12 +104,25 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
         }
     }, [showModal, masterData.pataEntries]);
 
+    const handleLotSearch = (lotNo) => {
+        setLotSearch(lotNo);
+        const lotInfo = (masterData.cuttingStock || []).find(l => String(l.lotNo) === String(lotNo));
+        if (lotInfo) {
+            setEntryData(prev => ({
+                ...prev,
+                lotNo: lotInfo.lotNo,
+                design: lotInfo.design,
+                client: lotInfo.client || 'FACTORY',
+                note: `Master Lot Info: ${lotInfo.borka || 0} Borka, ${lotInfo.hijab || 0} Hijab`
+            }));
+            showNotify(`Lot #${lotNo} synchronized! (বোরকার তথ্য পাওয়া গেছে)`, "success");
+        }
+    };
+
     const handleQRScan = (data) => {
         if (data) {
-            setLotSearch(data);
-            setEntryData(prev => ({ ...prev, lotNo: data }));
+            handleLotSearch(data);
             setShowQR(false);
-            showNotify('QR কোড সফলভাবে স্ক্যান হয়েছে!', 'success');
         }
     };
 
@@ -305,16 +318,7 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                     };
                     setMasterData(prev => ({
                         ...prev,
-                        clientTransactions: [b2bBill, ...(prev.clientTransactions || [])],
-                        finishedStock: [{
-                            id: `fs_pata_${Date.now()}`,
-                            design: item.design,
-                            color: item.color || 'MIX',
-                            client: item.client,
-                            qty: receivedQty,
-                            date: new Date().toLocaleDateString("en-GB"),
-                            type: 'PATA'
-                        }, ...(prev.finishedStock || [])]
+                        clientTransactions: [b2bBill, ...(prev.clientTransactions || [])]
                     }));
                 }
             }
@@ -780,17 +784,25 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                   </div>
                 </div>
 
+                <div className="bg-blue-600/10 p-6 rounded-xl border border-blue-500/20 mb-6 flex flex-col md:flex-row items-center gap-4">
+                    <div className="flex-1 w-full space-y-1.5">
+                        <label className="text-[10px] font-black uppercase text-blue-600 tracking-widest ml-1">মাস্টার লট খুঁজুন (Search Master Lot)</label>
+                        <div className="relative">
+                            <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-600" />
+                            <input 
+                                className="premium-input !pl-12 !h-14 !text-lg !font-black !bg-white dark:!bg-slate-800 !border-blue-500/30" 
+                                placeholder="ENTER CUTTING LOT #..." 
+                                value={lotSearch}
+                                onChange={(e) => handleLotSearch(e.target.value)}
+                            />
+                        </div>
+                    </div>
+                </div>
+
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <div className="space-y-1.5">
+                    <div className="space-y-1.5 opacity-60">
                         <label className="text-[10px] font-bold uppercase text-black dark:text-white tracking-widest ml-1">মালিকানা (Client Owner)</label>
-                        <select 
-                           className="premium-input !h-12 text-sm uppercase font-bold" 
-                           value={entryData.client} 
-                           onChange={(e) => setEntryData(p => ({ ...p, client: e.target.value }))}
-                        >
-                            <option value="FACTORY">FACTORY (নিজস্ব)</option>
-                            {(masterData.clients || []).map(c => <option key={c} value={c}>{c}</option>)}
-                        </select>
+                        <input className="premium-input !h-12 text-sm uppercase font-bold bg-slate-100 dark:bg-slate-800" value={entryData.client} readOnly />
                     </div>
                     <div className="space-y-1.5">
                         <label className="text-[10px] font-bold uppercase text-black dark:text-white tracking-widest ml-1">কারিগর (Worker)</label>
@@ -799,18 +811,15 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                             {workers.map(w => <option key={w} value={w}>{w}</option>)}
                         </select>
                     </div>
-                    <div className="space-y-1.5">
+                    <div className="space-y-1.5 opacity-60">
                         <label className="text-[10px] font-bold uppercase text-black dark:text-white tracking-widest ml-1">ডিজাইন (Design)</label>
-                        <select className="premium-input !h-12 text-sm uppercase font-bold" value={entryData.design} onChange={(e) => setEntryData(p => ({ ...p, design: e.target.value }))}>
-                            <option value="">ডিজাইন নির্বাচন করুন...</option>
-                            {(masterData.designs || []).map(d => <option key={d.name} value={d.name}>{d.name}</option>)}
-                        </select>
+                        <input className="premium-input !h-12 text-sm uppercase font-bold bg-slate-100 dark:bg-slate-800" value={entryData.design} readOnly />
                     </div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-1.5">
-                        <label className="text-[10px] font-bold uppercase text-black dark:text-white tracking-widest ml-1">লট নম্বর (Lot ID - Auto)</label>
-                        <input className="premium-input !h-12 text-sm uppercase text-center font-black !bg-slate-950 !text-white !border-none" placeholder="LOT NO..." value={entryData.lotNo} onChange={(e) => setEntryData(p => ({ ...p, lotNo: e.target.value }))} readOnly />
+                        <label className="text-[10px] font-bold uppercase text-black dark:text-white tracking-widest ml-1">লট নম্বর (Sync ID)</label>
+                        <input className="premium-input !h-12 text-sm uppercase text-center font-black !bg-slate-950 !text-white !border-none" placeholder="LOT NO..." value={entryData.lotNo} readOnly />
                     </div>
                     <div className="space-y-1.5">
                         <label className="text-[10px] font-bold uppercase text-black dark:text-white tracking-widest ml-1">তারিখ (Issue Date)</label>
@@ -821,13 +830,14 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 bg-slate-50 dark:bg-slate-800/50 p-8 rounded-xl border border-slate-100 dark:border-slate-800 shadow-inner">
                      <div className="space-y-2 lg:border-r border-slate-200 dark:border-slate-700 lg:pr-8">
                         <div className="flex items-start justify-between">
-                            <label className="text-[10px] font-bold uppercase text-black dark:text-white tracking-widest mb-2 block">পাতার পরিমাণ (Pata Qty)</label>
-                            <span className="text-[9px] font-black bg-slate-950 text-white px-2 py-0.5 rounded uppercase">Required</span>
+                            <label className="text-[10px] font-bold uppercase text-black dark:text-white tracking-widest mb-2 block">কত পিস পাতা (Pata Pcs)</label>
+                            <span className="text-[9px] font-black bg-blue-600 text-white px-2 py-0.5 rounded uppercase">Quantity</span>
                         </div>
                         <input placeholder="0" type="number" className="w-full text-5xl font-bold bg-transparent outline-none text-black dark:text-white" value={entryData.pataQty} onChange={(e) => setEntryData(p => ({ ...p, pataQty: e.target.value }))} />
+                        <p className="text-[9px] font-bold text-slate-400 mt-2 uppercase italic">{entryData.note || 'মাস্টার লট ডিটেইল এখানে দেখা যাবে'}</p>
                         <div className="flex flex-wrap gap-2 mt-4">
                             {['Single', 'Double', 'Triple'].map(pt => (
-                                <button key={pt} onClick={() => setEntryData(p => ({ ...p, pataType: pt }))} className={`px-4 py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-widest transition-all ${entryData.pataType === pt ? 'bg-blue-600 text-white shadow-lg' : 'bg-white dark:bg-slate-900 text-black dark:text-white border border-slate-100 dark:border-slate-800'}`}>{pt}</button>
+                                <button key={pt} type="button" onClick={() => setEntryData(p => ({ ...p, pataType: pt }))} className={`px-4 py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-widest transition-all ${entryData.pataType === pt ? 'bg-blue-600 text-white shadow-lg' : 'bg-white dark:bg-slate-900 text-black dark:text-white border border-slate-100 dark:border-slate-800'}`}>{pt}</button>
                             ))}
                         </div>
                      </div>

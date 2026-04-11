@@ -341,7 +341,7 @@ const MENU_CATEGORIES = [
         label: "মূল সিস্টেম (CORE)",
         items: [
             { id: "Overview", label: "ড্যাশবোর্ড", icon: Activity, sub: "লাইভ মনিটর" },
-            { id: "ClientLedger", label: "ক্লায়েন্ট লেজার", icon: LayoutGrid, sub: "সব হিসাব" },
+            { id: "Stock", label: "ইনভেন্টরি", icon: Database, sub: "মজুদ" },
         ]
     },
     {
@@ -360,31 +360,25 @@ const MENU_CATEGORIES = [
         items: [
             { id: "Outside", label: "বাইরের কাজ", icon: Truck, sub: "এক্সটার্নাল" },
             { id: "Attendance", label: "হাজিরা", icon: Users, sub: "স্টাফ" },
-            { id: "Stock", label: "ইনভেন্টরি", icon: Database, sub: "মজুদ" },
         ]
     },
     {
         id: "finance",
-        label: "আর্থিক ও লেজার (FINANCE)",
+        label: "মাস্টার কন্ট্রোল (MASTER HUB)",
         items: [
-            { id: "Accounts", label: "অ্যাকাউন্টস", icon: DollarSign, sub: "ফাইন্যান্স" },
-            { id: "WorkerSummary", label: "কারিগর লেজার", icon: DollarSign, sub: "ব্যক্তিগত" },
-            { id: "Reports", label: "রিপোর্টস", icon: FileText, sub: "অ্যানালিটিক্স" },
-        ]
-    },
-    {
-        id: "system",
-        label: "নিরাপত্তা ও সিস্টেম (SYSTEM)",
-        items: [
-            { id: "Settings", label: "সেটিংস", icon: Settings, sub: "সিস্টেম" },
-            { id: "Security", label: "নিরাপত্তা", icon: Lock, sub: "অডিট লগ" },
+            { id: "Accounts", label: "Treasury (ক্যাশ)", icon: DollarSign, sub: "ফাইন্যান্স", tab: "treasury" },
+            { id: "Accounts", label: "Partners (বি২বি)", icon: Users, sub: "অংশীদার", tab: "partners" },
+            { id: "Accounts", label: "Workforce (শ্রমিক)", icon: UserCheck, sub: "কারিগর লেজার", tab: "workforce" },
+            { id: "Accounts", label: "Analytics (রিপোর্ট)", icon: BarChart2, sub: "অ্যানালিটিক্স", tab: "analytics" },
+            { id: "Accounts", label: "System (নিরাপত্তা)", icon: ShieldCheck, sub: "অডিট লগ", tab: "system" },
         ]
     }
 ];
 
-const Sidebar = ({ activePanel, setActivePanel, user, setUser, isOpen, setIsSidebarOpen, t, isDarkMode, masterData }) => {
-    const navigate = (id) => {
+const Sidebar = ({ activePanel, setActivePanel, panelTab, setPanelTab, user, setUser, isOpen, setIsSidebarOpen, t, isDarkMode, masterData }) => {
+    const navigate = (id, tab) => {
         setActivePanel(id);
+        if (tab) setPanelTab(tab);
         setIsSidebarOpen(false);
     };
 
@@ -416,17 +410,17 @@ const Sidebar = ({ activePanel, setActivePanel, user, setUser, isOpen, setIsSide
                                 const active = activePanel === item.id;
                                 return (
                                     <button
-                                        key={item.id} onClick={() => navigate(item.id)}
-                                        className={`w-full flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all group relative ${active ? "bg-black text-white dark:bg-white dark:text-black shadow-xl" : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/5"}`}
+                                        key={item.id + (item.tab || "")} onClick={() => navigate(item.id, item.tab)}
+                                        className={`w-full flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all group relative ${active && (item.tab ? panelTab === item.tab : true) ? "bg-black text-white dark:bg-white dark:text-black shadow-xl" : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/5"}`}
                                     >
-                                        <div className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all ${active ? "bg-white/20 dark:bg-black/10" : "bg-slate-100 dark:bg-white/5 group-hover:bg-slate-200 dark:group-hover:bg-white/10"}`}>
+                                        <div className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all ${active && (item.tab ? panelTab === item.tab : true) ? "bg-white/20 dark:bg-black/10" : "bg-slate-100 dark:bg-white/5 group-hover:bg-slate-200 dark:group-hover:bg-white/10"}`}>
                                             <Icon size={18} strokeWidth={active ? 2.5 : 2} className="shrink-0" />
                                         </div>
                                         <div className="flex flex-col items-start leading-none space-y-1">
-                                            <span className={`text-[0.75rem] tracking-wide font-bold`}>{t?.(item.id.toLowerCase()) || item.label}</span>
+                                            <span className={`text-[0.75rem] tracking-wide font-bold`}>{t?.(item.id.toLowerCase() + (item.tab ? "_" + item.tab : "")) || item.label}</span>
                                             <span className={`text-[0.625rem] uppercase tracking-widest font-medium opacity-50`}>{item.sub}</span>
                                         </div>
-                                        {active && <div className="absolute right-4 w-1 h-1 bg-white rounded-full animate-pulse"></div>}
+                                        {active && (item.tab ? panelTab === item.tab : true) && <div className="absolute right-4 w-1 h-1 bg-white rounded-full animate-pulse"></div>}
                                     </button>
                                 );
                             })}
@@ -464,6 +458,7 @@ const AppContent = () => {
         return saved ? JSON.parse(saved) : null;
     });
     const [activePanel, setActivePanel] = useState("Overview");
+    const [panelTab, setPanelTab] = useState("treasury");
     const [toast, setToast] = useState(null);
     const { masterData, setMasterData, isLoading, logs, downloadBackup, logAction, syncStatus } = useMasterData(user);
     const [isListening, setIsListening] = useState(false);
@@ -644,7 +639,7 @@ const AppContent = () => {
                         />
                     )}
                     
-                    {user?.role !== 'client' && <Sidebar activePanel={activePanel} setActivePanel={setActivePanel} user={user} setUser={setUser} isOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} t={t} isDarkMode={isDarkMode} masterData={masterData} />}
+                    {user?.role !== 'client' && <Sidebar activePanel={activePanel} setActivePanel={setActivePanel} panelTab={panelTab} setPanelTab={setPanelTab} user={user} setUser={setUser} isOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} t={t} isDarkMode={isDarkMode} masterData={masterData} />}
                     
                     <main className={`flex-1 flex flex-col min-w-0 h-screen overflow-hidden relative transition-all duration-700 mesh-bg ${user?.role !== 'client' ? 'lg:ml-[320px]' : ''}`}>
                         {/* Header Section - Modern Responsive SaaS Style */}
@@ -710,13 +705,11 @@ const AppContent = () => {
                                         {activePanel === "Pata" && <PataFactoryPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} setActivePanel={setActivePanel} />}
                                         {activePanel === "Outside" && <OutsideWorkPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} setActivePanel={setActivePanel} />}
                                         {activePanel === "Stock" && <InventoryPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} setActivePanel={setActivePanel} logAction={logAction} />}
-                                        {activePanel === "Accounts" && <ExpensePanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} setActivePanel={setActivePanel} />}
+                                        {activePanel === "Accounts" && <ExpensePanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} setActivePanel={setActivePanel} logAction={logAction} onSyncGoogle={handleSyncToGoogleSheets} initialTab={panelTab} />}
                                         {activePanel === "Attendance" && <AttendancePanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} setActivePanel={setActivePanel} />}
-                                        {activePanel === "WorkerSummary" && <WorkerSummary masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} setActivePanel={setActivePanel} />}
-                                        {activePanel === "Reports" && <ReportsPanel masterData={masterData} t={t} user={user} setActivePanel={setActivePanel} logAction={logAction} showNotify={showNotify} onSyncGoogle={handleSyncToGoogleSheets} />}
                                         { activePanel === "Settings" && <SettingsPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} syncStatus={syncStatus} user={user} t={t} setActivePanel={setActivePanel} logs={logs} downloadBackup={downloadBackup} />}
-                                        { activePanel === "Security" && <SecurityPanel masterData={masterData} setActivePanel={setActivePanel} syncStatus={syncStatus} logs={logs} downloadBackup={downloadBackup} user={user} t={t} />}
                                         { (activePanel === "Menu" || activePanel === "ClientLedger") && <ClientLedgerPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} setActivePanel={setActivePanel} />}
+                                        { activePanel === "History" && <SecurityPanel masterData={masterData} setActivePanel={setActivePanel} t={t} logs={logs} syncStatus={syncStatus} />}
                                     </>
                                 )}
                                 {activePanel === "Notifications" && (

@@ -24,19 +24,17 @@ const MenuPanel = ({ setActivePanel, user, t, showNotify }) => {
             ]
         },
         {
-            title: "অপারেশন ও মজুরি (OPERATIONS)",
+            title: "অপারেশন ও হিসাব (MANAGEMENT)",
             items: [
                 { id: 'Outside', label: 'বাইরের কাজ', icon: <Truck size={32} />, color: 'bg-black dark:bg-white', desc: 'এক্সটার্নাল ইউনিট প্রোডাকশন' },
                 { id: 'ClientLedger', label: 'Client Hub', icon: <UserCheck size={32} />, color: 'bg-black dark:bg-white', desc: 'বি২বি ক্লায়েন্ট এবং বিলিং হাব' },
-                { id: 'Accounts', label: 'হিসাব', icon: <DollarSign size={32} />, color: 'bg-black dark:bg-white', desc: 'ক্যাশ এবং লেজার বুক' },
-                { id: 'Reports', label: 'রিপোর্ট', icon: <BarChart2 size={32} />, color: 'bg-black dark:bg-white', desc: 'বিভাগীয় রিপোর্ট এবং এনালাইসিস' }
+                { id: 'Accounts', label: 'মাস্টার কন্ট্রোল', icon: <DollarSign size={32} />, color: 'bg-black dark:bg-white', desc: 'হিসাব, রিপোর্ট এবং সিকিউরিটি হাব' }
             ]
         },
         {
             title: "সিস্টেম অডিট (AUDIT)",
             items: [
-                { id: 'Settings', label: 'সেটিংস', icon: <Settings size={32} />, color: 'bg-black dark:bg-white', desc: 'মাস্টার সেটআপ কন্ট্রোল' },
-                { id: 'Security', label: 'নিরাপত্তা', icon: <Shield size={32} />, color: 'bg-black dark:bg-white', desc: 'সিকিউরিটি এবং অডিট ভল্ট' }
+                { id: 'Settings', label: 'সেটিংস', icon: <Settings size={32} />, color: 'bg-black dark:bg-white', desc: 'মাস্টার সেটআপ কন্ট্রোল' }
             ]
         }
     ];
