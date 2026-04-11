@@ -113,8 +113,31 @@ const ExpensePanel = ({
         exp.id === updated.id ? updated : exp,
       ),
     }));
+    logAction(user, 'EXPENSE_EDIT', `Updated expense: ${updated.description} (৳${updated.amount})`);
     setEditExpense(null);
     showNotify("খরচ আপডেট করা হয়েছে!");
+  };
+
+  const handleDeleteExpense = (id) => {
+    if (!isAdmin) return;
+    const exp = (masterData.expenses || []).find(e => e.id === id);
+    setMasterData(prev => ({
+      ...prev,
+      expenses: (prev.expenses || []).filter(e => e.id !== id)
+    }));
+    logAction(user, 'EXPENSE_DELETE', `Deleted expense: ${exp?.description} (৳${exp?.amount})`);
+    showNotify("খরচটি মুছে ফেলা হয়েছে!");
+  };
+
+  const handleDeleteCash = (id) => {
+    if (!isAdmin) return;
+    const cash = (masterData.cashEntries || []).find(c => c.id === id);
+    setMasterData(prev => ({
+      ...prev,
+      cashEntries: (prev.cashEntries || []).filter(c => c.id !== id)
+    }));
+    logAction(user, 'CASH_DELETE', `Deleted cash entry: ${cash?.description} (৳${cash?.amount})`);
+    showNotify("ক্যাশ এন্টি মুছে ফেলা হয়েছে!");
   };
 
   const handleAddExpense = (e) => {
@@ -131,6 +154,7 @@ const ExpensePanel = ({
       ...prev,
       expenses: [newExp, ...(prev.expenses || [])],
     }));
+    logAction(user, 'EXPENSE_ADD', `Added expense: ${newExp.description} (৳${newExp.amount})`);
     f.reset();
     setActiveTab("daily");
     showNotify("নতুন খরচ সফলভাবে যোগ করা হয়েছে!");
@@ -149,106 +173,120 @@ const ExpensePanel = ({
       ...prev,
       cashEntries: [newCash, ...(prev.cashEntries || [])],
     }));
+    logAction(user, 'CASH_ADD', `Added cash injection: ${newCash.description} (৳${newCash.amount})`);
     f.reset();
     setActiveTab("daily");
     showNotify("ক্যাশ-ইন সফলভাবে যোগ করা হয়েছে!");
   };
 
   const handleReceiveClientPayment = (e) => {
-     e.preventDefault();
-     const f = e.target;
-     const amt = Number(f.amount.value);
-     if (amt <= 0) return;
-     const client = receivePaymentModal;
-     const note = f.note.value;
-     const dt = new Date().toLocaleDateString("en-GB");
+    e.preventDefault();
+    const f = e.target;
+    const amt = Number(f.amount.value);
+    if (amt <= 0) return;
+    const client = receivePaymentModal;
+    const note = f.note.value;
+    const dt = new Date().toLocaleDateString("en-GB");
 
-     const txn = { id: `txn_${Date.now()}_P`, date: dt, client, type: 'PAYMENT', amount: amt, note };
-     const cash = { id: `CASH-${Date.now()}`, date: dt, description: `B2B PAYMENT: ${client} - ${note}`, amount: amt };
+    const txn = { id: `txn_${Date.now()}_P`, date: dt, client, type: 'PAYMENT', amount: amt, note };
+    const cash = { id: `CASH-${Date.now()}`, date: dt, description: `B2B PAYMENT: ${client} - ${note}`, amount: amt };
 
-     setMasterData(prev => ({
-       ...prev,
-       clientTransactions: [txn, ...(prev.clientTransactions || [])],
-       cashEntries: [cash, ...(prev.cashEntries || [])]
-     }));
-     setReceivePaymentModal(null);
-     showNotify(`${client} থেকে ৳${amt.toLocaleString()} পেমেন্ট ফাণ্ডে যুক্ত করা হয়েছে!`, 'success');
+    setMasterData(prev => ({
+      ...prev,
+      clientTransactions: [txn, ...(prev.clientTransactions || [])],
+      cashEntries: [cash, ...(prev.cashEntries || [])]
+    }));
+    logAction(user, 'CLIENT_PAYMENT_RECEIVE', `Received ৳${amt} from ${client}`);
+    setReceivePaymentModal(null);
+    showNotify(`${client} থেকে ৳${amt.toLocaleString()} পেমেন্ট ফাণ্ডে যুক্ত করা হয়েছে!`, 'success');
   };
 
   if (showPrint) {
     return (
-      <div className="min-h-screen bg-white p-6 md:p-8 text-black dark:text-white font-outfit uppercase italic">
-        <style>{`@media print { .no-print { display: none !important; } @page { margin: 15mm; size: A4 portrait; } }`}</style>
-        <div className="max-w-4xl mx-auto">
-          <div className="no-print flex justify-between items-center mb-12 bg-slate-50 p-8 rounded-2xl border-2 border-slate-100">
-            <button 
-              type="button"
-              onClick={() => setShowPrint(false)}
-              className="flex-1 py-4 rounded-xl bg-white border-2 border-black text-black dark:text-white font-black uppercase text-[10px] tracking-widest hover:bg-black hover:text-white transition-all shadow-lg"
-            >
-              বাতিল (Close)
-            </button>
-            <button
-              onClick={() => window.print()}
-              className="px-12 py-5 bg-black text-white font-black uppercase text-[10px] tracking-widest rounded-full shadow-2xl flex items-center gap-3"
-            >
-              <Printer size={16} /> PRINT LEDGER
-            </button>
+      <div className="min-h-screen bg-white p-4 md:p-12 text-black dark:text-white font-outfit uppercase italic animate-fade-in">
+        <style>{`@media print { .no-print { display: none !important; } @page { margin: 10mm; size: A4 portrait; } }`}</style>
+        <div className="max-w-4xl mx-auto space-y-12">
+          <div className="no-print flex flex-col md:flex-row justify-between items-center gap-6 bg-slate-50 p-6 md:p-10 rounded-[2rem] border-2 border-slate-100 shadow-xl">
+             <div className="flex flex-col items-center md:items-start">
+                 <h2 className="text-2xl font-black italic">REPORT HUB</h2>
+                 <p className="text-[10px] font-bold opacity-40">Ready for daily audit sequence</p>
+             </div>
+             <div className="flex gap-4 w-full md:w-auto">
+                <button 
+                type="button"
+                onClick={() => setShowPrint(false)}
+                className="flex-1 md:px-8 py-4 rounded-2xl bg-white border-2 border-slate-200 text-black font-black uppercase text-[11px] tracking-widest hover:border-black transition-all"
+                >
+                BATIL
+                </button>
+                <button
+                onClick={() => window.print()}
+                className="flex-[2] md:px-12 py-4 bg-slate-950 text-white font-black uppercase text-[11px] tracking-widest rounded-2xl shadow-2xl flex items-center justify-center gap-3 hover:scale-105 active:scale-95 transition-all"
+                >
+                <Printer size={18} /> PRINT NOW
+                </button>
+             </div>
           </div>
 
-          <div className="border-[6px] border-black p-12 md:p-20 rounded-3xl relative overflow-hidden bg-white">
-            <div className="flex justify-between items-start border-b-[6px] border-black pb-10 mb-10">
-              <div>
-                <h1 className="text-3xl font-black italic tracking-tighter leading-none mb-2">
-                  NRZO0NE CASH
-                </h1>
-                <p className="text-[10px] font-black uppercase tracking-[0.5em] text-black dark:text-white dark:text-white">
-                  Official Expense Documentation
-                </p>
+          <div className="border-[10px] border-black p-10 md:p-20 rounded-[3rem] relative overflow-hidden bg-white shadow-3xl">
+            <div className="flex justify-between items-start border-b-[8px] border-black pb-12 mb-12">
+              <div className="space-y-4">
+                <div className="w-16 h-1 bg-blue-600 rounded-full"></div>
+                <div>
+                    <h1 className="text-4xl font-black italic tracking-tighter leading-none mb-3">
+                    NRZOONE ACCOUNTING
+                    </h1>
+                    <p className="text-[11px] font-black uppercase tracking-[0.5em] text-slate-400 leading-none">
+                    Elite Financial Record // Internal Only
+                    </p>
+                </div>
               </div>
               <div className="text-right italic">
-                <p className="text-2xl font-black">{summaryDate}</p>
-                <span className="inline-block bg-black text-white px-4 py-1 rounded-full text-[8px] font-black mt-2">
-                  DAILY AUDIT
+                <p className="text-3xl font-black">{summaryDate}</p>
+                <span className="inline-block bg-black text-white px-5 py-1.5 rounded-full text-[9px] font-black mt-3 shadow-lg">
+                  VERIFIED AUDIT
                 </span>
               </div>
             </div>
 
-            <div className="space-y-6">
+            <div className="space-y-8">
               {filteredExpenses.map((exp, i) => (
                 <div
                   key={i}
-                  className="flex justify-between items-center py-6 border-b border-slate-100"
+                  className="flex justify-between items-end py-8 border-b-2 border-slate-100"
                 >
-                  <div className="space-y-1">
-                    <p className="text-xl font-black leading-none">
+                  <div className="space-y-2">
+                    <p className="text-2xl font-black leading-none uppercase">
                       {exp.description}
                     </p>
-                    <p className="text-[9px] font-black text-black dark:text-white dark:text-white tracking-widest opacity-60">
-                      {exp.category}
+                    <p className="text-[10px] font-bold text-blue-600 tracking-widest uppercase opacity-70">
+                      [{exp.category}] // REF#{exp.id?.slice(-6)}
                     </p>
                   </div>
-                  <p className="text-3xl font-black text-rose-600">
+                  <p className="text-4xl font-black text-black">
                     ৳{exp.amount.toLocaleString()}
                   </p>
                 </div>
               ))}
+              {filteredExpenses.length === 0 && <div className="py-20 text-center opacity-20 text-xs font-black uppercase tracking-[0.4em]">Zero consumption detected</div>}
             </div>
 
-            <div className="mt-16 pt-10 border-t-[6px] border-black flex justify-between items-center">
-              <p className="text-2xl font-black text-black dark:text-white dark:text-white uppercase">
-                Daily Outflow Total
-              </p>
-              <p className="text-3xl font-black text-black">
+            <div className="mt-20 pt-12 border-t-[8px] border-black flex justify-between items-center bg-slate-50 p-10 rounded-3xl">
+              <div>
+                 <p className="text-[11px] font-black uppercase tracking-widest opacity-40">Grand Total Outflow</p>
+                 <p className="text-2xl font-black text-black uppercase">Balance Adjustment</p>
+              </div>
+              <p className="text-5xl font-black text-black">
                 ৳{dailyTotal.toLocaleString()}
               </p>
             </div>
 
-            <div className="mt-24 pt-10 border-t border-slate-100 flex justify-between items-center opacity-20">
-              <div className="w-48 h-px bg-black"></div>
-              <p className="text-[8px] font-black uppercase tracking-widest">
-                Authorized Financial Transcript
-              </p>
+            <div className="mt-24 flex justify-between items-center opacity-40 italic">
+               <div className="space-y-1">
+                  <p className="text-[10px] font-black uppercase tracking-widest">Authorized Signature</p>
+                  <div className="w-48 h-[1px] bg-black"></div>
+               </div>
+               <p className="text-[9px] font-black uppercase tracking-[0.6em]">ELITE ERP V5.2 // FINANCIAL HUB</p>
             </div>
           </div>
         </div>
@@ -257,55 +295,64 @@ const ExpensePanel = ({
   }
 
   return (
-    <div className="space-y-10 pb-32 animate-fade-up px-1 md:px-4">
+    <div className="space-y-8 pb-32 animate-fade-up px-1 md:px-4">
       {/* SaaS Financial HUD */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-        <div className="saas-card !p-5 md:!p-8 flex items-center gap-6 md:gap-8 group transition-all hover:border-emerald-500/30">
-          <div className="w-16 h-16 bg-emerald-500 text-white rounded-2xl flex items-center justify-center shadow-xl shadow-emerald-500/20 group-hover:scale-110 transition-transform">
-            <TrendingUp size={28} />
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8">
+        <div className="saas-card !p-6 md:!p-10 flex flex-col justify-between group h-64 relative overflow-hidden bg-white dark:bg-slate-900 shadow-2xl transition-all hover:-translate-y-2">
+          <div className="absolute top-0 right-0 p-10 opacity-[0.03] group-hover:opacity-[0.08] transition-all">
+             <TrendingUp size={160} />
           </div>
-          <div>
-            <p className="text-3xl font-black tracking-tight text-black dark:text-white dark:text-white leading-none mb-1">৳{currentBalance.toLocaleString()}</p>
-            <p className="text-[10px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest leading-none italic">Available Cash</p>
+          <div className="w-14 h-14 bg-emerald-600 text-white rounded-2xl flex items-center justify-center shadow-xl shadow-emerald-500/20 group-hover:rotate-6 transition-transform">
+            <Wallet size={24} />
           </div>
-        </div>
-        <div className="saas-card !p-5 md:!p-8 flex items-center gap-6 md:gap-8 group transition-all hover:border-rose-500/30">
-          <div className="w-16 h-16 bg-rose-600 text-white rounded-2xl flex items-center justify-center shadow-xl shadow-rose-500/20 group-hover:scale-110 transition-transform">
-            <TrendingDown size={28} />
-          </div>
-          <div>
-            <p className="text-3xl font-black tracking-tight text-black dark:text-white dark:text-white leading-none mb-1">৳{totalExpenses.toLocaleString()}</p>
-            <p className="text-[10px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest leading-none italic">Burn Rate (Total)</p>
+          <div className="relative z-10">
+            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mb-4">NET LIQUIDITY</p>
+            <h2 className="text-4xl font-black tracking-tighter text-black dark:text-white leading-none">৳{currentBalance.toLocaleString()}</h2>
           </div>
         </div>
+
+        <div className="saas-card !p-6 md:!p-10 flex flex-col justify-between group h-64 relative overflow-hidden bg-white dark:bg-slate-900 shadow-2xl transition-all hover:-translate-y-2">
+          <div className="absolute top-0 right-0 p-10 opacity-[0.03] group-hover:opacity-[0.08] transition-all">
+             <TrendingDown size={160} />
+          </div>
+          <div className="w-14 h-14 bg-rose-600 text-white rounded-2xl flex items-center justify-center shadow-xl shadow-rose-500/20 group-hover:rotate-6 transition-transform">
+            <DollarSign size={24} />
+          </div>
+          <div className="relative z-10">
+            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mb-4">TOTAL BURN RATE</p>
+            <h2 className="text-4xl font-black tracking-tighter text-black dark:text-white leading-none">৳{totalExpenses.toLocaleString()}</h2>
+          </div>
+        </div>
+
         <button 
           onClick={() => setShowPrint(true)}
-          className="saas-card !p-5 md:!p-8 flex items-center gap-6 md:gap-8 group transition-all bg-slate-950 text-white hover:bg-black border-none shadow-2xl"
+          className="saas-card !p-6 md:!p-10 flex flex-col justify-between group h-64 relative overflow-hidden bg-slate-950 text-white border-none shadow-2xl transition-all hover:-translate-y-2"
         >
-          <div className="w-16 h-16 bg-white/10 text-white rounded-2xl flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
-            <Printer size={28} />
+          <div className="w-14 h-14 bg-white/10 text-white rounded-2xl flex items-center justify-center shadow-inner group-hover:rotate-6 transition-transform">
+            <Printer size={24} />
           </div>
-          <div className="text-left">
-            <p className="text-2xl font-black tracking-tight leading-none mb-1 uppercase italic">Report</p>
-            <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest leading-none italic italic">Daily Ledger Transcript</p>
+          <div className="text-left relative z-10">
+            <h2 className="text-3xl font-black text-white italic uppercase mb-2">GENERATE AUDIT</h2>
+            <p className="text-[10px] font-black text-white/40 uppercase tracking-[0.4em]">Official Financial Transcript</p>
           </div>
         </button>
       </div>
 
-      {/* Control Bar - SaaS Pill Navigation */}
-      <div className="saas-card !p-4 flex flex-col lg:flex-row items-center justify-between gap-6 mb-10 border-blue-500/10">
+      {/* Control Bar */}
+      <div className="saas-card !p-4 flex flex-col lg:flex-row items-center justify-between gap-6 border-blue-500/10 shadow-xl">
         <div className="pill-nav w-full lg:w-auto overflow-x-auto no-scrollbar">
           {[
             { id: 'daily', label: 'ডেইলি খরচ' },
-            { id: 'new', label: 'টাকা খরচ (Out)' },
-            isAdmin && { id: 'cashIn', label: 'টাকা গ্রহণ (In)' },
-            isAdmin && { id: 'clientLedger', label: 'বকেয়া হিসাব (Receivable)' },
-            { id: 'worker', label: 'শিল্পী বিবরণ' }
+            { id: 'all', label: 'ক্যাশ হিস্ট্রি' },
+            { id: 'new', label: 'টাকা খরচ (-)' },
+            isAdmin && { id: 'cashIn', label: 'টাকা ইন (+)' },
+            isAdmin && { id: 'clientLedger', label: 'বকেয়া হিসাব' },
+            { id: 'worker', label: 'শিল্পী পেমেন্ট' }
           ].filter(Boolean).map(v => (
             <button
               key={v.id}
               onClick={() => setActiveTab(v.id)}
-              className={`pill-tab ${activeTab === v.id ? 'pill-tab-active' : 'text-black dark:text-white dark:text-white hover:text-black dark:text-white dark:hover:text-white'}`}
+              className={`pill-tab ${activeTab === v.id ? 'pill-tab-active' : 'text-slate-400 hover:text-black dark:hover:text-white'}`}
             >
               {v.label}
             </button>
@@ -314,10 +361,10 @@ const ExpensePanel = ({
 
         <div className="flex items-center gap-4 w-full lg:w-auto">
           <div className="relative group flex-1 lg:flex-none">
-            <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-black dark:text-white dark:text-white" />
+            <Search size={16} className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400" />
             <input
-              placeholder="সার্চ খরচ বা কারণ..."
-              className="premium-input !pl-12 !h-12 !text-[10px]"
+              placeholder="SEARCH AUDIT..."
+              className="premium-input !pl-14 !h-14 !text-[11px] !bg-slate-50 dark:!bg-slate-900"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -325,7 +372,7 @@ const ExpensePanel = ({
           {activeTab === 'daily' && (
              <input
                 type="date"
-                className="premium-input !h-12 !w-36 !px-4 !text-[10px] !bg-slate-950 !text-white !border-none"
+                className="premium-input !h-14 !w-44 !px-4 !text-[11px] !bg-slate-950 !text-white !border-none text-center"
                 value={summaryDate}
                 onChange={(e) => setSummaryDate(e.target.value)}
             />
@@ -335,36 +382,42 @@ const ExpensePanel = ({
 
       {activeTab === "new" && (
         <div className="flex justify-center animate-fade-up">
-           <div className="saas-card w-full max-w-2xl !p-12 space-y-10">
-              <div className="text-center space-y-3">
-                  <div className="mx-auto w-16 h-16 bg-rose-600 text-white rounded-2xl flex items-center justify-center shadow-2xl rotate-3 mb-6">
-                    <TrendingDown size={28} />
+           <div className="saas-card w-full max-w-2xl !p-10 md:!p-16 space-y-12">
+              <div className="text-center space-y-4">
+                  <div className="mx-auto w-20 h-20 bg-rose-600 text-white rounded-[2.5rem] flex items-center justify-center shadow-3xl rotate-12 mb-8 animate-bounce">
+                    <TrendingDown size={32} />
                   </div>
-                  <h3 className="text-3xl font-black tracking-tight text-black dark:text-white dark:text-white leading-none italic uppercase italic">টাকা খরচ (Expense)</h3>
-                  <p className="text-[10px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest italic leading-none">Record money going out of the business</p>
+                  <h3 className="text-4xl font-black tracking-tight text-black dark:text-white uppercase italic leading-none">CONSUMPTION AUDIT</h3>
+                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.6em]">Record operational outflow</p>
               </div>
-              <form onSubmit={handleAddExpense} className="space-y-8">
-                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                        <label className="text-[10px] font-bold text-black dark:text-white dark:text-white ml-4 uppercase italic">Category</label>
-                        <select name="category" className="premium-input !h-14 !text-[11px] font-bold" required>
+              <form onSubmit={handleAddExpense} className="space-y-10">
+                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className="space-y-3">
+                        <label className="text-[11px] font-black text-slate-500 ml-5 uppercase italic">Category Node</label>
+                        <select name="category" className="premium-input !h-16 !text-xs font-black uppercase italic bg-slate-50 dark:bg-slate-900" required>
                              {["teaSnacks", "transport", "material", "utilities", "salary", "bonus", "others"].map(c => <option key={c} value={c}>{t(c)}</option>)}
                         </select>
                     </div>
-                    <div className="space-y-2">
-                        <label className="text-[10px] font-bold text-black dark:text-white dark:text-white ml-4 uppercase italic">Date</label>
-                        <input name="date" type="date" defaultValue={new Date().toISOString().split('T')[0]} className="premium-input !h-14 !text-[11px] font-bold !bg-slate-950 !text-white !border-none" required />
+                    <div className="space-y-3">
+                        <label className="text-[11px] font-black text-slate-500 ml-5 uppercase italic">Timeline</label>
+                        <input name="date" type="date" defaultValue={new Date().toISOString().split('T')[0]} className="premium-input !h-16 !text-xs font-black !bg-slate-950 !text-white !border-none text-center" required />
                     </div>
                  </div>
-                 <div className="space-y-2">
-                    <label className="text-[10px] font-bold text-black dark:text-white dark:text-white ml-4 uppercase italic">Description</label>
-                    <input name="description" placeholder="EXPENSE DETAILS..." className="premium-input !h-14 !text-[11px] font-bold italic uppercase" required />
+                 <div className="space-y-3">
+                    <label className="text-[11px] font-black text-slate-500 ml-5 uppercase italic">Memo / Reason</label>
+                    <input name="description" placeholder="ENTER CONSUMPTION DETAILS..." className="premium-input !h-16 !text-xs font-black italic uppercase bg-slate-50 dark:bg-slate-900" required />
                  </div>
-                 <div className="bg-slate-950 p-10 rounded-2xl shadow-2xl text-center">
-                    <label className="text-[11px] font-black text-white/40 uppercase tracking-[0.5em] mb-4 block">NET AMOUNT</label>
-                    <input name="amount" type="number" placeholder="0" className="w-full text-center text-7xl font-black bg-transparent border-none text-white outline-none leading-none h-24" required />
+                 <div className="bg-slate-950 p-12 rounded-[2.5rem] shadow-3xl text-center relative overflow-hidden">
+                    <div className="absolute top-0 right-0 p-8 opacity-5">
+                       <DollarSign size={100} className="text-white" />
+                    </div>
+                    <label className="text-[12px] font-black text-white/30 uppercase tracking-[0.8em] mb-6 block">LIQUID AMOUNT</label>
+                    <div className="flex items-center justify-center text-white">
+                        <span className="text-4xl font-black text-white/20 mr-4">৳</span>
+                        <input name="amount" type="number" placeholder="0" className="w-full text-center text-8xl font-black bg-transparent border-none text-white outline-none leading-none h-24" required />
+                    </div>
                  </div>
-                 <button type="submit" className="w-full py-7 bg-rose-600 text-white rounded-2xl shadow-2xl border-b-[10px] border-rose-900 hover:scale-[1.02] active:scale-95 transition-all text-xl font-black uppercase italic italic">Confirm Transaction</button>
+                 <button type="submit" className="w-full py-8 bg-rose-600 text-white rounded-[2rem] shadow-3xl border-b-[8px] border-rose-900 hover:scale-[1.03] active:scale-95 transition-all text-2xl font-black uppercase italic tracking-wider">Execute Transaction</button>
               </form>
            </div>
         </div>
@@ -372,224 +425,302 @@ const ExpensePanel = ({
 
       {activeTab === "cashIn" && (
         <div className="flex justify-center animate-fade-up">
-           <div className="saas-card w-full max-w-2xl !p-12 space-y-10">
-              <div className="text-center space-y-3">
-                  <div className="mx-auto w-16 h-16 bg-emerald-600 text-white rounded-2xl flex items-center justify-center shadow-2xl -rotate-3 mb-6">
-                    <TrendingUp size={28} />
+           <div className="saas-card w-full max-w-2xl !p-10 md:!p-16 space-y-12">
+              <div className="text-center space-y-4">
+                  <div className="mx-auto w-20 h-20 bg-emerald-600 text-white rounded-[2.5rem] flex items-center justify-center shadow-3xl -rotate-12 mb-8 animate-bounce">
+                    <TrendingUp size={32} />
                   </div>
-                  <h3 className="text-3xl font-black tracking-tight text-black dark:text-white dark:text-white leading-none italic uppercase italic">টাকা আসা (Cash In)</h3>
-                  <p className="text-[10px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest italic leading-none">Record money coming into the business</p>
+                  <h3 className="text-4xl font-black tracking-tight text-black dark:text-white uppercase italic leading-none">CASH INJECTION</h3>
+                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.6em]">Record capital inflow</p>
               </div>
-              <form onSubmit={handleAddCash} className="space-y-8">
-                 <div className="space-y-2">
-                    <label className="text-[10px] font-bold text-black dark:text-white dark:text-white ml-4 uppercase italic">Date</label>
-                    <input name="date" type="date" defaultValue={new Date().toISOString().split('T')[0]} className="premium-input !h-14 !text-[11px] font-bold !bg-slate-950 !text-white !border-none" required />
+              <form onSubmit={handleAddCash} className="space-y-10">
+                 <div className="space-y-3">
+                    <label className="text-[11px] font-black text-slate-500 ml-5 uppercase italic">Deposit Timeline</label>
+                    <input name="date" type="date" defaultValue={new Date().toISOString().split('T')[0]} className="premium-input !h-16 !text-xs font-black !bg-slate-950 !text-white !border-none text-center" required />
                  </div>
-                 <div className="space-y-2">
-                    <label className="text-[10px] font-bold text-black dark:text-white dark:text-white ml-4 uppercase italic">Source / Details</label>
-                    <input name="description" placeholder="CASH SOURCE DETAILS..." className="premium-input !h-14 !text-[11px] font-bold italic uppercase" required />
+                 <div className="space-y-3">
+                    <label className="text-[11px] font-black text-slate-500 ml-5 uppercase italic">Source Entity / Note</label>
+                    <input name="description" placeholder="ENTER SOURCE DETAILS..." className="premium-input !h-16 !text-xs font-black italic uppercase bg-slate-50 dark:bg-slate-900" required />
                  </div>
-                 <div className="bg-slate-950 p-10 rounded-2xl shadow-2xl text-center">
-                    <label className="text-[11px] font-black text-white/40 uppercase tracking-[0.5em] mb-4 block">RECEIVE AMOUNT</label>
-                    <input name="amount" type="number" placeholder="0" className="w-full text-center text-7xl font-black bg-transparent border-none text-white outline-none leading-none h-24" required />
+                 <div className="bg-slate-950 p-12 rounded-[2.5rem] shadow-3xl text-center relative overflow-hidden">
+                    <div className="absolute top-0 left-0 p-8 opacity-5">
+                       <TrendingUp size={100} className="text-white" />
+                    </div>
+                    <label className="text-[12px] font-black text-white/30 uppercase tracking-[0.8em] mb-6 block">INJECTION AMOUNT</label>
+                    <div className="flex items-center justify-center text-white">
+                        <span className="text-4xl font-black text-white/20 mr-4">৳</span>
+                        <input name="amount" type="number" placeholder="0" className="w-full text-center text-8xl font-black bg-transparent border-none text-white outline-none leading-none h-24" required />
+                    </div>
                  </div>
-                 <button type="submit" className="w-full py-7 bg-emerald-600 text-white rounded-2xl shadow-2xl border-b-[10px] border-emerald-900 hover:scale-[1.02] active:scale-95 transition-all text-xl font-black uppercase italic italic">Receive Cash</button>
+                 <button type="submit" className="w-full py-8 bg-emerald-600 text-white rounded-[2rem] shadow-3xl border-b-[8px] border-emerald-900 hover:scale-[1.03] active:scale-95 transition-all text-2xl font-black uppercase italic tracking-wider">Authorize Deposit</button>
               </form>
            </div>
         </div>
       )}
 
       {activeTab === "daily" && (
-        <div className="space-y-8 animate-fade-up">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
             {filteredExpenses.length === 0 ? (
-              <div className="col-span-full h-80 flex flex-col items-center justify-center saas-card border-2 border-dashed border-slate-200">
-                <TrendingDown size={64} strokeWidth={1} className="text-slate-200 mb-6" />
-                <p className="text-[11px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest italic">No Consumption Records Audited For This Date</p>
-              </div>
-            ) : (
-              filteredExpenses.map((exp, idx) => (
-                <div key={exp.id || idx} className="saas-card !p-8 flex flex-col justify-between h-80 group hover:border-slate-900 transition-all relative overflow-hidden">
-                  <div className="absolute top-0 right-0 p-10 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity">
-                    <DollarSign size={160} className="text-black dark:text-white dark:text-white" />
-                  </div>
-                  <div className="relative z-10">
-                    <div className="flex justify-between items-start mb-6">
-                      <span className="px-3 py-1 bg-slate-100 dark:bg-slate-800 rounded-lg text-[9px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest border border-slate-200 dark:border-slate-700">
-                        {exp.category}
-                      </span>
-                      <button onClick={() => setEditExpense(exp)} className="w-10 h-10 bg-slate-50 dark:bg-slate-800 rounded-xl flex items-center justify-center text-black dark:text-white dark:text-white hover:bg-slate-950 hover:text-white transition-all shadow-sm">
-                        <Edit2 size={14} />
-                      </button>
-                    </div>
-                    <h5 className="text-2xl font-black tracking-tight text-black dark:text-white dark:text-white uppercase leading-tight italic mb-2">
-                      {exp.description}
-                    </h5>
-                    <p className="text-[10px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest flex items-center gap-2 italic">
-                      <Calendar size={12} /> {exp.date}
-                    </p>
-                  </div>
-                  <div className="relative z-10 flex justify-between items-end">
-                    <p className="text-4xl font-black text-black dark:text-white dark:text-white italic">
-                      ৳{exp.amount.toLocaleString()}
-                    </p>
-                    <div className="w-10 h-1 bg-slate-200 dark:bg-slate-800 rounded-full"></div>
-                  </div>
+                <div className="col-span-full py-32 flex flex-col items-center justify-center saas-card border-2 border-dashed border-slate-200 dark:border-slate-800 opacity-60">
+                <Archive size={64} strokeWidth={1} className="text-slate-300 mb-8" />
+                <p className="text-[12px] font-black text-slate-400 uppercase tracking-[0.5em] italic">No active audit records found</p>
                 </div>
-              ))
+            ) : (
+                filteredExpenses.map((exp, idx) => (
+                <div key={exp.id || idx} className="saas-card !p-8 flex flex-col justify-between h-80 group hover:border-slate-950 dark:hover:border-white transition-all relative overflow-hidden shadow-xl animate-fade-up" style={{ animationDelay: `${idx * 100}ms` }}>
+                    <div className="absolute top-0 right-0 p-10 opacity-[0.03] group-hover:opacity-[0.07] transition-opacity">
+                    <DollarSign size={160} />
+                    </div>
+                    <div className="relative z-10 flex flex-col flex-1">
+                    <div className="flex justify-between items-start mb-8 text-black dark:text-white">
+                        <span className="px-4 py-1.5 bg-slate-950 text-white rounded-xl text-[9px] font-black uppercase tracking-widest shadow-lg">
+                        {exp.category}
+                        </span>
+                        <div className="flex gap-2">
+                             <button onClick={() => setEditExpense(exp)} className="w-10 h-10 bg-white dark:bg-slate-800 rounded-xl flex items-center justify-center shadow-lg border border-slate-100 dark:border-slate-700 hover:bg-slate-950 hover:text-white transition-all">
+                                <Edit2 size={14} />
+                            </button>
+                            {isAdmin && (
+                                <button onClick={() => handleDeleteExpense(exp.id)} className="w-10 h-10 bg-white dark:bg-slate-800 rounded-xl flex items-center justify-center shadow-lg border border-slate-100 dark:border-slate-700 hover:bg-rose-600 hover:text-white transition-all">
+                                    <Trash2 size={14} />
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                    <h5 className="text-2xl font-black tracking-tight text-slate-950 dark:text-white uppercase leading-[1.1] italic mb-4">
+                        {exp.description}
+                    </h5>
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-3">
+                        <Calendar size={13} className="text-blue-600" /> {exp.date}
+                    </p>
+                    </div>
+                    <div className="relative z-10 mt-auto flex justify-between items-center text-black dark:text-white">
+                    <p className="text-4xl font-black italic tracking-tighter">
+                        ৳{exp.amount.toLocaleString()}
+                    </p>
+                    <ArrowUpRight size={24} className="opacity-10 group-hover:opacity-100 transition-opacity text-blue-600" />
+                    </div>
+                </div>
+                ))
             )}
-          </div>
         </div>
       )}
 
+      {activeTab === "all" && (
+         <div className="saas-card !p-0 overflow-hidden shadow-2xl animate-fade-up border-emerald-500/10">
+             <div className="p-8 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-emerald-50/10">
+                 <div>
+                    <h3 className="text-xl font-black italic uppercase text-emerald-600">Cash Injection History</h3>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none mt-1">Audit of capital inflow events</p>
+                 </div>
+                 <div className="w-10 h-10 bg-emerald-600 text-white rounded-xl flex items-center justify-center shadow-lg">
+                    <TrendingUp size={18} />
+                 </div>
+             </div>
+             <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse">
+                    <thead>
+                        <tr className="text-[10px] font-black uppercase text-slate-400 tracking-widest border-b border-slate-100 dark:border-slate-800">
+                            <th className="px-8 py-6">Timeline</th>
+                            <th className="px-8 py-6">Legal Entity / Source</th>
+                            <th className="px-8 py-6 text-right">Inflow Amount</th>
+                            {isAdmin && <th className="px-8 py-6 text-center">Action</th>}
+                        </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-50 dark:divide-slate-800">
+                        {cashEntries.map((cash, i) => (
+                            <tr key={cash.id || i} className="group hover:bg-emerald-50/5 transition-colors">
+                                <td className="px-8 py-6 text-[11px] font-black uppercase italic">{cash.date}</td>
+                                <td className="px-8 py-6 text-sm font-bold uppercase text-slate-950 dark:text-white">{cash.description}</td>
+                                <td className="px-8 py-6 text-right font-black text-xl text-emerald-600 italic">৳ {cash.amount.toLocaleString()}</td>
+                                {isAdmin && (
+                                    <td className="px-8 py-6 text-center">
+                                         <button onClick={() => handleDeleteCash(cash.id)} className="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-slate-300 hover:bg-rose-600 hover:text-white transition-all shadow-sm mx-auto">
+                                            <Trash2 size={16} />
+                                        </button>
+                                    </td>
+                                )}
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+                {cashEntries.length === 0 && <div className="py-24 text-center italic opacity-30 text-xs font-black uppercase tracking-widest">No capital injection logs audited</div>}
+             </div>
+         </div>
+      )}
+
        {activeTab === "clientLedger" && (
-        <div className="space-y-8 animate-fade-up">
-           {!selectedClientLedger ? (
-             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+         <div className="space-y-12 animate-fade-up">
+            {!selectedClientLedger ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                 {clientBalances.map((item, idx) => (
-                    <div key={idx} className="saas-card bg-white dark:bg-slate-900 shadow-sm flex flex-col justify-between group h-[300px] border-l-4 border-l-blue-600 hover:border-l-rose-500 hover:border-slate-300 dark:hover:border-slate-700 transition-all cursor-pointer" onClick={() => setSelectedClientLedger(item.client)}>
-                        <div className="flex justify-between items-start mb-6">
+                    <div key={idx} className="saas-card bg-white dark:bg-slate-900 shadow-2xl flex flex-col justify-between group h-[320px] border-l-[12px] border-l-slate-950 hover:border-l-blue-600 transition-all cursor-pointer relative overflow-hidden" onClick={() => setSelectedClientLedger(item.client)}>
+                        <div className="absolute -top-10 -right-10 p-20 opacity-[0.02] group-hover:opacity-[0.05] transition-opacity">
+                             <UserCheck size={200} />
+                        </div>
+                        <div className="flex justify-between items-start mb-8 relative z-10">
                           <div>
-                             <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-2">B2B Client</p>
-                             <h3 className="text-xl font-bold tracking-tight text-black dark:text-white leading-tight uppercase max-w-[200px]">{item.client}</h3>
+                             <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-3 italic underline decoration-blue-500/50">Contract Entity</p>
+                             <h3 className="text-3xl font-black italic tracking-tighter text-slate-950 dark:text-white leading-[1] uppercase max-w-[200px]">{item.client}</h3>
                           </div>
-                          <div className="w-10 h-10 bg-slate-50 dark:bg-slate-800 flex items-center justify-center rounded-xl shadow-inner group-hover:scale-110 transition-transform">
-                            <UserCheck size={18} />
+                          <div className="w-14 h-14 bg-slate-50 dark:bg-slate-800 flex items-center justify-center rounded-2xl shadow-inner group-hover:scale-110 transition-transform">
+                            <Users size={24} />
                           </div>
                         </div>
                         
-                        <div className="grid grid-cols-2 gap-4 pb-4 border-b border-slate-100 dark:border-slate-800">
+                        <div className="grid grid-cols-2 gap-6 pb-6 border-b-2 border-slate-50 dark:border-slate-800 relative z-10">
                            <div>
-                              <p className="text-[8px] font-bold uppercase text-slate-400 tracking-widest">Total Billed</p>
-                              <p className="font-bold text-black dark:text-white">৳ {item.billed.toLocaleString()}</p>
+                              <p className="text-[9px] font-black uppercase text-slate-400 tracking-[0.2em] mb-1">Total Billed</p>
+                              <p className="font-black text-xl text-slate-950 dark:text-white tabular-nums">৳ {item.billed.toLocaleString()}</p>
                            </div>
                            <div className="text-right">
-                              <p className="text-[8px] font-bold uppercase text-slate-400 tracking-widest">Total Paid</p>
-                              <p className="font-bold text-emerald-500">৳ {item.paid.toLocaleString()}</p>
+                              <p className="text-[9px] font-black uppercase text-slate-400 tracking-[0.2em] mb-1">Settled Fund</p>
+                              <p className="font-black text-xl text-emerald-600 tabular-nums">৳ {item.paid.toLocaleString()}</p>
                            </div>
                         </div>
   
-                        <div className="flex justify-between items-center mt-4">
+                        <div className="flex justify-between items-center mt-6 relative z-10">
                            <div>
-                              <p className="text-[9px] font-bold uppercase text-rose-500 tracking-widest mb-1">DUE BALANCE</p>
-                              <p className="font-black text-2xl text-rose-600 leading-none tracking-tighter">৳ {item.due.toLocaleString()}</p>
+                              <p className="text-[10px] font-black uppercase text-rose-500 tracking-[0.4em] mb-2 leading-none">REMAINING DUE</p>
+                              <p className="font-black text-4xl text-rose-600 leading-none tracking-tighter italic tabular-nums">৳ {item.due.toLocaleString()}</p>
                            </div>
-                           <div className="flex gap-2">
-                            <button 
-                                onClick={(e) => { e.stopPropagation(); setReceivePaymentModal(item.client); }}
-                                className="bg-emerald-600 text-white px-4 py-2 rounded-lg text-[8px] font-bold uppercase tracking-widest shadow-xl hover:bg-emerald-700 transition-all"
-                            >
-                                Pay
-                            </button>
-                            <button 
-                                className="bg-slate-950 text-white px-4 py-2 rounded-lg text-[8px] font-bold uppercase tracking-widest shadow-xl hover:bg-emerald-700 transition-all"
-                            >
-                                Ledger
-                            </button>
+                           <div className="flex gap-3">
+                             <button 
+                                 onClick={(e) => { e.stopPropagation(); setReceivePaymentModal(item.client); }}
+                                 className="w-14 h-14 bg-emerald-600 text-white rounded-2xl flex items-center justify-center shadow-xl hover:bg-emerald-700 transition-all active:scale-95"
+                                 title="Receive Fund"
+                             >
+                                 <Plus size={24} />
+                             </button>
+                             <button 
+                                 className="w-14 h-14 bg-slate-950 text-white rounded-2xl flex items-center justify-center shadow-xl hover:bg-blue-600 transition-all active:scale-95"
+                                 title="Open Ledger"
+                             >
+                                 <FileText size={22} />
+                             </button>
                            </div>
                         </div>
                     </div>
                 ))}
-             </div>
-           ) : (
-             <div className="saas-card bg-white dark:bg-slate-900 animate-fade-in relative">
+              </div>
+            ) : (
+              <div className="saas-card bg-white dark:bg-slate-900 animate-fade-in relative !p-12 shadow-3xl border-2 border-slate-100 dark:border-slate-800 rounded-[3rem]">
                 <button 
                   onClick={() => setSelectedClientLedger(null)}
-                  className="absolute top-6 right-6 p-2 bg-slate-100 dark:bg-slate-800 rounded-xl hover:bg-slate-950 hover:text-white transition-all"
+                  className="absolute top-10 right-10 w-12 h-12 bg-slate-100 dark:bg-slate-800 rounded-2xl flex items-center justify-center hover:bg-slate-950 hover:text-white transition-all shadow-lg"
                 >
-                  <X size={20} />
+                  <ArrowLeft size={20} />
                 </button>
-                <div className="mb-10">
-                   <h3 className="text-2xl font-black uppercase text-blue-600 mb-1">{selectedClientLedger}</h3>
-                   <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">Complete Transaction History</p>
+                <div className="mb-14 flex items-center gap-6">
+                    <div className="w-20 h-20 bg-blue-600 text-white rounded-3xl flex items-center justify-center shadow-2xl">
+                        <Users size={32} />
+                    </div>
+                    <div>
+                        <h3 className="text-4xl font-black italic tracking-tighter text-slate-950 dark:text-white uppercase leading-none mb-2">{selectedClientLedger}</h3>
+                        <p className="text-[12px] font-black text-slate-400 uppercase tracking-[0.5em] leading-none underline decoration-blue-500/50">Full Audit Sequence Record</p>
+                    </div>
                 </div>
                 
-                <div className="overflow-x-auto">
+                <div className="overflow-x-auto no-scrollbar">
                     <table className="w-full text-left border-collapse">
                         <thead>
-                            <tr className="border-b-2 border-slate-100 dark:border-slate-800">
-                                <th className="py-4 text-[10px] font-black uppercase tracking-widest">Date</th>
-                                <th className="py-4 text-[10px] font-black uppercase tracking-widest">Type</th>
-                                <th className="py-4 text-[10px] font-black uppercase tracking-widest">Note</th>
-                                <th className="py-4 text-right text-[10px] font-black uppercase tracking-widest">Amount</th>
+                            <tr className="text-[11px] font-black uppercase text-slate-400 tracking-[0.3em] border-b-4 border-slate-100 dark:border-slate-800">
+                                <th className="py-8 px-4">Timeline</th>
+                                <th className="py-8 px-4">Audit Node</th>
+                                <th className="py-8 px-4">Transaction Memo</th>
+                                <th className="py-8 px-4 text-right">Debit / Credit Amount</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-slate-50 dark:divide-slate-800">
+                        <tbody className="divide-y-2 divide-slate-50 dark:divide-slate-800">
                             {(masterData.clientTransactions || [])
                                 .filter(t => t.client === selectedClientLedger)
                                 .sort((a,b) => new Date(b.date?.split('/').reverse().join('-')) - new Date(a.date?.split('/').reverse().join('-')))
                                 .map((t, idx) => (
-                                    <tr key={idx} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                                        <td className="py-4 text-[11px] font-bold uppercase">{t.date}</td>
-                                        <td className="py-4 text-[11px] font-bold uppercase">
-                                            <span className={`px-2 py-0.5 rounded ${t.type === 'BILL' ? 'bg-rose-50 text-rose-600 border border-rose-100' : 'bg-emerald-50 text-emerald-600 border border-emerald-100'}`}>
+                                    <tr key={idx} className="group hover:bg-slate-50 dark:hover:bg-slate-900/40 transition-colors">
+                                        <td className="py-8 px-4 text-[12px] font-black uppercase italic tabular-nums">{t.date}</td>
+                                        <td className="py-8 px-4">
+                                            <span className={`px-4 py-1.5 rounded-full text-[10px] font-black tracking-widest uppercase shadow-sm ${t.type === 'BILL' ? 'bg-rose-600 text-white' : 'bg-emerald-600 text-white'}`}>
                                                 {t.type}
                                             </span>
                                         </td>
-                                        <td className="py-4 text-[10px] font-medium uppercase text-slate-500 max-w-xs truncate">{t.note}</td>
-                                        <td className={`py-4 text-right font-black ${t.type === 'BILL' ? 'text-rose-600' : 'text-emerald-600'}`}>
-                                            ৳ {t.amount?.toLocaleString()}
+                                        <td className="py-8 px-4 text-[11px] font-bold uppercase text-slate-500 max-w-sm truncate italic opacity-80">{t.note}</td>
+                                        <td className={`py-8 px-4 text-right font-black text-2xl tabular-nums ${t.type === 'BILL' ? 'text-rose-600' : 'text-emerald-600 italic'}`}>
+                                            {t.type === 'BILL' ? '-' : '+'} ৳ {t.amount?.toLocaleString()}
                                         </td>
                                     </tr>
                             ))}
                         </tbody>
                     </table>
                 </div>
-             </div>
-           )}
-        </div>
+              </div>
+            )}
+         </div>
       )}
 
-      {activeTab === "worker" && <WorkerSummary masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} />}
+      {activeTab === "worker" && (
+          <div className="animate-fade-up">
+              <WorkerSummary masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} />
+          </div>
+      )}
 
+      {/* Global Secondary Return Action */}
       <div className="flex justify-center pt-24 pb-12">
         <button
           onClick={() => setActivePanel("Overview")}
-          className="group relative flex items-center gap-10 bg-white dark:bg-slate-900 px-12 md:px-16 py-7 md:py-9 rounded-full border-4 border-slate-100 dark:border-slate-800 shadow-3xl hover:border-slate-950 transition-all duration-500"
+          className="group relative flex items-center gap-10 bg-white dark:bg-slate-900 px-12 md:px-20 py-8 rounded-[3rem] border-4 border-slate-100 dark:border-slate-800 shadow-3xl hover:border-slate-950 dark:hover:border-white transition-all duration-700"
         >
-          <div className="p-4 bg-slate-950 text-white rounded-2xl group-hover:rotate-[-15deg] transition-transform shadow-xl">
+          <div className="w-14 h-14 bg-slate-950 dark:bg-white text-white dark:text-slate-950 rounded-2xl group-hover:rotate-12 transition-transform shadow-2xl flex items-center justify-center">
             <ArrowLeft size={24} strokeWidth={4} />
           </div>
-          <span className="text-xl font-black uppercase italic tracking-[0.2em] text-black dark:text-white dark:text-white">
-            Return to Core
+          <span className="text-2xl font-black uppercase italic tracking-[0.3em] text-slate-950 dark:text-white">
+            MASTER HUD
           </span>
         </button>
       </div>
 
       {editExpense && (
-        <div className="fixed inset-0 bg-slate-950/40 backdrop-blur-3xl z-[300] flex items-center justify-center p-4">
-           <div className="bg-white w-full max-w-lg rounded-3xl border-4 border-slate-50 shadow-3xl p-8 md:p-12 space-y-12 animate-fade-up text-black dark:text-white italic italic">
-                <div className="text-center space-y-3">
-                   <div className="mx-auto w-16 h-16 bg-slate-950 text-white rounded-2xl flex items-center justify-center shadow-2xl rotate-3 mb-6">
-                    <Edit2 size={28} />
+        <div className="fixed inset-0 bg-slate-950/60 backdrop-blur-2xl z-[400] flex items-center justify-center p-4 overflow-y-auto">
+           <div className="bg-white dark:bg-slate-900 w-full max-w-lg rounded-[3rem] p-10 md:p-16 space-y-12 animate-fade-up shadow-3xl relative">
+                <button onClick={() => setEditExpense(null)} className="absolute top-10 right-10 text-slate-400 hover:text-black dark:hover:text-white transition-colors">
+                    <X size={24} />
+                </button>
+                <div className="text-center space-y-4">
+                   <div className="mx-auto w-20 h-20 bg-slate-950 dark:bg-white text-white dark:text-slate-950 rounded-[2rem] flex items-center justify-center shadow-3xl rotate-12 mb-8">
+                    <Edit2 size={32} />
                   </div>
-                  <h3 className="text-3xl font-black uppercase italic leading-none">Modify Record</h3>
-                  <p className="text-[10px] font-bold text-black dark:text-white dark:text-white uppercase tracking-[0.4em]">Audit Trail Correction</p>
+                  <h3 className="text-3xl font-black uppercase italic leading-none text-slate-950 dark:text-white">REVISE AUDIT</h3>
+                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.6em] leading-none">Internal Ledger Adjustment</p>
                 </div>
-                <form onSubmit={handleUpdateExpense} className="space-y-8">
-                   <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <label className="text-[10px] font-bold text-black dark:text-white dark:text-white ml-4 uppercase tracking-widest italic">Date</label>
-                        <input name="date" type="date" defaultValue={editExpense.date} className="premium-input !h-14 font-black !bg-slate-950 text-white border-none" required />
+                <form onSubmit={handleUpdateExpense} className="space-y-10">
+                   <div className="grid grid-cols-2 gap-8">
+                      <div className="space-y-3">
+                        <label className="text-[11px] font-black text-slate-500 ml-5 uppercase italic tracking-widest">Timeline</label>
+                        <input name="date" type="date" defaultValue={editExpense.date} className="premium-input !h-16 font-black !bg-slate-950 text-white border-none text-center" required />
                       </div>
-                      <div className="space-y-2">
-                        <label className="text-[10px] font-bold text-black dark:text-white dark:text-white ml-4 uppercase tracking-widest italic">Category</label>
-                        <select name="category" defaultValue={editExpense.category} className="premium-input !h-14 font-black uppercase italic !bg-slate-50 border-slate-100" required>
+                      <div className="space-y-3">
+                        <label className="text-[11px] font-black text-slate-500 ml-5 uppercase italic tracking-widest">Category</label>
+                        <select name="category" defaultValue={editExpense.category} className="premium-input !h-16 font-black uppercase italic bg-slate-50 dark:bg-slate-900" required>
                              {["teaSnacks", "transport", "material", "utilities", "salary", "bonus", "others"].map(c => <option key={c} value={c}>{t(c)}</option>)}
                         </select>
                       </div>
                    </div>
-                   <div className="space-y-2">
-                      <label className="text-[10px] font-bold text-black dark:text-white dark:text-white ml-4 uppercase tracking-widest italic">Description</label>
-                      <input name="description" defaultValue={editExpense.description} className="premium-input !h-14 font-black uppercase italic !bg-slate-50 border-slate-100" required />
+                   <div className="space-y-3">
+                      <label className="text-[11px] font-black text-slate-500 ml-5 uppercase italic tracking-widest">Audit Memo</label>
+                      <input name="description" defaultValue={editExpense.description} className="premium-input !h-16 font-black uppercase italic bg-slate-50 dark:bg-slate-900" required />
                    </div>
-                   <div className="bg-slate-950 p-10 rounded-2xl shadow-2xl text-center">
-                    <label className="text-[11px] font-black text-white/40 uppercase tracking-[0.5em] mb-4 block">ADJUSTED AMOUNT</label>
-                    <input name="amount" type="number" defaultValue={editExpense.amount} className="w-full text-center text-7xl font-black bg-transparent border-none text-white outline-none leading-none h-24" required />
+                   <div className="bg-slate-950 p-12 rounded-[2.5rem] shadow-3xl text-center relative overflow-hidden">
+                    <div className="absolute top-0 right-0 p-8 opacity-5">
+                       <DollarSign size={100} className="text-white" />
+                    </div>
+                    <label className="text-[12px] font-black text-white/30 uppercase tracking-[0.8em] mb-6 block">ADJUSTED LIQUIDITY</label>
+                    <div className="flex items-center justify-center text-white">
+                        <span className="text-3xl font-black text-white/20 mr-4">৳</span>
+                        <input name="amount" type="number" defaultValue={editExpense.amount} className="w-full text-center text-8xl font-black bg-transparent border-none text-white outline-none leading-none h-24" required />
+                    </div>
                   </div>
                    <div className="flex gap-4">
-                      <button type="button" onClick={() => setEditExpense(null)} className="flex-1 py-6 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] bg-white border-2 border-black text-black dark:text-white hover:bg-black hover:text-white transition-all shadow-lg">বাতিল (Cancel)</button>
-                      <button type="submit" className="flex-[2] py-6 rounded-full font-black text-[10px] uppercase tracking-[0.2em] bg-blue-600 text-white shadow-2xl border-b-[10px] border-blue-900 transition-all active:scale-95">Update Ledger</button>
+                      <button type="button" onClick={() => setEditExpense(null)} className="flex-1 py-6 rounded-2xl font-black text-[12px] uppercase tracking-[0.2em] bg-white border-2 border-slate-100 text-slate-400 hover:text-black hover:border-black transition-all">ABORT</button>
+                      <button type="submit" className="flex-[2] py-6 rounded-[2rem] font-black text-[12px] uppercase tracking-[0.2em] bg-blue-600 text-white shadow-2xl border-b-[8px] border-blue-900 transition-all active:scale-95">COMMIT REVISION</button>
                    </div>
                 </form>
            </div>
@@ -597,30 +728,39 @@ const ExpensePanel = ({
       )}
 
       {receivePaymentModal && (
-        <div className="fixed inset-0 bg-slate-950/40 backdrop-blur-sm z-[300] flex items-center justify-center p-4">
-           <div className="saas-card bg-white dark:bg-slate-900 w-full max-w-lg rounded-2xl shadow-2xl p-10 animate-fade-up">
-                <div className="text-center space-y-3 mb-8">
-                   <div className="mx-auto w-16 h-16 bg-emerald-600 text-white rounded-2xl flex items-center justify-center shadow-2xl rotate-3 mb-4">
-                    <Wallet size={28} />
+        <div className="fixed inset-0 bg-slate-950/60 backdrop-blur-2xl z-[400] flex items-center justify-center p-4">
+           <div className="saas-card bg-white dark:bg-slate-900 w-full max-w-lg rounded-[3rem] shadow-3xl p-12 md:p-16 animate-fade-up relative">
+                <button onClick={() => setReceivePaymentModal(null)} className="absolute top-10 right-10 text-slate-400 hover:text-black dark:hover:text-white transition-colors">
+                    <X size={24} />
+                </button>
+                <div className="text-center space-y-4 mb-12">
+                   <div className="mx-auto w-24 h-24 bg-emerald-600 text-white rounded-[2.5rem] flex items-center justify-center shadow-3xl rotate-12 mb-8 animate-pulse">
+                    <Wallet size={36} />
                   </div>
-                  <h3 className="text-2xl font-black uppercase text-black dark:text-white leading-none">Receive Payment</h3>
-                  <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Deposit to Main Balance</p>
-                  <p className="bg-slate-100 dark:bg-slate-800 text-black dark:text-white py-2 px-4 rounded-full text-xs font-bold uppercase inline-block shadow-inner">
-                     From: <span className="text-blue-600">{receivePaymentModal}</span>
-                  </p>
+                  <h3 className="text-3xl font-black uppercase italic leading-none text-slate-950 dark:text-white">RECEIVE B2B FUND</h3>
+                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.6em] leading-none mb-6">Deposit Authorization Sequence</p>
+                  <div className="inline-block bg-blue-600/10 text-blue-600 py-3 px-8 rounded-full border border-blue-600/20 text-xs font-black uppercase tracking-widest shadow-sm">
+                     COLLECTING FROM: {receivePaymentModal}
+                  </div>
                 </div>
-                <form onSubmit={handleReceiveClientPayment} className="space-y-6">
-                   <div className="space-y-2">
-                      <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Amount (BDT)</label>
-                      <input name="amount" type="number" placeholder="৳ 0.00" className="premium-input !h-16 text-3xl font-black text-center !bg-slate-50 dark:!bg-slate-800" required autoFocus />
+                <form onSubmit={handleReceiveClientPayment} className="space-y-8">
+                   <div className="bg-slate-950 p-12 rounded-[2.5rem] shadow-3xl text-center relative overflow-hidden">
+                        <div className="absolute top-0 right-0 p-8 opacity-5">
+                        <TrendingUp size={100} className="text-white" />
+                        </div>
+                        <label className="text-[12px] font-black text-white/30 uppercase tracking-[0.8em] mb-6 block">LIQUID DEPOSIT</label>
+                        <div className="flex items-center justify-center text-white">
+                            <span className="text-4xl font-black text-white/20 mr-4">৳</span>
+                            <input name="amount" type="number" placeholder="0" className="w-full text-center text-8xl font-black bg-transparent border-none text-white outline-none leading-none h-24" required autoFocus />
+                        </div>
                    </div>
-                   <div className="space-y-2">
-                      <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Note / Reference</label>
-                      <input name="note" placeholder="E.g. Bank Transfer / Cash" className="premium-input !h-12 uppercase text-sm font-bold" required />
+                   <div className="space-y-3">
+                      <label className="text-[11px] font-black text-slate-500 ml-5 uppercase italic tracking-widest">Transaction Memo</label>
+                      <input name="note" placeholder="E.G. BANK TRANSFER / CASH DEPOSIT" className="premium-input !h-16 uppercase text-xs font-black bg-slate-50 dark:bg-slate-900 text-center" required />
                    </div>
-                   <div className="flex gap-4 pt-4">
-                      <button type="button" onClick={() => setReceivePaymentModal(null)} className="flex-1 py-4 rounded-xl font-bold uppercase text-[10px] tracking-widest hover:bg-slate-50 dark:hover:bg-slate-800 transition-all border border-slate-200 dark:border-slate-800">Cancel</button>
-                      <button type="submit" className="flex-[2] py-4 bg-emerald-600 text-white rounded-xl shadow-xl font-bold uppercase text-[11px] tracking-widest hover:bg-emerald-700 transition-all border-b-4 border-emerald-800 active:scale-95">Confirm Received</button>
+                   <div className="flex gap-4 pt-6">
+                      <button type="button" onClick={() => setReceivePaymentModal(null)} className="flex-1 py-6 rounded-2xl font-black uppercase text-[12px] tracking-widest text-slate-400 hover:text-black transition-all">ABORT</button>
+                      <button type="submit" className="flex-[2] py-6 bg-emerald-600 text-white rounded-[2rem] shadow-3xl font-black uppercase text-[12px] tracking-[0.2em] border-b-[8px] border-emerald-900 active:scale-95 transition-all">AUTHORIZE RECEIPT</button>
                    </div>
                 </form>
            </div>
@@ -628,6 +768,9 @@ const ExpensePanel = ({
       )}
     </div>
   );
+};
+
+export default ExpensePanel;
 };
 
 export default ExpensePanel;

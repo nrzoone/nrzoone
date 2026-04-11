@@ -141,13 +141,23 @@ const CuttingPanel = ({
       note: `CUTTING LOT #${entryData.lotNo} - ${entryData.design}`
     } : null;
 
-    setMasterData((prev) => ({
-      ...prev,
-      cuttingStock: [...newEntries, ...(prev.cuttingStock || [])],
-      rawInventory: rawDeduction ? [rawDeduction, ...(prev.rawInventory || [])] : (prev.rawInventory || [])
-    }));
+    setMasterData((prev) => {
+      const updatedRequests = (prev.productionRequests || []).map(req => {
+        if (req.id === entryData.requestRef) {
+          return { ...req, status: 'In Cutting', lotNo: entryData.lotNo };
+        }
+        return req;
+      });
 
-    logAction(user, 'CUTTING_ENTRY', `Lot #${entryData.lotNo} added. Total items: ${newEntries.length}`);
+      return {
+        ...prev,
+        productionRequests: updatedRequests,
+        cuttingStock: [...newEntries, ...(prev.cuttingStock || [])],
+        rawInventory: rawDeduction ? [rawDeduction, ...(prev.rawInventory || [])] : (prev.rawInventory || [])
+      };
+    });
+
+    logAction(user, 'CUTTING_ENTRY', `Lot #${entryData.lotNo} added. Total items: ${newEntries.length} | B2B Ref: ${entryData.requestRef || 'N/A'}`);
     showNotify("কাটিং রেকর্ড সফলভাবে যোগ করা হয়েছে!");
     
     if (shouldPrint) setPrintSlip(newEntries[0]);
@@ -163,6 +173,7 @@ const CuttingPanel = ({
       totalYards: "",
       date: new Date().toISOString().split("T")[0],
       sizes: [{ size: "", borka: "", hijab: "" }],
+      requestRef: null
     });
   };
 
@@ -256,6 +267,7 @@ const CuttingPanel = ({
       <div className="bg-white dark:bg-slate-900 !p-1.5 flex flex-col lg:flex-row items-center justify-between gap-6 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm mb-6">
         <div className="flex flex-wrap gap-1 w-full lg:w-auto overflow-x-auto no-scrollbar">
           {[
+            { id: "Incoming Orders", label: "ইনকামিং অর্ডার (B2B Incoming)" },
             { id: "Design Registration", label: "ডিজাইন এন্ট্রি (Registration)" },
             { id: "Cutting Queue", label: "কাটিং কিউ (Queue)" },
             { id: "Production Status", label: "প্রোডাকশন স্ট্যাটাস (Stats)" }
@@ -292,6 +304,60 @@ const CuttingPanel = ({
 
       {/* Main Tab Content */}
       <div className="animate-fade-up">
+        {activeTab === "Incoming Orders" && (
+           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {(masterData.productionRequests || [])
+                .filter(r => r.status !== 'In Cutting' && r.status !== 'Approved')
+                .map((req, i) => (
+                  <div key={i} className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl shadow-sm hover:border-blue-500 transition-all flex flex-col group p-6 space-y-6">
+                      <div className="flex justify-between items-start">
+                          <div>
+                              <p className="text-[9px] font-black text-blue-600 uppercase tracking-widest mb-1 italic">B2B INCOMING</p>
+                              <h4 className="text-xl font-black uppercase italic leading-none">{req.design}</h4>
+                          </div>
+                          <div className="text-right">
+                              <p className="text-xs font-black text-slate-400 uppercase">{req.client}</p>
+                              <p className="text-[9px] font-bold text-slate-300 font-mono mt-1">{req.date}</p>
+                          </div>
+                      </div>
+                      
+                      <div className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl space-y-4">
+                          <div className="flex justify-between items-end">
+                              <div>
+                                  <p className="text-[8px] font-black uppercase text-slate-400 mb-1">Total Pieces</p>
+                                  <p className="text-2xl font-black italic">{Number(req.totalBorka || 0) + Number(req.totalHijab || 0)} <span className="text-xs">PCS</span></p>
+                              </div>
+                              <div className="text-right">
+                                  <p className="text-[8px] font-black uppercase text-slate-400 mb-1">Fabric Consumed</p>
+                                  <p className="text-lg font-black italic text-rose-500">{req.fabricGoj} <span className="text-xs">YDS</span></p>
+                              </div>
+                          </div>
+                      </div>
+
+                      <div className="space-y-4 border-t border-slate-100 dark:border-slate-800 pt-6">
+                          <p className="text-[10px] font-bold text-slate-500 line-clamp-2 italic uppercase">Note: {req.note || 'No special requirements listed.'}</p>
+                          <button 
+                            onClick={() => {
+                                setEntryData({
+                                    ...entryData,
+                                    design: req.design,
+                                    client: req.client,
+                                    totalYards: req.fabricGoj,
+                                    sizes: req.sizes || [{ size: "", borka: "", hijab: "" }],
+                                    requestRef: req.id
+                                });
+                                setShowModal(true);
+                            }}
+                            className="w-full py-4 bg-blue-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg hover:bg-blue-700 active:scale-95 transition-all"
+                          >
+                             অর্ডার গ্রহণ ও প্রসেসিং শুরু (START PROCESSING)
+                          </button>
+                      </div>
+                  </div>
+                ))}
+           </div>
+        )}
+
         {activeTab === "Cutting Queue" && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {(masterData.cuttingStock || [])
