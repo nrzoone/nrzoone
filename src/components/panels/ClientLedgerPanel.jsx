@@ -90,32 +90,63 @@ const ClientLedgerPanel = ({ masterData, setMasterData, showNotify, user, setAct
         showNotify(`Material Received: ${entry.qty} ${entry.item}`);
     } 
     else if (showActionModal === 'ORDER') {
+        // Collect sizes information
+        const sizes = (masterData.sizes || []).slice(0, 3).map(sz => ({
+            size: sz,
+            borka: Number(f[`borka_${sz}`]?.value || 0),
+            hijab: Number(f[`hijab_${sz}`]?.value || 0)
+        })).filter(s => s.borka > 0 || s.hijab > 0);
+
+        const totalBorka = sizes.reduce((s, x) => s + x.borka, 0);
+        const totalHijab = sizes.reduce((s, x) => s + x.hijab, 0);
+        const fabricGoj = Number(f.fabricGoj.value || 0);
+
         const entry = {
             id: `REQ_${timestamp}`,
             date,
             client: selectedClient,
             design: f.design.value,
-            color: f.color.value,
-            qty: Number(f.qty.value),
-            status: 'Pending',
+            fabricGoj,
+            sizes,
+            totalBorka,
+            totalHijab,
+            status: 'Pending Review',
             note: f.note.value
         };
-        setMasterData(prev => ({ ...prev, productionRequests: [entry, ...(prev.productionRequests || [])] }));
-        logAction(user, 'CLIENT_ORDER_PLACE', `${selectedClient} ordered ${entry.qty} Pcs of ${entry.design}`);
-        showNotify(`Order Placed: ${entry.design} (${entry.qty} Pcs)`);
+
+        const fabricDeduction = fabricGoj > 0 ? {
+            id: `RAW_OUT_${timestamp}`,
+            date,
+            item: "ফেব্রিক রোল (Fabric)",
+            client: selectedClient,
+            qty: fabricGoj,
+            type: "out",
+            note: `ADMIN ORDER REQ: ${entry.design}`
+        } : null;
+
+        setMasterData(prev => ({ 
+            ...prev, 
+            productionRequests: [entry, ...(prev.productionRequests || [])],
+            rawInventory: fabricDeduction ? [fabricDeduction, ...(prev.rawInventory || [])] : (prev.rawInventory || [])
+        }));
+        
+        showNotify(`Order Placed: ${entry.design} (${totalBorka + totalHijab} Pcs)`);
     }
     else if (showActionModal === 'DELIVERY') {
-        const qty = Number(f.qty.value);
-        if (qty > clientData.totalReady) return showNotify("Insufficient Stock!", "error");
+        const qtyBorka = Number(f.borka.value || 0);
+        const qtyHijab = Number(f.hijab.value || 0);
+        const qty = Number(f.qty.value || (qtyBorka + qtyHijab));
         
         const entry = {
             id: `DEL_${timestamp}`,
             date,
             client: selectedClient,
             design: f.design.value,
-            color: f.color.value,
+            color: 'MIX',
+            qtyBorka,
+            qtyHijab,
             qty,
-            lotNo: f.lotNo.value,
+            lotNo: 'B2B',
             receiver: f.receiver.value
         };
         
@@ -128,7 +159,7 @@ const ClientLedgerPanel = ({ masterData, setMasterData, showNotify, user, setAct
                 client: selectedClient,
                 type: 'BILL',
                 amount: price * qty,
-                note: `AUTO-BILL: ${entry.design} [LOT:${entry.lotNo}]`
+                note: `ADMIN-BILL: ${entry.design} Dispatch`
             });
         }
 
@@ -137,7 +168,6 @@ const ClientLedgerPanel = ({ masterData, setMasterData, showNotify, user, setAct
             deliveries: [entry, ...(prev.deliveries || [])],
             clientTransactions: [...txns, ...(prev.clientTransactions || [])]
         }));
-        logAction(user, 'CLIENT_DELIVERY', `Dispatched ${qty} Pcs to ${selectedClient}`);
         showNotify(`Delivery Recorded: ${qty} Pcs.`);
     }
     else if (showActionModal === 'FINANCE') {
@@ -432,34 +462,57 @@ const ClientLedgerPanel = ({ masterData, setMasterData, showNotify, user, setAct
                             </>
                         )}
                         {showActionModal === 'ORDER' && (
-                            <>
-                                <div className="space-y-1"><label className="text-[10px] font-black uppercase text-slate-400 ml-1">Design Selection</label><select name="design" className="premium-input !h-14 uppercase text-xs font-black">{(masterData.designs || []).map(d => <option key={d.name}>{d.name}</option>)}</select></div>
+                            <div className="space-y-6">
                                 <div className="grid grid-cols-2 gap-4">
-                                    <div className="space-y-1"><label className="text-[10px] font-black uppercase text-slate-400 ml-1">Color</label><select name="color" className="premium-input !h-14 uppercase text-xs font-black">{(masterData.colors || []).map(c => <option key={c}>{c}</option>)}</select></div>
-                                    <div className="space-y-1"><label className="text-[10px] font-black uppercase text-slate-400 ml-1">Qty (PCS)</label><input name="qty" type="number" placeholder="0" className="premium-input !h-14 font-black" required /></div>
+                                    <div className="space-y-1">
+                                        <label className="text-[10px] font-black uppercase text-slate-400 ml-1">Design</label>
+                                        <select name="design" className="premium-input !h-14 uppercase text-xs font-black">{(masterData.designs || []).map(d => <option key={d.name}>{d.name}</option>)}</select>
+                                    </div>
+                                    <div className="space-y-1">
+                                        <label className="text-[10px] font-black uppercase text-slate-400 ml-1">Fabric Goj (YDS)</label>
+                                        <input name="fabricGoj" type="number" placeholder="0.00" className="premium-input !h-14 font-black bg-slate-100 text-black border-none" required />
+                                    </div>
                                 </div>
-                                <div className="space-y-1"><label className="text-[10px] font-black uppercase text-slate-400 ml-1">Special Instruction</label><input name="note" placeholder="OPTIONAL" className="premium-input !h-14 uppercase text-xs font-black italic" /></div>
-                            </>
+                                <div className="space-y-3 bg-slate-50 dark:bg-slate-800 p-4 rounded-2xl border border-slate-100 dark:border-slate-800">
+                                    <p className="text-[9px] font-black text-slate-400 uppercase italic mb-2 text-center">Size Configuration (Borka + Hijab)</p>
+                                    <div className="grid grid-cols-12 gap-2 items-center mb-2">
+                                        <div className="col-span-4"><p className="text-[8px] font-black text-center text-slate-400">SIZE</p></div>
+                                        <div className="col-span-4"><p className="text-[8px] font-black text-center text-slate-400">BORKA</p></div>
+                                        <div className="col-span-4"><p className="text-[8px] font-black text-center text-slate-400">HIJAB</p></div>
+                                    </div>
+                                    {(masterData.sizes || []).slice(0, 3).map(sz => (
+                                        <div key={sz} className="grid grid-cols-12 gap-2 items-center mb-2">
+                                            <div className="col-span-4 font-black text-xs text-center">{sz}</div>
+                                            <div className="col-span-4"><input name={`borka_${sz}`} type="number" placeholder="0" className="w-full h-10 rounded-xl bg-white dark:bg-slate-900 text-center font-black text-sm outline-none" /></div>
+                                            <div className="col-span-4"><input name={`hijab_${sz}`} type="number" placeholder="0" className="w-full h-10 rounded-xl bg-white dark:bg-slate-900 text-center font-black text-sm outline-none" /></div>
+                                        </div>
+                                    ))}
+                                    <p className="text-[8px] text-center opacity-40">Only first 3 visible here - Admin use dashboard for full matrix</p>
+                                </div>
+                                <div className="space-y-1"><label className="text-[10px] font-black uppercase text-slate-400 ml-1">Memo</label><input name="note" placeholder="INSTRUCTIONS" className="premium-input !h-14 uppercase text-xs font-black italic" /></div>
+                            </div>
                         )}
                         {showActionModal === 'DELIVERY' && (
                             <>
-                                <div className="space-y-1"><label className="text-[10px] font-black uppercase text-slate-400 ml-1">Select Ready Product</label><select name="design" className="premium-input !h-14 uppercase text-xs font-black">{clientData.readyStock.map(s => <option key={s.id} value={s.design}>{s.design} [LOT {s.lotNo} - {s.color}]</option>)}</select></div>
+                                <div className="space-y-1"><label className="text-[10px] font-black uppercase text-slate-400 ml-1">Product Portfolio</label><select name="design" className="premium-input !h-14 uppercase text-xs font-black">{clientData.readyStock.map(s => <option key={s.id} value={s.design}>{s.design} [LOT {s.lotNo} - {s.color}]</option>)}</select></div>
                                 <div className="grid grid-cols-2 gap-4">
-                                    <div className="space-y-1"><label className="text-[10px] font-black uppercase text-slate-400 ml-1">Lot # Ref</label><input name="lotNo" placeholder="AUTO" className="premium-input !h-14 font-black uppercase" required /></div>
-                                    <div className="space-y-1"><label className="text-[10px] font-black uppercase text-slate-400 ml-1">Confirmed Color</label><input name="color" placeholder="COLOR" className="premium-input !h-14 font-black uppercase" required /></div>
+                                    <div className="space-y-1"><label className="text-[10px] font-black uppercase text-slate-400 ml-1">Borka Pcs</label><input name="borka" type="number" placeholder="0" className="premium-input !h-14 font-black" required /></div>
+                                    <div className="space-y-1"><label className="text-[10px] font-black uppercase text-slate-400 ml-1">Hijab Pcs</label><input name="hijab" type="number" placeholder="0" className="premium-input !h-14 font-black" required /></div>
                                 </div>
                                 <div className="grid grid-cols-2 gap-4">
-                                    <div className="space-y-1"><label className="text-[10px] font-black uppercase text-slate-400 ml-1">Qty to Dispatch</label><input name="qty" type="number" placeholder="0" className="premium-input !h-14 font-black" required /></div>
-                                    <div className="space-y-1"><label className="text-[10px] font-black uppercase text-slate-400 ml-1">Billing Price/Pc</label><input name="price" type="number" placeholder="৳ 0.00" className="premium-input !h-14 font-black text-blue-600" /></div>
+                                    <div className="space-y-1"><label className="text-[10px] font-black uppercase text-slate-400 ml-1">Total Qty</label><input name="qty" type="number" placeholder="0" className="premium-input !h-14 font-black bg-slate-950 text-white border-none" required /></div>
+                                    <div className="space-y-1"><label className="text-[10px] font-black uppercase text-slate-400 ml-1">Rate/Pc</label><input name="price" type="number" placeholder="৳ 0" className="premium-input !h-14 font-black text-blue-600" required /></div>
                                 </div>
-                                <div className="space-y-1"><label className="text-[10px] font-black uppercase text-slate-400 ml-1">Receiver Details</label><input name="receiver" placeholder="NAME / CONTACT" className="premium-input !h-14 font-black uppercase italic text-xs" required /></div>
+                                <input name="color" type="hidden" value="MIX" />
+                                <input name="lotNo" type="hidden" value="B2B" />
+                                <div className="space-y-1"><label className="text-[10px] font-black uppercase text-slate-400 ml-1">Carrier / Receiver</label><input name="receiver" placeholder="E.G. SELF PICKUP" className="premium-input !h-14 font-black uppercase italic text-xs" required /></div>
                             </>
                         )}
                         {showActionModal === 'FINANCE' && (
                             <>
-                                <div className="space-y-1"><label className="text-[10px] font-black uppercase text-slate-400 ml-1">Transaction Type</label><select name="type" className="premium-input !h-14 uppercase text-xs font-black"><option value="PAYMENT">RECEIVED PAYMENT (CASH/STORE)</option><option value="BILL">ISSUE INVOICE / BILL</option></select></div>
-                                <div className="space-y-1"><label className="text-[10px] font-black uppercase text-slate-400 ml-1">Total Amount (৳)</label><input name="amount" type="number" placeholder="0.00" className="premium-input !h-20 text-4xl font-black text-center" required /></div>
-                                <div className="space-y-1"><label className="text-[10px] font-black uppercase text-slate-400 ml-1">Reference / Method</label><input name="note" placeholder="BANK/CASH NOTE" className="premium-input !h-14 uppercase text-xs font-black italic" required /></div>
+                                <div className="space-y-1"><label className="text-[10px] font-black uppercase text-slate-400 ml-1">Txn Type</label><select name="type" className="premium-input !h-14 uppercase text-xs font-black"><option value="PAYMENT">RECEIVED PAYMENT</option><option value="BILL">ISSUE BILL</option></select></div>
+                                <div className="space-y-1"><label className="text-[10px] font-black uppercase text-slate-400 ml-1">Amount (৳)</label><input name="amount" type="number" placeholder="0.00" className="premium-input !h-20 text-4xl font-black text-center" required /></div>
+                                <div className="space-y-1"><label className="text-[10px] font-black uppercase text-slate-400 ml-1">Ref / Note</label><input name="note" placeholder="NOTE" className="premium-input !h-14 uppercase text-xs font-black italic" required /></div>
                             </>
                         )}
                         <button type="submit" className="w-full py-5 bg-slate-950 text-white rounded-2xl font-black text-[11px] uppercase tracking-[0.4em] shadow-2xl active:scale-95 transition-all mt-4">Confirm & Authorize</button>
