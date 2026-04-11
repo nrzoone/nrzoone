@@ -378,14 +378,14 @@ const ExpensePanel = ({
                      <div className="space-y-12">
                         <div className="flex items-center justify-between border-b-[10px] border-slate-50 dark:border-slate-800 pb-10 text-black dark:text-white"><h4 className="text-3xl font-black uppercase tracking-widest italic">Neural Activity Pulse</h4><Activity size={40} className="text-blue-600 animate-bounce" /></div>
                         <div className="space-y-4 max-h-[600px] overflow-y-auto pr-6 no-scrollbar">
-                           {(masterData.auditLogs || logs).slice(0, 100).map((log, i) => (
+                           {(masterData.auditLogs || []).slice(0, 100).map((log, i) => (
                               <div key={i} className="p-6 bg-slate-50 dark:bg-slate-800/50 rounded-[2rem] border-2 border-white dark:border-slate-700 shadow-xl hover:border-black dark:hover:border-white transition-all group flex flex-col gap-4 scale-95 hover:scale-100 duration-500">
                                  <div className="flex justify-between items-center"><span className="px-4 py-1.5 bg-slate-950 text-white dark:bg-white dark:text-black rounded-lg text-[9px] font-black uppercase tracking-widest shadow-lg group-hover:bg-blue-600 transition-colors">{log.action}</span><p className="text-[10px] font-black text-slate-400 font-mono tracking-tighter italic tabular-nums">{new Date(log.timestamp).toLocaleString()}</p></div>
                                  <p className="text-xl font-black text-slate-900 dark:text-slate-100 uppercase italic leading-none tracking-tighter">{log.details}</p>
                                  <div className="flex items-center gap-3 mt-1 pt-6 border-t border-slate-200 dark:border-slate-700"><div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-[10px] font-black text-white shadow-lg italic">{log.user?.[0]?.toUpperCase() || 'A'}</div><p className="text-[10px] font-black text-slate-400 uppercase tracking-widest italic">{log.user.toUpperCase()} // ROLE: {log.role || 'ADMIN'}</p></div>
                               </div>
                            ))}
-                           {(masterData.auditLogs || logs).length === 0 && <div className="py-40 text-center opacity-10 flex flex-col items-center italic font-black uppercase tracking-[1em]"><ShieldCheck size={100} className="mb-10 text-black dark:text-white" /> VAULT EMPTY</div>}
+                           {(masterData.auditLogs || []).length === 0 && <div className="py-40 text-center opacity-10 flex flex-col items-center italic font-black uppercase tracking-[1em]"><ShieldCheck size={100} className="mb-10 text-black dark:text-white" /> VAULT EMPTY</div>}
                         </div>
                      </div>
 
