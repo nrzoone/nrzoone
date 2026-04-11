@@ -412,7 +412,7 @@ const CuttingPanel = ({
                     item.design?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                     item.color?.toLowerCase().includes(searchTerm.toLowerCase())
                   ).map((item, idx) => (
-                    <div key={item.id || idx} className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl shadow-sm hover:border-slate-950 transition-all flex flex-col group animate-fade-up">
+                    <div key={item.id || idx} className="flex flex-col h-full bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 rounded-xl shadow-sm hover:border-slate-950 transition-all group animate-fade-up">
                         <div className="p-6 space-y-6 flex-1">
                             <div className="flex justify-between items-start">
                                 <div className="space-y-1">
@@ -453,13 +453,13 @@ const CuttingPanel = ({
                         </div>
 
                         {/* Action Footer */}
-                        <div className="flex gap-3 p-6 bg-slate-50 dark:bg-slate-800/20 border-t border-slate-100 dark:border-slate-800">
+                        <div className="flex gap-3 p-6 bg-slate-50 dark:bg-slate-800/20 border-t border-slate-100 dark:border-slate-800 mt-auto">
                             <button onClick={() => setPrintSlip(item)} className="w-11 h-11 bg-white dark:bg-slate-900 rounded-xl flex items-center justify-center text-black dark:text-white dark:text-white hover:bg-slate-950 hover:text-white transition-all shadow-sm border border-slate-200 dark:border-slate-700" title="স্লিপ প্রিন্ট">
                                 <Printer size={16} />
                             </button>
                             <button 
                                 onClick={() => setActivePanel('Swing')} 
-                                className="flex-1 bg-slate-950 text-white rounded-xl text-[10px] font-bold uppercase tracking-widest shadow-lg hover:bg-slate-800 transition-all font-bold"
+                                className="flex-1 bg-slate-950 text-white dark:bg-white dark:text-slate-950 rounded-xl text-[10px] font-bold uppercase tracking-widest shadow-lg hover:bg-slate-800 transition-all font-bold"
                             >
                                 সুইং এ পাঠান (Swing)
                             </button>

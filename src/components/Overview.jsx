@@ -88,10 +88,9 @@ const Overview = ({ masterData, stats: propStats, setActivePanel, t, user, syncS
                     { 
                         label: "ফ্যাক্টরি ব্যালেন্স (৳)", 
                         value: (() => {
-                            const totalCashIn = (masterData.cashEntries || []).reduce((acc, c) => acc + Number(c.amount || 0), 0) + 
-                                              (masterData.clientTransactions || []).filter(t => t.type === 'PAYMENT').reduce((acc, t) => acc + Number(t.amount || 0), 0);
-                            const totalExp = (masterData.expenses || []).reduce((acc, e) => acc + Number(e.amount || 0), 0) + 
-                                            (masterData.workerTransactions || []).filter(t => t.type === 'PAYMENT').reduce((acc, t) => acc + Number(t.amount || 0), 0);
+                            // Every payment/expense mirrored in 'expenses'. Every receipt/client pmt mirrored in 'cashEntries'.
+                            const totalCashIn = (masterData.cashEntries || []).reduce((acc, c) => acc + Number(c.amount || 0), 0);
+                            const totalExp = (masterData.expenses || []).reduce((acc, e) => acc + Number(e.amount || 0), 0);
                             const bal = totalCashIn - totalExp;
                             return bal >= 1000 ? `${(bal / 1000).toFixed(1)}k` : bal.toLocaleString();
                         })(),

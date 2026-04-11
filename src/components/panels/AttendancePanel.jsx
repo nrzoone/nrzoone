@@ -294,46 +294,46 @@ const AttendancePanel = ({
           return (
             <div
               key={worker}
-              className={`saas-card !p-6 border-l-[6px] transition-all group ${status === 'present' ? 'border-emerald-500 bg-emerald-50/10' : status === 'half-day' ? 'border-amber-400 bg-amber-50/10' : 'border-slate-100 bg-white dark:bg-slate-900/50'}`}
+              className={`flex flex-col h-full !p-8 border-l-[8px] transition-all group rounded-[2.5rem] shadow-xl ${status === 'present' ? 'border-emerald-500 bg-emerald-50/5 dark:bg-emerald-900/5' : status === 'half-day' ? 'border-amber-400 bg-amber-50/5 dark:bg-amber-900/5' : 'border-slate-50 bg-white dark:bg-slate-900 dark:border-slate-800'}`}
             >
-              <div className="flex justify-between items-start mb-6">
+              <div className="flex justify-between items-start mb-8">
                 <div>
-                   <h3 className="text-lg font-bold tracking-tight text-[var(--text-primary)]">{worker}</h3>
-                   <p className="text-[8px] font-bold text-black dark:text-white uppercase tracking-widest mt-1">ID: REF-{worker.slice(0,3).toUpperCase()}</p>
+                   <h3 className="text-2xl font-black tracking-tight text-black dark:text-white italic uppercase truncate w-40">{worker}</h3>
+                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1 italic leading-none">ID: REF-{worker.slice(0,3).toUpperCase()}</p>
                 </div>
-                <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${status === 'present' ? 'bg-emerald-500 text-white shadow-lg' : 'bg-slate-100 dark:bg-slate-800 text-black dark:text-white'}`}>
-                   <UserCheck size={14} />
+                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg ${status === 'present' ? 'bg-emerald-500 text-white' : 'bg-slate-50 dark:bg-slate-800 text-slate-300'}`}>
+                   <UserCheck size={20} />
                 </div>
               </div>
 
               <div className="space-y-4 mb-8">
-                 <div className="flex justify-between items-center text-[9px] font-bold uppercase text-black dark:text-white tracking-widest">
+                 <div className="flex justify-between items-center text-[10px] font-black uppercase text-slate-400 tracking-widest italic leading-none">
                     <span>Base Earnings</span>
                     <span className="text-black dark:text-white">৳{dailyWage}</span>
                  </div>
-                 <div className="w-full h-1 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                 <div className="w-full h-2 bg-slate-50 dark:bg-slate-800 rounded-full overflow-hidden shadow-inner">
                     <div className="h-full bg-emerald-500 transition-all duration-1000" style={{ width: status === 'present' ? '100%' : status === 'half-day' ? '50%' : '0%' }}></div>
                  </div>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 mt-auto">
                 <button
                   onClick={() => markAttendance(worker, "present")}
-                  className={`flex-1 py-2.5 rounded-lg text-[9px] font-bold uppercase tracking-widest transition-all ${status === "present" ? "bg-emerald-500 text-white shadow-md" : "bg-slate-50 dark:bg-slate-800 text-black dark:text-white hover:bg-emerald-50 hover:text-emerald-600"}`}
+                  className={`flex-1 py-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all italic ${status === "present" ? "bg-slate-950 text-white shadow-xl scale-105" : "bg-slate-50 dark:bg-slate-800 text-slate-400 hover:text-black dark:hover:text-white"}`}
                 >
                   FULL
                 </button>
                 <button
                   onClick={() => markAttendance(worker, "half-day")}
-                  className={`flex-1 py-2.5 rounded-lg text-[9px] font-bold uppercase tracking-widest transition-all ${status === "half-day" ? "bg-amber-400 text-black dark:text-white shadow-md font-extrabold" : "bg-slate-50 dark:bg-slate-800 text-black dark:text-white hover:bg-amber-50 hover:text-amber-600"}`}
+                  className={`flex-1 py-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all italic ${status === "half-day" ? "bg-amber-400 text-black shadow-xl scale-105 font-black" : "bg-slate-50 dark:bg-slate-800 text-slate-400 hover:text-black dark:hover:text-white"}`}
                 >
                   HALF
                 </button>
                 <button
                   onClick={() => markAttendance(worker, "absent")}
-                  className={`p-2.5 rounded-lg transition-all ${status === "absent" ? "bg-rose-500 text-white shadow-md rotate-90" : "bg-slate-50 dark:bg-slate-800 text-black dark:text-white hover:bg-rose-50 hover:text-rose-600"}`}
+                  className={`w-12 h-12 flex items-center justify-center rounded-xl transition-all ${status === "absent" ? "bg-rose-500 text-white shadow-xl rotate-90" : "bg-slate-50 dark:bg-slate-800 text-slate-400 hover:border-rose-500"}`}
                 >
-                  <X size={14} />
+                  <X size={18} strokeWidth={3} />
                 </button>
               </div>
             </div>

@@ -240,24 +240,24 @@ const InventoryPanel = ({
                     </div>
                 ) : (
                     summary.map((item, idx) => (
-                        <div key={idx} className="saas-card group hover:border-slate-950 dark:hover:border-white transition-all animate-fade-up">
+                        <div key={idx} className="flex flex-col h-full bg-white dark:bg-slate-900 border-4 border-slate-50 dark:border-slate-800 rounded-[3rem] p-10 shadow-xl hover:border-black transition-all group animate-fade-up">
                             <div className="flex justify-between items-start mb-8">
                                 <div className="space-y-1">
-                                    <h4 className="text-2xl font-bold tracking-tight text-black dark:text-white dark:text-white uppercase leading-none truncate max-w-[200px]">{item.design}</h4>
-                                    <p className="text-[9px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest italic">• {item.color} ({item.size})</p>
+                                    <h4 className="text-2xl font-black tracking-tight text-black dark:text-white uppercase leading-none truncate max-w-[200px]">{item.design}</h4>
+                                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest italic leading-none mt-2">• {item.color} ({item.size})</p>
                                 </div>
-                                <div className="w-12 h-12 bg-slate-50 dark:bg-slate-800 rounded-xl flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
-                                    <Zap size={18} className="text-blue-500" />
+                                <div className="w-14 h-14 bg-slate-50 dark:bg-slate-800 rounded-2xl flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
+                                    <Zap size={22} className="text-blue-500" />
                                 </div>
                             </div>
-                            <div className="grid grid-cols-2 gap-4 border-t border-slate-100 dark:border-slate-800 pt-6">
+                            <div className="grid grid-cols-2 gap-4 border-t-2 border-slate-100 dark:border-slate-800 pt-8 mt-auto">
                                 <div className="space-y-1">
-                                    <p className="text-[9px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest leading-none">বোরকা (Borka)</p>
-                                    <p className="text-3xl font-bold text-black dark:text-white dark:text-white leading-none">{item.borka} পিস</p>
+                                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none italic mb-2">বোরকা (Borka)</p>
+                                    <p className="text-3xl font-black text-black dark:text-white leading-none tracking-tighter">{item.borka} পিস</p>
                                 </div>
-                                <div className="space-y-1 border-l border-slate-100 dark:border-slate-800 pl-4">
-                                    <p className="text-[9px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest leading-none">হিজাব (Hijab)</p>
-                                    <p className="text-3xl font-bold text-black dark:text-white dark:text-white leading-none">{item.hijab} পিস</p>
+                                <div className="space-y-1 border-l-2 border-slate-100 dark:border-slate-800 pl-6">
+                                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none italic mb-2">হিজাব (Hijab)</p>
+                                    <p className="text-3xl font-black text-black dark:text-white leading-none tracking-tighter">{item.hijab} পিস</p>
                                 </div>
                             </div>
                         </div>
