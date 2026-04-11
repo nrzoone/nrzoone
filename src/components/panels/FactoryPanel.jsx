@@ -506,6 +506,7 @@ const FactoryPanel = ({
             if (billAmount > 0) {
                 const b2bBill = {
                     id: `b2b_bill_${Date.now()}`,
+                    refId: receiveModal.id,
                     date: new Date().toLocaleDateString("en-GB"),
                     client: receiveModal.client,
                     type: 'BILL',

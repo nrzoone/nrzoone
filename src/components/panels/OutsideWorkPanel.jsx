@@ -231,6 +231,7 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
                 if (billAmount > 0) {
                     const b2bBill = {
                         id: `b2b_out_${Date.now()}`,
+                        refId: receiveModal.id,
                         date: new Date().toLocaleDateString("en-GB"),
                         client: receiveModal.client,
                         type: 'BILL',

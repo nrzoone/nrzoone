@@ -383,7 +383,7 @@ const Sidebar = ({ activePanel, setActivePanel, panelTab, setPanelTab, user, set
     };
 
     return (
-        <aside className={`fixed inset-y-0 left-0 z-[200] w-[280px] md:w-[320px] flex flex-col bg-white dark:bg-slate-950 border-r border-slate-200 dark:border-white/5 transition-all duration-700 cubic-bezier(0.19, 1, 0.22, 1) font-inter ${isOpen ? 'translate-x-0' : '-translate-x-full shadow-none'} lg:translate-x-0`}>
+        <aside className={`fixed inset-y-0 left-0 z-[200] w-[280px] md:w-[300px] flex flex-col bg-white dark:bg-slate-950 border-r border-slate-200 dark:border-white/5 transition-all duration-500 cubic-bezier(0.19, 1, 0.22, 1) font-inter ${isOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full shadow-none'}`}>
             {/* Dark Sidebar Brand */}
             <div className="p-6 md:p-16 flex flex-col items-center relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-b from-blue-500/10 to-transparent pointer-events-none"></div>
@@ -641,14 +641,14 @@ const AppContent = () => {
                     
                     {user?.role !== 'client' && <Sidebar activePanel={activePanel} setActivePanel={setActivePanel} panelTab={panelTab} setPanelTab={setPanelTab} user={user} setUser={setUser} isOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} t={t} isDarkMode={isDarkMode} masterData={masterData} />}
                     
-                    <main className={`flex-1 flex flex-col min-w-0 h-screen overflow-hidden relative transition-all duration-700 mesh-bg ${user?.role !== 'client' ? 'lg:ml-[320px]' : ''}`}>
+                    <main className={`flex-1 flex flex-col min-w-0 h-screen overflow-hidden relative transition-all duration-500 mesh-bg ${user?.role !== 'client' && isOpen ? 'lg:ml-[300px]' : ''}`}>
                         {/* Header Section - Modern Responsive SaaS Style */}
                         <header className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-100 dark:border-slate-800 px-2 md:px-8 py-2 md:py-4 sticky top-0 z-[100] transition-all no-print shadow-sm flex items-center justify-between">
                             <div className="flex items-center gap-4 md:gap-6">
                                 {user?.role !== 'client' && (
                                     <button 
-                                        onClick={() => setIsSidebarOpen(true)}
-                                        className="w-10 h-10 rounded-xl bg-slate-950 text-white flex items-center justify-center hover:scale-105 active:scale-95 transition-all lg:hidden shadow-lg"
+                                        onClick={() => setIsSidebarOpen(!isOpen)}
+                                        className="w-10 h-10 rounded-xl bg-slate-950 text-white flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-lg"
                                     >
                                         <Menu size={18} />
                                     </button>
