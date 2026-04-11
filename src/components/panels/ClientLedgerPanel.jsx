@@ -10,7 +10,7 @@ const ClientLedgerPanel = ({ masterData, setMasterData, showNotify, user, setAct
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedClient, setSelectedClient] = useState(null);
   const [clientTab, setClientTab] = useState('Overview');
-  const [showActionModal, setShowActionModal] = useState(null); // 'MATERIAL', 'ORDER', 'DELIVERY', 'FINANCE'
+  const [showActionModal, setShowActionModal] = useState(null); // 'MATERIAL', 'ORDER', 'DELIVERY', 'FINANCE', 'MAL_ENTRY'
 
   // Financial Calculations for all clients
   const clientBalances = useMemo(() => {
@@ -195,6 +195,24 @@ const ClientLedgerPanel = ({ masterData, setMasterData, showNotify, user, setAct
         setMasterData(prev => ({ ...prev, ...updates }));
         showNotify(`Financial Entry: ${type} ৳${amt}`);
     }
+    else if (showActionModal === 'MAL_ENTRY') {
+        const entry = {
+            id: `MAL_${timestamp}`,
+            date: f.date.value || date,
+            client: selectedClient,
+            design: f.design.value,
+            color: f.color.value,
+            size: f.size.value,
+            qtyBorka: Number(f.borka.value || 0),
+            qtyHijab: Number(f.hijab.value || 0),
+            qty: Number(f.borka.value || 0) + Number(f.hijab.value || 0),
+            note: f.note.value,
+            type: 'direct_entry'
+        };
+        setMasterData(prev => ({ ...prev, finishedStock: [entry, ...(prev.finishedStock || [])] }));
+        logAction(user, 'ADMIN_CLIENT_MAL_ENTRY', `Recorded entry for ${selectedClient}: ${entry.qty} pcs`);
+        showNotify("মাল এন্ট্রি সফল হয়েছে!");
+    }
 
     setShowActionModal(null);
   };
@@ -310,10 +328,9 @@ const ClientLedgerPanel = ({ masterData, setMasterData, showNotify, user, setAct
       ) : (
         <div className="space-y-12">
             {/* Quick Actions Protocol */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 animate-fade-up">
                 {[
                     { id: 'MATERIAL', label: 'Receive Materials', icon: Layers, color: 'bg-orange-600' },
-                    { id: 'ORDER', label: 'Place New Order', icon: Plus, color: 'bg-blue-600' },
+                    { id: 'MAL_ENTRY', label: 'Direct Mal Entry', icon: Package, color: 'bg-slate-800' },
                     { id: 'DELIVERY', label: 'Dispatch Goods', icon: ArrowRight, color: 'bg-slate-950' },
                     { id: 'FINANCE', label: 'Financial Txn', icon: DollarSign, color: 'bg-emerald-600' }
                 ].map((act) => (
@@ -326,6 +343,13 @@ const ClientLedgerPanel = ({ masterData, setMasterData, showNotify, user, setAct
                         <span className="text-[10px] font-black uppercase tracking-widest">{act.label}</span>
                     </button>
                 ))}
+                <button 
+                    onClick={() => setShowActionModal('ORDER')}
+                    className="col-span-1 md:col-span-4 bg-blue-600 p-6 rounded-2xl text-white flex items-center justify-center gap-6 shadow-xl hover:scale-105 transition-all border-b-8 border-blue-900"
+                >
+                    <Plus size={24} />
+                    <span className="text-sm font-black uppercase tracking-[0.2em]">Initiate Production Order</span>
+                </button>
             </div>
 
             {/* Tab Navigation */}
@@ -438,12 +462,14 @@ const ClientLedgerPanel = ({ masterData, setMasterData, showNotify, user, setAct
                     <div className="text-center space-y-4">
                         <div className="w-20 h-20 bg-slate-950 text-white rounded-3xl flex items-center justify-center mx-auto shadow-2xl mb-6">
                             {showActionModal === 'MATERIAL' && <Layers size={32} />}
+                            {showActionModal === 'MAL_ENTRY' && <Package size={32} />}
                             {showActionModal === 'ORDER' && <Plus size={32} />}
                             {showActionModal === 'DELIVERY' && <Package size={32} />}
                             {showActionModal === 'FINANCE' && <DollarSign size={32} />}
                         </div>
                         <h3 className="text-3xl font-black uppercase italic tracking-tighter">
                             {showActionModal === 'MATERIAL' && 'Receive Materials'}
+                            {showActionModal === 'MAL_ENTRY' && 'Mal Entry (Direct Stock)'}
                             {showActionModal === 'ORDER' && 'Initiate Order'}
                             {showActionModal === 'DELIVERY' && 'Dispatch Goods'}
                             {showActionModal === 'FINANCE' && 'Record Transaction'}
@@ -526,6 +552,24 @@ const ClientLedgerPanel = ({ masterData, setMasterData, showNotify, user, setAct
                                 <div className="space-y-1"><label className="text-[10px] font-black uppercase text-slate-400 ml-1">Txn Type</label><select name="type" className="premium-input !h-14 uppercase text-xs font-black"><option value="PAYMENT">RECEIVED PAYMENT</option><option value="BILL">ISSUE BILL</option></select></div>
                                 <div className="space-y-1"><label className="text-[10px] font-black uppercase text-slate-400 ml-1">Amount (৳)</label><input name="amount" type="number" placeholder="0.00" className="premium-input !h-20 text-4xl font-black text-center" required /></div>
                                 <div className="space-y-1"><label className="text-[10px] font-black uppercase text-slate-400 ml-1">Ref / Note</label><input name="note" placeholder="NOTE" className="premium-input !h-14 uppercase text-xs font-black italic" required /></div>
+                            </>
+                        )}
+                        {showActionModal === 'MAL_ENTRY' && (
+                            <>
+                                <div className="space-y-1">
+                                    <label className="text-[10px] font-black uppercase text-slate-400 ml-1">Entry Date</label>
+                                    <input name="date" type="date" defaultValue={new Date().toISOString().split('T')[0]} className="premium-input !h-14 font-black" required />
+                                </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="space-y-1"><label className="text-[10px] font-black uppercase text-slate-400 ml-1">Design</label><select name="design" className="premium-input !h-14 uppercase text-[11px] font-black">{(masterData.designs || []).map(d => <option key={d.name}>{d.name}</option>)}</select></div>
+                                    <div className="space-y-1"><label className="text-[10px] font-black uppercase text-slate-400 ml-1">Color</label><select name="color" className="premium-input !h-14 uppercase text-[11px] font-black">{(masterData.colors || []).map(c => <option key={c}>{c}</option>)}</select></div>
+                                </div>
+                                <div className="grid grid-cols-3 gap-4">
+                                    <div className="space-y-1"><label className="text-[10px] font-black uppercase text-slate-400 ml-1">Size</label><select name="size" className="premium-input !h-12 font-black">{(masterData.sizes || []).map(sz => <option key={sz}>{sz}</option>)}</select></div>
+                                    <div className="space-y-1"><label className="text-[10px] font-black uppercase text-slate-400 ml-1">Borka</label><input name="borka" type="number" placeholder="0" className="premium-input !h-12 font-black text-center" /></div>
+                                    <div className="space-y-1"><label className="text-[10px] font-black uppercase text-slate-400 ml-1">Hijab</label><input name="hijab" type="number" placeholder="0" className="premium-input !h-12 font-black text-center" /></div>
+                                </div>
+                                <div className="space-y-1"><label className="text-[10px] font-black uppercase text-slate-400 ml-1">Notes</label><input name="note" placeholder="EX: DIRECT DEPOSIT" className="premium-input !h-14 uppercase text-[10px] font-black italic shadow-inner" /></div>
                             </>
                         )}
                         <button type="submit" className="w-full py-5 bg-slate-950 text-white rounded-2xl font-black text-[11px] uppercase tracking-[0.4em] shadow-2xl active:scale-95 transition-all mt-4">Confirm & Authorize</button>

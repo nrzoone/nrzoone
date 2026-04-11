@@ -16,11 +16,13 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify }) => {
   const [showMaterialModal, setShowMaterialModal] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [showOrderModal, setShowOrderModal] = useState(false);
+  const [showMalEntryModal, setShowMalEntryModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
 
   // -- Advanced Order State --
   const [orderForm, setOrderForm] = useState({
     design: '',
+    color: '',
     fabricGoj: '',
     sizes: [{ size: '', borka: '', hijab: '' }],
     note: ''
@@ -153,6 +155,7 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify }) => {
       date: new Date().toLocaleDateString("en-GB"),
       client: clientName,
       design: orderForm.design,
+      color: orderForm.color,
       fabricGoj: Number(orderForm.fabricGoj),
       sizes: orderForm.sizes.filter(s => s.size && (s.borka > 0 || s.hijab > 0)),
       totalBorka,
@@ -179,19 +182,49 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify }) => {
     }));
 
     setShowOrderModal(false);
-    setOrderForm({ design: '', fabricGoj: '', sizes: [{ size: '', borka: '', hijab: '' }], note: '' });
+    setOrderForm({ design: '', color: '', fabricGoj: '', sizes: [{ size: '', borka: '', hijab: '' }], note: '' });
     showNotify("ভল্টে নতুন অর্ডার জমা হয়েছে!", "success");
     logAction(user, 'CLIENT_ORDER_ENTRY', `Order placed for ${orderForm.design}. Fabric: ${orderForm.fabricGoj}YDS`);
+  };
 
-    // WhatsApp Confirmation Option
-    if (window.confirm("অর্ডার কনফার্মেশন হোয়াটসঅ্যাপে পাঠাতে চান?")) {
-        const msg = `*NRZ0ONE PRODUCTION ORDER*\n\n` +
-                    `📌 Design: ${newRequest.design}\n` +
-                    `📦 Qty: ${totalBorka + totalHijab} PCS\n` +
-                    `🧵 Fabric: ${newRequest.fabricGoj}YDS\n` +
+  const handleMalEntry = (e) => {
+    e.preventDefault();
+    const f = e.target;
+    const timestamp = Date.now();
+    
+    const entry = {
+      id: `MAL_${timestamp}`,
+      date: f.date.value || new Date().toLocaleDateString("en-GB"),
+      client: clientName,
+      design: f.design.value,
+      color: f.color.value,
+      size: f.size.value,
+      qtyBorka: Number(f.borka.value || 0),
+      qtyHijab: Number(f.hijab.value || 0),
+      qty: Number(f.borka.value || 0) + Number(f.hijab.value || 0),
+      note: f.note.value,
+      type: 'direct_entry'
+    };
+
+    setMasterData(prev => ({
+      ...prev,
+      finishedStock: [entry, ...(prev.finishedStock || [])]
+    }));
+
+    setShowMalEntryModal(false);
+    showNotify("মাল এন্ট্রি সফল হয়েছে!", "success");
+    logAction(user, 'CLIENT_MAL_ENTRY', `Received ${entry.qty} pcs of ${entry.design} (${entry.color})`);
+
+    if (window.confirm("মাল এন্ট্রি রিপোর্ট হোয়াটসঅ্যাপে পাঠাতে চান?")) {
+        const msg = `*NRZ0ONE MAL ENTRY REPORT*\n\n` +
+                    `📅 Date: ${entry.date}\n` +
+                    `📌 Design: ${entry.design}\n` +
+                    `🎨 Color: ${entry.color}\n` +
+                    `📏 Size: ${entry.size}\n` +
+                    `📦 Borka: ${entry.qtyBorka} PCS\n` +
+                    `📦 Hijab: ${entry.qtyHijab} PCS\n` +
                     `👤 Client: ${clientName}\n` +
-                    `📅 Date: ${newRequest.date}\n\n` +
-                    `_System generated request #${reqId}_`;
+                    `📝 Note: ${entry.note}`;
         shareToWhatsApp(msg);
     }
   };
@@ -378,9 +411,12 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify }) => {
                 </div>
             </div>
             
-            <div className="flex gap-4 w-full lg:w-auto">
+            <div className="flex gap-4 w-full lg:w-auto flex-wrap justify-center">
                <button onClick={() => setShowOrderModal(true)} className="flex-1 lg:flex-none px-8 py-4 bg-blue-600 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl flex items-center justify-center gap-3 hover:scale-105 active:scale-95 transition-all">
                   <ShoppingCart size={16} /> NEW PRODUCTION
+               </button>
+               <button onClick={() => setShowMalEntryModal(true)} className="flex-1 lg:flex-none px-8 py-4 bg-slate-100 text-black rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl flex items-center justify-center gap-3 hover:scale-105 active:scale-95 transition-all border border-slate-200">
+                  <Plus size={16} /> MAL ENTRY
                </button>
                <button onClick={() => setShowPaymentModal(true)} className="flex-1 lg:flex-none px-8 py-4 bg-emerald-600 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl flex items-center justify-center gap-3 hover:scale-105 active:scale-95 transition-all">
                   <Wallet size={16} /> SYNC PAYMENT
@@ -592,16 +628,23 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify }) => {
                  <form onSubmit={handleSubmitOrder} className="space-y-6">
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2 italic">Design</label>
-                            <select value={orderForm.design} onChange={e => setOrderForm(p => ({...p, design: e.target.value}))} className="premium-input !h-12 font-black uppercase text-[11px]" required>
-                               <option value="">SELECT...</option>
-                               {(masterData.designs || []).map(d => <option key={d.name} value={d.name}>{d.name}</option>)}
-                            </select>
+                             <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2 italic">Design</label>
+                             <select value={orderForm.design} onChange={e => setOrderForm(p => ({...p, design: e.target.value}))} className="premium-input !h-12 font-black uppercase text-[11px]" required>
+                                <option value="">SELECT...</option>
+                                {(masterData.designs || []).map(d => <option key={d.name} value={d.name}>{d.name}</option>)}
+                             </select>
                         </div>
                         <div className="space-y-2">
-                           <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2 italic">Fabric (YDS)</label>
-                           <input type="number" value={orderForm.fabricGoj} onChange={e => setOrderForm(p => ({...p, fabricGoj: e.target.value}))} className="premium-input !h-12 text-center font-black text-lg !bg-slate-950 !text-white !border-none" placeholder="0.00" required />
+                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2 italic">Color</label>
+                            <select value={orderForm.color} onChange={e => setOrderForm(p => ({...p, color: e.target.value}))} className="premium-input !h-12 font-black uppercase text-[11px]" required>
+                                <option value="">SELECT...</option>
+                                {(masterData.colors || []).map(c => <option key={c} value={c}>{c}</option>)}
+                            </select>
                         </div>
+                    </div>
+                    <div className="space-y-2">
+                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2 italic">Fabric (YDS)</label>
+                       <input type="number" value={orderForm.fabricGoj} onChange={e => setOrderForm(p => ({...p, fabricGoj: e.target.value}))} className="premium-input !h-12 text-center font-black text-lg !bg-slate-950 !text-white !border-none" placeholder="0.00" required />
                     </div>
 
                     <div className="bg-slate-50 dark:bg-slate-800/50 p-5 rounded-3xl border border-slate-100 dark:border-slate-800 space-y-4">
@@ -765,6 +808,68 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify }) => {
              </motion.div>
           </div>
         )}
+        {showMalEntryModal && (
+          <div className="fixed inset-0 bg-slate-950/70 backdrop-blur-2xl z-[1000] flex items-center justify-center p-4 overflow-y-auto">
+             <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="bg-white dark:bg-slate-900 w-full max-w-lg p-10 rounded-[2.5rem] shadow-3xl space-y-8 border border-slate-100 dark:border-slate-800 relative">
+                <button onClick={() => setShowMalEntryModal(false)} className="absolute top-8 right-8 text-slate-400 hover:text-black transition-colors"><X size={24} /></button>
+                <div className="text-center space-y-2">
+                   <div className="w-16 h-16 bg-slate-950 text-white rounded-2xl flex items-center justify-center mx-auto shadow-xl rotate-3 mb-4"><Package size={28} /></div>
+                   <h3 className="text-2xl font-black uppercase tracking-tight italic text-black dark:text-white">MAL ENTRY (FINISHED GOODS)</h3>
+                   <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.4em] leading-none italic">Log Entity Deposits</p>
+                </div>
+                <form onSubmit={handleMalEntry} className="space-y-6">
+                   <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2 italic">Date</label>
+                            <input name="date" type="date" defaultValue={new Date().toISOString().split('T')[0]} className="premium-input !h-12 font-black" required />
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2 italic">Design</label>
+                            <select name="design" className="premium-input !h-12 uppercase font-black text-[11px]" required>
+                                <option value="">SELECT...</option>
+                                {(masterData.designs || []).map(d => <option key={d.name} value={d.name}>{d.name}</option>)}
+                            </select>
+                        </div>
+                   </div>
+                   <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2 italic">Color</label>
+                            <select name="color" className="premium-input !h-12 uppercase font-black text-[11px]" required>
+                                <option value="">SELECT...</option>
+                                {(masterData.colors || []).map(c => <option key={c} value={c}>{c}</option>)}
+                            </select>
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2 italic">Size</label>
+                            <select name="size" className="premium-input !h-12 uppercase font-black text-[11px]" required>
+                                <option value="">SELECT...</option>
+                                {(masterData.sizes || []).map(s => <option key={s} value={s}>{s}</option>)}
+                            </select>
+                        </div>
+                   </div>
+                   <div className="grid grid-cols-2 gap-4">
+                        <div className="p-6 bg-slate-50 dark:bg-slate-800 rounded-3xl text-center shadow-inner border border-slate-100 dark:border-slate-800">
+                           <p className="text-[9px] font-black uppercase text-slate-400 mb-2">Borka Pcs</p>
+                           <input name="borka" type="number" className="w-full text-3xl font-black text-center bg-transparent outline-none italic" placeholder="0" required />
+                        </div>
+                        <div className="p-6 bg-slate-50 dark:bg-slate-800 rounded-3xl text-center shadow-inner border border-slate-100 dark:border-slate-800">
+                           <p className="text-[9px] font-black uppercase text-slate-400 mb-2">Hijab Pcs</p>
+                           <input name="hijab" type="number" className="w-full text-3xl font-black text-center bg-transparent outline-none italic" placeholder="0" required />
+                        </div>
+                   </div>
+                   <div className="space-y-2">
+                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2 italic">Notes</label>
+                       <input name="note" className="premium-input !h-12 uppercase text-[10px] font-black italic tracking-widest shadow-inner !bg-slate-50 dark:!bg-slate-800" placeholder="E.G. JET BLACK" />
+                   </div>
+                   <div className="flex gap-4 pt-4">
+                      <button type="button" onClick={() => setShowMalEntryModal(false)} className="flex-1 py-4 font-black text-[10px] text-slate-400">ABORT</button>
+                      <button type="submit" className="flex-[3] py-4 bg-slate-950 text-white rounded-[1.5rem] font-black text-[10px] uppercase shadow-xl border-b-[6px] border-slate-700 active:scale-95 transition-all">POST ENTRY</button>
+                   </div>
+                </form>
+             </motion.div>
+          </div>
+        )}
+
       </AnimatePresence>
     </div>
   );
