@@ -413,9 +413,13 @@ const FactoryPanel = ({ type, masterData, setMasterData, showNotify, user, setAc
       {/* Modals */}
       <AnimatePresence>
         {showIssueModal && (
-          <div className="fixed inset-0 z-[1000] bg-slate-950/40 backdrop-blur-md flex items-center justify-center p-4">
-             <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-white dark:bg-slate-900 w-full max-w-4xl rounded-[3rem] shadow-2xl p-12 relative border-4 border-slate-50">
-                <button onClick={() => setShowIssueModal(false)} className="absolute top-10 right-10 text-slate-400 hover:text-black"><X size={32} /></button>
+          <div className="fixed inset-0 z-[1000] bg-slate-950/40 backdrop-blur-md flex items-center justify-center p-2 md:p-6 overflow-y-auto pt-10 pb-20 no-scrollbar">
+             <motion.div 
+               initial={{ scale: 0.9, opacity: 0 }} 
+               animate={{ scale: 1, opacity: 1 }} 
+               className="bg-white dark:bg-slate-900 w-full max-w-4xl rounded-[2rem] md:rounded-[3rem] shadow-2xl p-6 md:p-12 relative border-4 border-slate-50 max-h-[90vh] overflow-y-auto no-scrollbar"
+             >
+                <button onClick={() => setShowIssueModal(false)} className="absolute top-4 right-4 md:top-10 md:right-10 text-slate-400 hover:text-black"><X size={24} /></button>
                 <h2 className="text-3xl font-black uppercase italic mb-10 text-center">নতুন {type === 'sewing' ? 'সেলাই' : 'স্টোন'} কাজ <span className="text-blue-600">ইস্যু করুন</span></h2>
                 
                 <div className="grid grid-cols-2 gap-8 mb-8">
@@ -475,9 +479,13 @@ const FactoryPanel = ({ type, masterData, setMasterData, showNotify, user, setAc
         )}
 
         {receiveModal && (
-          <div className="fixed inset-0 z-[1000] bg-slate-950/40 backdrop-blur-md flex items-center justify-center p-4">
-             <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-white dark:bg-slate-900 w-full max-w-lg rounded-[3.5rem] shadow-2xl p-12 relative border-4 border-slate-50">
-                 <button onClick={() => setReceiveModal(null)} className="absolute top-10 right-10 text-slate-400"><X size={32} /></button>
+          <div className="fixed inset-0 z-[1000] bg-slate-950/40 backdrop-blur-md flex items-center justify-center p-2 md:p-6 overflow-y-auto pt-10 pb-20 no-scrollbar">
+             <motion.div 
+               initial={{ scale: 0.9, opacity: 0 }} 
+               animate={{ scale: 1, opacity: 1 }} 
+               className="bg-white dark:bg-slate-900 w-full max-w-lg rounded-[2.5rem] md:rounded-[3.5rem] shadow-2xl p-8 md:p-12 relative border-4 border-slate-50 max-h-[90vh] overflow-y-auto no-scrollbar"
+             >
+                 <button onClick={() => setReceiveModal(null)} className="absolute top-6 right-6 md:top-10 md:right-10 text-slate-400"><X size={24} /></button>
                  <h2 className="text-2xl font-black uppercase italic mb-8 text-center">{receiveModal.worker} <span className="text-emerald-500">জমা দিন</span></h2>
                  <form onSubmit={handleConfirmReceive} className="space-y-8">
                      <div className="grid grid-cols-2 gap-4">
@@ -501,9 +509,13 @@ const FactoryPanel = ({ type, masterData, setMasterData, showNotify, user, setAc
         )}
 
         {payModal && (
-          <div className="fixed inset-0 z-[1000] bg-slate-950/40 backdrop-blur-md flex items-center justify-center p-4">
-             <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-white dark:bg-slate-900 w-full max-w-lg rounded-[3.5rem] shadow-2xl p-12 relative border-4 border-slate-50">
-                 <button onClick={() => setPayModal(null)} className="absolute top-10 right-10 text-slate-400"><X size={32} /></button>
+          <div className="fixed inset-0 z-[1000] bg-slate-950/40 backdrop-blur-md flex items-center justify-center p-2 md:p-6 overflow-y-auto pt-10 pb-20 no-scrollbar">
+             <motion.div 
+               initial={{ scale: 0.9, opacity: 0 }} 
+               animate={{ scale: 1, opacity: 1 }} 
+               className="bg-white dark:bg-slate-900 w-full max-w-lg rounded-[2.5rem] md:rounded-[3.5rem] shadow-2xl p-8 md:p-12 relative border-4 border-slate-50 max-h-[90vh] overflow-y-auto no-scrollbar"
+             >
+                 <button onClick={() => setPayModal(null)} className="absolute top-6 right-6 md:top-10 md:right-10 text-slate-400"><X size={24} /></button>
                  <h2 className="text-2xl font-black uppercase italic mb-8 text-center">{payModal} <span className="text-emerald-500">পেমেন্ট</span></h2>
                  <div className="p-10 bg-slate-50 dark:bg-slate-800 rounded-[2.5rem] text-center mb-8 shadow-inner border border-white dark:border-slate-700">
                      <p className="text-[10px] font-black uppercase text-slate-400 mb-4">টাকার পরিমাণ (৳)</p>
@@ -515,9 +527,13 @@ const FactoryPanel = ({ type, masterData, setMasterData, showNotify, user, setAc
         )}
 
         {ledgerModal && (
-          <div className="fixed inset-0 z-[1000] bg-slate-950/40 backdrop-blur-md flex items-center justify-center p-4">
-             <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-white dark:bg-slate-900 w-full max-w-2xl rounded-[3rem] shadow-2xl p-10 relative border-4 border-slate-50 max-h-[90vh] overflow-y-auto">
-                <button onClick={() => setLedgerModal(null)} className="absolute top-10 right-10 text-slate-400"><X size={32} /></button>
+          <div className="fixed inset-0 z-[1000] bg-slate-950/40 backdrop-blur-md flex items-center justify-center p-2 md:p-6 overflow-y-auto pt-10 pb-20 no-scrollbar">
+             <motion.div 
+               initial={{ scale: 0.9, opacity: 0 }} 
+               animate={{ scale: 1, opacity: 1 }} 
+               className="bg-white dark:bg-slate-900 w-full max-w-2xl rounded-[2rem] md:rounded-[3rem] shadow-2xl p-8 md:p-10 relative border-4 border-slate-50 max-h-[90vh] overflow-y-auto no-scrollbar"
+             >
+                <button onClick={() => setLedgerModal(null)} className="absolute top-6 right-6 md:top-10 md:right-10 text-slate-400"><X size={24} /></button>
                 <h2 className="text-2xl font-black uppercase italic mb-10 text-center font-outfit">{ledgerModal} <span className="text-blue-600">লেজার</span></h2>
                 <div className="space-y-4">
                    {(masterData.productions || []).filter(p => p.worker === ledgerModal && p.status === 'Received' && p.type === type).map((p, idx) => (

@@ -412,9 +412,13 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
             {/* Modals */}
             <AnimatePresence>
                 {showModal && (
-                    <div className="fixed inset-0 z-[1000] bg-slate-950/40 backdrop-blur-md flex items-center justify-center p-4">
-                        <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-white dark:bg-slate-900 w-full max-w-4xl rounded-[3rem] shadow-2xl p-12 relative border-4 border-slate-50">
-                            <button onClick={() => setShowModal(false)} className="absolute top-10 right-10 text-slate-400 hover:text-black"><X size={32} /></button>
+                    <div className="fixed inset-0 z-[1000] bg-slate-950/40 backdrop-blur-md flex items-center justify-center p-2 md:p-6 overflow-y-auto pt-10 pb-20 no-scrollbar">
+                        <motion.div 
+                          initial={{ scale: 0.9, opacity: 0 }} 
+                          animate={{ scale: 1, opacity: 1 }} 
+                          className="bg-white dark:bg-slate-900 w-full max-w-4xl rounded-[2rem] md:rounded-[3rem] shadow-2xl p-6 md:p-12 relative border-4 border-slate-50 max-h-[90vh] overflow-y-auto no-scrollbar"
+                        >
+                            <button onClick={() => setShowModal(false)} className="absolute top-4 right-4 md:top-10 md:right-10 text-slate-400 hover:text-black"><X size={24} /></button>
                             <h2 className="text-3xl font-black uppercase italic mb-10 text-center">নতুন পাতা কাজ <span className="text-blue-600">ইস্যু করুন</span></h2>
                             
                             <div className="bg-blue-600/5 p-8 rounded-[2.5rem] border border-blue-500/10 mb-8 flex flex-col md:flex-row items-center gap-6">
@@ -480,9 +484,13 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                 )}
 
                 {receiveModal && (
-                    <div className="fixed inset-0 z-[1000] bg-slate-950/40 backdrop-blur-md flex items-center justify-center p-4">
-                         <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-white dark:bg-slate-900 w-full max-w-lg rounded-[3.5rem] shadow-2xl p-12 relative border-4 border-slate-50">
-                             <button onClick={() => setReceiveModal(null)} className="absolute top-10 right-10 text-slate-400"><X size={32} /></button>
+                    <div className="fixed inset-0 z-[1000] bg-slate-950/40 backdrop-blur-md flex items-center justify-center p-2 md:p-6 overflow-y-auto pt-10 pb-20 no-scrollbar">
+                         <motion.div 
+                           initial={{ scale: 0.9, opacity: 0 }} 
+                           animate={{ scale: 1, opacity: 1 }} 
+                           className="bg-white dark:bg-slate-900 w-full max-w-lg rounded-[2.5rem] md:rounded-[3.5rem] shadow-2xl p-8 md:p-12 relative border-4 border-slate-50 max-h-[90vh] overflow-y-auto no-scrollbar"
+                         >
+                             <button onClick={() => setReceiveModal(null)} className="absolute top-6 right-6 md:top-10 md:right-10 text-slate-400"><X size={24} /></button>
                              <h2 className="text-2xl font-black uppercase italic mb-8 text-center">{receiveModal.worker} <span className="text-emerald-500">জমা দিন</span></h2>
                              <form onSubmit={handleConfirmReceive}>
                                  <div className="p-10 bg-slate-50 dark:bg-slate-800 rounded-[2.5rem] text-center mb-8 border border-white dark:border-slate-700 shadow-inner">
@@ -496,9 +504,13 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                 )}
 
                 {payModal && (
-                    <div className="fixed inset-0 z-[1000] bg-slate-950/40 backdrop-blur-md flex items-center justify-center p-4">
-                         <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-white dark:bg-slate-900 w-full max-w-lg rounded-[3.5rem] shadow-2xl p-12 relative border-4 border-slate-50">
-                             <button onClick={() => setPayModal(null)} className="absolute top-10 right-10 text-slate-400"><X size={32} /></button>
+                    <div className="fixed inset-0 z-[1000] bg-slate-950/40 backdrop-blur-md flex items-center justify-center p-2 md:p-6 overflow-y-auto pt-10 pb-20 no-scrollbar">
+                         <motion.div 
+                           initial={{ scale: 0.9, opacity: 0 }} 
+                           animate={{ scale: 1, opacity: 1 }} 
+                           className="bg-white dark:bg-slate-900 w-full max-w-lg rounded-[2.5rem] md:rounded-[3.5rem] shadow-2xl p-8 md:p-12 relative border-4 border-slate-50 max-h-[90vh] overflow-y-auto no-scrollbar"
+                         >
+                             <button onClick={() => setPayModal(null)} className="absolute top-6 right-6 md:top-10 md:right-10 text-slate-400"><X size={24} /></button>
                              <h2 className="text-2xl font-black uppercase italic mb-8 text-center">{payModal} <span className="text-emerald-500">পেমেন্ট</span></h2>
                              <div className="p-10 bg-slate-50 dark:bg-slate-800 rounded-[2.5rem] text-center mb-8 border border-white dark:border-slate-700 shadow-inner">
                                  <p className="text-[10px] font-black uppercase text-slate-400 mb-4">টাকার পরিমাণ (৳)</p>

@@ -249,52 +249,53 @@ const CuttingPanel = ({
   return (
     <div className="space-y-10 pb-32 animate-fade-up px-1 md:px-4 text-black">
       {/* SaaS Operational HUD */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+      {/* SaaS Operational HUD */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 md:gap-4">
         <div className="bg-slate-950 p-4 md:p-6 rounded-xl text-white shadow-xl flex flex-col justify-between group overflow-hidden relative">
-            <div className="flex justify-between items-start mb-3 relative z-10">
-                <div className="w-10 h-10 bg-white/10 text-white rounded-lg flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
-                    <Package size={20} />
+            <div className="flex justify-between items-start mb-2 md:mb-3 relative z-10">
+                <div className="w-8 h-8 md:w-10 md:h-10 bg-white/10 text-white rounded-lg flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
+                    <Package size={16} className="md:w-5 md:h-5" />
                 </div>
                 <div className="text-right">
-                    <p className="text-xl md:text-2xl font-bold tracking-tight leading-none">{stats.totalIssued.toLocaleString()}</p>
-                    <p className="text-[7px] font-bold text-white/40 uppercase tracking-widest mt-0.5 leading-none">মোট ইস্যু</p>
+                    <p className="text-lg md:text-2xl font-bold tracking-tight leading-none">{stats.totalIssued.toLocaleString()}</p>
+                    <p className="text-[7px] font-bold text-white/40 uppercase tracking-widest mt-0.5 leading-none">TOTAL ISSUED</p>
                 </div>
             </div>
-            <div className="flex items-center gap-2 text-white/30 border-t border-white/10 pt-3 relative z-10">
+            <div className="flex items-center gap-2 text-white/30 border-t border-white/10 pt-2.5 md:pt-3 relative z-10">
                 <div className="flex gap-1">
-                    {[1,2,3].map(i => <div key={i} className="w-1.5 h-1 bg-white/20 rounded-full animate-pulse" style={{ animationDelay: `${i*0.2}s` }}></div>)}
+                    {[1,2,3].map(i => <div key={i} className="w-1.5 h-0.5 md:h-1 bg-white/20 rounded-full animate-pulse" style={{ animationDelay: `${i*0.2}s` }}></div>)}
                 </div>
-                <p className="text-[7px] font-bold tracking-widest uppercase whitespace-nowrap">Production Active</p>
+                <p className="text-[6px] md:text-[7px] font-bold tracking-[0.2em] uppercase whitespace-nowrap">PRODUCTION ACTIVE</p>
             </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-900 p-4 md:p-6 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm flex items-center justify-between group">
+        <div className="bg-white dark:bg-slate-900 p-4 md:p-6 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm flex items-center justify-between group border-b-4 border-b-blue-500">
             <div className="text-left">
-                <p className="text-xl md:text-2xl font-bold tracking-tight text-black dark:text-white leading-none mb-1">{stats.inProduction.toLocaleString()}</p>
-                <p className="text-[7px] font-bold text-slate-400 uppercase tracking-widest leading-none">উৎপাদনে আছে</p>
+                <p className="text-lg md:text-2xl font-bold tracking-tight text-black dark:text-white leading-none mb-1">{stats.inProduction.toLocaleString()}</p>
+                <p className="text-[7px] font-bold text-slate-400 uppercase tracking-widest leading-none">IN PRODUCTION</p>
             </div>
-            <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
-                <Activity size={20} />
+            <div className="w-8 h-8 md:w-10 md:h-10 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
+                <Activity size={16} className="md:w-5 md:h-5" />
             </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-900 p-4 md:p-6 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm flex items-center justify-between group">
+        <div className="bg-white dark:bg-slate-900 p-4 md:p-6 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm flex items-center justify-between group border-b-4 border-b-emerald-500">
             <div className="text-left">
-                <p className="text-xl md:text-2xl font-bold tracking-tight text-black dark:text-white leading-none mb-1">{stats.received.toLocaleString()}</p>
-                <p className="text-[7px] font-bold text-slate-400 uppercase tracking-widest leading-none">মোট জমা</p>
+                <p className="text-lg md:text-2xl font-bold tracking-tight text-black dark:text-white leading-none mb-1">{stats.received.toLocaleString()}</p>
+                <p className="text-[7px] font-bold text-slate-400 uppercase tracking-widest leading-none">TOTAL RECEIVED</p>
             </div>
-            <div className="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-lg flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
-                <CheckCircle size={20} />
+            <div className="w-8 h-8 md:w-10 md:h-10 bg-emerald-50 text-emerald-600 rounded-lg flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
+                <CheckCircle size={16} className="md:w-5 md:h-5" />
             </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-900 p-4 md:p-6 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm flex items-center justify-between group">
+        <div className="bg-white dark:bg-slate-900 p-4 md:p-6 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm flex items-center justify-between group border-b-4 border-b-rose-500 text-rose-500">
             <div className="text-left">
-                <p className="text-xl md:text-2xl font-bold tracking-tight text-black dark:text-white leading-none mb-1">{stats.pending.toLocaleString()}</p>
-                <p className="text-[7px] font-bold text-slate-400 uppercase tracking-widest leading-none">বাকি লট</p>
+                <p className="text-lg md:text-2xl font-bold tracking-tight leading-none mb-1">{stats.pending.toLocaleString()}</p>
+                <p className="text-[7px] font-bold text-slate-400 uppercase tracking-widest leading-none">PENDING LOTS</p>
             </div>
-            <div className="w-10 h-10 bg-rose-50 text-rose-600 rounded-lg flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
-                <Clock size={20} />
+            <div className="w-8 h-8 md:w-10 md:h-10 bg-rose-50 rounded-lg flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
+                <Clock size={16} className="md:w-5 md:h-5" />
             </div>
         </div>
       </div>
@@ -576,13 +577,13 @@ const CuttingPanel = ({
       {/* Entry Modal */}
       <AnimatePresence>
         {showModal && (
-          <div className="fixed inset-0 z-[1000] bg-slate-950/40 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
-            <div className="w-full max-w-4xl my-auto bg-white dark:bg-slate-900 rounded-xl shadow-2xl p-8 md:p-12 relative overflow-hidden border border-slate-100 dark:border-slate-800 animate-fade-up">
+          <div className="fixed inset-0 z-[1000] bg-slate-950/40 backdrop-blur-md flex items-center justify-center p-2 md:p-6 overflow-y-auto pt-10 pb-20 no-scrollbar">
+            <div className="w-full max-w-4xl my-auto bg-white dark:bg-slate-900 rounded-xl shadow-2xl p-6 md:p-12 relative overflow-hidden border border-slate-100 dark:border-slate-800 animate-fade-up max-h-[90vh] overflow-y-auto no-scrollbar">
               <button 
                 onClick={() => setShowModal(false)} 
-                className="absolute top-6 right-6 p-2.5 bg-slate-50 dark:bg-slate-800 rounded-xl hover:bg-slate-950 hover:text-white transition-all text-black dark:text-white dark:text-white"
+                className="absolute top-4 right-4 md:top-6 md:right-6 p-2 bg-slate-50 dark:bg-slate-800 rounded-xl hover:bg-slate-950 hover:text-white transition-all text-black dark:text-white"
               >
-                <X size={20} />
+                <X size={18} />
               </button>
 
               <div className="space-y-10">

@@ -220,17 +220,17 @@ const ClientLedgerPanel = ({ masterData, setMasterData, showNotify, user, setAct
   return (
     <div className="space-y-10 pb-32 animate-fade-up font-outfit text-slate-950 dark:text-white">
       {/* Header Central Hub Style */}
-      <div className="flex flex-col md:flex-row justify-between items-center gap-8 mb-16 saas-card bg-slate-950 text-white !border-slate-800 relative overflow-hidden group">
+      <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-10 saas-card bg-slate-950 text-white !border-slate-800 relative overflow-hidden group !p-8 md:!p-12">
          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-blue-900/30 via-transparent to-transparent opacity-60"></div>
-         <div className="relative z-10 flex items-center gap-8">
-            <div className="w-20 h-20 bg-white/10 rounded-3xl flex items-center justify-center backdrop-blur-xl border border-white/10 shadow-2xl group-hover:rotate-12 transition-transform duration-700">
-                <LayoutGrid size={40} className="text-blue-400" />
+         <div className="relative z-10 flex flex-col md:flex-row items-center gap-6 md:gap-8 text-center md:text-left">
+            <div className="w-16 h-16 md:w-20 md:h-20 bg-white/10 rounded-2xl md:rounded-3xl flex items-center justify-center backdrop-blur-xl border border-white/10 shadow-2xl group-hover:rotate-12 transition-transform duration-700 mx-auto">
+                <LayoutGrid size={32} className="text-blue-400" />
             </div>
-            <div>
-                <h2 className="text-4xl md:text-6xl font-black tracking-tighter uppercase leading-none mb-2 italic">
+            <div className="space-y-1">
+                <h2 className="text-3xl md:text-5xl lg:text-6xl font-black tracking-tighter uppercase leading-none italic">
                     {selectedClient ? <span className="text-white">{selectedClient} <span className="text-blue-500">Hub</span></span> : <span>Client <span className="text-blue-500">Ledger Hub</span></span>}
                 </h2>
-                <p className="text-[10px] font-bold text-white/50 uppercase tracking-[0.5em] font-mono">
+                <p className="text-[9px] md:text-[10px] font-bold text-white/50 uppercase tracking-[0.4em] font-mono leading-none">
                     {selectedClient ? `B2B ACCOUNT PROTOCOL: SECURE` : 'B2B Partner Matrix • NRZOONE v5.2'}
                 </p>
             </div>
@@ -238,9 +238,9 @@ const ClientLedgerPanel = ({ masterData, setMasterData, showNotify, user, setAct
          <div className="relative z-10 flex gap-4">
             <button 
                 onClick={() => { if(selectedClient) setSelectedClient(null); else setActivePanel('Overview'); }}
-                className="w-16 h-16 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/20 transition-all text-white"
+                className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/20 transition-all text-white shadow-xl"
             >
-                {selectedClient ? <ArrowLeft size={24} /> : <X size={24} />}
+                {selectedClient ? <ArrowLeft size={20} /> : <X size={20} />}
             </button>
          </div>
       </div>
@@ -265,17 +265,17 @@ const ClientLedgerPanel = ({ masterData, setMasterData, showNotify, user, setAct
                         <div className="h-full bg-rose-500" style={{ width: stats.totalDue > 0 ? '100%' : '0%' }}></div>
                     </div>
                 </motion.div>
-                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="saas-card bg-white dark:bg-slate-900 shadow-2xl flex flex-col justify-between group h-48 border-l-8 border-l-blue-600 overflow-hidden relative">
+                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="saas-card bg-white dark:bg-slate-900 shadow-2xl flex flex-col justify-between group h-40 md:h-48 border-l-8 border-l-blue-600 overflow-hidden relative p-6 md:p-8">
                     <div className="absolute top-0 right-0 p-10 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity">
                         <TrendingUp size={140} className="text-blue-600" />
                     </div>
-                    <div className="flex justify-between items-start mb-6">
+                    <div className="flex justify-between items-start mb-4">
                         <div>
-                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] leading-none mb-4">Life-Time Billed</p>
-                        <h3 className="text-4xl font-black tracking-tight text-slate-900 dark:text-white leading-none">৳ {stats.totalBilled.toLocaleString()}</h3>
+                        <p className="text-[9px] md:text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] leading-none mb-3">Life-Time Billed</p>
+                        <h3 className="text-3xl md:text-4xl font-black tracking-tight text-slate-900 dark:text-white leading-none">৳ {stats.totalBilled.toLocaleString()}</h3>
                         </div>
-                        <div className="w-14 h-14 bg-blue-50 dark:bg-blue-900/20 text-blue-600 flex items-center justify-center rounded-2xl shadow-inner group-hover:scale-110 transition-transform">
-                            <BarChart2 size={28} />
+                        <div className="w-10 h-10 md:w-14 md:h-14 bg-blue-50 dark:bg-blue-900/20 text-blue-600 flex items-center justify-center rounded-xl md:rounded-2xl shadow-inner group-hover:scale-110 transition-transform">
+                            <BarChart2 size={24} />
                         </div>
                     </div>
                 </motion.div>
@@ -457,12 +457,12 @@ const ClientLedgerPanel = ({ masterData, setMasterData, showNotify, user, setAct
       {/* Action Protocol Modals */}
       <AnimatePresence>
         {showActionModal && (
-            <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-3xl z-[1000] flex items-center justify-center p-4">
+            <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-3xl z-[1000] flex items-center justify-center p-2 md:p-6 overflow-y-auto pt-10 pb-20">
                 <motion.div 
                     initial={{ opacity: 0, scale: 0.9, y: 30 }} 
                     animate={{ opacity: 1, scale: 1, y: 0 }} 
                     exit={{ opacity: 0, scale: 0.9, y: 30 }}
-                    className="saas-card bg-white dark:bg-slate-900 w-full max-w-xl p-12 space-y-10 border-t-8 border-slate-950 relative shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)]"
+                    className="saas-card bg-white dark:bg-slate-900 w-full max-w-xl p-8 md:p-12 space-y-8 border-t-8 border-slate-950 relative shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] max-h-[90vh] overflow-y-auto no-scrollbar"
                 >
                     <button onClick={() => setShowActionModal(null)} className="absolute top-6 right-6 p-2 text-slate-400 hover:text-black transition-colors"><X size={20} /></button>
                     
