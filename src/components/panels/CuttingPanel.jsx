@@ -250,52 +250,52 @@ const CuttingPanel = ({
     <div className="space-y-10 pb-32 animate-fade-up px-1 md:px-4 text-black">
       {/* SaaS Operational HUD */}
       {/* SaaS Operational HUD */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 md:gap-4">
-        <div className="bg-slate-950 p-4 md:p-6 rounded-xl text-white shadow-xl flex flex-col justify-between group overflow-hidden relative">
-            <div className="flex justify-between items-start mb-2 md:mb-3 relative z-10">
-                <div className="w-8 h-8 md:w-10 md:h-10 bg-white/10 text-white rounded-lg flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
-                    <Package size={16} className="md:w-5 md:h-5" />
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3">
+        <div className="bg-slate-950 p-3.5 md:p-5 rounded-xl text-white shadow-xl flex flex-col justify-between group overflow-hidden relative">
+            <div className="flex justify-between items-start mb-1.5 md:mb-2 relative z-10">
+                <div className="w-7 h-7 md:w-9 md:h-9 bg-white/10 text-white rounded-lg flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
+                    <Package size={14} className="md:w-4 md:h-4" />
                 </div>
                 <div className="text-right">
-                    <p className="text-lg md:text-2xl font-bold tracking-tight leading-none">{stats.totalIssued.toLocaleString()}</p>
-                    <p className="text-[7px] font-bold text-white/40 uppercase tracking-widest mt-0.5 leading-none">TOTAL ISSUED</p>
+                    <p className="text-base md:text-xl font-black tracking-tight leading-none">{stats.totalIssued.toLocaleString()}</p>
+                    <p className="text-[6.5px] font-black text-white/40 uppercase tracking-widest mt-0.5 leading-none">TOTAL ISSUED</p>
                 </div>
             </div>
-            <div className="flex items-center gap-2 text-white/30 border-t border-white/10 pt-2.5 md:pt-3 relative z-10">
+            <div className="flex items-center gap-2 text-white/30 border-t border-white/10 pt-2 md:pt-2.5 relative z-10">
                 <div className="flex gap-1">
                     {[1,2,3].map(i => <div key={i} className="w-1.5 h-0.5 md:h-1 bg-white/20 rounded-full animate-pulse" style={{ animationDelay: `${i*0.2}s` }}></div>)}
                 </div>
-                <p className="text-[6px] md:text-[7px] font-bold tracking-[0.2em] uppercase whitespace-nowrap">PRODUCTION ACTIVE</p>
+                <p className="text-[6px] md:text-[6.5px] font-bold tracking-[0.2em] uppercase whitespace-nowrap">PRODUCTION ACTIVE</p>
             </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-900 p-4 md:p-6 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm flex items-center justify-between group border-b-4 border-b-blue-500">
+        <div className="bg-white dark:bg-slate-900 p-3.5 md:p-5 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm flex items-center justify-between group border-b-[3px] border-b-blue-500">
             <div className="text-left">
-                <p className="text-lg md:text-2xl font-bold tracking-tight text-black dark:text-white leading-none mb-1">{stats.inProduction.toLocaleString()}</p>
-                <p className="text-[7px] font-bold text-slate-400 uppercase tracking-widest leading-none">IN PRODUCTION</p>
+                <p className="text-base md:text-xl font-black tracking-tight text-black dark:text-white leading-none mb-1">{stats.inProduction.toLocaleString()}</p>
+                <p className="text-[6.5px] font-black text-slate-400 uppercase tracking-widest leading-none">IN PRODUCTION</p>
             </div>
-            <div className="w-8 h-8 md:w-10 md:h-10 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
-                <Activity size={16} className="md:w-5 md:h-5" />
+            <div className="w-7 h-7 md:w-9 md:h-9 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
+                <Activity size={14} className="md:w-4 md:h-4" />
             </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-900 p-4 md:p-6 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm flex items-center justify-between group border-b-4 border-b-emerald-500">
+        <div className="bg-white dark:bg-slate-900 p-3.5 md:p-5 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm flex items-center justify-between group border-b-[3px] border-b-emerald-500">
             <div className="text-left">
-                <p className="text-lg md:text-2xl font-bold tracking-tight text-black dark:text-white leading-none mb-1">{stats.received.toLocaleString()}</p>
-                <p className="text-[7px] font-bold text-slate-400 uppercase tracking-widest leading-none">TOTAL RECEIVED</p>
+                <p className="text-base md:text-xl font-black tracking-tight text-black dark:text-white leading-none mb-1">{stats.received.toLocaleString()}</p>
+                <p className="text-[6.5px] font-black text-slate-400 uppercase tracking-widest leading-none">TOTAL RECEIVED</p>
             </div>
-            <div className="w-8 h-8 md:w-10 md:h-10 bg-emerald-50 text-emerald-600 rounded-lg flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
-                <CheckCircle size={16} className="md:w-5 md:h-5" />
+            <div className="w-7 h-7 md:w-9 md:h-9 bg-emerald-50 text-emerald-600 rounded-lg flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
+                <CheckCircle size={14} className="md:w-4 md:h-4" />
             </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-900 p-4 md:p-6 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm flex items-center justify-between group border-b-4 border-b-rose-500 text-rose-500">
+        <div className="bg-white dark:bg-slate-900 p-3.5 md:p-5 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm flex items-center justify-between group border-b-[3px] border-b-rose-500 text-rose-500">
             <div className="text-left">
-                <p className="text-lg md:text-2xl font-bold tracking-tight leading-none mb-1">{stats.pending.toLocaleString()}</p>
-                <p className="text-[7px] font-bold text-slate-400 uppercase tracking-widest leading-none">PENDING LOTS</p>
+                <p className="text-base md:text-xl font-black tracking-tight leading-none mb-1">{stats.pending.toLocaleString()}</p>
+                <p className="text-[6.5px] font-black text-slate-400 uppercase tracking-widest leading-none">PENDING LOTS</p>
             </div>
-            <div className="w-8 h-8 md:w-10 md:h-10 bg-rose-50 rounded-lg flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
-                <Clock size={16} className="md:w-5 md:h-5" />
+            <div className="w-7 h-7 md:w-9 md:h-9 bg-rose-50 rounded-lg flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
+                <Clock size={14} className="md:w-4 md:h-4" />
             </div>
         </div>
       </div>
@@ -305,36 +305,36 @@ const CuttingPanel = ({
       <div className="bg-white dark:bg-slate-900 !p-1.5 flex flex-col lg:flex-row items-center justify-between gap-6 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm mb-6">
         <div className="flex flex-wrap gap-1 w-full lg:w-auto overflow-x-auto no-scrollbar">
           {[
-            { id: "Incoming Orders", label: "ইনকামিং অর্ডার (B2B Incoming)" },
-            { id: "Design Registration", label: "ডিজাইন এন্ট্রি (Registration)" },
-            { id: "Cutting Queue", label: "কাটিং কিউ (Queue)" },
-            { id: "Production Status", label: "প্রোডাকশন স্ট্যাটাস (Stats)" }
+            { id: "Incoming Orders", label: "ইনকামিং অর্ডার" },
+            { id: "Design Registration", label: "ডিজাইন এন্ট্রি" },
+            { id: "Cutting Queue", label: "কাটিং কিউ" },
+            { id: "Production Status", label: "স্ট্যাটাস" }
           ].map(tab => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`px-6 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all ${activeTab === tab.id ? 'bg-slate-950 text-white shadow-lg' : 'text-black dark:text-white dark:text-white hover:text-black dark:text-white dark:hover:text-white'}`}
+              className={`px-4 md:px-5 py-2 md:py-2 rounded-lg text-[8.5px] md:text-[9.5px] font-black uppercase tracking-widest transition-all ${activeTab === tab.id ? 'bg-slate-950 text-white shadow-md' : 'text-black dark:text-white hover:bg-slate-100 dark:hover:bg-white/5'}`}
             >
               {tab.label}
             </button>
           ))}
         </div>
 
-        <div className="flex items-center gap-3 w-full lg:w-auto">
+        <div className="flex items-center gap-2 w-full lg:w-auto">
           <div className="relative group flex-1 lg:flex-none">
-            <Search size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-black dark:text-white dark:text-white" />
+            <Search size={12} className="absolute left-3 top-1/2 -translate-y-1/2 text-black/30 dark:text-white/30" />
             <input
               placeholder="ডিজাইন বা লট..."
-              className="premium-input !pl-11 !h-11 !text-[10px] !bg-slate-50 dark:!bg-slate-800/50"
+              className="premium-input !pl-9 !h-9 !text-[9px] !bg-slate-50 dark:!bg-slate-800/20"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
           <button 
              onClick={() => setShowModal(true)}
-             className="w-11 h-11 bg-slate-950 text-white rounded-xl shadow-lg flex items-center justify-center hover:bg-black transition-all"
+             className="w-9 h-9 bg-slate-950 text-white rounded-lg shadow-md flex items-center justify-center hover:bg-black transition-all"
           >
-            <Plus size={18} />
+            <Plus size={16} />
           </button>
         </div>
       </div>
@@ -347,33 +347,33 @@ const CuttingPanel = ({
               {(masterData.productionRequests || [])
                 .filter(r => r.status !== 'In Cutting' && r.status !== 'Approved')
                 .map((req, i) => (
-                  <div key={i} className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl shadow-sm hover:border-blue-500 transition-all flex flex-col group p-6 space-y-6">
+                  <div key={i} className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl shadow-sm hover:border-blue-500 transition-all flex flex-col group p-4 space-y-4">
                       <div className="flex justify-between items-start">
                           <div>
-                              <p className="text-[9px] font-black text-blue-600 uppercase tracking-widest mb-1 italic">B2B INCOMING</p>
-                              <h4 className="text-xl font-black uppercase italic leading-none">{req.design}</h4>
+                              <p className="text-[7.5px] font-black text-blue-600 uppercase tracking-widest mb-0.5 italic">B2B INCOMING</p>
+                              <h4 className="text-lg font-black uppercase italic leading-none">{req.design}</h4>
                           </div>
                           <div className="text-right">
-                              <p className="text-xs font-black text-slate-400 uppercase">{req.client}</p>
-                              <p className="text-[9px] font-bold text-slate-300 font-mono mt-1">{req.date}</p>
+                              <p className="text-[10px] font-black text-slate-400 uppercase">{req.client}</p>
+                              <p className="text-[8px] font-bold text-slate-300 font-mono mt-0.5">{req.date}</p>
                           </div>
                       </div>
                       
-                      <div className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl space-y-4">
+                      <div className="p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg space-y-2">
                           <div className="flex justify-between items-end">
                               <div>
-                                  <p className="text-[8px] font-black uppercase text-slate-400 mb-1">Total Pieces</p>
-                                  <p className="text-2xl font-black italic">{Number(req.totalBorka || 0) + Number(req.totalHijab || 0)} <span className="text-xs">PCS</span></p>
+                                  <p className="text-[7.5px] font-black uppercase text-slate-400 mb-0.5">Total Pieces</p>
+                                  <p className="text-xl font-black italic">{Number(req.totalBorka || 0) + Number(req.totalHijab || 0)} <span className="text-[10px]">PCS</span></p>
                               </div>
                               <div className="text-right">
-                                  <p className="text-[8px] font-black uppercase text-slate-400 mb-1">Fabric Consumed</p>
-                                  <p className="text-lg font-black italic text-rose-500">{req.fabricGoj} <span className="text-xs">YDS</span></p>
+                                  <p className="text-[7.5px] font-black uppercase text-slate-400 mb-0.5">Fabric Consumed</p>
+                                  <p className="text-base font-black italic text-rose-500">{req.fabricGoj} <span className="text-[10px]">YDS</span></p>
                               </div>
                           </div>
                       </div>
 
-                      <div className="space-y-4 border-t border-slate-100 dark:border-slate-800 pt-6">
-                          <p className="text-[10px] font-bold text-slate-500 line-clamp-2 italic uppercase">Note: {req.note || 'No special requirements listed.'}</p>
+                      <div className="space-y-3 border-t border-slate-100 dark:border-slate-800 pt-4 mt-auto">
+                          <p className="text-[9px] font-bold text-slate-500 line-clamp-1 italic uppercase leading-none">Note: {req.note || 'No special requirements listed.'}</p>
                           <button 
                             onClick={() => {
                                 setEntryData({
@@ -386,9 +386,9 @@ const CuttingPanel = ({
                                 });
                                 setShowModal(true);
                             }}
-                            className="w-full py-4 bg-blue-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg hover:bg-blue-700 active:scale-95 transition-all"
+                            className="w-full py-3 bg-blue-600 text-white rounded-lg text-[9px] font-black uppercase tracking-widest shadow-lg hover:bg-blue-700 active:scale-95 transition-all"
                           >
-                             অর্ডার গ্রহণ ও প্রসেসিং শুরু (START PROCESSING)
+                             অর্ডার গ্রহণ ও প্রসেসিং
                           </button>
                       </div>
                   </div>
@@ -415,62 +415,62 @@ const CuttingPanel = ({
                     item.design?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                     item.color?.toLowerCase().includes(searchTerm.toLowerCase())
                   ).map((item, idx) => (
-                    <div key={item.id || idx} className="flex flex-col h-full bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 rounded-xl shadow-sm hover:border-slate-950 transition-all group animate-fade-up">
-                        <div className="p-6 space-y-6 flex-1">
+                    <div key={item.id || idx} className="flex flex-col h-full bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl shadow-sm hover:border-slate-950 transition-all group animate-fade-up">
+                        <div className="p-4 space-y-4 flex-1">
                             <div className="flex justify-between items-start">
-                                <div className="space-y-1">
-                                    <p className="text-[9px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest leading-none">ডিজাইন আইডি (Design)</p>
-                                    <h4 className="text-2xl font-bold tracking-tight text-black dark:text-white dark:text-white uppercase leading-none">{item.design}</h4>
+                                <div className="space-y-0.5">
+                                    <p className="text-[8px] font-black text-black/30 dark:text-white/30 uppercase tracking-widest leading-none">ডিজাইন আইডি (Design)</p>
+                                    <h4 className="text-xl font-black tracking-tight text-black dark:text-white uppercase leading-none">{item.design}</h4>
                                 </div>
-                                <div className="w-12 h-12 bg-slate-950 text-white rounded-xl flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform font-bold text-xs flex-col leading-none text-center">
-                                    <span className="text-[10px]">#{item.lotNo}</span>
+                                <div className="w-10 h-10 bg-slate-950 text-white rounded-lg flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform font-black text-[10px] flex-col leading-none text-center">
+                                    <span>#{item.lotNo}</span>
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-3 gap-4">
-                                <div className="bg-slate-50 dark:bg-slate-800/50 p-3 rounded-xl border border-slate-100 dark:border-slate-800">
-                                    <p className="text-[8px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest mb-1 italic">রঙ</p>
-                                    <p className="text-sm font-bold text-black dark:text-white dark:text-white truncate uppercase">{item.color}</p>
+                            <div className="grid grid-cols-3 gap-2">
+                                <div className="bg-slate-50 dark:bg-slate-800/50 p-2.5 rounded-lg border border-slate-100 dark:border-slate-800">
+                                    <p className="text-[7.5px] font-black text-black/30 dark:text-white/30 uppercase tracking-widest mb-0.5 italic">রঙ</p>
+                                    <p className="text-[11px] font-black text-black dark:text-white truncate uppercase">{item.color}</p>
                                 </div>
-                                <div className="bg-slate-50 dark:bg-slate-800/50 p-3 rounded-xl border border-slate-100 dark:border-slate-800">
-                                    <p className="text-[8px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest mb-1 italic">তারিখ</p>
-                                    <p className="text-sm font-bold text-black dark:text-white dark:text-white truncate italic">{item.date}</p>
+                                <div className="bg-slate-50 dark:bg-slate-800/50 p-2.5 rounded-lg border border-slate-100 dark:border-slate-800">
+                                    <p className="text-[7.5px] font-black text-black/30 dark:text-white/30 uppercase tracking-widest mb-0.5 italic">তারিখ</p>
+                                    <p className="text-[11px] font-black text-black dark:text-white truncate italic">{item.date}</p>
                                 </div>
-                                <div className="bg-slate-50 dark:bg-slate-800/50 p-3 rounded-xl border border-slate-100 dark:border-slate-800">
-                                    <p className="text-[8px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest mb-1 italic">ক্লায়েন্ট</p>
-                                    <p className="text-sm font-bold text-black dark:text-white dark:text-white truncate uppercase">{item.client || '-'}</p>
+                                <div className="bg-slate-50 dark:bg-slate-800/50 p-2.5 rounded-lg border border-slate-100 dark:border-slate-800">
+                                    <p className="text-[7.5px] font-black text-black/30 dark:text-white/30 uppercase tracking-widest mb-0.5 italic">ক্লায়েন্ট</p>
+                                    <p className="text-[11px] font-black text-black dark:text-white truncate uppercase">{item.client || '-'}</p>
                                 </div>
                             </div>
                             
-                            <div className="flex justify-between items-center py-5 border-y border-slate-100 dark:border-slate-800 border-dashed">
+                            <div className="flex justify-between items-center py-4 border-y border-slate-100 dark:border-slate-800 border-dashed">
                                 <div className="flex flex-col">
-                                     <span className="text-[9px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest mb-1 leading-none">বোরকা (Borka)</span>
-                                     <span className="text-3xl font-bold text-black dark:text-white dark:text-white leading-none">{item.borka}</span>
+                                     <span className="text-[8px] font-black text-black/30 dark:text-white/30 uppercase tracking-widest mb-0.5 leading-none">বোরকা (Borka)</span>
+                                     <span className="text-2xl font-black text-black dark:text-white leading-none">{item.borka}</span>
                                 </div>
-                                <div className="w-px h-10 bg-slate-100 dark:bg-slate-800"></div>
+                                <div className="w-px h-8 bg-slate-100 dark:bg-slate-800"></div>
                                 <div className="text-right">
-                                     <span className="text-[9px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest mb-1 leading-none">হিজাব (Hijab)</span>
-                                     <span className="text-3xl font-bold text-black dark:text-white dark:text-white leading-none">{item.hijab}</span>
+                                     <span className="text-[8px] font-black text-black/30 dark:text-white/30 uppercase tracking-widest mb-0.5 leading-none">হিজাব (Hijab)</span>
+                                     <span className="text-2xl font-black text-black dark:text-white leading-none">{item.hijab}</span>
                                 </div>
                             </div>
                         </div>
 
                         {/* Action Footer */}
-                        <div className="flex gap-3 p-6 bg-slate-50 dark:bg-slate-800/20 border-t border-slate-100 dark:border-slate-800 mt-auto">
-                            <button onClick={() => setPrintSlip(item)} className="w-11 h-11 bg-white dark:bg-slate-900 rounded-xl flex items-center justify-center text-black dark:text-white dark:text-white hover:bg-slate-950 hover:text-white transition-all shadow-sm border border-slate-200 dark:border-slate-700" title="স্লিপ প্রিন্ট">
-                                <Printer size={16} />
+                        <div className="flex gap-2 p-4 bg-slate-50 dark:bg-slate-800/20 border-t border-slate-100 dark:border-slate-800 mt-auto">
+                            <button onClick={() => setPrintSlip(item)} className="w-9 h-9 bg-white dark:bg-slate-900 rounded-lg flex items-center justify-center text-black dark:text-white hover:bg-slate-950 hover:text-white transition-all shadow-sm border border-slate-200 dark:border-slate-700" title="স্লিপ প্রিন্ট">
+                                <Printer size={14} />
                             </button>
                             <button 
                                 onClick={() => setActivePanel('Swing')} 
-                                className="flex-1 bg-slate-950 text-white dark:bg-white dark:text-slate-950 rounded-xl text-[10px] font-bold uppercase tracking-widest shadow-lg hover:bg-slate-800 transition-all font-bold"
+                                className="flex-1 bg-slate-950 text-white dark:bg-white dark:text-slate-950 rounded-lg text-[9px] font-black uppercase tracking-widest shadow-md hover:bg-slate-800 transition-all"
                             >
-                                সুইং এ পাঠান (Swing)
+                                সুইং (Swing)
                             </button>
                             {user?.role === 'admin' && (
                                 <button 
                                     onClick={() => handleDelete(item.id)} 
-                                    className="w-11 h-11 bg-white dark:bg-slate-900 rounded-xl flex items-center justify-center text-rose-500 hover:bg-rose-500 hover:text-white transition-all shadow-sm border border-slate-200 dark:border-slate-700" title="ডিলিট">
-                                    <Trash2 size={16} />
+                                    className="w-9 h-9 bg-white dark:bg-slate-900 rounded-lg flex items-center justify-center text-rose-500 hover:bg-rose-500 hover:text-white transition-all shadow-sm border border-slate-200 dark:border-slate-700" title="ডিলিট">
+                                    <Trash2 size={14} />
                                 </button>
                             )}
                         </div>

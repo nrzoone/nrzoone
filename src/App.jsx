@@ -391,7 +391,7 @@ const Sidebar = ({ activePanel, setActivePanel, panelTab, setPanelTab, user, set
                 <div className="mt-8 h-1 w-12 bg-black/10 dark:bg-white/20 rounded-full"></div>
             </div>
             
-            <div className="flex-1 overflow-y-auto px-6 md:px-8 space-y-10 no-scrollbar pb-12">
+            <div className="flex-1 overflow-y-auto px-5 md:px-6 space-y-6 no-scrollbar pb-12 mt-4">
                 {MENU_CATEGORIES.map(category => {
                     const filteredItems = category.items.filter(item => {
                         const role = user?.role?.toLowerCase();
@@ -403,24 +403,24 @@ const Sidebar = ({ activePanel, setActivePanel, panelTab, setPanelTab, user, set
                     if (filteredItems.length === 0) return null;
 
                     return (
-                        <nav key={category.id} className="space-y-2">
-                            <p className="px-5 text-[10px] font-black text-black dark:text-white tracking-[0.3em] mb-4 uppercase">{category.label}</p>
+                        <nav key={category.id} className="space-y-1">
+                            <p className="px-5 text-[8.5px] font-black text-black/50 dark:text-white/40 tracking-[0.3em] mb-2 uppercase">{category.label}</p>
                             {filteredItems.map(item => {
                                 const Icon = item.icon;
                                 const active = activePanel === item.id;
                                 return (
                                     <button
                                         key={item.id + (item.tab || "")} onClick={() => navigate(item.id, item.tab)}
-                                        className={`w-full flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all group relative ${active && (item.tab ? panelTab === item.tab : true) ? "bg-black text-white dark:bg-white dark:text-black shadow-xl" : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/5"}`}
+                                        className={`w-full flex items-center gap-3 px-4 py-2 rounded-xl transition-all group relative ${active && (item.tab ? panelTab === item.tab : true) ? "bg-black text-white dark:bg-white dark:text-black shadow-lg" : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/5"}`}
                                     >
-                                        <div className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all ${active && (item.tab ? panelTab === item.tab : true) ? "bg-white/20 dark:bg-black/10" : "bg-slate-100 dark:bg-white/5 group-hover:bg-slate-200 dark:group-hover:bg-white/10"}`}>
-                                            <Icon size={18} strokeWidth={active ? 2.5 : 2} className="shrink-0" />
+                                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all ${active && (item.tab ? panelTab === item.tab : true) ? "bg-white/20 dark:bg-black/10" : "bg-slate-100 dark:bg-white/5 group-hover:bg-slate-200 dark:group-hover:bg-white/10"}`}>
+                                            <Icon size={16} strokeWidth={active ? 2.5 : 2} className="shrink-0" />
                                         </div>
-                                        <div className="flex flex-col items-start leading-none space-y-1">
-                                            <span className={`text-[0.75rem] tracking-wide font-bold`}>{t?.(item.id.toLowerCase() + (item.tab ? "_" + item.tab : "")) || item.label}</span>
-                                            <span className={`text-[0.625rem] uppercase tracking-widest font-medium opacity-50`}>{item.sub}</span>
+                                        <div className="flex flex-col items-start leading-tight">
+                                            <span className={`text-[0.68rem] tracking-tight font-bold`}>{t?.(item.id.toLowerCase() + (item.tab ? "_" + item.tab : "")) || item.label}</span>
+                                            <span className={`text-[0.52rem] uppercase tracking-widest font-medium opacity-50`}>{item.sub}</span>
                                         </div>
-                                        {active && (item.tab ? panelTab === item.tab : true) && <div className="absolute right-4 w-1 h-1 bg-white rounded-full animate-pulse"></div>}
+                                        {active && (item.tab ? panelTab === item.tab : true) && <div className="absolute right-4 w-1 h-1 bg-blue-500 dark:bg-black rounded-full animate-pulse"></div>}
                                     </button>
                                 );
                             })}
@@ -429,18 +429,18 @@ const Sidebar = ({ activePanel, setActivePanel, panelTab, setPanelTab, user, set
                 })}
             </div>
             
-            <div className="p-8 border-t border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-slate-900/50">
+            <div className="p-6 border-t border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-slate-900/50">
                 <button 
                     onClick={() => {
                         setUser(null);
                         localStorage.removeItem('nrzone_user');
                     }} 
-                    className="w-full flex items-center gap-4 p-4 rounded-xl text-black dark:text-white hover:text-rose-500 transition-all hover:bg-rose-500/10 group"
+                    className="w-full flex items-center gap-3 p-3 rounded-xl text-black dark:text-white hover:text-rose-500 transition-all hover:bg-rose-500/10 group"
                 >
-                    <div className="w-9 h-9 rounded-xl bg-slate-100 dark:bg-white/5 flex items-center justify-center group-hover:bg-rose-500/20">
-                        <LogOut size={18} />
+                    <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-white/5 flex items-center justify-center group-hover:bg-rose-500/20">
+                        <LogOut size={16} />
                     </div>
-                    <span className="text-[0.7rem] font-bold uppercase tracking-wider">সিস্টেম বন্ধ করুন</span>
+                    <span className="text-[0.65rem] font-black uppercase tracking-widest">সিস্টেম বন্ধ করুন</span>
                 </button>
             </div>
         </aside>

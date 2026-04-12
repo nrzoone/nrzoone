@@ -799,15 +799,15 @@ const SettingsPanel_V2 = ({
 
 
   const renderDesignsList = () => (
-    <div className="space-y-8 animate-fade-up">
-       <div className="bg-white dark:bg-slate-950 p-8 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm flex flex-col md:flex-row justify-between items-center gap-6 group">
+    <div className="space-y-6 animate-fade-up">
+       <div className="bg-white dark:bg-slate-950 p-6 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm flex flex-col md:flex-row justify-between items-center gap-6 group">
           <div className="flex items-center gap-6">
-            <div className="w-14 h-14 bg-blue-600 text-white rounded-xl flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform">
-               <Palette size={24} />
+            <div className="w-12 h-12 bg-blue-600 text-white rounded-xl flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform">
+               <Palette size={20} />
             </div>
             <div>
-               <h3 className="text-2xl font-bold uppercase tracking-tight text-black dark:text-white">ডিজাইন ও <span className="text-blue-600">স্টাইল হাব</span></h3>
-               <p className="text-[9px] font-bold uppercase tracking-widest mt-2">{masterData.designs?.length || 0} টি ডিজাইন অ্যাক্টিভ আছে</p>
+               <h3 className="text-xl font-bold uppercase tracking-tight text-black dark:text-white">ডিজাইন ও <span className="text-blue-600">স্টাইল হাব</span></h3>
+               <p className="text-[8px] font-black uppercase tracking-widest mt-1.5">{masterData.designs?.length || 0} টি ডিজাইন অ্যাক্টিভ আছে</p>
             </div>
           </div>
           <button 
@@ -816,61 +816,81 @@ const SettingsPanel_V2 = ({
                 setTempImgUrl(null);
                 setShowAddModal("design");
              }} 
-             className="px-8 h-12 bg-slate-950 text-white rounded-xl text-[10px] font-bold uppercase tracking-widest hover:bg-black transition-all shadow-xl flex items-center gap-3 active:scale-95"
+             className="px-6 h-10 bg-slate-950 text-white rounded-xl text-[9px] font-bold uppercase tracking-widest hover:bg-black transition-all shadow-xl flex items-center gap-2.5 active:scale-95"
           >
-             <Plus size={18} strokeWidth={3} /> নতুন ডিজাইন যুক্ত করুন
+             <Plus size={16} strokeWidth={3} /> নতুন ডিজাইন যুক্ত করুন
           </button>
        </div>
 
-       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-5">
           {masterData.designs?.map((d, idx) => (
-             <div key={idx} className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border-2 border-slate-50 dark:border-slate-800 shadow-xl group hover:border-blue-500 transition-all relative overflow-hidden flex flex-col">
-                <div className="relative aspect-square rounded-[2rem] overflow-hidden bg-slate-50 dark:bg-slate-800 mb-6 border border-slate-100 dark:border-slate-700">
+             <div key={idx} className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-lg group hover:border-blue-500 transition-all relative overflow-hidden flex flex-col h-full">
+                <div className="relative aspect-square rounded-xl overflow-hidden bg-slate-50 dark:bg-slate-800 mb-4 border border-slate-100 dark:border-slate-700">
                     {d.image ? (
                         <img src={d.image} className="w-full h-full object-contain p-4 transition-transform group-hover:scale-110" alt={d.name} />
                     ) : (
                         <div className="w-full h-full flex items-center justify-center opacity-[0.05] group-hover:opacity-10 transition-opacity">
-                            <Palette size={120} />
+                            <Palette size={80} />
                         </div>
                     )}
-                    <div className="absolute top-4 right-4 bg-white/90 dark:bg-slate-950/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm">
-                        <p className="text-[10px] font-black italic tracking-tighter text-blue-600">৳{d.sellingPrice || 0}</p>
+                    <div className="absolute top-2.5 right-2.5 bg-slate-950/90 text-white px-2.5 py-1 rounded-lg border border-white/10 shadow-xl">
+                        <p className="text-[10px] font-black italic tracking-tighter">৳{d.sellingPrice || 0}</p>
                     </div>
                 </div>
 
-                <div className="space-y-4 flex-1">
+                <div className="space-y-4 flex-1 flex flex-col">
                     <div className="flex justify-between items-start">
-                        <h4 className="text-xl font-bold uppercase tracking-tight truncate max-w-[70%]">{d.name}</h4>
-                        <span className="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 rounded text-[7px] font-bold uppercase tracking-widest">ID: {idx+1}</span>
+                        <h4 className="text-base font-black uppercase tracking-tighter truncate max-w-[70%] italic">{d.name}</h4>
+                        <span className="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 rounded text-[7px] font-bold uppercase tracking-widest">ID: {idx+1}</span>
                     </div>
                     
-                    <div className="grid grid-cols-2 gap-3">
-                        <div className="p-3 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-white dark:border-slate-700">
-                            <p className="text-[8px] font-black uppercase text-slate-400 mb-1">Sewing</p>
-                            <p className="font-bold text-sm italic">৳{d.sewingRate || 0}</p>
+                    <div className="grid grid-cols-2 gap-2">
+                        <div className="p-2.5 bg-slate-50 dark:bg-slate-800 rounded-xl border border-white dark:border-slate-700">
+                            <p className="text-[7.5px] font-black uppercase text-slate-400 mb-1 leading-none italic">Worker</p>
+                            <div className="space-y-1">
+                               <p className="font-bold text-[10px] flex items-center justify-between"><span>SW:</span> ৳{d.sewingRate || 0}</p>
+                               <p className="font-bold text-[10px] flex items-center justify-between"><span>ST:</span> ৳{d.stoneRate || 0}</p>
+                            </div>
                         </div>
-                        <div className="p-3 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-white dark:border-slate-700">
-                            <p className="text-[8px] font-black uppercase text-slate-400 mb-1">Stone</p>
-                            <p className="font-bold text-sm italic">৳{d.stoneRate || 0}</p>
+                        <div className="p-2.5 bg-blue-50/50 dark:bg-blue-900/10 rounded-xl border border-blue-100/50 dark:border-blue-800/50">
+                            <p className="text-[7.5px] font-black uppercase text-blue-500 mb-1 leading-none italic">Client (Def)</p>
+                            <div className="space-y-1">
+                               <p className="font-bold text-[10px] text-blue-600 flex items-center justify-between"><span>SW:</span> ৳{d.defaultClientRates?.sewing || 0}</p>
+                               <p className="font-bold text-[10px] text-blue-600 flex items-center justify-between"><span>ST:</span> ৳{d.defaultClientRates?.stone || 0}</p>
+                            </div>
                         </div>
                     </div>
 
-                    <div className="flex gap-2 pt-4">
-                        <button 
-                            onClick={() => { 
-                                setEditDesignModal({...d, index: idx}); 
-                                setTempImgUrl(d.image || ""); 
-                            }} 
-                            className="flex-1 py-3 bg-slate-50 dark:bg-slate-800 hover:bg-slate-950 dark:hover:bg-white hover:text-white dark:hover:text-black rounded-xl text-[9px] font-bold uppercase transition-all shadow-sm border border-slate-100 dark:border-slate-700 flex items-center justify-center gap-2"
-                        >
-                            <Edit2 size={12} /> এডিট
-                        </button>
-                        <button 
-                            onClick={() => handleDeleteDesign(idx)} 
-                            className="w-12 h-11 flex items-center justify-center text-rose-300 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/20 rounded-xl transition-all"
-                        >
-                            <Trash2 size={16} />
-                        </button>
+                    <div className="mt-auto space-y-3">
+                       {Object.keys(d.clientRates || {}).length > 0 && (
+                           <div className="bg-slate-50 dark:bg-slate-800/50 p-2 rounded-lg border border-slate-100/50 dark:border-slate-700/50">
+                               <p className="text-[7px] font-bold text-slate-400 uppercase italic mb-1 tracking-widest">Extra B2B Rates Active</p>
+                               <div className="flex gap-1.5 overflow-x-auto no-scrollbar pb-1">
+                                   {Object.keys(d.clientRates).map(c => (
+                                       <span key={c} className="shrink-0 px-1.5 py-0.5 bg-white dark:bg-slate-900 text-[6.5px] font-black uppercase rounded border border-slate-100 dark:border-slate-800 text-slate-500">{c}</span>
+                                   ))}
+                               </div>
+                           </div>
+                       )}
+
+                       <div className="flex gap-2">
+                           <button 
+                               onClick={() => { 
+                                   setEditDesignModal({...d, index: idx}); 
+                                   setTempImgUrl(d.image || ""); 
+                                   setShowAddModal("design");
+                               }} 
+                               className="flex-1 h-10 bg-white dark:bg-slate-800 hover:bg-slate-950 dark:hover:bg-white hover:text-white dark:hover:text-black rounded-xl text-[9px] font-bold uppercase transition-all shadow-sm border border-slate-100 dark:border-slate-700 flex items-center justify-center gap-2"
+                           >
+                               <Edit2 size={12} /> এডিট (Edit)
+                           </button>
+                           <button 
+                               onClick={() => handleDeleteDesign(idx)} 
+                               className="w-10 h-10 flex items-center justify-center text-rose-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/20 rounded-xl transition-all border border-transparent hover:border-rose-100"
+                           >
+                               <Trash2 size={16} />
+                           </button>
+                       </div>
                     </div>
                 </div>
              </div>
@@ -1552,7 +1572,6 @@ const SettingsPanel_V2 = ({
                               </div>
                            </div>
                         </div>
-                    </div>
                     <div className="pt-4 border-t border-slate-100 dark:border-slate-700">
                       <label className="text-[10px] font-black text-emerald-500 uppercase tracking-widest italic flex items-center gap-2 mb-2">
                          <DollarSign size={14} /> খুচরা বিক্রয় মূল্য (Retail Selling Price)
@@ -1562,32 +1581,48 @@ const SettingsPanel_V2 = ({
                   </div>
                   {masterData.clients?.length > 0 && (
                     <div className="space-y-6 pt-10 border-t-2 border-slate-100 dark:border-slate-800 animate-fade-up">
-                      <div className="flex justify-between items-center bg-slate-100 dark:bg-slate-800 p-4 rounded-xl">
-                        <label className="text-[11px] font-black text-blue-600 uppercase tracking-widest italic flex items-center gap-3">
-                           <Users size={16} /> বি টু বি ক্লায়েন্ট রেট (B2B Rates)
+                      <div className="flex justify-between items-center bg-blue-600 p-4 rounded-xl shadow-lg relative overflow-hidden group">
+                        <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:rotate-12 transition-all">
+                           <Users size={80} />
+                        </div>
+                        <label className="text-[12px] font-black text-white uppercase tracking-widest italic flex items-center gap-3 relative z-10">
+                           <Users size={18} /> বি টু বি ক্লায়েন্ট রেট (B2B Rates Management)
                         </label>
-                        <div className="flex gap-8 text-[8px] font-bold uppercase text-slate-500 mr-2 font-mono">
-                           <span className="w-12 text-center">Sewing</span>
-                           <span className="w-12 text-center">Stone</span>
-                           <span className="w-12 text-center">Pata</span>
-                           <span className="w-12 text-center">Outside</span>
+                        <div className="flex gap-6 text-[9px] font-black uppercase text-white/70 mr-2 font-mono italic relative z-10">
+                           <span className="w-14 text-center">Sewing</span>
+                           <span className="w-14 text-center">Stone</span>
+                           <span className="w-14 text-center">Pata</span>
+                           <span className="w-14 text-center">Outside</span>
                         </div>
                       </div>
-                      <div className="space-y-3 max-h-80 overflow-y-auto pr-2 no-scrollbar">
+                      <div className="space-y-2 max-h-80 overflow-y-auto pr-2 no-scrollbar">
                           {(masterData.clients || []).map(client => {
                             const cid = client.replace(/[^a-zA-Z0-9]/g,'-');
                             const cRate = editDesignModal?.clientRates?.[client] || {};
                             const isLegacy = typeof cRate === 'number';
                             return (
-                             <div key={client} className="flex items-center gap-4 bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-50 dark:border-slate-800 hover:border-blue-200 transition-all shadow-sm">
-                                <div className="w-28 shrink-0">
-                                   <p className="text-[10px] font-black uppercase truncate text-black dark:text-white" title={client}>{client}</p>
+                             <div key={client} className="flex items-center gap-4 bg-slate-50 dark:bg-slate-800/50 p-3 rounded-xl border border-slate-200 dark:border-slate-700/50 hover:border-blue-600 transition-all group shadow-sm">
+                                <div className="w-32 shrink-0">
+                                   <p className="text-[11px] font-black uppercase truncate text-black dark:text-white italic" title={client}>{client}</p>
+                                   <p className="text-[7px] font-bold text-blue-500 uppercase tracking-widest mt-0.5 leading-none">Custom B2B Override</p>
                                 </div>
                                 <div className="flex-1 grid grid-cols-4 gap-3">
-                                   <input id={`design-client-${cid}-sewing`} type="number" className="w-full premium-input !h-9 !text-[11px] !text-center !bg-transparent border-slate-100" defaultValue={isLegacy ? cRate : (cRate.sewing || 0)} />
-                                   <input id={`design-client-${cid}-stone`} type="number" className="w-full premium-input !h-9 !text-[11px] !text-center !bg-transparent border-slate-100" defaultValue={isLegacy ? 0 : (cRate.stone || 0)} />
-                                   <input id={`design-client-${cid}-pata`} type="number" className="w-full premium-input !h-9 !text-[11px] !text-center !bg-transparent border-slate-100" defaultValue={isLegacy ? 0 : (cRate.pata || 0)} />
-                                   <input id={`design-client-${cid}-outwork`} type="number" className="w-full premium-input !h-9 !text-[11px] !text-center !bg-transparent border-slate-100" defaultValue={isLegacy ? 0 : (cRate.outwork || 0)} />
+                                   <div className="relative">
+                                      <input id={`design-client-${cid}-sewing`} type="number" className="w-full premium-input !h-10 !text-[12px] !text-center !bg-white dark:!bg-slate-900 !border-slate-300 !font-black !text-blue-600" defaultValue={isLegacy ? cRate : (cRate.sewing || 0)} />
+                                      <p className="absolute -bottom-1 right-1 text-[6px] font-bold text-slate-300">SEW</p>
+                                   </div>
+                                   <div className="relative">
+                                      <input id={`design-client-${cid}-stone`} type="number" className="w-full premium-input !h-10 !text-[12px] !text-center !bg-white dark:!bg-slate-900 !border-slate-300 !font-black !text-blue-600" defaultValue={isLegacy ? 0 : (cRate.stone || 0)} />
+                                      <p className="absolute -bottom-1 right-1 text-[6px] font-bold text-slate-300">STO</p>
+                                   </div>
+                                   <div className="relative">
+                                      <input id={`design-client-${cid}-pata`} type="number" className="w-full premium-input !h-10 !text-[12px] !text-center !bg-white dark:!bg-slate-900 !border-slate-300 !font-black !text-blue-600" defaultValue={isLegacy ? 0 : (cRate.pata || 0)} />
+                                      <p className="absolute -bottom-1 right-1 text-[6px] font-bold text-slate-300">PAT</p>
+                                   </div>
+                                   <div className="relative">
+                                      <input id={`design-client-${cid}-outwork`} type="number" className="w-full premium-input !h-10 !text-[12px] !text-center !bg-white dark:!bg-slate-900 !border-slate-300 !font-black !text-blue-600" defaultValue={isLegacy ? 0 : (cRate.outwork || 0)} />
+                                      <p className="absolute -bottom-1 right-1 text-[6px] font-bold text-slate-300">OUT</p>
+                                   </div>
                                 </div>
                              </div>
                             );
@@ -1599,11 +1634,7 @@ const SettingsPanel_V2 = ({
             </div>
             <div className="flex gap-4 pt-12">
               <button 
-                onClick={() => { 
-                  setShowAddModal(false); 
-                  setEditDesignModal(null); 
-                  setTempImgUrl(null); 
-                }} 
+                onClick={() => { setShowAddModal(false); setEditDesignModal(null); setTempImgUrl(null); }} 
                 className="flex-1 h-16 rounded-2xl font-bold uppercase text-[10px] tracking-widest text-black dark:text-white hover:bg-slate-50 dark:hover:bg-slate-800 transition-all border border-slate-100 dark:border-slate-800"
               >Cancel</button>
               <button 
@@ -1644,9 +1675,11 @@ const SettingsPanel_V2 = ({
                   
                   if(editDesignModal) handleUpdateDesignFull(editDesignModal.index, data);
                   else handleAddDesign(data);
+                  setShowAddModal(false);
+                  setEditDesignModal(null);
                 }} 
                 className="flex-[2] h-16 rounded-2xl bg-slate-950 text-white font-bold uppercase text-[11px] tracking-[0.2em] shadow-2xl hover:bg-black transition-all active:scale-95 border-b-4 border-slate-800"
-              >{editDesignModal ? 'Update Component' : 'Deploy Style'}</button>
+              >{editDesignModal ? 'Sync All Rates' : 'Initialize Style'}</button>
             </div>
           </div>
         </div>

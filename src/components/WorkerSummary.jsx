@@ -133,36 +133,36 @@ const WorkerSummary = ({ masterData, setMasterData, showNotify, user, logAction,
 
     return (
         <div className="space-y-10 pb-24 animate-fade-up px-2 italic text-black dark:text-white font-outfit relative">
-            <div className="flex flex-col lg:flex-row items-center justify-between gap-10">
-                <div className="flex items-center gap-10">
-                    <div className="bg-black rounded-3xl p-6 shadow-2xl rotate-3">
-                        <NRZLogo size="sm" white />
+            <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
+                <div className="flex items-center gap-6">
+                    <div className="bg-black rounded-2xl p-4 shadow-xl rotate-0">
+                        <NRZLogo size="xs" white />
                     </div>
                     <div>
-                        <p className="text-[10px] font-black text-black dark:text-white uppercase tracking-widest mb-1 px-1 italic">সিস্টেম ইন্টেলিজেন্ট</p>
-                        <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tighter leading-tight text-black dark:text-white italic">
+                        <p className="text-[8px] font-black text-black dark:text-white uppercase tracking-widest mb-0.5 px-0.5 italic opacity-40">System Intelligent</p>
+                        <h2 className="text-2xl md:text-3xl font-black uppercase tracking-tighter leading-tight text-black dark:text-white italic">
                             কারিগর <span className="text-black dark:text-white">লেজার বুক</span>
                         </h2>
                     </div>
                 </div>
-                <div className="flex flex-col md:flex-row gap-4 w-full lg:w-auto">
-                    <div className="bg-white p-6 rounded-[2rem] border-2 border-slate-50 shadow-xl text-right flex-1 lg:min-w-[180px]">
-                        <p className="text-[9px] font-black text-black dark:text-white uppercase tracking-widest mb-2">মোট পাওনা</p>
-                        <p className="text-2xl font-black italic tracking-tighter text-emerald-500">৳{totalBillAll.toLocaleString()}</p>
+                <div className="flex flex-col md:flex-row gap-2 w-full lg:w-auto">
+                    <div className="bg-white p-4 rounded-xl border border-slate-100 shadow-md text-right flex-1 lg:min-w-[140px]">
+                        <p className="text-[8px] font-black text-black dark:text-white uppercase tracking-widest mb-1">মোট পাওনা</p>
+                        <p className="text-xl font-black italic tracking-tighter text-emerald-500 leading-none">৳{totalBillAll.toLocaleString()}</p>
                     </div>
-                    <div className="bg-black text-white p-6 rounded-[2rem] shadow-xl text-right flex-1 lg:min-w-[180px]">
-                        <p className="text-[9px] font-black text-white/50 uppercase tracking-widest mb-2 font-mono">নিট প্রদেয়</p>
-                        <p className="text-2xl font-black italic tracking-tighter text-white">৳{totalBalanceAll.toLocaleString()}</p>
+                    <div className="bg-slate-950 text-white p-4 rounded-xl shadow-md text-right flex-1 lg:min-w-[140px]">
+                        <p className="text-[8px] font-black text-white/50 uppercase tracking-widest mb-1 font-mono">নিট প্রদেয়</p>
+                        <p className="text-xl font-black italic tracking-tighter text-white leading-none">৳{totalBalanceAll.toLocaleString()}</p>
                     </div>
                 </div>
             </div>
 
-            <div className="bg-white p-3 rounded-[2rem] border-4 border-slate-50 shadow-inner flex flex-col md:flex-row gap-4">
-                <div className="flex-1 bg-slate-50 px-8 py-4 rounded-xl flex items-center gap-4 border border-white shadow-sm">
-                    <Search size={18} className="text-black dark:text-white" />
-                    <input type="text" placeholder="কারিগর বা আইডি নম্বর দিয়ে খুঁজুন..." className="bg-transparent font-black italic border-none outline-none w-full uppercase text-sm text-black dark:text-white placeholder:text-slate-300" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+            <div className="bg-white p-2 rounded-xl border border-slate-100 shadow-sm flex flex-col md:flex-row gap-3">
+                <div className="flex-1 bg-slate-50 px-5 py-2.5 rounded-lg flex items-center gap-3 border border-white shadow-inner">
+                    <Search size={16} className="text-slate-400" />
+                    <input type="text" placeholder="কারিগর বা আইডি..." className="bg-transparent font-black italic border-none outline-none w-full uppercase text-[11px] text-black dark:text-white placeholder:text-slate-300" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
                 </div>
-                <select className="bg-black text-white px-8 py-4 rounded-xl font-black uppercase text-[10px] tracking-widest cursor-pointer hover:bg-zinc-800 transition-all shadow-xl" value={filterDept} onChange={(e) => setFilterDept(e.target.value)}>
+                <select className="bg-slate-950 text-white px-5 py-2.5 rounded-lg font-black uppercase text-[8.5px] tracking-widest cursor-pointer hover:bg-zinc-800 transition-all shadow-md" value={filterDept} onChange={(e) => setFilterDept(e.target.value)}>
                     <option value="all">সব বিভাগ (Global)</option>
                     <option value="sewing">সেলাই বিভাগ</option>
                     <option value="stone">স্টোন বিভাগ</option>
@@ -172,69 +172,69 @@ const WorkerSummary = ({ masterData, setMasterData, showNotify, user, logAction,
                 </select>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-12">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {filteredWorkers.map((w, idx) => (
                     <div 
                         key={idx} 
-                        className="bg-white p-6 rounded-[2.5rem] border-4 border-slate-50 shadow-xl relative overflow-hidden group hover:border-black transition-all flex flex-col h-[420px] isolate"
+                        className="bg-white p-4 rounded-xl border border-slate-100 shadow-md relative overflow-hidden group hover:border-slate-950 transition-all flex flex-col h-[340px] isolate"
                     >
-                        <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:opacity-10 transition-all group-hover:scale-150 rotate-12 z-0">
-                            <TrendingUp size={140} />
+                        <div className="absolute top-0 right-0 p-6 opacity-[0.03] group-hover:opacity-10 transition-all rotate-12 z-0">
+                            <TrendingUp size={100} />
                         </div>
-                        <div className="flex justify-between items-start mb-10 relative z-10 w-full px-2">
-                            <div className="w-24 h-24 bg-slate-50 rounded-[2.5rem] flex items-center justify-center overflow-hidden border-2 border-slate-100 shadow-inner group-hover:rotate-6 transition-all">
-                                 {w.photo ? <img src={w.photo} className="w-full h-full object-cover" /> : <div className="text-slate-300 text-3xl font-black italic uppercase">{w.name.charAt(0)}</div>}
+                        <div className="flex justify-between items-start mb-6 relative z-10 w-full">
+                            <div className="w-16 h-16 bg-slate-50 rounded-xl flex items-center justify-center overflow-hidden border border-slate-100 shadow-inner group-hover:rotate-6 transition-all">
+                                 {w.photo ? <img src={w.photo} className="w-full h-full object-cover" /> : <div className="text-slate-300 text-2xl font-black italic uppercase">{w.name.charAt(0)}</div>}
                             </div>
                             <div className="text-right">
-                                <p className="text-[10px] font-black text-black dark:text-white uppercase tracking-[0.5em] mb-2 italic">পরিচয়</p>
-                                <h4 className="text-3xl font-black italic uppercase leading-tight text-black dark:text-white underline decoration-black/10 group-hover:decoration-black transition-all truncate max-w-[150px]">{w.name}</h4>
-                                <div className="flex gap-2 justify-end mt-2">
+                                <p className="text-[7.5px] font-black text-black dark:text-white uppercase tracking-widest mb-1 italic opacity-40">Identity</p>
+                                <h4 className="text-xl font-black italic uppercase leading-none text-black dark:text-white truncate max-w-[130px]">{w.name}</h4>
+                                <div className="flex gap-1.5 justify-end mt-1.5">
                                     {masterData.workerDocs?.find(d => d.name.toUpperCase() === w.name.toUpperCase() && d.dept === w.dept)?.workerId && (
-                                        <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-[7px] font-black rounded-full">আইডি: {masterData.workerDocs?.find(d => d.name.toUpperCase() === w.name.toUpperCase() && d.dept === w.dept)?.workerId}</span>
+                                        <span className="px-1.5 py-0.5 bg-emerald-100 text-emerald-700 text-[6.5px] font-black rounded">ID: {masterData.workerDocs?.find(d => d.name.toUpperCase() === w.name.toUpperCase() && d.dept === w.dept)?.workerId}</span>
                                     )}
-                                    <span className="inline-block px-4 py-1 bg-slate-100 rounded-full text-[8px] font-black uppercase text-black dark:text-white tracking-widest">{w.dept === 'sewing' ? 'সেলাই' : w.dept === 'stone' ? 'স্টোন' : w.dept === 'pata' ? 'পাতা' : w.dept === 'cutting' ? 'কাটিং' : 'মাসিক'}</span>
+                                    <span className="inline-block px-2 py-0.5 bg-slate-100 rounded text-[6.5px] font-black uppercase text-black dark:text-white tracking-widest">{w.dept.toUpperCase()}</span>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="space-y-6 mt-auto relative z-10">
-                            <div className="bg-slate-50/80 p-8 rounded-[3rem] border border-white shadow-inner flex flex-col gap-4">
+                        <div className="space-y-4 mt-auto relative z-10">
+                            <div className="bg-slate-50/80 p-4 rounded-xl border border-white shadow-inner flex flex-col gap-2.5">
                                 <div className="flex justify-between items-center">
-                                    <p className="text-[10px] font-black text-black dark:text-white uppercase tracking-widest font-mono">কাজের বিবরণ</p>
+                                    <p className="text-[8.5px] font-black text-black dark:text-white uppercase tracking-widest font-mono opacity-40">Load Status</p>
                                     <div className="text-right">
-                                        <p className="text-xl font-black italic text-black dark:text-white ">{w.qty} <span className="text-[10px] text-black dark:text-white">{w.label.includes('DAYS') ? 'দিন' : 'পিস'}</span></p>
-                                        {w.shortage > 0 && <p className="text-[9px] font-black text-rose-500 uppercase">ঘাটতি: {w.shortage} পিস</p>}
+                                        <p className="text-base font-black italic text-black dark:text-white leading-none">{w.qty} <span className="text-[9px]">{w.label.includes('DAYS') ? 'DAYS' : 'PCS'}</span></p>
+                                        {w.shortage > 0 && <p className="text-[7.5px] font-black text-rose-500 uppercase">Gap: {w.shortage} pcs</p>}
                                     </div>
                                 </div>
                                 <div className="flex justify-between items-center group/p">
-                                    <p className="text-[10px] font-black text-black dark:text-white uppercase tracking-widest font-mono">পিন কোড</p>
-                                    <div className="flex items-center gap-2">
-                                         <p className="text-lg font-black italic text-black dark:text-white font-mono tracking-tighter bg-white dark:bg-slate-800 px-3 py-1 rounded-lg border border-slate-100 dark:border-slate-700 shadow-sm opacity-0 group-hover/p:opacity-100 transition-opacity">{w.password || 'N/A'}</p>
-                                         <Eye size={16} className="text-slate-200 group-hover/p:text-emerald-500 transition-colors" />
+                                    <p className="text-[8.5px] font-black text-black dark:text-white uppercase tracking-widest font-mono opacity-40">Access PIN</p>
+                                    <div className="flex items-center gap-1.5">
+                                         <p className="text-[14px] font-black italic text-black dark:text-white font-mono tracking-tighter bg-white dark:bg-slate-800 px-2 py-0.5 rounded border border-slate-100 dark:border-slate-700 opacity-0 group-hover/p:opacity-100 transition-opacity leading-none">{w.password || 'N/A'}</p>
+                                         <Eye size={12} className="text-slate-200 group-hover/p:text-emerald-500 transition-colors" />
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="bg-emerald-50 text-emerald-600 p-8 rounded-[3.5rem] border border-emerald-100 flex flex-col justify-center">
-                                    <p className="text-[9px] font-black uppercase tracking-widest mb-1 opacity-60">মোট পেমেন্ট</p>
-                                    <p className="text-2xl font-black italic tracking-tighter font-mono">৳{w.paid.toLocaleString()}</p>
+                            <div className="grid grid-cols-2 gap-2">
+                                <div className="bg-emerald-50 text-emerald-600 p-4 rounded-xl border border-emerald-100 flex flex-col justify-center">
+                                    <p className="text-[7.5px] font-black uppercase tracking-widest mb-0.5 opacity-60">Payout</p>
+                                    <p className="text-[15px] font-black italic tracking-tighter font-mono leading-none">৳{w.paid.toLocaleString()}</p>
                                 </div>
-                                <div className={`${w.balance > 0 ? 'bg-rose-50 text-rose-600 border-rose-100' : 'bg-slate-50 text-black dark:text-white border-slate-100'} p-8 rounded-[3.5rem] border flex flex-col justify-center`}>
-                                    <p className="text-[9px] font-black uppercase tracking-widest mb-1 opacity-60">বকেয়া</p>
-                                    <p className="text-2xl font-black italic tracking-tighter font-mono">৳{w.balance.toLocaleString()}</p>
+                                <div className={`${w.balance > 0 ? 'bg-rose-50 text-rose-600 border-rose-100' : 'bg-slate-50 text-black dark:text-white border-slate-100'} p-4 rounded-xl border flex flex-col justify-center`}>
+                                    <p className="text-[7.5px] font-black uppercase tracking-widest mb-0.5 opacity-60">Due</p>
+                                    <p className="text-[15px] font-black italic tracking-tighter font-mono leading-none">৳{w.balance.toLocaleString()}</p>
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-3 gap-3">
-                                 <button onClick={() => setSelectedWorker(w)} className="flex-1 bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 text-black dark:text-white p-5 rounded-3xl flex items-center justify-center hover:bg-black hover:text-white transition-all shadow-sm"><History size={20} /></button>
+                            <div className="grid grid-cols-3 gap-2">
+                                 <button onClick={() => setSelectedWorker(w)} className="flex-1 bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 text-black dark:text-white p-2.5 rounded-lg flex items-center justify-center hover:bg-slate-950 hover:text-white transition-all shadow-sm"><History size={15} /></button>
                                  <button onClick={() => {
                                       const doc = masterData.workerDocs?.find(d => d.name.toUpperCase() === w.name.toUpperCase() && d.dept === w.dept);
                                       if (doc?.phone) sendWeeklySummary(w.name, { totalQty: w.qty, totalBill: w.bill, paid: w.paid, balance: w.balance }, doc.phone);
                                       else alert("নির্ধারিত ফোন নম্বর নেই!");
-                                 }} className="flex-1 bg-emerald-50 text-emerald-600 p-5 rounded-3xl flex items-center justify-center hover:bg-emerald-500 hover:text-white transition-all shadow-sm"><MessageCircle size={20} /></button>
+                                 }} className="flex-1 bg-emerald-50 text-emerald-600 p-2.5 rounded-lg flex items-center justify-center hover:bg-emerald-600 hover:text-white transition-all shadow-sm"><MessageCircle size={15} /></button>
                                  { (user?.role?.toLowerCase() === 'admin' || user?.role?.toLowerCase() === 'manager') && (
-                                     <button onClick={() => setShowPayModal(w)} className="flex-[2] bg-emerald-500 text-white p-5 rounded-3xl flex items-center justify-center gap-3 font-black uppercase text-[10px] italic hover:bg-black transition-all shadow-xl active:scale-95 border-b-4 border-emerald-700 hover:border-black"><DollarSign size={18} /> দাদন / পেমেন্ট</button>
+                                     <button onClick={() => setShowPayModal(w)} className="flex-[2] bg-emerald-600 text-white p-2.5 rounded-lg flex items-center justify-center gap-2 font-black uppercase text-[8px] italic hover:bg-slate-950 transition-all shadow-md active:scale-95"><DollarSign size={14} /> PAYMENT</button>
                                  )}
                             </div>
                         </div>

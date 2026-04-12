@@ -192,7 +192,7 @@ const ExpensePanel = ({
    return (
       <div className="space-y-12 animate-fade-in no-scrollbar transition-all duration-1000">
          {/* 🚀 Master Navigation Hub */}
-         <div className="bg-white dark:bg-slate-900 !p-2 rounded-[2.5rem] border-2 border-slate-100 dark:border-slate-800 shadow-3xl flex flex-wrap gap-2 sticky top-0 z-50 backdrop-blur-3xl bg-white/80 dark:bg-slate-900/80">
+         <div className="bg-white dark:bg-slate-900 !p-1.5 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm flex flex-wrap gap-1.5 sticky top-0 z-50 backdrop-blur-3xl bg-white/80 dark:bg-slate-900/80">
             {[
                { id: 'treasury', label: 'Treasury (ক্যাশ)', icon: Wallet },
                { id: 'partners', label: 'Partners (বি২বি)', icon: Users },
@@ -203,40 +203,40 @@ const ExpensePanel = ({
                <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-3 px-6 py-3.5 rounded-2xl font-black uppercase text-[10px] tracking-widest transition-all duration-500 ${activeTab === tab.id ? 'bg-slate-950 text-white shadow-xl scale-105' : 'text-slate-400 hover:text-black dark:hover:text-white'}`}
+                  className={`flex items-center gap-2 px-4 py-2.5 rounded-lg font-black uppercase text-[8.5px] tracking-widest transition-all duration-300 ${activeTab === tab.id ? 'bg-slate-950 text-white shadow-md' : 'text-slate-400 hover:text-black dark:hover:text-white'}`}
                >
-                  <tab.icon size={16} className={activeTab === tab.id ? 'animate-pulse' : ''} /> {tab.label}
+                  <tab.icon size={13} className={activeTab === tab.id ? 'animate-pulse' : ''} /> {tab.label}
                </button>
             ))}
          </div>
 
          {/* 💰 1. Treasury Module (Financial Hub) */}
          {activeTab === 'treasury' && (
-            <div className="space-y-6 md:space-y-8 animate-fade-up">
-               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
-                  <div className="saas-card p-4 md:p-6 flex flex-col justify-between group h-48 md:h-56 relative overflow-hidden bg-white dark:bg-slate-900 shadow-xl border-emerald-500/10 hover:border-emerald-500/30">
-                     <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:opacity-[0.1] transition-all duration-700"><TrendingUp size={180} /></div>
-                     <div className="w-10 h-10 md:w-12 md:h-12 bg-emerald-600 text-white rounded-xl flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform"><Wallet size={20} /></div>
+            <div className="space-y-4 md:space-y-6 animate-fade-up">
+               <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
+                  <div className="saas-card p-3.5 md:p-5 flex flex-col justify-between group h-36 md:h-44 relative overflow-hidden bg-white dark:bg-slate-900 shadow-md border-emerald-500/10 hover:border-emerald-500/30">
+                     <div className="absolute top-0 right-0 p-6 opacity-[0.03] group-hover:opacity-[0.1] transition-all duration-700"><TrendingUp size={140} /></div>
+                     <div className="w-8 h-8 md:w-10 md:h-10 bg-emerald-600 text-white rounded-lg flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform"><Wallet size={16} /></div>
                      <div className="relative z-10">
-                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">Factory Liquid Capital</p>
-                        <h2 className="text-2xl md:text-3xl font-black tracking-tighter text-black dark:text-white leading-none italic">৳{currentBalance.toLocaleString()}</h2>
+                        <p className="text-[7.5px] font-black text-slate-400 uppercase tracking-widest mb-0.5 italic">Factory Liquid Capital</p>
+                        <h2 className="text-xl md:text-2xl font-black tracking-tighter text-black dark:text-white leading-none italic">৳{currentBalance.toLocaleString()}</h2>
                      </div>
                   </div>
 
-                  <div className="saas-card p-4 md:p-6 flex flex-col justify-between group h-48 md:h-56 relative overflow-hidden bg-white dark:bg-slate-900 shadow-xl border-rose-500/10 hover:border-rose-500/30">
-                     <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:opacity-[0.1] transition-all duration-700"><TrendingDown size={180} /></div>
-                     <div className="w-10 h-10 md:w-12 md:h-12 bg-rose-600 text-white rounded-xl flex items-center justify-center shadow-lg group-hover:rotate-0 transition-transform"><DollarSign size={20} /></div>
+                  <div className="saas-card p-3.5 md:p-5 flex flex-col justify-between group h-36 md:h-44 relative overflow-hidden bg-white dark:bg-slate-900 shadow-md border-rose-500/10 hover:border-rose-500/30">
+                     <div className="absolute top-0 right-0 p-6 opacity-[0.03] group-hover:opacity-[0.1] transition-all duration-700"><TrendingDown size={140} /></div>
+                     <div className="w-8 h-8 md:w-10 md:h-10 bg-rose-600 text-white rounded-lg flex items-center justify-center shadow-lg group-hover:rotate-0 transition-transform"><DollarSign size={16} /></div>
                      <div className="relative z-10">
-                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">Operational Burn Rate</p>
-                        <h2 className="text-2xl md:text-3xl font-black tracking-tighter text-black dark:text-white leading-none italic">৳{totalExpenses.toLocaleString()}</h2>
+                        <p className="text-[7.5px] font-black text-slate-400 uppercase tracking-widest mb-0.5 italic">Operational Burn Rate</p>
+                        <h2 className="text-xl md:text-2xl font-black tracking-tighter text-black dark:text-white leading-none italic">৳{totalExpenses.toLocaleString()}</h2>
                      </div>
                   </div>
 
-                  <button onClick={() => setShowPrint(true)} className="saas-card p-4 md:p-6 flex flex-col justify-between group h-48 md:h-56 relative overflow-hidden bg-slate-950 text-white border-none shadow-xl hover:scale-105 active:scale-95 transition-all">
-                     <div className="w-10 h-10 md:w-12 md:h-12 bg-white/10 text-white rounded-xl flex items-center justify-center shadow-inner group-hover:bg-blue-600 transition-all"><Printer size={20} /></div>
+                  <button onClick={() => setShowPrint(true)} className="saas-card p-3.5 md:p-5 flex flex-col justify-between group h-36 md:h-44 relative overflow-hidden bg-slate-950 text-white border-none shadow-md hover:translate-y-[-2px] active:scale-95 transition-all">
+                     <div className="w-8 h-8 md:w-10 md:h-10 bg-white/10 text-white rounded-lg flex items-center justify-center shadow-inner group-hover:bg-blue-600 transition-all"><Printer size={16} /></div>
                      <div className="text-left relative z-10">
-                        <h2 className="text-xl md:text-2xl font-black text-white italic uppercase mb-1 leading-none tracking-tighter">GENERATE AUDIT</h2>
-                        <p className="text-[9px] font-black text-white/30 uppercase tracking-widest italic">Official Financial Transcript Registry</p>
+                        <h2 className="text-lg md:text-xl font-black text-white italic uppercase mb-0.5 leading-none tracking-tighter">GENERATE AUDIT</h2>
+                        <p className="text-[7.5px] font-black text-white/30 uppercase tracking-widest italic leading-none">Official Financial Transcript</p>
                      </div>
                   </button>
                </div>
@@ -256,28 +256,28 @@ const ExpensePanel = ({
                </div>
 
                {cashSubTab === 'daily' && (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4">
                      {filteredExpenses.map((exp, idx) => (
-                        <div key={exp.id || idx} className="saas-card p-5 md:p-6 min-h-[14rem] flex flex-col justify-between group hover:shadow-2xl transition-all duration-500 relative overflow-hidden bg-white dark:bg-slate-800 shadow-lg animate-fade-up border-b-4 border-b-slate-50 dark:border-b-slate-950 italic" style={{ animationDelay: `${idx * 50}ms` }}>
-                           <div className="absolute top-0 right-0 p-8 opacity-[0.02] group-hover:opacity-10 transition-opacity"><DollarSign size={120} /></div>
+                        <div key={exp.id || idx} className="saas-card p-4 md:p-5 min-h-[11rem] flex flex-col justify-between group hover:shadow-lg transition-all duration-300 relative overflow-hidden bg-white dark:bg-slate-800 shadow-sm animate-fade-up border-b-2 border-slate-100 dark:border-slate-950 italic">
+                           <div className="absolute top-0 right-0 p-6 opacity-[0.02] group-hover:opacity-10 transition-opacity"><DollarSign size={80} /></div>
                            <div className="relative z-10 flex flex-col flex-1">
-                              <div className="flex justify-between items-start mb-4">
-                                 <span className="px-3 py-1 bg-slate-950 text-white dark:bg-white dark:text-black rounded-lg text-[8px] font-black uppercase tracking-widest italic">{t(exp.category) || exp.category}</span>
-                                 <div className="flex gap-2">
-                                    <button onClick={() => setEditExpense(exp)} className="w-8 h-8 bg-slate-50 dark:bg-slate-700 rounded-lg flex items-center justify-center text-slate-300 dark:text-slate-500 hover:bg-black hover:text-white transition-all shadow-md"><Edit2 size={12} /></button>
-                                    {isAdmin && <button onClick={() => handleDeleteExpense(exp.id)} className="w-8 h-8 bg-slate-50 dark:bg-slate-700 rounded-lg flex items-center justify-center text-slate-300 dark:text-slate-500 hover:bg-rose-600 hover:text-white transition-all shadow-md"><Trash2 size={12} /></button>}
+                              <div className="flex justify-between items-start mb-2.5">
+                                 <span className="px-2 py-0.5 bg-slate-950 text-white dark:bg-white dark:text-black rounded text-[7.5px] font-black uppercase tracking-widest italic">{t(exp.category) || exp.category}</span>
+                                 <div className="flex gap-1.5">
+                                    <button onClick={() => setEditExpense(exp)} className="w-7 h-7 bg-slate-50 dark:bg-slate-700 rounded-lg flex items-center justify-center text-slate-300 dark:text-slate-500 hover:bg-black hover:text-white transition-all shadow-sm"><Edit2 size={11} /></button>
+                                    {isAdmin && <button onClick={() => handleDeleteExpense(exp.id)} className="w-7 h-7 bg-slate-50 dark:bg-slate-700 rounded-lg flex items-center justify-center text-slate-300 dark:text-slate-500 hover:bg-rose-600 hover:text-white transition-all shadow-sm"><Trash2 size={11} /></button>}
                                  </div>
                               </div>
-                              <h5 className="text-base md:text-lg font-black uppercase leading-tight italic text-slate-950 dark:text-white mb-2 tracking-tighter truncate">{exp.description}</h5>
-                              <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2"><Calendar size={12} className="text-blue-600" /> {exp.date}</p>
+                              <h5 className="text-[14px] md:text-[15px] font-black uppercase leading-tight italic text-slate-950 dark:text-white mb-1.5 tracking-tighter truncate leading-none">{exp.description}</h5>
+                              <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1.5"><Calendar size={10} className="text-blue-600" /> {exp.date}</p>
                            </div>
-                           <div className="relative z-10 mt-4 flex justify-between items-end">
-                              <p className="text-3xl md:text-4xl font-black italic tracking-tighter text-slate-950 dark:text-white">৳{exp.amount.toLocaleString()}</p>
-                              <ArrowUpRight className="text-blue-600 opacity-20 group-hover:opacity-100 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all duration-500" size={24} />
+                           <div className="relative z-10 mt-3 flex justify-between items-end">
+                              <p className="text-2xl md:text-3xl font-black italic tracking-tighter text-slate-950 dark:text-white leading-none">৳{exp.amount.toLocaleString()}</p>
+                              <ArrowUpRight className="text-blue-600 opacity-20 group-hover:opacity-100 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all duration-300" size={18} />
                            </div>
                         </div>
                      ))}
-                     {filteredExpenses.length === 0 && <div className="col-span-full py-52 saas-card bg-white dark:bg-slate-800 border-4 border-dashed opacity-20 flex flex-col items-center justify-center italic font-black uppercase tracking-[1em]"><Archive size={100} strokeWidth={1} className="mb-10 text-black dark:text-white" /> NO AUDIT RECORD FOUND</div>}
+                     {filteredExpenses.length === 0 && <div className="col-span-full py-32 saas-card bg-white dark:bg-slate-800 border-2 border-dashed opacity-20 flex flex-col items-center justify-center italic font-black uppercase tracking-[0.5em]"><Archive size={60} strokeWidth={1} className="mb-6 text-black dark:text-white" /> NO AUDIT RECORD</div>}
                   </div>
                )}
 

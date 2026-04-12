@@ -417,34 +417,34 @@ const AttendancePanel = ({
   }
 
   return (
-    <div className="space-y-6 pb-24 animate-fade-up px-1 md:px-2 text-black dark:text-white border-t-0">
+    <div className="space-y-4 pb-24 animate-fade-up px-1 md:px-2 text-black dark:text-white border-t-0">
       {/* SaaS Stat Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm flex items-center gap-6 group">
-          <div className="w-14 h-14 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
-            <Users size={24} />
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm flex items-center gap-4 group">
+          <div className="w-11 h-11 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
+            <Users size={20} />
           </div>
           <div>
-            <p className="text-3xl font-bold tracking-tight text-black dark:text-white leading-none mb-1">{workers.length}</p>
-            <p className="text-[10px] font-bold text-black dark:text-white uppercase tracking-widest leading-none">মোট কর্মী (Workforce)</p>
+            <p className="text-2xl font-bold tracking-tight text-black dark:text-white leading-none mb-0.5">{workers.length}</p>
+            <p className="text-[8px] font-bold text-black dark:text-white uppercase tracking-widest leading-none opacity-40">মোট কর্মী</p>
           </div>
         </div>
-        <div className="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm flex items-center gap-6 group">
-          <div className="w-14 h-14 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
-            <UserCheck size={24} />
+        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm flex items-center gap-4 group">
+          <div className="w-11 h-11 bg-emerald-50 text-emerald-600 rounded-lg flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
+            <UserCheck size={20} />
           </div>
           <div>
-            <p className="text-3xl font-bold tracking-tight text-emerald-600 leading-none mb-1">{stats.present}</p>
-            <p className="text-[10px] font-bold text-black dark:text-white uppercase tracking-widest leading-none">আজ উপস্থিত (Present Today)</p>
+            <p className="text-2xl font-bold tracking-tight text-emerald-600 leading-none mb-0.5">{stats.present}</p>
+            <p className="text-[8px] font-bold text-black dark:text-white uppercase tracking-widest leading-none opacity-40">আজ উপস্থিত</p>
           </div>
         </div>
-        <div className="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm flex items-center gap-6 group">
-          <div className="w-14 h-14 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
-            <DollarSign size={24} />
+        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm flex items-center gap-4 group">
+          <div className="w-11 h-11 bg-amber-50 text-amber-600 rounded-lg flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
+            <DollarSign size={20} />
           </div>
           <div>
-            <p className="text-3xl font-bold tracking-tight text-black dark:text-white leading-none mb-1">৳{stats.wages.toLocaleString()}</p>
-            <p className="text-[10px] font-bold text-black dark:text-white uppercase tracking-widest leading-none">দৈনিক পেমেন্ট (Payments)</p>
+            <p className="text-2xl font-bold tracking-tight text-black dark:text-white leading-none mb-0.5">৳{stats.wages.toLocaleString()}</p>
+            <p className="text-[8px] font-bold text-black dark:text-white uppercase tracking-widest leading-none opacity-40">দৈনিক পেমেন্ট</p>
           </div>
         </div>
       </div>
@@ -452,18 +452,18 @@ const AttendancePanel = ({
 
 
       {/* Control Bar - Standardized Pill Nav */}
-      <div className="bg-white dark:bg-slate-900 !p-1.5 flex flex-col lg:flex-row items-center justify-between gap-6 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm my-4">
+      <div className="bg-white dark:bg-slate-900 !p-1 flex flex-col lg:flex-row items-center justify-between gap-3 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm my-3">
         <div className="flex flex-wrap gap-1 w-full lg:w-auto overflow-x-auto no-scrollbar">
           {[
-            { id: 'monthly', label: 'মাসিক স্টাফ (Monthly)' },
-            { id: 'office', label: 'অফিস (Office)' },
-            { id: 'cutting', label: 'কাটিং মাস্টার (Cutting)' },
-            { id: 'pata', label: 'পাতা স্টাফ (Pata)' }
+            { id: 'monthly', label: 'মাসিক STAFF' },
+            { id: 'office', label: 'OFFICE' },
+            { id: 'cutting', label: 'CUTTING' },
+            { id: 'pata', label: 'PATA' }
           ].map(dept => (
             <button
               key={dept.id}
               onClick={() => setSelectedDepartment(dept.id)}
-              className={`px-6 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all ${selectedDepartment === dept.id ? 'bg-slate-950 text-white shadow-lg' : 'text-black dark:text-white hover:text-black dark:text-white dark:hover:text-white'}`}
+              className={`px-4 py-2 rounded-lg text-[8.5px] font-bold uppercase tracking-widest transition-all ${selectedDepartment === dept.id ? 'bg-slate-950 text-white shadow-md' : 'text-slate-400 dark:text-white hover:text-black dark:text-white dark:hover:text-white'}`}
             >
               {dept.label}
             </button>
@@ -502,12 +502,10 @@ const AttendancePanel = ({
         </div>
       </div>
 
-
-
       {showQR && <QRScanner onScanSuccess={handleQRScan} onClose={() => setShowQR(false)} />}
 
       {/* Main Attendance List */}
-      <div className="grid grid-cols-1 gap-4">
+      <div className="grid grid-cols-1 gap-2.5">
         {workers.filter(w => {
              const role = user?.role?.toLowerCase();
              if (role === 'admin' || role === 'manager') return true;
@@ -519,24 +517,24 @@ const AttendancePanel = ({
             const wage = workerDoc?.wage || getWorkerWage(worker);
             
             return (
-              <div key={idx} className="saas-card flex flex-col md:flex-row justify-between items-center gap-6 group hover:border-slate-950 dark:hover:border-white transition-all animate-fade-up">
-                <div className="flex items-center gap-5 flex-1 w-full md:w-auto">
-                  <div className="w-14 h-14 bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-2xl font-bold rounded-xl border border-slate-100 dark:border-slate-700 transition-transform group-hover:scale-105">
+              <div key={idx} className="saas-card flex flex-col md:flex-row justify-between items-center gap-4 group p-3 md:p-3.5 hover:border-slate-950 dark:hover:border-white transition-all animate-fade-up border border-slate-100 dark:border-slate-800 shadow-sm rounded-xl bg-white dark:bg-slate-900">
+                <div className="flex items-center gap-4 flex-1 w-full md:w-auto">
+                  <div className="w-10 h-10 bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-lg font-bold rounded-lg border border-slate-100 dark:border-slate-700 transition-transform group-hover:scale-105">
                     {worker[0].toUpperCase()}
                   </div>
                   <div className="space-y-0.5">
-                    <div className="flex items-center gap-3">
-                        <h4 className="text-xl font-bold tracking-tight text-black dark:text-white uppercase leading-none">{worker}</h4>
-                        {workerId && <span className="px-2 py-0.5 bg-emerald-50 dark:bg-emerald-900/10 text-emerald-600 text-[9px] font-bold rounded-md border border-emerald-100 dark:border-emerald-800">ID: {workerId}</span>}
+                    <div className="flex items-center gap-2">
+                        <h4 className="text-base font-black tracking-tight text-black dark:text-white uppercase leading-tight truncate max-w-[120px] md:max-w-[200px]">{worker}</h4>
+                        {workerId && <span className="px-1.5 py-0.5 bg-emerald-50 dark:bg-emerald-900/10 text-emerald-600 text-[8px] font-bold rounded border border-emerald-100 dark:border-emerald-800">ID: {workerId}</span>}
                     </div>
-                    <p className="text-black dark:text-white text-[10px] font-bold uppercase tracking-widest leading-none mt-1 flex items-center gap-1.5 italic">
-                       <DollarSign size={10} /> দৈনিক মজুরি: ৳{wage.toLocaleString()} (Daily Wage)
+                    <p className="text-black dark:text-white text-[8px] font-bold uppercase tracking-widest leading-none mt-0.5 flex items-center gap-1.5 italic opacity-40">
+                       <DollarSign size={8} /> ৳{wage.toLocaleString()} (RATE)
                     </p>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end">
-                  <div className="flex p-1 bg-slate-50 dark:bg-slate-800/50 rounded-xl gap-1">
+                <div className="flex items-center gap-2.5 w-full md:w-auto justify-between md:justify-end">
+                  <div className="flex p-0.5 bg-slate-50 dark:bg-slate-800/50 rounded-lg gap-1 border border-slate-100/50">
                     {(user?.role?.toLowerCase() === 'admin' || user?.role?.toLowerCase() === 'manager') ? (
                       <>
                         {[
@@ -547,9 +545,9 @@ const AttendancePanel = ({
                           <button
                             key={s.id}
                             onClick={() => markAttendance(worker, s.id)}
-                            className={`px-4 py-2 rounded-lg text-[9px] font-bold uppercase tracking-widest transition-all ${
+                            className={`px-3 py-1.5 rounded-md text-[8.5px] font-black uppercase tracking-widest transition-all ${
                                 status === s.id 
-                                ? (s.id === "present" ? "bg-slate-950 text-white shadow-lg" : s.id === "half-day" ? "bg-amber-500 text-white shadow-lg" : "bg-rose-500 text-white shadow-lg") 
+                                ? (s.id === "present" ? "bg-slate-950 text-white shadow-md" : s.id === "half-day" ? "bg-amber-500 text-white shadow-md" : "bg-rose-500 text-white shadow-md") 
                                 : "text-black dark:text-white hover:text-black dark:text-white dark:hover:text-white"
                             }`}
                           >
@@ -558,36 +556,38 @@ const AttendancePanel = ({
                         ))}
                       </>
                     ) : (
-                      <div className={`px-6 py-2 rounded-lg text-[9px] font-bold uppercase tracking-widest ${status === 'present' ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'}`}>
-                          স্ট্যাটাস: {status === 'present' ? 'PRESENT' : status === 'half-day' ? 'HALF-DAY' : 'ABSENT'}
+                      <div className={`px-4 py-1.5 rounded-lg text-[8.5px] font-bold uppercase tracking-widest ${status === 'present' ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'}`}>
+                          {status === 'present' ? 'PRESENT' : status === 'half-day' ? 'HALF' : 'ABSENT'}
                       </div>
                     )}
                   </div>
                   
-                  <div className="flex gap-2">
+                  <div className="flex gap-1.5">
                     {(user?.role?.toLowerCase() === 'admin' || user?.role?.toLowerCase() === 'manager') && (
                        <button 
                           onClick={() => registerBiometric(worker)}
-                          className={`w-10 h-10 flex items-center justify-center rounded-xl transition-all border border-slate-200 dark:border-slate-800 ${masterData.workerBiometrics?.[worker] ? 'bg-emerald-500 text-white shadow-lg border-none' : 'bg-white dark:bg-slate-800 text-slate-300 hover:text-black dark:text-white dark:hover:text-white'}`}
-                          title="ফিঙ্গারপ্রিন্ট রেজিস্টার"
+                          className={`w-9 h-9 flex items-center justify-center rounded-lg transition-all border border-slate-200 dark:border-slate-800 ${masterData.workerBiometrics?.[worker] ? 'bg-emerald-500 text-white shadow-md border-none' : 'bg-white dark:bg-slate-800 text-slate-300 hover:text-black dark:text-white dark:hover:text-white'}`}
+                          title="FINGERPRINT"
                       >
-                          <Fingerprint size={16} />
+                          <Fingerprint size={14} />
                       </button>
                     )}
                     <button 
                         onClick={() => {
                             const phone = workerDoc?.phone || "8801700000000";
-                            const msg = `সালাম ${worker},\nআপনার আজকের হাজিরা [${status.toUpperCase()}] হিসেবে রেকর্ড করা হয়েছে।\nধন্যবাদ - NRZOONE`;
+                            const msg = `সালাম ${worker},\nআপনার আজকের হাজিরা [${status.toUpperCase()}]।\nধন্যবাদ - NRZOONE`;
                             window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
                         }}
-                        className="w-10 h-10 flex items-center justify-center rounded-xl bg-white dark:bg-slate-800 text-emerald-500 hover:bg-emerald-500 hover:text-white transition-all border border-slate-200 dark:border-slate-800 shadow-sm"
+                        className="w-9 h-9 flex items-center justify-center rounded-lg bg-white dark:bg-slate-800 text-emerald-500 hover:bg-emerald-500 hover:text-white transition-all border border-slate-200 dark:border-slate-800 shadow-sm"
                     >
-                        <MessageCircle size={16} />
+                        <MessageCircle size={14} />
                     </button>
                   </div>
                 </div>
               </div>
             );
+        })}
+      </div>
 
         })}
       </div>

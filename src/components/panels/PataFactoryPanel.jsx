@@ -272,138 +272,134 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
     return (
         <div className="space-y-10 pb-32 animate-fade-up px-1 md:px-2 italic font-outfit text-black dark:text-white">
             {/* SaaS HUD */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-                <div className="bg-slate-950 p-4 md:p-6 rounded-xl text-white shadow-2xl relative overflow-hidden group">
-                    <div className="absolute right-0 top-0 p-4 opacity-5 group-hover:scale-150 transition-transform"><Database size={60} /></div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 md:gap-3">
+                <div className="bg-slate-950 p-3.5 md:p-5 rounded-xl text-white shadow-xl relative overflow-hidden group">
+                    <div className="absolute right-0 top-0 p-3 opacity-5 group-hover:scale-150 transition-transform"><Database size={50} /></div>
                     <div className="relative z-10 flex flex-col justify-between h-full">
-                        <p className="text-[8px] font-black uppercase tracking-widest opacity-40 mb-1">স্টক (ROLLS)</p>
-                        <p className="text-2xl md:text-3xl font-black tracking-tighter leading-none">{(masterData.rawInventory || []).filter(l => l.item.toLowerCase().includes('roll')).reduce((a,c) => a + (c.type === 'in' ? Number(c.qty) : -Number(c.qty)), 0)}</p>
+                        <p className="text-[7.5px] font-black uppercase tracking-widest opacity-40 mb-0.5">স্টক (ROLLS)</p>
+                        <p className="text-xl md:text-2xl font-black tracking-tighter leading-none">{(masterData.rawInventory || []).filter(l => l.item.toLowerCase().includes('roll')).reduce((a,c) => a + (c.type === 'in' ? Number(c.qty) : -Number(c.qty)), 0)}</p>
                     </div>
                 </div>
 
-                <button onClick={() => setView('active')} className={`bg-white dark:bg-slate-900 p-4 md:p-6 rounded-xl border-2 flex items-center justify-between group transition-all text-left shadow-xl ${view === 'active' ? 'border-amber-500' : 'border-slate-50 dark:border-slate-800'}`}>
+                <button onClick={() => setView('active')} className={`bg-white dark:bg-slate-900 p-3.5 md:p-5 rounded-xl border flex items-center justify-between group transition-all text-left shadow-md ${view === 'active' ? 'border-amber-500 bg-amber-50/10' : 'border-slate-100 dark:border-slate-800'}`}>
                     <div>
-                        <p className="text-xl md:text-2xl font-black tracking-tighter mb-0.5">{activeEntries.length}</p>
-                        <p className="text-[8px] font-black uppercase tracking-widest opacity-40">চলমান কাজ</p>
+                        <p className="text-xl md:text-2xl font-black tracking-tighter leading-none mb-0.5">{activeEntries.length}</p>
+                        <p className="text-[7.5px] font-black uppercase tracking-widest opacity-40">চলমান কাজ</p>
                     </div>
-                    <div className="w-10 h-10 md:w-12 md:h-12 bg-amber-500 text-white rounded-lg flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform"><Clock size={20} /></div>
+                    <div className="w-9 h-9 md:w-10 md:h-10 bg-amber-500 text-white rounded-lg flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform"><Clock size={18} /></div>
                 </button>
 
-                <button onClick={() => setView('history')} className={`bg-white dark:bg-slate-900 p-4 md:p-6 rounded-xl border-2 flex items-center justify-between group transition-all text-left shadow-xl ${view === 'history' ? 'border-emerald-500' : 'border-slate-50 dark:border-slate-800'}`}>
+                <button onClick={() => setView('history')} className={`bg-white dark:bg-slate-900 p-3.5 md:p-5 rounded-xl border flex items-center justify-between group transition-all text-left shadow-md ${view === 'history' ? 'border-emerald-500 bg-emerald-50/10' : 'border-slate-100 dark:border-slate-800'}`}>
                     <div>
-                        <p className="text-xl md:text-2xl font-black tracking-tighter mb-0.5">{historyEntries.length}</p>
-                        <p className="text-[8px] font-black uppercase tracking-widest opacity-40">পুরাতন রেকর্ড</p>
+                        <p className="text-xl md:text-2xl font-black tracking-tighter leading-none mb-0.5">{historyEntries.length}</p>
+                        <p className="text-[7.5px] font-black uppercase tracking-widest opacity-40">পুরাতন রেকর্ড</p>
                     </div>
-                    <div className="w-10 h-10 md:w-12 md:h-12 bg-emerald-500 text-white rounded-lg flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform"><CheckCircle size={20} /></div>
+                    <div className="w-9 h-9 md:w-10 md:h-10 bg-emerald-500 text-white rounded-lg flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform"><CheckCircle size={18} /></div>
                 </button>
 
-                <div className="bg-white dark:bg-slate-900 p-4 md:p-6 rounded-xl border-2 border-slate-50 dark:border-slate-800 shadow-xl flex items-center justify-between group overflow-hidden relative">
+                <div className="bg-white dark:bg-slate-900 p-3.5 md:p-5 rounded-xl border border-slate-100 dark:border-slate-800 shadow-md flex items-center justify-between group overflow-hidden relative">
                     <div>
-                        <p className="text-xl md:text-2xl font-black tracking-tighter mb-0.5">৳{(masterData.workerCategories?.pata || []).reduce((s, w) => s + ( (masterData.pataEntries || []).filter(p => p.worker === w && p.status === 'Received').reduce((acc,curr) => acc + (curr.amount || 0), 0) - (masterData.workerPayments || []).filter(p => p.worker === w && p.dept === 'pata').reduce((acc,curr) => acc + Number(curr.amount || 0), 0) ), 0).toLocaleString()}</p>
-                        <p className="text-[8px] font-black uppercase tracking-widest opacity-40">মোট বকেয়া</p>
+                        <p className="text-lg md:text-xl font-black tracking-tighter mb-0.5">৳{(masterData.workerCategories?.pata || []).reduce((s, w) => s + ( (masterData.pataEntries || []).filter(p => p.worker === w && p.status === 'Received').reduce((acc,curr) => acc + (curr.amount || 0), 0) - (masterData.workerPayments || []).filter(p => p.worker === w && p.dept === 'pata').reduce((acc,curr) => acc + Number(curr.amount || 0), 0) ), 0).toLocaleString()}</p>
+                        <p className="text-[7px] font-black uppercase tracking-widest opacity-40">মোট বকেয়া</p>
                     </div>
-                    <div className="w-10 h-10 md:w-12 md:h-12 bg-slate-100 text-slate-400 rounded-lg flex items-center justify-center group-hover:bg-slate-950 group-hover:text-white transition-all"><DollarSign size={20} /></div>
+                    <div className="w-9 h-9 md:w-10 md:h-10 bg-slate-100 text-slate-400 rounded-lg flex items-center justify-center group-hover:bg-slate-950 group-hover:text-white transition-all"><DollarSign size={16} /></div>
                 </div>
             </div>
 
             {/* Control Bar */}
-            <div className="bg-white dark:bg-slate-900 p-2 flex flex-col md:flex-row items-center justify-between gap-6 rounded-[2.5rem] border-4 border-slate-50 dark:border-slate-800 shadow-inner">
-                <div className="flex bg-slate-50 dark:bg-slate-800/50 p-1.5 rounded-[1.5rem] w-full md:w-auto">
-                    {['active', 'b2b_incoming', 'history', 'payments'].map(v => (
-                        <button key={v} onClick={() => setView(v)} className={`flex-1 md:flex-none px-8 py-3.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${view === v ? 'bg-slate-950 text-white shadow-xl' : 'text-slate-400'}`}>
-                            {v.replace('_', ' ')}
+            <div className="bg-white dark:bg-slate-900 p-1 md:p-1.5 flex flex-col md:flex-row items-center justify-between gap-2.5 md:gap-3 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm">
+                <div className="flex bg-slate-50 dark:bg-slate-800/50 p-1 rounded-lg w-full md:w-auto overflow-x-auto no-scrollbar">
+                    {['active', 'history', 'payments', 'b2b_incoming'].map(v => (
+                        <button key={v} onClick={() => setView(v)} className={`flex-1 md:flex-none px-4 md:px-6 py-1.5 md:py-2 rounded-lg text-[8.5px] font-black uppercase tracking-widest transition-all ${view === v ? 'bg-slate-950 text-white shadow-md' : 'text-slate-400 dark:text-slate-500'}`}>
+                            {v === 'active' ? 'চলমান' : v === 'history' ? 'পুরাতন' : v === 'payments' ? 'পেমেন্ট' : 'B2B ইনকামিং'}
                         </button>
                     ))}
                 </div>
 
-                <div className="flex items-center gap-4 px-2">
-                    <div className="relative group">
-                        <Search size={14} className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400" />
-                        <input placeholder="কারিগর বা লট..." className="bg-slate-50 dark:bg-slate-800 h-14 pl-14 pr-6 rounded-2xl text-[11px] font-black uppercase outline-none w-64 border-2 border-transparent focus:border-black transition-all italic" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+                <div className="flex items-center gap-2 md:gap-3 px-2 w-full md:w-auto">
+                    <div className="relative group flex-1">
+                        <Search size={12} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                        <input placeholder="লট বা কারিগর..." className="bg-slate-50 dark:bg-slate-800 h-9 md:h-10 pl-9 pr-4 rounded-xl text-[9px] font-black uppercase outline-none w-full md:w-40 border border-transparent focus:border-black transition-all italic" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
                     </div>
-                    <button onClick={() => setShowQR(true)} className="w-14 h-14 bg-slate-50 dark:bg-slate-800 text-slate-400 rounded-2xl flex items-center justify-center hover:bg-slate-950 hover:text-white transition-all"><Camera size={20} /></button>
-                    {(isAdmin || isManager) && (
-                        <button onClick={() => setShowModal(true)} className="h-14 bg-slate-950 text-white px-8 rounded-2xl flex items-center gap-3 shadow-2xl font-black uppercase text-[10px] tracking-widest italic animate-pulse">
-                            <Plus size={20} /> নতুন কাজ
+                    <button onClick={() => setShowQR(true)} className="w-9 h-9 md:w-10 md:h-10 bg-slate-50 dark:bg-slate-800 text-slate-400 rounded-xl flex items-center justify-center hover:bg-slate-950 hover:text-white transition-all"><Camera size={14} /></button>
+                    {!isWorker && (
+                        <button onClick={() => setShowModal(true)} className="h-9 md:h-10 bg-slate-950 text-white px-4 md:px-5 rounded-xl flex items-center gap-2 shadow-md font-black uppercase text-[8.5px] tracking-widest italic transition-all active:scale-95">
+                            <Plus size={14} /> নতুন কাজ
                         </button>
                     )}
                 </div>
             </div>
 
             {/* Content Display */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {view === 'payments' ? (
                     (masterData.workerCategories?.pata || []).map((w, idx) => {
-                         const earned = (masterData.pataEntries || []).filter(p => p.worker === w && p.status === 'Received').reduce((acc,curr) => acc + (curr.amount || 0), 0);
-                         const paid = (masterData.workerPayments || []).filter(p => p.worker === w && p.dept === 'pata').reduce((acc,curr) => acc + Number(curr.amount || 0), 0);
-                         const due = earned - paid;
-                         return (
-                             <div key={idx} className="bg-white dark:bg-slate-900 border-4 border-slate-50 dark:border-slate-800 rounded-[3rem] p-10 space-y-8 shadow-xl hover:border-black transition-all group animate-fade-up">
-                                  <div className="flex justify-between items-start">
-                                      <div className="space-y-2">
-                                          <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none italic">PATA SPECIALIST</p>
-                                          <h4 className="text-3xl font-black tracking-tighter uppercase italic">{w}</h4>
-                                      </div>
-                                      <div className={`w-14 h-14 ${due > 0 ? 'bg-amber-100 text-amber-600' : 'bg-slate-100 text-slate-300'} rounded-[1.5rem] flex items-center justify-center group-hover:rotate-12 transition-transform shadow-inner`}>
-                                          <User size={28} />
-                                      </div>
-                                  </div>
-                                  <div className="bg-slate-50 dark:bg-slate-800/80 p-8 rounded-[2.5rem] border border-white dark:border-slate-700 shadow-inner">
-                                       <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 italic">বকেয়া মজুরি (DUE)</p>
-                                       <p className={`text-5xl font-black tracking-tighter italic ${due > 0 ? 'text-black dark:text-white' : 'text-slate-200'}`}>৳{due.toLocaleString()}</p>
-                                  </div>
-                                  <button onClick={() => setPayModal(w)} className="w-full py-6 bg-slate-950 text-white rounded-[2rem] font-black uppercase text-[11px] tracking-widest italic shadow-xl hover:bg-emerald-500 transition-all">পেমেন্ট করুন (PROCESS)</button>
-                             </div>
-                         )
+                        const earned = (masterData.pataEntries || []).filter(p => p.worker === w && p.status === 'Received').reduce((acc,curr) => acc + (curr.amount || 0), 0);
+                        const paid = (masterData.workerPayments || []).filter(p => p.worker === w && p.dept === 'pata').reduce((acc,curr) => acc + Number(curr.amount || 0), 0);
+                        const due = earned - paid;
+                        return (
+                            <div key={idx} className="bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 rounded-2xl p-6 space-y-6 shadow-md hover:border-black transition-all group animate-fade-up">
+                                <div className="flex justify-between items-start">
+                                    <div className="space-y-1">
+                                        <p className="text-[7.5px] font-black text-slate-400 uppercase tracking-widest leading-none italic">PATA SPECIALIST</p>
+                                        <h4 className="text-xl font-black tracking-tighter uppercase italic">{w}</h4>
+                                    </div>
+                                    <div className={`w-10 h-10 ${due > 0 ? 'bg-amber-100 text-amber-600' : 'bg-slate-100 text-slate-300'} rounded-lg flex items-center justify-center group-hover:rotate-12 transition-transform shadow-inner`}><User size={18} /></div>
+                                </div>
+                                <div className="bg-slate-50 dark:bg-slate-800/80 p-5 rounded-xl border border-white dark:border-slate-700 shadow-inner">
+                                   <p className="text-[8px] font-black text-slate-300 uppercase tracking-widest mb-2 italic">বকেয়া মজুরি (DUE)</p>
+                                   <p className={`text-3xl font-black tracking-tighter italic ${due > 0 ? 'text-black dark:text-white' : 'text-slate-200'}`}>৳{due.toLocaleString()}</p>
+                                </div>
+                                <button onClick={() => setPayModal(w)} className="w-full py-3 bg-slate-950 text-white rounded-xl font-black uppercase text-[9px] tracking-widest italic shadow-md hover:bg-emerald-500 transition-all">পেমেন্ট করুন</button>
+                            </div>
+                        );
                     })
                 ) : (view === 'active' ? activeEntries : historyEntries).length === 0 ? (
-                    <div className="col-span-full h-80 flex flex-col items-center justify-center bg-white dark:bg-slate-900 rounded-[3rem] border-4 border-dashed border-slate-50 italic">
-                        <Activity size={60} strokeWidth={1} className="text-slate-100 mb-6" />
-                        <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest">রেকর্ড পাওয়া যায়নি</p>
+                    <div className="col-span-full h-60 flex flex-col items-center justify-center bg-white dark:bg-slate-900 rounded-2xl border-2 border-dashed border-slate-100 italic">
+                        <Activity size={40} strokeWidth={1} className="text-slate-200 mb-4" />
+                        <p className="text-[9px] font-black text-slate-300 uppercase tracking-widest">রেকর্ড পাওয়া যায়নি</p>
                     </div>
                 ) : (
                     (view === 'active' ? activeEntries : historyEntries).map((item, idx) => (
-                        <div key={item.id || idx} className="flex flex-col h-full bg-white dark:bg-slate-900 border-4 border-slate-50 dark:border-slate-800 rounded-[3rem] p-10 shadow-xl hover:border-black transition-all group animate-fade-up">
-                             <div className="flex justify-between items-start mb-8">
-                                  <div className="space-y-2">
-                                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest italic">কারিগর</p>
-                                      <h4 className="text-3xl font-black tracking-tighter uppercase italic truncate max-w-[200px]">{item.worker}</h4>
-                                  </div>
-                                  <div className={`w-14 h-14 ${item.status === 'Pending' ? 'bg-amber-50 text-amber-600' : 'bg-emerald-50 text-emerald-600'} rounded-2xl flex items-center justify-center shadow-inner font-black text-[10px]`}>
-                                      #{item.lotNo.slice(-4)}
-                                  </div>
-                             </div>
+                        <div key={item.id} className="flex flex-col h-full bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 rounded-2xl p-6 shadow-md hover:border-black transition-all group animate-fade-up">
+                            <div className="flex justify-between items-start mb-3 md:mb-4">
+                                <div className="space-y-0.5">
+                                    <p className="text-[7.5px] font-black text-slate-400 uppercase tracking-widest italic">কারিগর</p>
+                                    <h4 className="text-lg md:text-xl font-black tracking-tighter uppercase italic truncate max-w-[150px] md:max-w-[200px]">{item.worker}</h4>
+                                </div>
+                                <div className={`px-2 py-1 bg-slate-50 dark:bg-slate-800 rounded-lg shadow-inner font-black text-[9px] flex items-center justify-center`}>LOT: #{String(item.lotNo).slice(-4)}</div>
+                            </div>
 
-                             <div className="grid grid-cols-2 gap-4 mb-8">
-                                  <div className="bg-slate-50 dark:bg-slate-800 p-6 rounded-[2rem] border border-white dark:border-slate-700">
-                                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2 italic">ডিজাইন</p>
-                                      <p className="text-sm font-black uppercase italic truncate">{item.design}</p>
-                                  </div>
-                                  <div className="bg-slate-50 dark:bg-slate-800 p-6 rounded-[2rem] border border-white dark:border-slate-700">
-                                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2 italic">পার্টস</p>
-                                      <p className="text-sm font-black uppercase italic truncate">{item.pataType}</p>
-                                  </div>
-                             </div>
+                            <div className="grid grid-cols-2 gap-2.5 mb-3 md:mb-4">
+                                <div className="bg-slate-50 dark:bg-slate-800 p-2.5 md:p-3 rounded-xl border border-white dark:border-slate-700">
+                                    <p className="text-[7.5px] font-black text-slate-400 uppercase tracking-widest mb-0.5 italic">ডিজাইন</p>
+                                    <p className="text-[11px] font-black uppercase italic truncate">{item.design}</p>
+                                </div>
+                                <div className="bg-slate-50 dark:bg-slate-800 p-2.5 md:p-3 rounded-xl border border-white dark:border-slate-700">
+                                    <p className="text-[7.5px] font-black text-slate-400 uppercase tracking-widest mb-0.5 italic">টাইপ</p>
+                                    <p className="text-[11px] font-black uppercase italic truncate">{item.pataType}</p>
+                                </div>
+                            </div>
 
-                             <div className="flex justify-between items-center py-8 border-y-2 border-slate-50 dark:border-slate-800 border-dashed mb-8">
-                                  <div>
-                                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2 italic">পরিমাণ (QTY)</p>
-                                      <p className="text-4xl font-black italic tracking-tighter">{item.receivedQty || item.pataQty} <span className="text-xs opacity-40">PCS</span></p>
-                                  </div>
-                                  <div className="text-right">
-                                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2 italic">তারিখ</p>
-                                      <p className="text-lg font-black italic mt-1 font-mono">{item.date}</p>
-                                  </div>
-                             </div>
+                            <div className="flex justify-between items-center py-3 md:py-4 border-y border-slate-50 dark:border-slate-800 border-dashed mb-3 md:mb-4">
+                                <div>
+                                    <p className="text-[7.5px] font-black text-slate-400 uppercase tracking-widest mb-0.5 italic">পরিমাণ</p>
+                                    <p className="text-xl md:text-2xl font-black italic tracking-tighter leading-none">{item.pataQty} <span className="text-[9px] opacity-40">PCS</span></p>
+                                </div>
+                                <div className="text-right">
+                                    <p className="text-[7.5px] font-black text-slate-400 uppercase tracking-widest mb-0.5 italic">মজুরি</p>
+                                    <p className="text-lg md:text-xl font-black italic text-emerald-500 tracking-tighter leading-none">৳{(masterData.pataRates || {})[item.pataType] || 0}</p>
+                                </div>
+                            </div>
 
-                             <div className="flex gap-4 mt-auto">
-                                  <button onClick={() => setPrintSlip(item)} className="w-16 h-16 bg-white dark:bg-slate-800 border-2 border-transparent hover:border-black rounded-2xl flex items-center justify-center shadow-lg transition-all"><Printer size={24} /></button>
-                                  {item.status === 'Pending' ? (
-                                      <button onClick={() => setReceiveModal(item)} className="flex-1 h-16 bg-slate-950 text-white dark:bg-white dark:text-slate-950 rounded-2xl font-black uppercase tracking-widest italic shadow-xl hover:bg-emerald-500 transition-all">জমা নিন (RECEIVE)</button>
-                                  ) : (
-                                      <div className="flex-1 h-16 bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400 rounded-2xl flex items-center justify-center font-black uppercase text-[10px] tracking-widest italic border border-emerald-100">RECEIVED {item.receiveDate}</div>
-                                  )}
-                             </div>
+                            <div className="flex gap-3 mt-auto">
+                                <button onClick={() => setPrintSlip(item)} className="w-12 h-12 bg-white dark:bg-slate-800 border border-slate-100 rounded-xl flex items-center justify-center shadow-md hover:border-black transition-all"><Printer size={18} /></button>
+                                {item.status === 'Pending' ? (
+                                    <button onClick={() => setReceiveModal(item)} className="flex-1 h-12 bg-slate-950 text-white dark:bg-white dark:text-slate-950 rounded-xl font-black uppercase tracking-widest text-[9px] italic shadow-md hover:bg-emerald-500 transition-all">কাজ জমা (REC)</button>
+                                ) : (
+                                    <div className="flex-1 h-12 bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400 rounded-xl flex items-center justify-center font-black uppercase text-[9px] tracking-widest italic border border-emerald-100">RECEIVED {item.receiveDate}</div>
+                                )}
+                            </div>
                         </div>
                     ))
                 )}
