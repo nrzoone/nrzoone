@@ -139,7 +139,7 @@ const WorkerSummary = ({ masterData, setMasterData, showNotify, user, logAction,
                         <NRZLogo size="xs" white />
                     </div>
                     <div>
-                        <p className="text-[8px] font-black text-black dark:text-white uppercase tracking-widest mb-0.5 px-0.5 italic opacity-40">System Intelligent</p>
+                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-0.5 px-0.5 italic">System Intelligent</p>
                         <h2 className="text-2xl md:text-3xl font-black uppercase tracking-tighter leading-tight text-black dark:text-white italic">
                             কারিগর <span className="text-black dark:text-white">লেজার বুক</span>
                         </h2>
@@ -152,7 +152,7 @@ const WorkerSummary = ({ masterData, setMasterData, showNotify, user, logAction,
                     </div>
                     <div className="bg-slate-950 text-white p-4 rounded-xl shadow-md text-right flex-1 lg:min-w-[140px]">
                         <p className="text-[8px] font-black text-white/50 uppercase tracking-widest mb-1 font-mono">নিট প্রদেয়</p>
-                        <p className="text-xl font-black italic tracking-tighter text-white leading-none">৳{totalBalanceAll.toLocaleString()}</p>
+                        <p className="text-[10px] font-black italic tracking-tighter text-white leading-none">৳{totalBalanceAll.toLocaleString()}</p>
                     </div>
                 </div>
             </div>
@@ -186,7 +186,7 @@ const WorkerSummary = ({ masterData, setMasterData, showNotify, user, logAction,
                                  {w.photo ? <img src={w.photo} className="w-full h-full object-cover" /> : <div className="text-slate-300 text-2xl font-black italic uppercase">{w.name.charAt(0)}</div>}
                             </div>
                             <div className="text-right">
-                                <p className="text-[7.5px] font-black text-black dark:text-white uppercase tracking-widest mb-1 italic opacity-40">Identity</p>
+                                <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">Identity</p>
                                 <h4 className="text-xl font-black italic uppercase leading-none text-black dark:text-white truncate max-w-[130px]">{w.name}</h4>
                                 <div className="flex gap-1.5 justify-end mt-1.5">
                                     {masterData.workerDocs?.find(d => d.name.toUpperCase() === w.name.toUpperCase() && d.dept === w.dept)?.workerId && (

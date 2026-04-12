@@ -512,7 +512,7 @@ const ClientLedgerPanel = ({ masterData, setMasterData, showNotify, user, setAct
                                 </div>
                                 <div className="space-y-1">
                                     <label className="text-[10px] font-black uppercase text-slate-400 ml-1">Fabric Drawdown (YDS)</label>
-                                    <input name="fabricGoj" type="number" step="0.01" placeholder="0.00" className="premium-input !h-14 font-black bg-blue-50 text-blue-600 border-none" required />
+                                    <input name="fabricGoj" type="number" step="0.01" placeholder="0.00" className="premium-input !h-14 font-black bg-blue-50 !text-blue-600 border-none" required />
                                 </div>
                                 <div className="space-y-3 bg-slate-50 dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-slate-800">
                                     <p className="text-[10px] font-black text-slate-400 uppercase italic mb-4 text-center">Production Matrix (Borka / Hijab)</p>
@@ -547,7 +547,7 @@ const ClientLedgerPanel = ({ masterData, setMasterData, showNotify, user, setAct
                                 </div>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-1"><label className="text-[10px] font-black uppercase text-slate-400 ml-1">Total Qty</label><input name="qty" type="number" placeholder="0" className="premium-input !h-14 font-black bg-slate-950 text-white border-none" required /></div>
-                                    <div className="space-y-1"><label className="text-[10px] font-black uppercase text-slate-400 ml-1">Rate/Pc</label><input name="price" type="number" placeholder="৳ 0" className="premium-input !h-14 font-black text-blue-600" required /></div>
+                                    <div className="space-y-1"><label className="text-[10px] font-black uppercase text-slate-400 ml-1">Rate/Pc</label><input name="price" type="number" placeholder="৳ 0" className="premium-input !h-14 font-black !text-blue-600" required /></div>
                                 </div>
                                 <input name="color" type="hidden" value="MIX" />
                                 <input name="lotNo" type="hidden" value="B2B" />

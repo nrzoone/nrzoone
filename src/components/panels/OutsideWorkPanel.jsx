@@ -173,8 +173,10 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
             // Generate Client Bill for Outside Work if applicable
             let updatedClientTransactions = [...(prev.clientTransactions || [])];
             if (receiveModal.client && receiveModal.client !== 'FACTORY') {
-                const dObj = (prev.designs || []).find(d => d.name === receiveModal.design);
-                const clientRate = dObj?.clientOutsideRate || 10; 
+                const dObj = (masterData.designs || []).find(d => d.name === receiveModal.design);
+                // Priority: Per-client override > Default client rate > Legacy field > 0
+                const perClientRate = dObj?.clientRates?.[receiveModal.client]?.outwork;
+                const clientRate = perClientRate || dObj?.defaultClientRates?.outwork || dObj?.clientOutsideRate || 0; 
                 const totalPcs = rBorka + rHijab;
                 const billAmount = totalPcs * clientRate;
                 
@@ -185,6 +187,7 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
                         client: receiveModal.client,
                         amount: billAmount,
                         type: 'BILL',
+                        dept: 'OUTSIDE',
                         note: `OUTSIDE BILL: ${receiveModal.design} (${totalPcs} pcs @ ${clientRate}tk)`
                     }, ...updatedClientTransactions];
                     logAction(user, 'CLIENT_BILL_AUTO_OUTSIDE', `${receiveModal.client} billed ${billAmount}tk for Outside Work: ${receiveModal.design}`);
@@ -412,7 +415,7 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
                                 <div className="space-y-4">
                                     <div>
                                         <label className="text-[8px] font-black uppercase tracking-widest text-slate-400 ml-1">রেট (৳ প্রতি পিস)</label>
-                                        <input type="number" className="premium-input !h-10 font-black text-emerald-600 !text-[11px]" placeholder="0.00" value={entryData.rate} onChange={(e) => setEntryData(p => ({ ...p, rate: e.target.value }))} />
+                                        <input type="number" className="premium-input !h-10 font-black !text-emerald-600 !text-[11px]" placeholder="0.00" value={entryData.rate} onChange={(e) => setEntryData(p => ({ ...p, rate: e.target.value }))} />
                                     </div>
                                     <div>
                                         <label className="text-[8px] font-black uppercase tracking-widest text-slate-400 ml-1">তারিখ</label>
@@ -427,29 +430,29 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
                 )}
 
                 {receiveModal && (
-                    <div className="fixed inset-0 z-[1000] bg-slate-950/40 backdrop-blur-md flex items-center justify-center p-4">
-                        <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-white dark:bg-slate-900 w-full max-w-lg rounded-[3rem] shadow-2xl p-12 relative border-4 border-slate-50">
-                            <button onClick={() => setReceiveModal(null)} className="absolute top-10 right-10 text-slate-400"><X size={32} /></button>
-                            <h2 className="text-2xl font-black uppercase italic mb-8 text-center">{receiveModal.worker} <span className="text-emerald-500">জমা দিন</span></h2>
-                            <div className="grid grid-cols-2 gap-4 mb-8 text-center bg-slate-50 p-6 rounded-[2rem]">
-                                <div><p className="text-[10px] font-black uppercase text-slate-400">বোরকা</p><input type="number" className="w-full text-center text-4xl font-black bg-transparent" value={receiveModal.rBorkaQty} onChange={(e) => setReceiveModal(p => ({ ...p, rBorkaQty: e.target.value }))} /></div>
-                                <div><p className="text-[10px] font-black uppercase text-slate-400">হিজাব</p><input type="number" className="w-full text-center text-4xl font-black bg-transparent" value={receiveModal.rHijabQty} onChange={(e) => setReceiveModal(p => ({ ...p, rHijabQty: e.target.value }))} /></div>
+                    <div className="fixed inset-0 z-[1000] bg-slate-950/60 backdrop-blur-md flex items-center justify-center p-4">
+                        <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-white dark:bg-slate-900 w-full max-w-md rounded-3xl shadow-2xl p-8 relative border border-slate-100 dark:border-slate-800">
+                            <button onClick={() => setReceiveModal(null)} className="absolute top-6 right-6 text-slate-400 hover:text-black transition-colors"><X size={24} /></button>
+                            <h2 className="text-2xl font-black uppercase italic mb-8 tracking-tighter text-center">{receiveModal.worker} <span className="text-emerald-500">জমা নিন</span></h2>
+                            <div className="grid grid-cols-2 gap-4 mb-8 text-center bg-slate-50 dark:bg-slate-800/50 p-6 rounded-2xl border border-white dark:border-slate-700">
+                                <div><p className="text-[10px] font-black uppercase text-slate-400 opacity-60">বোরকা</p><input type="number" className="w-full text-center text-3xl font-black bg-transparent outline-none" value={receiveModal.rBorkaQty} onChange={(e) => setReceiveModal(p => ({ ...p, rBorkaQty: e.target.value }))} /></div>
+                                <div><p className="text-[10px] font-black uppercase text-slate-400 opacity-60">হিজাব</p><input type="number" className="w-full text-center text-3xl font-black bg-transparent outline-none" value={receiveModal.rHijabQty} onChange={(e) => setReceiveModal(p => ({ ...p, rHijabQty: e.target.value }))} /></div>
                             </div>
-                            <button onClick={handleConfirmReceive} className="w-full py-6 bg-slate-950 text-white rounded-[2rem] font-black uppercase tracking-widest italic shadow-xl">জমা নিন (RECEIVE)</button>
+                            <button onClick={handleConfirmReceive} className="w-full py-5 bg-slate-950 text-white dark:bg-white dark:text-black rounded-2xl font-black uppercase tracking-widest italic shadow-xl hover:scale-[1.02] active:scale-95 transition-all">জমা নেওয়া নিশ্চিত করুন (RECEIVE)</button>
                         </motion.div>
                     </div>
                 )}
 
                 {payModal && (
-                    <div className="fixed inset-0 z-[1000] bg-slate-950/40 backdrop-blur-md flex items-center justify-center p-4">
-                        <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-white dark:bg-slate-900 w-full max-w-lg rounded-[3rem] shadow-2xl p-12 relative border-4 border-slate-50">
-                            <button onClick={() => setPayModal(null)} className="absolute top-10 right-10 text-slate-400"><X size={32} /></button>
-                            <h2 className="text-2xl font-black uppercase italic mb-8 text-center">{payModal.worker} <span className="text-emerald-500">পেমেন্ট</span></h2>
-                            <div className="p-10 bg-slate-50 rounded-[2rem] text-center mb-8">
-                                <p className="text-[10px] font-black uppercase text-slate-400 mb-4">টাকার পরিমাণ (৳)</p>
-                                <input type="number" className="w-full text-5xl font-black text-center bg-transparent outline-none" placeholder="0" value={paymentAmount} onChange={(e) => setPaymentAmount(e.target.value)} />
+                    <div className="fixed inset-0 z-[1000] bg-slate-950/60 backdrop-blur-md flex items-center justify-center p-4">
+                        <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-white dark:bg-slate-900 w-full max-w-md rounded-3xl shadow-2xl p-8 relative border border-slate-100 dark:border-slate-800">
+                            <button onClick={() => setPayModal(null)} className="absolute top-6 right-6 text-slate-400 hover:text-black transition-colors"><X size={24} /></button>
+                            <h2 className="text-2xl font-black uppercase italic mb-8 tracking-tighter text-center">{payModal.worker} <span className="text-blue-500">পেমেন্ট</span></h2>
+                            <div className="p-8 bg-slate-50 dark:bg-slate-800/50 rounded-2xl text-center mb-8 border border-white dark:border-slate-700">
+                                <p className="text-[10px] font-black uppercase text-slate-400 mb-4 opacity-60 tracking-widest">টাকার পরিমাণ (৳)</p>
+                                <input type="number" className="w-full text-4xl font-black text-center bg-transparent outline-none text-blue-600" placeholder="0" value={paymentAmount} onChange={(e) => setPaymentAmount(e.target.value)} />
                             </div>
-                            <button onClick={handlePayment} className="w-full py-6 bg-emerald-500 text-white rounded-[2rem] font-black uppercase tracking-widest italic shadow-xl">কনফার্ম পেমেন্ট</button>
+                            <button onClick={handlePayment} className="w-full py-5 bg-emerald-500 text-white rounded-2xl font-black uppercase tracking-widest italic shadow-xl hover:scale-[1.02] active:scale-95 transition-all">কনফার্ম পেমেন্ট</button>
                         </motion.div>
                     </div>
                 )}
@@ -458,12 +461,12 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
             <div className="pt-24 pb-12 flex justify-center">
                 <button
                     onClick={() => setActivePanel("Overview")}
-                    className="group flex items-center gap-8 bg-white dark:bg-slate-900 px-16 py-8 rounded-[2.5rem] border-4 border-slate-50 dark:border-slate-800 shadow-2xl hover:border-black transition-all duration-500"
+                    className="group flex items-center gap-6 bg-white dark:bg-slate-900 px-10 md:px-12 py-5 md:py-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xl hover:border-black transition-all duration-500"
                 >
-                    <div className="p-4 bg-slate-950 text-white rounded-2xl transition-transform shadow-2xl group-hover:-translate-x-4">
-                        <ArrowLeft size={24} strokeWidth={3} />
+                    <div className="p-3 bg-slate-950 text-white rounded-xl transition-transform shadow-lg group-hover:-translate-x-2">
+                        <ArrowLeft size={18} strokeWidth={3} />
                     </div>
-                    <span className="text-2xl font-black tracking-tighter text-black dark:text-white uppercase leading-none italic">EXIT TO HUB</span>
+                    <span className="text-lg font-black tracking-tighter text-black dark:text-white uppercase leading-none italic">EXIT TO HUB</span>
                 </button>
             </div>
         </div>

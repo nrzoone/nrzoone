@@ -97,7 +97,9 @@ class ErrorBoundary extends React.Component {
     }
 
     handleRecover = () => {
-        localStorage.clear(); // Extreme recovery
+        const confirm = window.confirm("গোপন তথ্য ও লোকাল ক্যাশ মুছে যাবে। আপনি কি নিশ্চিত?");
+        if (!confirm) return;
+        localStorage.clear();
         window.location.reload();
     };
 
@@ -110,7 +112,7 @@ class ErrorBoundary extends React.Component {
                         <div className="absolute inset-0 blur-3xl bg-amber-500 opacity-20 animate-pulse"></div>
                     </div>
                     <h1 className="text-3xl font-black uppercase tracking-tighter mb-4">রিমোট সিস্টেম প্রটেকশন</h1>
-                    <p className="text-black dark:text-white text-sm max-w-md mb-12 uppercase tracking-widest leading-relaxed">
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-relaxed max-w-sm mb-12 italic">
                         সিস্টেমে একটি গুরুতর ত্রুটি পাওয়া গেছে। ডাটা সুরক্ষিত রাখতে অপারেশন সাময়িকভাবে বন্ধ করা হয়েছে।
                     </p>
                     <div className="bg-slate-900 border border-slate-800 p-6 rounded-2xl mb-12 w-full max-w-lg text-left overflow-auto max-h-40">
@@ -304,7 +306,7 @@ const TrackingView = ({ trackId, masterData, onClose, isDarkMode }) => {
 
                 <div className="bg-black text-white p-8 md:p-12 rounded-[3rem] md:rounded-[5rem] shadow-3xl text-center flex flex-col items-center">
                     <Logo size="md" white={true} customUrl={masterData.settings?.logo} />
-                    <p className="text-[10px] font-black uppercase tracking-[0.6em] text-black dark:text-white mt-6 mb-6">Status</p>
+                    <p className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400 mt-6 mb-6">Status</p>
                     <h2 className="text-4xl md:text-7xl font-black uppercase italic tracking-tighter">{item.status === 'Pending' ? 'In Production' : 'Completed'}</h2>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-12 border-t border-white/10 pt-12">
                         <div><p className="text-[8px] text-black dark:text-white uppercase tracking-widest mb-1 font-black underline">Lot</p><p className="font-black">#{item.lotNo}</p></div>
@@ -608,6 +610,19 @@ const AppContent = () => {
         return () => recognition.abort();
     }, [isListening, user]);
 
+    // Anti-Loss Protocol: Warn user if closing while syncing
+    useEffect(() => {
+        const handleBeforeUnload = (e) => {
+            if (syncStatus === 'syncing') {
+                e.preventDefault();
+                e.returnValue = 'Data is still syncing to cloud. Stay on page?';
+                return e.returnValue;
+            }
+        };
+        window.addEventListener('beforeunload', handleBeforeUnload);
+        return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+    }, [syncStatus]);
+
     if (isLoading || !masterData) return (
         <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center p-6 md:p-20 animate-fade-in transition-all duration-1000">
             <div className="mb-12 animate-pulse scale-110">
@@ -659,7 +674,7 @@ const AppContent = () => {
                                     </h2>
                                     <div className="flex items-center gap-2">
                                         <div className={`w-1.5 h-1.5 rounded-full ${syncStatus === 'syncing' ? 'bg-amber-500 animate-pulse' : syncStatus === 'error' ? 'bg-rose-500' : 'bg-emerald-500'}`}></div>
-                                        <span className={`text-[9px] font-bold uppercase tracking-widest ${syncStatus === 'error' ? 'text-rose-500' : 'text-black dark:text-white'}`}>
+                                        <span className={`text-[9px] font-black uppercase tracking-widest ${syncStatus === 'error' ? 'text-rose-500' : 'text-slate-400'}`}>
                                             {syncStatus === 'syncing' ? 'সিঙ্কিং হচ্ছে...' : syncStatus === 'error' ? 'সিঙ্ক ত্রুটি (Sync Error)' : 'সিস্টেম সুরক্ষিত (V5.2)'}
                                         </span>
                                     </div>
@@ -668,8 +683,8 @@ const AppContent = () => {
 
                             <div className="flex items-center gap-3 md:gap-6">
                                 <div className="hidden sm:flex flex-col items-end pr-5 border-r border-slate-100 dark:border-slate-800">
-                                    <p className="text-[9px] font-bold uppercase tracking-widest text-black dark:text-white mb-0.5">অনুমোদিত ইউজার</p>
-                                    <p className="text-sm font-bold uppercase text-black dark:text-white leading-none">{user?.name || 'অпераটর'}</p>
+                                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-0.5">অনুমোদিত ইউজার</p>
+                                    <p className="text-sm font-black uppercase text-black dark:text-white leading-none italic">{user?.name || 'অпераটর'}</p>
                                 </div>
                                 <div className="flex gap-2">
                                     {user?.role !== 'client' && (
@@ -733,9 +748,9 @@ const AppContent = () => {
                                                             {n.type === 'task' ? <Activity size={20} /> : <Shield size={20} />}
                                                         </div>
                                                         <div className="flex-1 space-y-1">
-                                                            <h4 className="text-lg font-bold text-black dark:text-white uppercase leading-none">{n.title}</h4>
-                                                            <p className="text-[11px] font-medium text-black dark:text-white dark:text-black dark:text-white">{n.message}</p>
-                                                            <p className="text-[9px] font-bold uppercase tracking-widest opacity-40">{new Date(n.timestamp).toLocaleString()}</p>
+                                                            <h4 className="text-lg font-black text-black dark:text-white uppercase leading-none italic">{n.title}</h4>
+                                                            <p className="text-[11px] font-bold text-slate-400 italic">{n.message}</p>
+                                                            <p className="text-sm font-black italic tracking-tighter text-slate-500 leading-none">{new Date(n.timestamp).toLocaleString()}</p>
                                                         </div>
                                                     </div>
                                                 ))

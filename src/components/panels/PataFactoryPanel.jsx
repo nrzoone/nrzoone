@@ -150,8 +150,12 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
         const item = receiveModal;
         const form = e.target.form || e.target;
         const receivedQty = Number(form.rQty?.value || item.pataQty);
-        const rate = (masterData.pataRates || {})[item.pataType] || 0;
-        const amount = receivedQty * rate;
+        
+        // Dynamic Rate Retrieval
+        const dObj = (masterData.designs || []).find(d => d.name === item.design);
+        const isDouble = item.pataType === 'Double';
+        const workerRate = isDouble ? (dObj?.pataRateDouble || 6) : (dObj?.pataRateSingle || 3);
+        const amount = receivedQty * workerRate;
 
         setMasterData(prev => {
             const updatedEntries = (prev.pataEntries || []).map(e => e.id === item.id ? {
@@ -159,6 +163,7 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                 status: 'Received',
                 receivedQty: receivedQty,
                 amount: amount,
+                rate: workerRate,
                 receiveDate: new Date().toLocaleDateString('en-GB'),
                 receivedBy: user?.name || 'Admin'
             } : e);
@@ -179,8 +184,12 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
             // Generate Client Bill for Pata if applicable
             let updatedClientTransactions = [...(prev.clientTransactions || [])];
             if (item.client && item.client !== 'FACTORY') {
-                const dObj = (prev.designs || []).find(d => d.name === item.design);
-                const clientRate = dObj?.clientPataRate || 5; 
+                // Priority: Per-client override > Default client rate > fallback
+                const perClientRate = dObj?.clientRates?.[item.client]?.pata;
+                const defaultRate = isDouble 
+                    ? (dObj?.defaultClientRates?.pataDouble || 6) 
+                    : (dObj?.defaultClientRates?.pataSingle || 3);
+                const clientRate = perClientRate || defaultRate; 
                 const billAmount = receivedQty * clientRate;
                 
                 if (billAmount > 0) {
@@ -190,6 +199,7 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                         client: item.client,
                         amount: billAmount,
                         type: 'BILL',
+                        dept: 'PATA',
                         note: `PATA BILL: ${item.design} (${receivedQty} pcs @ ${clientRate}tk)`
                     }, ...updatedClientTransactions];
                     logAction(user, 'CLIENT_BILL_AUTO_PATA', `${item.client} billed ${billAmount}tk for PATA: ${item.design}`);
@@ -341,7 +351,7 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                             <div key={idx} className="bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 rounded-2xl p-6 space-y-6 shadow-md hover:border-black transition-all group animate-fade-up">
                                 <div className="flex justify-between items-start">
                                     <div className="space-y-1">
-                                        <p className="text-[7.5px] font-black text-slate-400 uppercase tracking-widest leading-none italic">PATA SPECIALIST</p>
+                                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">PATA SPECIALIST</p>
                                         <h4 className="text-xl font-black tracking-tighter uppercase italic">{w}</h4>
                                     </div>
                                     <div className={`w-10 h-10 ${due > 0 ? 'bg-amber-100 text-amber-600' : 'bg-slate-100 text-slate-300'} rounded-lg flex items-center justify-center group-hover:rotate-12 transition-transform shadow-inner`}><User size={18} /></div>
@@ -408,26 +418,26 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
             {/* Modals */}
             <AnimatePresence>
                 {showModal && (
-                    <div className="fixed inset-0 z-[1000] bg-slate-950/40 backdrop-blur-md flex items-center justify-center p-2 md:p-6 overflow-y-auto pt-10 pb-20 no-scrollbar">
+                    <div className="fixed inset-0 z-[1000] bg-slate-950/60 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto no-scrollbar">
                         <motion.div 
-                          initial={{ scale: 0.9, opacity: 0 }} 
+                          initial={{ scale: 0.95, opacity: 0 }} 
                           animate={{ scale: 1, opacity: 1 }} 
-                          className="bg-white dark:bg-slate-900 w-full max-w-4xl rounded-[2rem] md:rounded-[3rem] shadow-2xl p-6 md:p-12 relative border-4 border-slate-50 max-h-[90vh] overflow-y-auto no-scrollbar"
+                          className="bg-white dark:bg-slate-900 w-full max-w-2xl rounded-3xl shadow-2xl p-6 md:p-10 relative border border-slate-100 dark:border-slate-800 my-auto"
                         >
-                            <button onClick={() => setShowModal(false)} className="absolute top-4 right-4 md:top-10 md:right-10 text-slate-400 hover:text-black"><X size={24} /></button>
-                            <h2 className="text-3xl font-black uppercase italic mb-10 text-center">নতুন পাতা কাজ <span className="text-blue-600">ইস্যু করুন</span></h2>
+                            <button onClick={() => setShowModal(false)} className="absolute top-6 right-6 text-slate-400 hover:text-black dark:hover:text-white transition-colors"><X size={20} /></button>
+                            <h2 className="text-2xl font-black uppercase italic mb-8 tracking-tighter text-center">নতুন পাতা কাজ <span className="text-blue-600 underline">ইস্যু করুন</span></h2>
                             
-                            <div className="bg-blue-600/5 p-8 rounded-[2.5rem] border border-blue-500/10 mb-8 flex flex-col md:flex-row items-center gap-6">
-                                <div className="flex-1 w-full space-y-2">
-                                    <label className="text-[10px] font-black uppercase text-blue-600 tracking-widest ml-4">মাস্টার লট সিন্ক্রোনাইজ করুন (SCAN/SEARCH)</label>
+                            <div className="bg-blue-600/5 p-5 rounded-2xl border border-blue-500/10 mb-8 flex flex-col items-center gap-4">
+                                <div className="w-full space-y-2">
+                                    <label className="text-[9px] font-black uppercase text-blue-600 tracking-widest ml-2 italic">মাস্টার লট সিন্ক্রোনাইজ করুন (SCAN/SEARCH)</label>
                                     <div className="relative">
-                                        <Search size={20} className="absolute left-8 top-1/2 -translate-y-1/2 text-blue-600" />
-                                        <input className="premium-input !h-16 !pl-20 !text-xl !font-black !bg-white border-blue-200" placeholder="ENTER LOT NO..." value={lotSearch} onChange={(e) => handleLotSearch(e.target.value)} />
+                                        <Search size={16} className="absolute left-6 top-1/2 -translate-y-1/2 text-blue-600" />
+                                        <input className="premium-input !h-14 !pl-14 !text-xl !font-black !bg-white border-blue-200" placeholder="ENTER LOT NO..." value={lotSearch} onChange={(e) => handleLotSearch(e.target.value)} />
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-2 gap-8">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="space-y-6">
                                     <div>
                                         <label className="text-[10px] font-black uppercase text-slate-400 ml-4">কারিগর</label>
@@ -460,11 +470,11 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                                     <div className="grid grid-cols-2 gap-4">
                                         <div>
                                             <label className="text-[10px] font-black uppercase text-slate-400 ml-4">পাথর (প্যাকেট)</label>
-                                            <input type="number" className="premium-input !h-14 font-black text-rose-500" value={entryData.stonePackets} onChange={(e) => setEntryData(p => ({ ...p, stonePackets: e.target.value }))} placeholder="0" />
+                                            <input type="number" className="premium-input !h-14 font-black !text-rose-500" value={entryData.stonePackets} onChange={(e) => setEntryData(p => ({ ...p, stonePackets: e.target.value }))} placeholder="0" />
                                         </div>
                                         <div>
                                             <label className="text-[10px] font-black uppercase text-slate-400 ml-4">রোল (সংখ্যা)</label>
-                                            <input type="number" className="premium-input !h-14 font-black text-indigo-500" value={entryData.paperRolls} onChange={(e) => setEntryData(p => ({ ...p, paperRolls: e.target.value }))} placeholder="0" />
+                                            <input type="number" className="premium-input !h-14 font-black !text-indigo-500" value={entryData.paperRolls} onChange={(e) => setEntryData(p => ({ ...p, paperRolls: e.target.value }))} placeholder="0" />
                                         </div>
                                     </div>
                                     <div>
@@ -474,49 +484,49 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                                     <textarea className="premium-input !h-32 pt-4 font-black uppercase italic" placeholder="SPECIAL INSTRUCTIONS / NOTES..." value={entryData.note} onChange={(e) => setEntryData(p => ({ ...p, note: e.target.value }))} />
                                 </div>
                             </div>
-                            <button onClick={() => handleSaveIssue(false)} className="w-full mt-10 py-6 bg-slate-950 text-white rounded-[2.5rem] font-black uppercase text-[11px] tracking-widest italic shadow-2xl hover:bg-black transition-all">নিশ্চিত করুন (ISSUE TASK)</button>
+                            <button onClick={() => handleSaveIssue(false)} className="w-full mt-8 py-5 bg-slate-950 text-white rounded-2xl font-black uppercase text-[10px] tracking-widest italic shadow-xl hover:bg-black transition-all">নিশ্চিত করুন (ISSUE TASK)</button>
                         </motion.div>
                     </div>
                 )}
 
                 {receiveModal && (
-                    <div className="fixed inset-0 z-[1000] bg-slate-950/40 backdrop-blur-md flex items-center justify-center p-2 md:p-6 overflow-y-auto pt-10 pb-20 no-scrollbar">
+                    <div className="fixed inset-0 z-[1000] bg-slate-950/40 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto no-scrollbar">
                          <motion.div 
-                           initial={{ scale: 0.9, opacity: 0 }} 
+                           initial={{ scale: 0.95, opacity: 0 }} 
                            animate={{ scale: 1, opacity: 1 }} 
-                           className="bg-white dark:bg-slate-900 w-full max-w-lg rounded-[2.5rem] md:rounded-[3.5rem] shadow-2xl p-8 md:p-12 relative border-4 border-slate-50 max-h-[90vh] overflow-y-auto no-scrollbar"
+                           className="bg-white dark:bg-slate-900 w-full max-w-lg rounded-3xl shadow-2xl p-6 md:p-10 relative border border-slate-100 dark:border-slate-800 my-auto"
                          >
-                             <button onClick={() => setReceiveModal(null)} className="absolute top-6 right-6 md:top-10 md:right-10 text-slate-400"><X size={24} /></button>
-                             <h2 className="text-2xl font-black uppercase italic mb-8 text-center">{receiveModal.worker} <span className="text-emerald-500">জমা দিন</span></h2>
-                             <form onSubmit={handleConfirmReceive}>
-                                 <div className="p-10 bg-slate-50 dark:bg-slate-800 rounded-[2.5rem] text-center mb-8 border border-white dark:border-slate-700 shadow-inner">
-                                     <p className="text-[10px] font-black uppercase text-slate-400 mb-4">জমা দেওয়া পরিমাণ (PCS)</p>
-                                     <input name="rQty" type="number" className="w-full text-5xl font-black text-center bg-transparent outline-none italic" defaultValue={receiveModal.pataQty} autoFocus />
+                             <button onClick={() => setReceiveModal(null)} className="absolute top-6 right-6 text-slate-400"><X size={20} /></button>
+                             <h2 className="text-xl font-black uppercase italic mb-8 text-center">{receiveModal.worker} <span className="text-emerald-500">জমা দিন</span></h2>
+                             <form onSubmit={handleConfirmReceive} className="space-y-6">
+                                 <div className="p-8 bg-slate-50 dark:bg-slate-800 rounded-2xl text-center border border-white dark:border-slate-700 shadow-inner">
+                                     <p className="text-[9px] font-black uppercase text-slate-400 mb-3">জমা দেওয়া পরিমাণ (PCS)</p>
+                                     <input name="rQty" type="number" className="w-full text-4xl font-black text-center bg-transparent outline-none italic" defaultValue={receiveModal.pataQty} autoFocus />
                                  </div>
-                                 <button type="submit" className="w-full py-6 bg-slate-950 text-white rounded-[2rem] font-black uppercase text-[11px] tracking-widest italic shadow-xl">জমা নিন (RECEIVE)</button>
+                                 <button type="submit" className="w-full py-5 bg-slate-950 text-white rounded-2xl font-black uppercase text-[10px] tracking-widest italic shadow-xl hover:bg-black active:scale-95 transition-all">জমা নিন (RECEIVE)</button>
                              </form>
                          </motion.div>
                     </div>
                 )}
 
                 {payModal && (
-                    <div className="fixed inset-0 z-[1000] bg-slate-950/40 backdrop-blur-md flex items-center justify-center p-2 md:p-6 overflow-y-auto pt-10 pb-20 no-scrollbar">
+                    <div className="fixed inset-0 z-[1000] bg-slate-950/40 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto no-scrollbar">
                          <motion.div 
-                           initial={{ scale: 0.9, opacity: 0 }} 
+                           initial={{ scale: 0.95, opacity: 0 }} 
                            animate={{ scale: 1, opacity: 1 }} 
-                           className="bg-white dark:bg-slate-900 w-full max-w-lg rounded-[2.5rem] md:rounded-[3.5rem] shadow-2xl p-8 md:p-12 relative border-4 border-slate-50 max-h-[90vh] overflow-y-auto no-scrollbar"
+                           className="bg-white dark:bg-slate-900 w-full max-w-lg rounded-3xl shadow-2xl p-6 md:p-10 relative border border-slate-100 dark:border-slate-800 my-auto"
                          >
-                             <button onClick={() => setPayModal(null)} className="absolute top-6 right-6 md:top-10 md:right-10 text-slate-400"><X size={24} /></button>
-                             <h2 className="text-2xl font-black uppercase italic mb-8 text-center">{payModal} <span className="text-emerald-500">পেমেন্ট</span></h2>
-                             <div className="p-10 bg-slate-50 dark:bg-slate-800 rounded-[2.5rem] text-center mb-8 border border-white dark:border-slate-700 shadow-inner">
-                                 <p className="text-[10px] font-black uppercase text-slate-400 mb-4">টাকার পরিমাণ (৳)</p>
-                                 <input type="number" className="w-full text-5xl font-black text-center bg-transparent outline-none italic" placeholder="0" value={paymentAmount} onChange={(e) => setPaymentAmount(e.target.value)} autoFocus />
+                             <button onClick={() => setPayModal(null)} className="absolute top-6 right-6 text-slate-400"><X size={20} /></button>
+                             <h2 className="text-xl font-black uppercase italic mb-8 text-center">{payModal} <span className="text-emerald-500">পেমেন্ট</span></h2>
+                             <div className="p-8 bg-slate-50 dark:bg-slate-800 rounded-2xl text-center mb-6 border border-white dark:border-slate-700 shadow-inner">
+                                 <p className="text-[9px] font-black uppercase text-slate-400 mb-3">টাকার পরিমাণ (৳)</p>
+                                 <input type="number" className="w-full text-4xl font-black text-center bg-transparent outline-none italic" placeholder="0" value={paymentAmount} onChange={(e) => setPaymentAmount(e.target.value)} autoFocus />
                              </div>
-                             <div className="mb-8">
-                                 <label className="text-[10px] font-black uppercase text-slate-400 ml-4">পেমেন্টের তারিখ</label>
-                                 <input type="date" className="premium-input !h-14 font-black italic mt-2" value={paymentDate} onChange={(e) => setPaymentDate(e.target.value)} />
+                             <div className="mb-6">
+                                 <label className="text-[9px] font-black uppercase text-slate-400 ml-2">পেমেন্টের তারিখ</label>
+                                 <input type="date" className="premium-input !h-12 font-black italic mt-1.5" value={paymentDate} onChange={(e) => setPaymentDate(e.target.value)} />
                              </div>
-                             <button onClick={handlePayment} className="w-full py-6 bg-emerald-500 text-white rounded-[2rem] font-black uppercase tracking-widest italic shadow-xl hover:bg-black transition-all">পেমেন্ট নিশ্চিত করুন</button>
+                             <button onClick={handlePayment} className="w-full py-5 bg-emerald-500 text-white rounded-2xl font-black uppercase tracking-widest italic shadow-xl hover:bg-black active:scale-95 transition-all">পেমেন্ট নিশ্চিত করুন</button>
                          </motion.div>
                     </div>
                 )}
@@ -528,12 +538,12 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
             <div className="pt-24 pb-12 flex justify-center">
                 <button
                     onClick={() => setActivePanel("Overview")}
-                    className="group flex items-center gap-8 bg-white dark:bg-slate-900 px-16 py-8 rounded-[2.5rem] border-4 border-slate-50 dark:border-slate-800 shadow-2xl hover:border-black transition-all duration-500"
+                    className="group flex items-center gap-6 bg-white dark:bg-slate-900 px-10 md:px-12 py-5 md:py-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xl hover:border-black transition-all duration-500"
                 >
-                    <div className="p-4 bg-slate-950 text-white rounded-2xl transition-transform shadow-2xl group-hover:-translate-x-4">
-                        <ArrowLeft size={24} strokeWidth={3} />
+                    <div className="p-3 bg-slate-950 text-white rounded-xl transition-transform shadow-lg group-hover:-translate-x-2">
+                        <ArrowLeft size={18} strokeWidth={3} />
                     </div>
-                    <span className="text-2xl font-black tracking-tighter text-black dark:text-white uppercase leading-none italic">RETURN TO HUB</span>
+                    <span className="text-lg font-black tracking-tight text-black dark:text-white uppercase leading-none italic">RETURN TO HUB</span>
                 </button>
             </div>
         </div>

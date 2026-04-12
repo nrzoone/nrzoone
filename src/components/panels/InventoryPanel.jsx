@@ -171,10 +171,10 @@ const InventoryPanel = ({
             <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
           </button>
           <div>
-            <h2 className="text-xl md:text-2xl font-black tracking-tight text-black dark:text-white uppercase leading-none">
+            <h2 className="text-xl md:text-2xl font-black tracking-tight text-black dark:text-white uppercase leading-tight">
               স্টক <span className="text-blue-600">ম্যাট্রিক্স</span>
             </h2>
-            <p className="text-[7.5px] font-black text-black dark:text-white uppercase tracking-widest mt-1.5 italic leading-none">
+            <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mt-1.5 italic leading-none">
                ইনভেন্টরি হাব (INVENTORY HUB)
             </p>
           </div>
@@ -244,7 +244,7 @@ const InventoryPanel = ({
                             <div className="flex justify-between items-start mb-4">
                                 <div className="space-y-0">
                                     <h4 className="text-base font-black tracking-tight text-black dark:text-white uppercase leading-none truncate max-w-[150px] italic">{item.design}</h4>
-                                    <p className="text-[7.5px] font-black text-slate-400 uppercase tracking-widest italic leading-none mt-1.5">• {item.color} ({item.size})</p>
+                                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest italic leading-none mt-1.5">• {item.color} ({item.size})</p>
                                 </div>
                                 <div className="w-8 h-8 bg-slate-50 dark:bg-slate-800 rounded flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
                                     <Zap size={14} className="text-blue-500" />
@@ -370,7 +370,7 @@ const InventoryPanel = ({
                 </div>
 
                 <div className="saas-card overflow-hidden flex flex-col">
-                    <h3 className="text-xl font-bold uppercase tracking-tight text-black dark:text-white dark:text-white mb-6">সাম্প্রতিক <span className="text-blue-600">ডেলিভারি হিস্ট্রি</span></h3>
+                    <h3 className="text-xl font-bold uppercase tracking-tight text-black dark:text-white mb-6">সাম্প্রতিক <span className="text-blue-600">ডেলিভারি হিস্ট্রি</span></h3>
                     <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar space-y-4">
                         {(masterData.deliveries || []).slice(0, 10).map((d, i) => (
                             <div key={i} className="p-5 border border-slate-100 dark:border-slate-800 rounded-xl bg-slate-50/50 dark:bg-slate-900/50 flex justify-between items-center group hover:border-slate-300 dark:hover:border-slate-600 transition-all">
@@ -504,8 +504,8 @@ const InventoryPanel = ({
             <div className="p-3 bg-slate-950 text-white rounded-xl transition-transform shadow-lg group-hover:-translate-x-2">
                 <ArrowLeft size={18} strokeWidth={3} />
             </div>
-            <span className="text-sm lg:text-lg font-bold tracking-tight text-black dark:text-white dark:text-white uppercase leading-none">
-                ড্যাশবোর্ড এ ফিরে যান <span className="text-black dark:text-white dark:text-white font-medium">(Return)</span>
+            <span className="text-sm lg:text-lg font-bold tracking-tight text-black dark:text-white uppercase leading-none">
+                ড্যাশবোর্ড এ ফিরে যান <span className="text-slate-400 font-medium">(Return)</span>
             </span>
         </button>
       </div>

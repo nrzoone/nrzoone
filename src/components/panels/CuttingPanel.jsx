@@ -488,7 +488,7 @@ const CuttingPanel = ({
               </div>
               <div className="text-center space-y-3">
                 <h2 className="text-3xl font-bold uppercase tracking-tight text-black dark:text-white dark:text-white">নতুন কাটিং <span className="text-blue-600">আইডি যুক্ত করুন</span></h2>
-                <p className="text-[10px] font-bold tracking-[0.4em] text-black dark:text-white dark:text-white max-w-sm mx-auto uppercase italic">
+                <p className="text-[10px] font-black tracking-[0.4em] text-slate-400 max-w-sm mx-auto uppercase italic">
                   Launch the registration protocol to initialize a new cutting lot. 
                 </p>
               </div>
@@ -508,7 +508,7 @@ const CuttingPanel = ({
                 <div className="flex justify-between items-end">
                    <div>
                       <h3 className="text-3xl font-bold tracking-tight text-black dark:text-white dark:text-white uppercase mb-2">Yield <span className="text-blue-600">Optimizer</span></h3>
-                      <p className="text-[10px] font-bold tracking-widest text-black dark:text-white dark:text-white uppercase italic">Advanced Pattern Utilization Analytics</p>
+                      <p className="text-[10px] font-black tracking-widest text-slate-400 uppercase italic">Advanced Pattern Utilization Analytics</p>
                    </div>
                    <Activity className="text-blue-500 opacity-20" size={56} />
                 </div>
@@ -527,7 +527,7 @@ const CuttingPanel = ({
                            </div>
                            <span className="text-[8px] font-bold uppercase tracking-widest text-slate-300">NODE 0{i+1}</span>
                         </div>
-                        <p className="text-[10px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest mb-1 italic leading-none">{a.label}</p>
+                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 italic leading-none">{a.label}</p>
                         <h4 className={`text-3xl font-bold italic leading-none ${a.color}`}>{a.value}</h4>
                      </div>
                    ))}
@@ -694,7 +694,7 @@ const CuttingPanel = ({
                            <label className="text-[10px] font-bold uppercase text-rose-500 tracking-widest ml-1 animate-pulse">মোট কত গজ লেগেছে?</label>
                            <input 
                              type="number"
-                             className="premium-input !h-12 text-lg font-black text-rose-600 bg-rose-50 dark:bg-rose-900/10 border-rose-200" 
+                             className="premium-input !h-12 text-lg font-black !text-rose-600 bg-rose-50 dark:bg-rose-900/10 border-rose-200" 
                              placeholder="0.00 গজ"
                              value={entryData.totalYards} 
                              onChange={(e) => setEntryData(p => ({ ...p, totalYards: e.target.value }))}

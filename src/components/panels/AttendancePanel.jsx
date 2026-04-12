@@ -294,67 +294,67 @@ const AttendancePanel = ({
           return (
             <div
               key={worker}
-              className={`flex flex-col h-full !p-8 border-l-[8px] transition-all group rounded-[2.5rem] shadow-xl ${status === 'present' ? 'border-emerald-500 bg-emerald-50/5 dark:bg-emerald-900/5' : status === 'half-day' ? 'border-amber-400 bg-amber-50/5 dark:bg-amber-900/5' : 'border-slate-50 bg-white dark:bg-slate-900 dark:border-slate-800'}`}
+              className={`flex flex-col h-full !p-6 border-l-[6px] transition-all group rounded-xl shadow-md ${status === 'present' ? 'border-emerald-500 bg-emerald-50/5 dark:bg-emerald-900/5' : status === 'half-day' ? 'border-amber-400 bg-amber-50/5 dark:bg-amber-900/5' : 'border-slate-50 bg-white dark:bg-slate-900 dark:border-slate-800'}`}
             >
-              <div className="flex justify-between items-start mb-8">
+              <div className="flex justify-between items-start mb-6">
                 <div>
-                   <h3 className="text-2xl font-black tracking-tight text-black dark:text-white italic uppercase truncate w-40">{worker}</h3>
-                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1 italic leading-none">ID: REF-{worker.slice(0,3).toUpperCase()}</p>
+                   <h3 className="text-xl font-black tracking-tight text-black dark:text-white italic uppercase truncate w-32">{worker}</h3>
+                   <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mt-0.5 italic leading-none">ID: REF-{worker.slice(0,3).toUpperCase()}</p>
                 </div>
-                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg ${status === 'present' ? 'bg-emerald-500 text-white' : 'bg-slate-50 dark:bg-slate-800 text-slate-300'}`}>
-                   <UserCheck size={20} />
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center shadow-lg ${status === 'present' ? 'bg-emerald-500 text-white' : 'bg-slate-50 dark:bg-slate-800 text-slate-300'}`}>
+                   <UserCheck size={18} />
                 </div>
               </div>
 
-              <div className="space-y-4 mb-8">
-                 <div className="flex justify-between items-center text-[10px] font-black uppercase text-slate-400 tracking-widest italic leading-none">
+              <div className="space-y-3 mb-6">
+                 <div className="flex justify-between items-center text-[9px] font-black uppercase text-slate-400 tracking-widest italic leading-none">
                     <span>Base Earnings</span>
                     <span className="text-black dark:text-white">৳{dailyWage}</span>
                  </div>
-                 <div className="w-full h-2 bg-slate-50 dark:bg-slate-800 rounded-full overflow-hidden shadow-inner">
+                 <div className="w-full h-1.5 bg-slate-50 dark:bg-slate-800 rounded-full overflow-hidden shadow-inner">
                     <div className="h-full bg-emerald-500 transition-all duration-1000" style={{ width: status === 'present' ? '100%' : status === 'half-day' ? '50%' : '0%' }}></div>
                  </div>
               </div>
 
-              <div className="flex items-center gap-2 mt-auto">
+              <div className="flex items-center gap-1.5 mt-auto">
                 <button
                   onClick={() => markAttendance(worker, "present")}
-                  className={`flex-1 py-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all italic ${status === "present" ? "bg-slate-950 text-white shadow-xl scale-105" : "bg-slate-50 dark:bg-slate-800 text-slate-400 hover:text-black dark:hover:text-white"}`}
+                  className={`flex-1 py-3 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all italic ${status === "present" ? "bg-slate-950 text-white shadow-xl scale-105" : "bg-slate-50 dark:bg-slate-800 text-slate-400 hover:text-black dark:hover:text-white"}`}
                 >
                   FULL
                 </button>
                 <button
                   onClick={() => markAttendance(worker, "half-day")}
-                  className={`flex-1 py-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all italic ${status === "half-day" ? "bg-amber-400 text-black shadow-xl scale-105 font-black" : "bg-slate-50 dark:bg-slate-800 text-slate-400 hover:text-black dark:hover:text-white"}`}
+                  className={`flex-1 py-3 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all italic ${status === "half-day" ? "bg-amber-400 text-black shadow-xl scale-105" : "bg-slate-50 dark:bg-slate-800 text-slate-400 hover:text-black dark:hover:text-white"}`}
                 >
                   HALF
                 </button>
                 <button
                   onClick={() => markAttendance(worker, "absent")}
-                  className={`w-12 h-12 flex items-center justify-center rounded-xl transition-all ${status === "absent" ? "bg-rose-500 text-white shadow-xl rotate-90" : "bg-slate-50 dark:bg-slate-800 text-slate-400 hover:border-rose-500"}`}
+                  className={`w-10 h-10 flex items-center justify-center rounded-lg transition-all ${status === "absent" ? "bg-rose-500 text-white shadow-xl rotate-90" : "bg-slate-50 dark:bg-slate-800 text-slate-400 hover:border-rose-500"}`}
                 >
-                  <X size={18} strokeWidth={3} />
+                  <X size={16} strokeWidth={3} />
                 </button>
               </div>
             </div>
           );
         })}
       </div>
-        <div className="flex justify-between items-center no-print w-[210mm] mx-auto mb-12">
+        <div className="flex justify-between items-center no-print w-full max-w-5xl mx-auto mb-10">
           <button
             onClick={() => setShowInvoice(false)}
-            className="bg-slate-50 text-black dark:text-white px-5 py-3 rounded-full font-black uppercase text-xs border border-slate-100 shadow-sm hover:bg-black hover:text-white transition-all"
+            className="neu-button px-6 py-3 text-[10px]"
           >
             ফিরে যান
           </button>
           <button
             onClick={() => window.print()}
-            className="bg-black text-white px-12 py-5 rounded-full font-black uppercase text-xs shadow-2xl border-b-[8px] border-zinc-900"
+            className="action-btn-primary !px-10 !py-4 shadow-xl"
           >
             প্রিন্ট ইনভয়েস (A4)
           </button>
         </div>
-        <div className="w-[210mm] min-h-[297mm] mx-auto border-[12px] border-slate-50 p-10 md:p-14 rounded-xl shadow-3xl relative overflow-hidden bg-white print:w-full print:min-h-[100vh] print:shadow-none print:border-none">
+        <div className="w-[210mm] min-h-[297mm] mx-auto border-[1px] border-slate-100 p-10 md:p-14 rounded-2xl shadow-3xl relative overflow-hidden bg-white print:w-full print:min-h-[100vh] print:shadow-none print:border-none">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-[0.03] -rotate-12 pointer-events-none">
             <NRZLogo size="xl" white={false} />
           </div>
