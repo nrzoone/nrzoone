@@ -416,7 +416,7 @@ const FactoryPanel = ({ type, masterData, setMasterData, showNotify, user, setAc
               </div>
             </div>
           ))
-        )}
+        }
 
       </div>
 
