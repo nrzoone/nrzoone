@@ -506,12 +506,13 @@ const SettingsPanel_V2 = ({
           name: data.name,
           sewingRate: Number(data.sewingRate) || 0,
           stoneRate: Number(data.stoneRate) || 0,
-          pataRate: Number(data.pataRate) || 0,
-          hijabRate: Number(data.hijabRate) || 0,
-          materialCost: Number(data.materialCost) || 0,
+          pataRateSingle: Number(data.pataRateSingle) || 3,
+          pataRateDouble: Number(data.pataRateDouble) || 6,
+          outsideRate: Number(data.outsideRate) || 0,
           sellingPrice: Number(data.sellingPrice) || 0,
           clientRates: data.clientRates || {},
-          image: tempImgUrl || "",
+          defaultClientRates: data.defaultClientRates || {},
+          image: data.image || "",
         },
       ],
     }));
@@ -1689,7 +1690,8 @@ const SettingsPanel_V2 = ({
                     name: document.getElementById("design-name").value.trim().toUpperCase(),
                     sewingRate: Number(document.getElementById("design-sewing").value),
                     stoneRate: Number(document.getElementById("design-stone").value),
-                    pataRate: Number(document.getElementById("design-pata").value),
+                    pataRateSingle: Number(document.getElementById("design-pata-single").value),
+                    pataRateDouble: Number(document.getElementById("design-pata-double").value),
                     outsideRate: Number(document.getElementById("design-outside").value),
                     sellingPrice: Number(document.getElementById("design-sell").value),
                     clientRates: clientRatesObj,
@@ -1703,6 +1705,7 @@ const SettingsPanel_V2 = ({
                   else handleAddDesign(data);
                   setShowAddModal(false);
                   setEditDesignModal(null);
+                  setTempImgUrl(null);
                 }} 
                 className="flex-[2] h-16 rounded-2xl bg-slate-950 text-white font-bold uppercase text-[11px] tracking-[0.2em] shadow-2xl hover:bg-black transition-all active:scale-95 border-b-4 border-slate-800"
               >{editDesignModal ? 'Sync All Rates' : 'Initialize Style'}</button>
