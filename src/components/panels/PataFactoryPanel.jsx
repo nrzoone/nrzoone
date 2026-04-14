@@ -280,7 +280,7 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
     }
 
     return (
-        <div className="space-y-10 pb-32 animate-fade-up px-1 md:px-2 italic font-outfit text-black dark:text-white">
+        <div className="space-y-10 pb-32 animate-fade-up px-1 md:px-2 italic font-outfit text-[var(--text-primary)]">
             {/* SaaS HUD */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 md:gap-3">
                 <div className="bg-slate-950 p-3.5 md:p-5 rounded-xl text-white shadow-xl relative overflow-hidden group">
@@ -358,7 +358,7 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                                 </div>
                                 <div className="bg-slate-50 dark:bg-slate-800/80 p-5 rounded-xl border border-white dark:border-slate-700 shadow-inner">
                                    <p className="text-[8px] font-black text-slate-300 uppercase tracking-widest mb-2 italic">বকেয়া মজুরি (DUE)</p>
-                                   <p className={`text-3xl font-black tracking-tighter italic ${due > 0 ? 'text-black dark:text-white' : 'text-slate-200'}`}>৳{due.toLocaleString()}</p>
+                                   <p className={`text-3xl font-black tracking-tighter italic ${due > 0 ? 'text-[var(--text-primary)]' : 'text-slate-400'}`}>৳{due.toLocaleString()}</p>
                                 </div>
                                 <button onClick={() => setPayModal(w)} className="w-full py-3 bg-slate-950 text-white rounded-xl font-black uppercase text-[9px] tracking-widest italic shadow-md hover:bg-emerald-500 transition-all">পেমেন্ট করুন</button>
                             </div>
@@ -425,7 +425,7 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                           className="bg-white dark:bg-slate-900 w-full max-w-2xl rounded-3xl shadow-2xl p-6 md:p-10 relative border border-slate-100 dark:border-slate-800 my-auto"
                         >
                             <button onClick={() => setShowModal(false)} className="absolute top-6 right-6 text-slate-400 hover:text-black dark:hover:text-white transition-colors"><X size={20} /></button>
-                            <h2 className="text-2xl font-black uppercase italic mb-8 tracking-tighter text-center">নতুন পাতা কাজ <span className="text-blue-600 underline">ইস্যু করুন</span></h2>
+                            <h2 className="text-2xl font-black uppercase italic mb-8 tracking-tighter text-center text-[var(--text-primary)]">নতুন পাতা কাজ <span className="text-blue-600 underline">ইস্যু করুন</span></h2>
                             
                             <div className="bg-blue-600/5 p-5 rounded-2xl border border-blue-500/10 mb-8 flex flex-col items-center gap-4">
                                 <div className="w-full space-y-2">
@@ -441,7 +441,7 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                                 <div className="space-y-6">
                                     <div>
                                         <label className="text-[10px] font-black uppercase text-slate-400 ml-4">কারিগর</label>
-                                        <input className="premium-input !h-14 font-black uppercase" value={entryData.worker} onChange={(e) => setEntryData(p => ({ ...p, worker: e.target.value }))} placeholder="WORKER..." />
+                                        <input className="premium-input !h-14 font-black uppercase text-[var(--text-primary)]" value={entryData.worker} onChange={(e) => setEntryData(p => ({ ...p, worker: e.target.value }))} placeholder="WORKER..." />
                                     </div>
                                     <div className="grid grid-cols-2 gap-4">
                                         <div>
@@ -497,11 +497,11 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                            className="bg-white dark:bg-slate-900 w-full max-w-lg rounded-3xl shadow-2xl p-6 md:p-10 relative border border-slate-100 dark:border-slate-800 my-auto"
                          >
                              <button onClick={() => setReceiveModal(null)} className="absolute top-6 right-6 text-slate-400"><X size={20} /></button>
-                             <h2 className="text-xl font-black uppercase italic mb-8 text-center">{receiveModal.worker} <span className="text-emerald-500">জমা দিন</span></h2>
+                             <h2 className="text-xl font-black uppercase italic mb-8 text-center text-[var(--text-primary)]">{receiveModal.worker} <span className="text-emerald-500">জমা দিন</span></h2>
                              <form onSubmit={handleConfirmReceive} className="space-y-6">
                                  <div className="p-8 bg-slate-50 dark:bg-slate-800 rounded-2xl text-center border border-white dark:border-slate-700 shadow-inner">
                                      <p className="text-[9px] font-black uppercase text-slate-400 mb-3">জমা দেওয়া পরিমাণ (PCS)</p>
-                                     <input name="rQty" type="number" className="w-full text-4xl font-black text-center bg-transparent outline-none italic" defaultValue={receiveModal.pataQty} autoFocus />
+                                     <input name="rQty" type="number" className="w-full text-4xl font-black text-center bg-transparent outline-none italic text-[var(--text-primary)]" defaultValue={receiveModal.pataQty} autoFocus />
                                  </div>
                                  <button type="submit" className="w-full py-5 bg-slate-950 text-white rounded-2xl font-black uppercase text-[10px] tracking-widest italic shadow-xl hover:bg-black active:scale-95 transition-all">জমা নিন (RECEIVE)</button>
                              </form>

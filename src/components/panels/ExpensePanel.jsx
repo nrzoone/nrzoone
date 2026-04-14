@@ -159,7 +159,7 @@ const ExpensePanel = ({
             <div className="max-w-4xl mx-auto space-y-12">
                <div className="no-print flex justify-between items-center bg-slate-50 p-6 rounded-2xl shadow-md border border-slate-200">
                   <div className="space-y-1"><h2 className="text-2xl font-black italic">FINANCIAL AUDIT</h2><p className="text-[9px] font-bold opacity-40 tracking-widest uppercase">Verified Factory Liquidity Report</p></div>
-                  <div className="flex gap-3"><button onClick={() => setShowPrint(false)} className="px-6 py-3 bg-white border border-slate-200 rounded-xl text-[10px] font-black uppercase tracking-widest">CANCEL</button><button onClick={() => window.print()} className="px-8 py-3 bg-slate-950 text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg flex items-center gap-2"><Printer size={16} /> PRINT RECORD</button></div>
+                  <div className="flex gap-3"><button onClick={() => setShowPrint(false)} className="px-6 py-3 bg-white border border-slate-200 rounded-xl text-[10px] font-black uppercase tracking-widest text-[var(--text-primary)]">CANCEL</button><button onClick={() => window.print()} className="px-8 py-3 bg-slate-950 text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg flex items-center gap-2"><Printer size={16} /> PRINT RECORD</button></div>
                </div>
                <div className="border-[1px] border-black p-10 rounded-3xl relative overflow-hidden bg-white shadow-2xl text-black">
                   <div className="flex justify-between items-start border-b-2 border-slate-100 pb-10 mb-10">
@@ -219,7 +219,7 @@ const ExpensePanel = ({
                      <div className="w-8 h-8 md:w-10 md:h-10 bg-emerald-600 text-white rounded-lg flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform"><Wallet size={16} /></div>
                      <div className="relative z-10">
                         <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">Factory Liquid Capital</p>
-                        <h2 className="text-xl md:text-2xl font-black tracking-tighter text-black dark:text-white leading-none italic">৳{currentBalance.toLocaleString()}</h2>
+                        <h2 className="text-xl md:text-2xl font-black tracking-tighter text-[var(--text-primary)] leading-none italic">৳{currentBalance.toLocaleString()}</h2>
                      </div>
                   </div>
 
@@ -228,7 +228,7 @@ const ExpensePanel = ({
                      <div className="w-8 h-8 md:w-10 md:h-10 bg-rose-600 text-white rounded-lg flex items-center justify-center shadow-lg group-hover:rotate-0 transition-transform"><DollarSign size={16} /></div>
                      <div className="relative z-10">
                         <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">Operational Burn Rate</p>
-                        <h2 className="text-xl md:text-2xl font-black tracking-tighter text-black dark:text-white leading-none italic">৳{totalExpenses.toLocaleString()}</h2>
+                        <h2 className="text-xl md:text-2xl font-black tracking-tighter text-[var(--text-primary)] leading-none italic">৳{totalExpenses.toLocaleString()}</h2>
                      </div>
                   </div>
 
@@ -277,22 +277,88 @@ const ExpensePanel = ({
                            </div>
                         </div>
                      ))}
-                     {filteredExpenses.length === 0 && <div className="col-span-full py-32 saas-card bg-white dark:bg-slate-800 border-2 border-dashed opacity-20 flex flex-col items-center justify-center italic font-black uppercase tracking-[0.5em]"><Archive size={60} strokeWidth={1} className="mb-6 text-black dark:text-white" /> NO AUDIT RECORD</div>}
+                     {filteredExpenses.length === 0 && <div className="col-span-full py-32 saas-card bg-white dark:bg-slate-800 border-2 border-dashed opacity-20 flex flex-col items-center justify-center italic font-black uppercase tracking-[0.5em]"><Archive size={60} strokeWidth={1} className="mb-6 text-[var(--text-primary)]" /> NO AUDIT RECORD</div>}
                   </div>
                )}
 
                {cashSubTab === 'all' && (
                   <div className="saas-card !p-0 overflow-hidden shadow-2xl border-emerald-500/10 bg-white dark:bg-slate-900">
                       <div className="p-8 border-b-4 border-slate-50 dark:border-slate-800 flex justify-between items-center bg-emerald-50/20 dark:bg-emerald-900/10 backdrop-blur-xl">
-                         <div><h3 className="text-2xl font-black italic uppercase text-emerald-600 leading-none mb-2">Capital Flow Registry</h3><p className="text-[10px] font-black text-slate-400 uppercase tracking-widest italic">Historical Inflow Sequence Records</p></div>
+                         <div><h3 className="text-2xl font-black italic uppercase text-emerald-600 leading-none mb-2">Capital Flow Registry</h3><p className="text-[10px] font-black text-[var(--text-muted)] uppercase tracking-widest italic">Historical Inflow Sequence Records</p></div>
                          <TrendingUp size={32} className="text-emerald-500 animate-pulse" />
                       </div>
-                      <div className="overflow-x-auto"><table className="w-full text-left border-collapse"><thead><tr className="text-[10px] font-black uppercase text-slate-400 tracking-widest border-b-2 border-slate-50 dark:border-slate-800 bg-slate-50/30 dark:bg-slate-800/30 font-mono"><th className="px-8 py-6">Timeline</th><th className="px-8 py-6">Source Node</th><th className="px-8 py-6 text-right">Inflow Value</th>{isAdmin && <th className="px-8 py-6 text-center">Action</th>}</tr></thead><tbody className="divide-y-2 divide-slate-50 dark:divide-slate-800">{cashEntries.map((cash, i) => (<tr key={cash.id || i} className="group hover:bg-emerald-50/10 dark:hover:bg-emerald-900/10 transition-all duration-300"><td className="px-8 py-6 font-bold uppercase italic text-xs tabular-nums text-black dark:text-white">{cash.date}</td><td className="px-8 py-6 font-bold uppercase text-slate-900 dark:text-slate-100 leading-none italic text-xs">{cash.description}</td><td className="px-8 py-6 text-right font-black text-2xl text-emerald-600 italic tracking-tighter">৳{cash.amount.toLocaleString()}</td>{isAdmin && (<td className="px-8 py-6 text-center"><button onClick={() => handleDeleteCash(cash.id)} className="w-10 h-10 bg-white dark:bg-slate-800 rounded-xl flex items-center justify-center text-slate-300 hover:bg-rose-600 hover:text-white shadow-lg transition-all mx-auto active:scale-95"><Trash2 size={18} /></button></td>)}</tr>))}</tbody></table></div>
-                   </div>
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-left border-collapse">
+                           <thead>
+                              <tr className="text-[10px] font-black uppercase text-slate-400 tracking-widest border-b-2 border-slate-50 dark:border-slate-800 bg-slate-50/30 dark:bg-slate-800/30 font-mono">
+                                 <th className="px-8 py-6">Timeline</th>
+                                 <th className="px-8 py-6">Source Node</th>
+                                 <th className="px-8 py-6 text-right">Inflow Value</th>
+                                 {isAdmin && <th className="px-8 py-6 text-center">Action</th>}
+                              </tr>
+                           </thead>
+                           <tbody className="divide-y-2 divide-slate-50 dark:divide-slate-800">
+                              {cashEntries.map((cash, i) => (
+                                 <tr key={cash.id || i} className="group hover:bg-emerald-50/10 dark:hover:bg-emerald-900/10 transition-all duration-300">
+                                    <td className="px-8 py-6 font-bold uppercase italic text-xs tabular-nums text-[var(--text-primary)]">{cash.date}</td>
+                                    <td className="px-8 py-6 font-bold uppercase text-[var(--text-primary)] leading-none italic text-xs">{cash.description}</td>
+                                    <td className="px-8 py-6 text-right font-black text-2xl text-emerald-600 italic tracking-tighter">৳{cash.amount.toLocaleString()}</td>
+                                    {isAdmin && (
+                                       <td className="px-8 py-6 text-center">
+                                          <button onClick={() => handleDeleteCash(cash.id)} className="w-10 h-10 bg-rose-50 dark:bg-rose-900/20 text-rose-600 rounded-xl flex items-center justify-center hover:bg-rose-600 hover:text-white transition-all shadow-sm">
+                                             <Trash2 size={16} />
+                                          </button>
+                                       </td>
+                                    )}
+                                 </tr>
+                              ))}
+                           </tbody>
+                        </table>
+                      </div>
+                  </div>
                )}
 
                {(cashSubTab === 'new' || cashSubTab === 'cashIn') && (
-                <div className="flex justify-center"><form onSubmit={cashSubTab === 'new' ? handleAddExpense : handleAddCash} className="saas-card w-full max-w-2xl !p-12 space-y-8 animate-fade-up border-[10px] border-slate-50 dark:border-slate-800 shadow-2xl relative overflow-hidden italic bg-white dark:bg-slate-900"><div className="text-center space-y-4"><div className={`mx-auto w-20 h-20 text-white rounded-[2rem] flex items-center justify-center shadow-xl rotate-12 mb-6 animate-bounce ${cashSubTab === 'new' ? 'bg-rose-600' : 'bg-emerald-600'}`}>{cashSubTab === 'new' ? <TrendingDown size={32} /> : <TrendingUp size={32} />}</div><h3 className="text-4xl font-black text-black dark:text-white uppercase italic leading-none tracking-tighter">{cashSubTab === 'new' ? 'CONSUMPTION' : 'INJECTION'}</h3><p className="text-[10px] font-black text-slate-400 uppercase tracking-widest italic leading-none">{cashSubTab === 'new' ? 'Operational Burn Sequence' : 'Capital Growth Protocol'}</p></div><div className="grid grid-cols-2 gap-6">{cashSubTab === 'new' && <div className="space-y-4"><label className="text-[11px] font-black text-slate-400 ml-6 uppercase italic tracking-widest leading-none">Category Node</label><select name="category" className="premium-input !h-14 !text-xs font-black uppercase italic bg-slate-50 dark:bg-slate-800 rounded-xl shadow-inner !text-black dark:!text-white" required>{["teaSnacks", "transport", "material", "utilities", "salary", "bonus", "others"].map(c => <option key={c} value={c}>{t(c)}</option>)}</select></div>}<div className="space-y-4"><label className="text-[11px] font-black text-slate-400 ml-6 uppercase italic tracking-widest leading-none">Timeline Protocol</label><input name="date" type="date" defaultValue={new Date().toISOString().split('T')[0]} className="premium-input !h-14 !bg-slate-950 !text-white !border-none text-center rounded-xl shadow-lg text-sm" required /></div></div><div className="space-y-4"><label className="text-[11px] font-black text-slate-400 ml-6 uppercase italic tracking-widest leading-none">Memo Registry</label><input name="description" placeholder="ENTER TRANSACTION METADATA..." className="premium-input !h-14 !text-xs font-bold italic uppercase bg-slate-50 dark:bg-slate-800 rounded-xl shadow-inner !text-black dark:!text-white" required /></div><div className="bg-slate-950 p-12 rounded-[3rem] shadow-xl text-center relative overflow-hidden"><div className="absolute top-0 right-0 p-8 opacity-10 text-white"><DollarSign size={100} /></div><label className="text-[11px] font-black text-white/30 uppercase tracking-widest mb-6 block italic leading-none">LIQUIDITY VALUE</label><div className="flex items-center justify-center text-white"><span className="text-4xl font-black text-white/20 mr-6 italic">৳</span><input name="amount" type="number" placeholder="0" className="w-full text-center text-7xl font-black bg-transparent border-none text-white outline-none leading-none h-24 italic tracking-tighter" required autoFocus /></div></div><button type="submit" className={`w-full py-8 rounded-[2rem] shadow-xl border-b-8 transition-all text-2xl font-black uppercase italic active:scale-95 leading-none ${cashSubTab === 'new' ? 'bg-rose-600 border-rose-900 text-white' : 'bg-emerald-600 border-emerald-900 text-white'}`}>{cashSubTab === 'new' ? 'EXECUTE BURN' : 'COMMIT CAPITAL'}</button></form></div>
+                  <div className="flex justify-center">
+                     <form onSubmit={cashSubTab === 'new' ? handleAddExpense : handleAddCash} className="saas-card w-full max-w-2xl !p-12 space-y-8 animate-fade-up border-[10px] border-slate-50 dark:border-slate-800 shadow-2xl relative overflow-hidden italic bg-white dark:bg-slate-900">
+                        <div className="text-center space-y-4">
+                           <div className={`mx-auto w-20 h-20 text-white rounded-[2rem] flex items-center justify-center shadow-xl rotate-12 mb-6 animate-bounce ${cashSubTab === 'new' ? 'bg-rose-600' : 'bg-emerald-600'}`}>
+                              {cashSubTab === 'new' ? <TrendingDown size={32} /> : <TrendingUp size={32} />}
+                           </div>
+                           <h3 className="text-4xl font-black text-[var(--text-primary)] uppercase italic leading-none tracking-tighter">{cashSubTab === 'new' ? 'CONSUMPTION' : 'INJECTION'}</h3>
+                           <p className="text-[10px] font-black text-[var(--text-muted)] uppercase tracking-widest italic leading-none">{cashSubTab === 'new' ? 'Operational Burn Sequence' : 'Capital Growth Protocol'}</p>
+                        </div>
+                        <div className="grid grid-cols-2 gap-6">
+                           {cashSubTab === 'new' && (
+                              <div className="space-y-4">
+                                 <label className="text-[11px] font-black text-[var(--text-muted)] ml-6 uppercase italic tracking-widest leading-none">Category Node</label>
+                                 <select name="category" className="premium-input !h-14 !text-xs font-black uppercase italic bg-slate-50 dark:bg-slate-800 rounded-xl shadow-inner text-[var(--text-primary)]" required>
+                                    {["teaSnacks", "transport", "material", "utilities", "salary", "bonus", "others"].map(c => <option key={c} value={c}>{t(c)}</option>)}
+                                 </select>
+                              </div>
+                           )}
+                           <div className="space-y-4">
+                              <label className="text-[11px] font-black text-[var(--text-muted)] ml-6 uppercase italic tracking-widest leading-none">Timeline Protocol</label>
+                              <input name="date" type="date" defaultValue={new Date().toISOString().split('T')[0]} className="premium-input !h-14 !bg-slate-950 !text-white !border-none text-center rounded-xl shadow-lg text-sm" required />
+                           </div>
+                        </div>
+                        <div className="space-y-4">
+                           <label className="text-[11px] font-black text-[var(--text-muted)] ml-6 uppercase italic tracking-widest leading-none">Memo Registry</label>
+                           <input name="description" placeholder="ENTER TRANSACTION METADATA..." className="premium-input !h-14 !text-xs font-bold italic uppercase bg-slate-50 dark:bg-slate-800 rounded-xl shadow-inner text-[var(--text-primary)]" required />
+                        </div>
+                        <div className="bg-slate-950 p-12 rounded-[3rem] shadow-xl text-center relative overflow-hidden">
+                           <div className="absolute top-0 right-0 p-8 opacity-10 text-white"><DollarSign size={100} /></div>
+                           <label className="text-[11px] font-black text-white/30 uppercase tracking-widest mb-6 block italic leading-none">LIQUIDITY VALUE</label>
+                           <div className="flex items-center justify-center text-white">
+                              <span className="text-4xl font-black text-white/20 mr-6 italic">৳</span>
+                              <input name="amount" type="number" placeholder="0" className="w-full text-center text-7xl font-black bg-transparent border-none text-white outline-none leading-none h-24 italic tracking-tighter" required autoFocus />
+                           </div>
+                        </div>
+                        <button type="submit" className={`w-full py-8 rounded-[2rem] shadow-xl border-b-8 transition-all text-2xl font-black uppercase italic active:scale-95 leading-none ${cashSubTab === 'new' ? 'bg-rose-600 border-rose-900 text-white' : 'bg-emerald-600 border-emerald-900 text-white'}`}>
+                           {cashSubTab === 'new' ? 'EXECUTE BURN' : 'COMMIT CAPITAL'}
+                        </button>
+                     </form>
+                  </div>
                )}
             </div>
          )}
@@ -300,8 +366,8 @@ const ExpensePanel = ({
          {activeTab === "partners" && (
             <div className="space-y-12 animate-fade-up">
                <div className="saas-card !p-8 flex flex-col lg:flex-row justify-between items-center gap-10 bg-white/80 dark:bg-slate-900/80 backdrop-blur-3xl shadow-4xl border-2 border-slate-50 dark:border-slate-800">
-                  <div className="flex-1 w-full relative"><Search size={22} className="absolute left-10 top-1/2 -translate-y-1/2 text-slate-400" /><input placeholder="SEARCH GLOBAL B2B ENTITIES..." className="premium-input !h-20 !pl-24 !text-base shadow-2xl rounded-3xl !px-10" value={searchTerm} onChange={e => setSearchTerm(e.target.value)} /></div>
-                  <div className="flex items-center gap-8 px-12 border-l-8 border-slate-50 dark:border-slate-800"><div className="text-right text-black dark:text-white"><p className="text-[12px] font-black text-slate-400 uppercase tracking-widest italic leading-none underline decoration-blue-500 decoration-4 mb-3">{clientBalances.length} PARTNERS Online</p><p className="text-3xl font-black tracking-tighter italic">LEDGER SYNCED</p></div><div className="w-6 h-6 bg-emerald-500 rounded-full animate-pulse shadow-33xl shadow-emerald-500/40"></div></div>
+                  <div className="flex-1 w-full relative"><Search size={22} className="absolute left-10 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" /><input placeholder="SEARCH GLOBAL B2B ENTITIES..." className="premium-input !h-20 !pl-24 !text-base shadow-2xl rounded-3xl !px-10" value={searchTerm} onChange={e => setSearchTerm(e.target.value)} /></div>
+                  <div className="flex items-center gap-8 px-12 border-l-8 border-slate-50 dark:border-slate-800"><div className="text-right text-[var(--text-primary)]"><p className="text-[12px] font-black text-[var(--text-muted)] uppercase tracking-widest italic leading-none underline decoration-blue-500 decoration-4 mb-3">{clientBalances.length} PARTNERS Online</p><p className="text-3xl font-black tracking-tighter italic">LEDGER SYNCED</p></div><div className="w-6 h-6 bg-emerald-500 rounded-full animate-pulse shadow-33xl shadow-emerald-500/40"></div></div>
                </div>
 
                {!selectedClientLedger ? (
@@ -310,12 +376,12 @@ const ExpensePanel = ({
                          <div key={idx} onClick={() => setSelectedClientLedger(item.client)} className="saas-card bg-white dark:bg-slate-900 shadow-xl flex flex-col justify-between h-[300px] border-l-[10px] border-l-slate-950 dark:border-l-white hover:border-l-blue-600 transition-all duration-500 group cursor-pointer relative overflow-hidden !p-8 italic hover:scale-105">
                             <div className="absolute -top-10 -right-10 p-16 opacity-[0.03] group-hover:opacity-10 transition-opacity"><UserCheck size={180} /></div>
                             <div className="flex justify-between items-start mb-6 relative z-10">
-                               <div className="space-y-2"><p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none underline decoration-blue-500 decoration-2 mb-1">B2B NODE</p><h3 className="text-2xl font-black italic tracking-tighter text-slate-950 dark:text-white leading-none uppercase truncate max-w-[160px]">{item.client}</h3></div>
+                               <div className="space-y-2"><p className="text-[10px] font-black text-[var(--text-muted)] uppercase tracking-widest leading-none underline decoration-blue-500 decoration-2 mb-1">B2B NODE</p><h3 className="text-2xl font-black italic tracking-tighter text-[var(--text-primary)] leading-none uppercase truncate max-w-[160px]">{item.client}</h3></div>
                                <button onClick={e => { e.stopPropagation(); setReceivePaymentModal(item.client); }} className="w-14 h-14 bg-white dark:bg-slate-800 text-emerald-600 rounded-2xl shadow-lg flex items-center justify-center hover:bg-emerald-600 hover:text-white transition-all scale-90 group-hover:scale-110 active:scale-95"><Plus size={24} /></button>
                             </div>
                             <div className="space-y-6 relative z-10">
-                               <div className="flex justify-between items-end border-b-4 border-slate-50 dark:border-slate-800 pb-4"><p className="text-xs font-black text-slate-400 uppercase">Active Debt</p><p className={`text-2xl font-black italic tracking-tighter tabular-nums ${item.due > 0 ? 'text-rose-600' : 'text-emerald-500'}`}>৳{item.due.toLocaleString()}</p></div>
-                               <div className="flex justify-between items-center bg-slate-50 dark:bg-slate-800 p-4 rounded-2xl shadow-inner"><div className="text-center flex-1 border-r-2 border-slate-200 dark:border-slate-700 text-black dark:text-white"><p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">Billed</p><p className="text-lg font-black tabular-nums">{item.billed.toLocaleString()}</p></div><div className="text-center flex-1 text-black dark:text-white"><p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">Paid</p><p className="text-lg font-black text-emerald-600 tabular-nums">{item.paid.toLocaleString()}</p></div></div>
+                               <div className="flex justify-between items-end border-b-4 border-slate-50 dark:border-slate-800 pb-4"><p className="text-xs font-black text-[var(--text-muted)] uppercase">Active Debt</p><p className={`text-2xl font-black italic tracking-tighter tabular-nums ${item.due > 0 ? 'text-rose-600' : 'text-emerald-500'}`}>৳{item.due.toLocaleString()}</p></div>
+                               <div className="flex justify-between items-center bg-slate-50 dark:bg-slate-800 p-4 rounded-2xl shadow-inner"><div className="text-center flex-1 border-r-2 border-slate-200 dark:border-slate-700 text-[var(--text-primary)]"><p className="text-[9px] font-black text-[var(--text-muted)] uppercase tracking-widest mb-1 italic">Billed</p><p className="text-lg font-black tabular-nums">{item.billed.toLocaleString()}</p></div><div className="text-center flex-1 text-[var(--text-primary)]"><p className="text-[9px] font-black text-[var(--text-muted)] uppercase tracking-widest mb-1 italic">Paid</p><p className="text-lg font-black text-emerald-600 dark:text-emerald-400 tabular-nums">{item.paid.toLocaleString()}</p></div></div>
                             </div>
                          </div>
                       ))}
@@ -323,9 +389,37 @@ const ExpensePanel = ({
                ) : (
                   <div className="saas-card bg-white dark:bg-slate-900 animate-fade-in relative !p-10 shadow-2xl border-[10px] border-slate-50 dark:border-slate-800 rounded-[3rem] italic">
                       <button onClick={() => setSelectedClientLedger(null)} className="absolute top-10 right-10 w-14 h-14 bg-slate-950 dark:bg-white text-white dark:text-black rounded-2xl flex items-center justify-center hover:scale-110 transition-all shadow-xl"><ArrowLeft size={24} /></button>
-                      <div className="mb-12 flex items-center gap-8"><div className="w-20 h-20 bg-blue-600 text-white rounded-3xl flex items-center justify-center shadow-xl rotate-12 animate-pulse"><UserCheck size={40} /></div><div><h3 className="text-4xl font-black italic tracking-tighter text-black dark:text-white uppercase leading-none mb-2">{selectedClientLedger}</h3><p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none underline decoration-blue-600 decoration-4 underline-offset-4">Neural Ledger Audit Registry Sequence</p></div></div>
-                      <div className="overflow-x-auto no-scrollbar rounded-2xl shadow-inner"><table className="w-full text-left border-collapse"><thead><tr className="text-[10px] font-black uppercase text-slate-400 tracking-widest border-b-4 border-slate-50 dark:border-slate-800 bg-slate-50/30 dark:bg-slate-800/30 font-mono"><th className="py-6 px-8">Timeline</th><th className="py-6 px-8">Type</th><th className="py-6 px-8">Memo</th><th className="py-6 px-8 text-right">Liquidity</th></tr></thead><tbody className="divide-y-2 divide-slate-50 dark:divide-slate-800 bg-white dark:bg-slate-900">{(masterData.clientTransactions || []).filter(t => t.client === selectedClientLedger).sort((a, b) => new Date(b.date?.split('/').reverse().join('-')) - new Date(a.date?.split('/').reverse().join('-'))).map((t, idx) => (<tr key={idx} className="group hover:bg-slate-50 dark:hover:bg-slate-800 transition-all duration-300"><td className="py-6 px-8 font-bold uppercase italic tabular-nums text-sm text-black dark:text-white">{t.date}</td><td className="py-6 px-8"><span className={`px-4 py-1.5 rounded-xl text-[9px] font-black tracking-widest uppercase shadow-md ${t.type === 'BILL' ? 'bg-rose-600 text-white' : 'bg-emerald-600 text-white'}`}>{t.type}</span></td><td className="py-6 px-8 text-[11px] font-bold uppercase text-slate-400 italic max-w-xs truncate leading-none text-black dark:text-white">{t.note}</td><td className={`py-6 px-8 text-right font-black text-2xl tabular-nums tracking-tighter italic ${t.type === 'BILL' ? 'text-rose-600' : 'text-emerald-500'}`}>{t.type === 'BILL' ? '-' : '+'} ৳{t.amount?.toLocaleString()}</td></tr>))}</tbody></table></div>
-                   </div>
+                      <div className="mb-12 flex items-center gap-8">
+                         <div className="w-20 h-20 bg-blue-600 text-white rounded-3xl flex items-center justify-center shadow-xl rotate-12 animate-pulse"><UserCheck size={40} /></div>
+                         <div className="space-y-2">
+                            <h3 className="text-4xl font-black uppercase italic tracking-tighter text-[var(--text-primary)] leading-none">{selectedClientLedger}</h3>
+                            <p className="text-[11px] font-black text-[var(--text-muted)] uppercase tracking-widest italic decoration-blue-500 underline underline-offset-4 decoration-4">Comprehensive Entity Audit Transcript</p>
+                         </div>
+                      </div>
+
+                      <div className="overflow-x-auto no-scrollbar rounded-2xl shadow-inner">
+                         <table className="w-full text-left border-collapse">
+                            <thead>
+                               <tr className="text-[10px] font-black uppercase text-slate-400 tracking-widest border-b-4 border-slate-50 dark:border-slate-800 bg-slate-50/30 dark:bg-slate-800/30 font-mono">
+                                  <th className="py-6 px-8">Timeline</th>
+                                  <th className="py-6 px-8">Type</th>
+                                  <th className="py-6 px-8">Memo</th>
+                                  <th className="py-6 px-8 text-right">Liquidity</th>
+                               </tr>
+                            </thead>
+                            <tbody className="divide-y-2 divide-slate-50 dark:divide-slate-800 bg-white dark:bg-slate-900">
+                               {(masterData.clientTransactions || []).filter(t => t.client === selectedClientLedger).sort((a, b) => new Date(b.date?.split('/').reverse().join('-')) - new Date(a.date?.split('/').reverse().join('-'))).map((t, idx) => (
+                                  <tr key={idx} className="group hover:bg-slate-50 dark:hover:bg-slate-800 transition-all duration-300">
+                                     <td className="py-6 px-8 font-bold uppercase italic tabular-nums text-sm text-[var(--text-primary)]">{t.date}</td>
+                                     <td className="py-6 px-8"><span className={`px-4 py-1.5 rounded-xl text-[9px] font-black tracking-widest uppercase shadow-md ${t.type === 'BILL' ? 'bg-rose-600 text-white' : 'bg-emerald-600 text-white'}`}>{t.type}</span></td>
+                                     <td className="py-6 px-8 text-[11px] font-bold uppercase text-[var(--text-muted)] italic max-w-xs truncate leading-none">{t.note}</td>
+                                     <td className={`py-6 px-8 text-right font-black text-2xl tabular-nums tracking-tighter italic ${t.type === 'BILL' ? 'text-rose-600' : 'text-emerald-500 dark:text-emerald-400'}`}>{t.type === 'BILL' ? '-' : '+'} ৳{t.amount?.toLocaleString()}</td>
+                                  </tr>
+                               ))}
+                            </tbody>
+                         </table>
+                      </div>
+                  </div>
                )}
             </div>
          )}
@@ -401,7 +495,7 @@ const ExpensePanel = ({
                               <button onClick={() => { if (window.confirm("SYSTEM WIPE: RESET ALL GLOBAL FINANCIAL NODES?")) setMasterData(p => ({ ...p, expenses: [], cashEntries: [], clientTransactions: [] })); }} className="w-full py-8 bg-rose-600 border-b-12 border-rose-900 hover:border-b-0 hover:translate-y-2 text-white rounded-[2rem] text-[11px] font-black uppercase tracking-widest shadow-xl transition-all">SYSTEM FINANCIAL WIPE</button>
                            </div>
                         </div>
-                        <div className="saas-card !p-16 border-8 border-slate-50 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/50 rounded-[5rem] group hover:bg-slate-950 transition-all duration-1000"><div className="flex justify-between items-center mb-12"><h4 className="text-[14px] font-black uppercase tracking-[1em] text-slate-400 italic">Core Environment Nodes</h4><Database size={32} className="opacity-20 group-hover:text-white group-hover:animate-spin" /></div><div className="space-y-8"><div className="flex justify-between items-center bg-white dark:bg-slate-800 p-10 rounded-[2.5rem] shadow-2xl group-hover:scale-95 transition-transform"><p className="text-sm font-black uppercase tracking-widest italic leading-none text-black dark:text-white">Database Architecture</p><p className="text-lg font-black text-blue-600 font-mono italic">SUPABASE.CLOUD v2.4X</p></div><div className="flex justify-between items-center bg-white dark:bg-slate-800 p-10 rounded-[2.5rem] shadow-2xl group-hover:scale-105 transition-transform"><p className="text-sm font-black uppercase tracking-widest italic leading-none text-black dark:text-white">Cluster Intelligence</p><p className="text-lg font-black text-emerald-600 font-mono italic">NRZ-OPR-2026.S52X</p></div></div></div>
+                        <div className="saas-card !p-16 border-8 border-slate-50 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/50 rounded-[5rem] group hover:bg-slate-950 transition-all duration-1000"><div className="flex justify-between items-center mb-12"><h4 className="text-[14px] font-black uppercase tracking-[1em] text-slate-400 italic">Core Environment Nodes</h4><Database size={32} className="opacity-20 group-hover:text-white group-hover:animate-spin" /></div><div className="space-y-8"><div className="flex justify-between items-center bg-white dark:bg-slate-800 p-10 rounded-[2.5rem] shadow-2xl group-hover:scale-95 transition-transform"><p className="text-sm font-black uppercase tracking-widest italic leading-none text-[var(--text-primary)]">Database Architecture</p><p className="text-lg font-black text-blue-600 dark:text-blue-400 font-mono italic">SUPABASE.CLOUD v2.4X</p></div><div className="flex justify-between items-center bg-white dark:bg-slate-800 p-10 rounded-[2.5rem] shadow-2xl group-hover:scale-105 transition-transform"><p className="text-sm font-black uppercase tracking-widest italic leading-none text-[var(--text-primary)]">Cluster Intelligence</p><p className="text-lg font-black text-emerald-600 dark:text-emerald-400 font-mono italic">NRZ-OPR-2026.S52X</p></div></div></div>
                      </div>
                   </div>
                </div>
@@ -412,7 +506,7 @@ const ExpensePanel = ({
          <div className="flex justify-center pt-40 pb-32">
             <button onClick={() => setActivePanel("Overview")} className="group relative flex items-center gap-10 bg-white dark:bg-slate-800 px-12 py-6 rounded-full border-8 border-slate-50 dark:border-slate-700 shadow-xl hover:scale-110 transition-all duration-700 hover:bg-slate-950 hover:text-white">
                <div className="w-14 h-14 bg-slate-950 dark:bg-white text-white dark:text-black group-hover:bg-white group-hover:text-black dark:group-hover:bg-slate-950 dark:group-hover:text-white rounded-2xl group-hover:rotate-[360deg] transition-all duration-700 shadow-lg flex items-center justify-center rotate-6"><ArrowLeft size={28} strokeWidth={5} /></div>
-               <span className="text-3xl font-black uppercase italic tracking-[0.3em] leading-none text-black dark:text-white group-hover:text-white">RETURN MASTER HUD</span>
+               <span className="text-3xl font-black uppercase italic tracking-[0.3em] leading-none text-[var(--text-primary)] group-hover:text-white">RETURN MASTER HUD</span>
             </button>
          </div>
 

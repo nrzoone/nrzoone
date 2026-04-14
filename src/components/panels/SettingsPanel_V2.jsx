@@ -58,7 +58,7 @@ const AccordionItem = ({ id, label, icon: Icon, description, children, activeTab
             <Icon size={20} />
           </div>
           <div>
-            <h3 className={`text-lg font-bold uppercase tracking-tight leading-none transition-colors ${isOpen ? 'text-black dark:text-white dark:text-white' : 'text-black dark:text-white dark:text-white'}`}>{label}</h3>
+            <h3 className={`text-lg font-bold uppercase tracking-tight leading-none transition-colors text-[var(--text-primary)]`}>{label}</h3>
             <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest mt-2 italic">{description}</p>
           </div>
         </div>
@@ -95,13 +95,13 @@ const SettingsPanel_V2 = ({
         <div className="w-16 h-16 bg-rose-50 dark:bg-rose-500/10 text-rose-500 rounded-xl flex items-center justify-center mb-8 shadow-sm">
           <ShieldAlert size={32} />
         </div>
-        <h3 className="text-2xl font-bold tracking-tight mb-4 text-black dark:text-white dark:text-white uppercase">এক্সেস লিমিটেড (ACCESS RESTRICTED)</h3>
+        <h3 className="text-2xl font-bold tracking-tight mb-4 text-[var(--text-primary)] uppercase">এক্সেস লিমিটেড (ACCESS RESTRICTED)</h3>
         <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest max-w-xs leading-relaxed italic">
            এই বিভাগটি শুধুমাত্র অ্যাডমিনদের জন্য সংরক্ষিত। আপনার অনুমতির অভাব রয়েছে।
         </p>
         <button 
            onClick={() => setActivePanel('Overview')}
-           className="mt-12 px-8 py-4 bg-slate-950 text-white dark:bg-white dark:text-white rounded-xl font-bold uppercase text-[10px] tracking-widest shadow-xl hover:-translate-y-1 transition-all"
+           className="mt-12 px-8 py-4 bg-slate-950 text-white dark:bg-white dark:text-black rounded-xl font-bold uppercase text-[10px] tracking-widest shadow-xl hover:-translate-y-1 transition-all"
         >
            ড্যাশবোর্ডে ফিরে যান (Return)
         </button>
@@ -580,7 +580,7 @@ const SettingsPanel_V2 = ({
     <button
       onClick={() => onClick(id)}
       className={`px-6 py-3 rounded-xl font-bold uppercase text-[10px] tracking-widest transition-all ${
-        active === id ? "bg-slate-950 text-white shadow-lg" : "text-black dark:text-white dark:text-white hover:text-black dark:text-white dark:hover:text-white"
+        active === id ? "bg-slate-950 text-white shadow-lg" : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
       }`}
     >
       {label}
@@ -601,10 +601,10 @@ const SettingsPanel_V2 = ({
             )}
           </div>
           <div>
-            <h3 className="text-2xl font-bold tracking-tight text-black dark:text-white dark:text-white uppercase leading-none">
+            <h3 className="text-2xl font-bold tracking-tight text-[var(--text-primary)] uppercase leading-none">
               {title}
             </h3>
-            <p className="text-[10px] text-black dark:text-white dark:text-white font-bold uppercase tracking-widest mt-2">
+            <p className="text-[10px] text-[var(--text-muted)] font-bold uppercase tracking-widest mt-2">
               {items?.length || 0} টি কনফিগার করা হয়েছে
             </p>
           </div>
@@ -659,7 +659,7 @@ const SettingsPanel_V2 = ({
                 <>
                   <div className="space-y-1">
                     <p className="text-[8px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest mb-2">Item ID: {idx + 1}</p>
-                    <p className="font-bold text-xl uppercase tracking-tight text-black dark:text-white dark:text-white leading-tight">
+                    <p className="font-bold text-xl uppercase tracking-tight text-[var(--text-primary)] leading-tight">
                       {item}
                     </p>
                   </div>
@@ -724,7 +724,7 @@ const SettingsPanel_V2 = ({
   const renderUsersContent = () => (
     <div className="space-y-8 animate-fade-up">
        <div className="flex justify-between items-center">
-          <h4 className="text-2xl font-bold uppercase tracking-tight text-black dark:text-white dark:text-white">সিস্টেম <span className="text-blue-600">এক্সেস নোড</span></h4>
+          <h4 className="text-2xl font-bold uppercase tracking-tight text-[var(--text-primary)]">সিস্টেম <span className="text-blue-600">এক্সেস নোড</span></h4>
           <button 
              onClick={() => setShowAddModal("user")}
              className="px-6 py-3.5 bg-slate-950 text-white rounded-xl text-[10px] font-bold uppercase tracking-widest hover:bg-black transition-all shadow-xl flex items-center gap-2"
@@ -736,7 +736,7 @@ const SettingsPanel_V2 = ({
           {masterData.users?.map((u, idx) => (
              <div key={idx} className="saas-card group relative flex flex-col justify-between overflow-hidden min-h-[220px]">
                 <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:opacity-[0.05] transition-opacity pointer-events-none">
-                   <ShieldCheck size={120} className="text-black dark:text-white dark:text-white" />
+                   <ShieldCheck size={120} className="text-[var(--text-primary)]" />
                 </div>
                 
                 <div className="flex justify-between items-start mb-8 relative z-10">
@@ -772,9 +772,9 @@ const SettingsPanel_V2 = ({
                 </div>
 
                 <div className="relative z-10">
-                   <h4 className="text-2xl font-bold tracking-tight text-black dark:text-white dark:text-white uppercase leading-none">{u.name}</h4>
+                   <h4 className="text-2xl font-bold tracking-tight text-[var(--text-primary)] uppercase leading-none">{u.name}</h4>
                    <div className="flex items-center gap-3 mt-3">
-                      <p className="text-[10px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest">{u.id}</p>
+                      <p className="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-widest">{u.id}</p>
                       <div className="w-1 h-1 bg-slate-300 rounded-full"></div>
                       <p className="text-[9px] font-bold text-emerald-500 uppercase tracking-widest">Active Node</p>
                    </div>
@@ -782,7 +782,7 @@ const SettingsPanel_V2 = ({
 
                 <div className="mt-8 pt-6 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center relative z-10">
                    <div>
-                      <p className="text-[8px] font-bold text-black dark:text-white dark:text-white uppercase tracking-tight mb-1">Auth Level</p>
+                       <p className="text-[8px] font-bold text-[var(--text-muted)] uppercase tracking-tight mb-1">Auth Level</p>
                       <p className="font-mono text-xs text-slate-300 group-hover:text-black dark:text-white dark:group-hover:text-white transition-colors">••••••••</p>
                    </div>
                    <button 
@@ -1596,9 +1596,10 @@ const SettingsPanel_V2 = ({
                               <div className="flex-1">
                                  <p className="text-[7px] font-bold text-blue-600 uppercase mb-1">ক্লায়েন্ট (Client)</p>
                                  <input id="design-client-outside-default" type="number" className="w-full premium-input !h-10 !text-sm !font-bold !bg-blue-50/50 !border-blue-200 !text-blue-600" defaultValue={editDesignModal?.defaultClientRates?.outwork || 0} />
-                              </div>
-                           </div>
-                        </div>
+                               </div>
+                            </div>
+                         </div>
+                      </div>
                     <div className="pt-4 border-t border-slate-100 dark:border-slate-700">
                       <label className="text-[10px] font-black text-emerald-500 uppercase tracking-widest italic flex items-center gap-2 mb-2">
                          <DollarSign size={14} /> খুচরা বিক্রয় মূল্য (Retail Selling Price)
@@ -1682,7 +1683,8 @@ const SettingsPanel_V2 = ({
                   const defaultClientRates = {
                     sewing: Number(document.getElementById("design-client-sewing-default")?.value || 0),
                     stone: Number(document.getElementById("design-client-stone-default")?.value || 0),
-                    pata: Number(document.getElementById("design-client-pata-default")?.value || 0),
+                    pataSingle: Number(document.getElementById("design-client-pata-single")?.value || 3),
+                    pataDouble: Number(document.getElementById("design-client-pata-double")?.value || 6),
                     outwork: Number(document.getElementById("design-client-outside-default")?.value || 0),
                   };
 

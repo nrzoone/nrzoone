@@ -113,8 +113,53 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify, logActio
       if (t.type === 'BILL') billed += Number(t.amount || 0);
       if (t.type === 'PAYMENT') paid += Number(t.amount || 0);
     });
-    return { billed, paid, due: billed - paid };
-  }, [clientTransactions]);
+
+    // Integrated Pending Value Calculation:
+    // Based on Finished items that are NOT yet billed/dispatched
+    const designMap = (masterData.designs || []).reduce((acc, d) => {
+        acc[d.name] = d;
+        return acc;
+    }, {});
+
+    const pendingBilledValue = readyStock.reduce((sum, item) => {
+        const d = designMap[item.design];
+        const rate = d?.clientRates?.[clientName] || d?.sellingPrice || 0;
+        return sum + (rate * item.qty);
+    }, 0);
+
+    return { billed, paid, due: billed - paid, pendingValue: pendingBilledValue };
+  }, [clientTransactions, readyStock, masterData.designs, clientName]);
+
+  const liveWorkflow = useMemo(() => {
+    const list = [];
+    
+    // 1. Raw Requests (In Review)
+    (masterData.productionRequests || [])
+        .filter(r => (r.client || '').toUpperCase() === clientName.toUpperCase() && r.status === 'Pending Review')
+        .forEach(r => list.push({ ...r, currentStage: 'ORDER_INTAKE', stageColor: 'bg-slate-400' }));
+
+    // 2. Active in Factory (Cutting / Sewing / Stone)
+    (masterData.cuttingStock || [])
+        .filter(c => (c.client || '').toUpperCase() === clientName.toUpperCase())
+        .forEach(c => {
+            // Determine current department stage
+            const isAtStone = (masterData.productions || []).some(p => p.lotNo === c.lotNo && p.type === 'stone' && p.status === 'Pending');
+            const isAtSewing = (masterData.productions || []).some(p => p.lotNo === c.lotNo && p.type === 'sewing' && p.status === 'Pending');
+            const isAtPata = (masterData.pataEntries || []).some(p => p.lotNo === c.lotNo && p.status === 'Pending');
+            const isOutside = (masterData.outsideWorkEntries || []).some(o => o.lotNo === c.lotNo && o.status === 'Pending');
+            
+            let stage = 'CUTTING';
+            let color = 'bg-blue-500';
+
+            if (isAtStone) { stage = 'STONE'; color = 'bg-amber-500'; }
+            else if (isAtSewing) { stage = 'SEWING'; color = 'bg-indigo-500'; }
+            else if (isAtPata) { stage = 'PATA FACTORY'; color = 'bg-emerald-500'; }
+            else if (isOutside) { stage = 'EXTERNAL'; color = 'bg-rose-500'; }
+
+            list.push({ ...c, currentStage: stage, stageColor: color });
+        });
+    return list;
+  }, [masterData, clientName]);
 
   const totalDelivered = (clientDeliveries || []).reduce((sum, d) => sum + (Number(d?.qtyBorka || 0) + Number(d?.qtyHijab || 0)), 0);
 
@@ -365,8 +410,8 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify, logActio
                     >
                         <div className="w-10 h-10 bg-blue-50 dark:bg-blue-900/20 text-blue-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform"><User size={18} /></div>
                         <div>
-                            <h4 className="text-lg font-black uppercase italic leading-none truncate w-full">{c}</h4>
-                            <p className="text-[8px] font-black text-slate-400 mt-1.5 uppercase tracking-widest leading-none italic">View Performance Dashboard</p>
+                            <h4 className="text-lg font-black uppercase italic leading-none truncate w-full text-[var(--text-primary)]">{c}</h4>
+                            <p className="text-[8px] font-black text-[var(--text-muted)] mt-1.5 uppercase tracking-widest leading-none italic">View Performance Dashboard</p>
                         </div>
                     </button>
                 ))
@@ -377,7 +422,7 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify, logActio
   }
 
   return (
-    <div className="min-h-screen pb-32 animate-fade-up font-outfit text-slate-950 dark:text-white px-1 md:px-6">
+    <div className="min-h-screen pb-32 animate-fade-up font-outfit text-[var(--text-primary)] px-1 md:px-6">
       {isAdmin && (
         <button 
           onClick={() => setSelectedClient(null)}
@@ -396,7 +441,7 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify, logActio
                 </div>
                 <div className="text-center lg:text-left">
                     <h2 className="text-xl md:text-2xl font-black tracking-tight uppercase leading-none mb-1 italic">
-                        B2B <span className="text-blue-500">ARCHIVE</span>
+                        B2B <span className="text-blue-500 uppercase">ARCHIVE</span>
                     </h2>
                     <p className="text-[7px] md:text-[8px] font-black text-white/30 uppercase tracking-[0.4em] font-mono leading-none">
                         ENTITY: {clientName}
@@ -423,20 +468,20 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify, logActio
       {/* High-Density Analytics HUB */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-6">
           <div className="saas-card bg-white dark:bg-slate-900 p-3 md:p-4 shadow-lg border-l-4 border-l-rose-500 group rounded-xl">
-              <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">CURRENT DEBT</p>
-              <h3 className="text-lg md:text-xl font-black text-slate-950 dark:text-white italic tabular-nums">৳ {financials.due.toLocaleString()}</h3>
+              <p className="text-[9px] font-black text-[var(--text-muted)] uppercase tracking-widest mb-1">CURRENT DEBT</p>
+              <h3 className="text-lg md:text-xl font-black text-[var(--text-primary)] italic tabular-nums">৳ {financials.due.toLocaleString()}</h3>
           </div>
           <div className="saas-card bg-white dark:bg-slate-900 p-3 md:p-4 shadow-lg border-l-4 border-l-emerald-500 group rounded-xl">
-              <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">SETTLED FUND</p>
-              <h3 className="text-lg md:text-xl font-black text-slate-950 dark:text-white italic tabular-nums">৳ {financials.paid.toLocaleString()}</h3>
+              <p className="text-[9px] font-black text-[var(--text-muted)] uppercase tracking-widest mb-1">AVAILABLE STOCK VALUE</p>
+              <h3 className="text-lg md:text-xl font-black text-[var(--text-primary)] italic tabular-nums">৳ {financials.pendingValue.toLocaleString()}</h3>
           </div>
           <div className="saas-card bg-white dark:bg-slate-900 p-3 md:p-4 shadow-lg border-l-4 border-l-blue-600 group rounded-xl">
-              <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">TOTAL BILLED</p>
-              <h3 className="text-lg md:text-xl font-black text-slate-950 dark:text-white italic tabular-nums">৳ {financials.billed.toLocaleString()}</h3>
+              <p className="text-[9px] font-black text-[var(--text-muted)] uppercase tracking-widest mb-1">TOTAL BILLED</p>
+              <h3 className="text-lg md:text-xl font-black text-[var(--text-primary)] italic tabular-nums">৳ {financials.billed.toLocaleString()}</h3>
           </div>
           <div className="saas-card bg-white dark:bg-slate-900 p-3 md:p-4 shadow-lg border-l-4 border-l-slate-950 dark:border-l-white group rounded-xl">
-              <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">GLOBAL OUTPUT</p>
-              <h3 className="text-lg md:text-xl font-black text-slate-950 dark:text-white italic tabular-nums">{totalDelivered.toLocaleString()} <span className="text-[9px] uppercase opacity-30">PCS</span></h3>
+              <p className="text-[9px] font-black text-[var(--text-muted)] uppercase tracking-widest mb-1">GLOBAL OUTPUT</p>
+              <h3 className="text-lg md:text-xl font-black text-[var(--text-primary)] italic tabular-nums">{totalDelivered.toLocaleString()} <span className="text-[9px] uppercase opacity-30">PCS</span></h3>
           </div>
       </div>
 
@@ -454,26 +499,28 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify, logActio
                   </div>
                   
                   <div className="p-5 md:p-6 space-y-4 max-h-[500px] overflow-y-auto no-scrollbar">
-                      {myProductionRequests.length === 0 ? (
+                      {liveWorkflow.length === 0 ? (
                           <div className="py-20 flex flex-col items-center justify-center opacity-20">
                               <Archive size={40} className="mb-4" />
-                              <p className="text-[9px] font-black uppercase tracking-[0.4em]">No active queue logs</p>
+                              <p className="text-[9px] font-black uppercase tracking-[0.4em]">No active production lots</p>
                           </div>
                       ) : (
-                          myProductionRequests.map((req, i) => (
-                              <div key={i} className="group p-4 bg-slate-50 dark:bg-slate-800/30 border border-slate-100 dark:border-slate-800 rounded-2xl flex justify-between items-center hover:border-blue-500/20 transition-all border-l-[6px] border-l-blue-600">
+                          liveWorkflow.map((item, i) => (
+                              <div key={i} className={`group p-4 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl flex justify-between items-center hover:border-blue-500/20 transition-all border-l-[6px] ${item.stageColor}`}>
                                   <div className="space-y-1.5">
-                                      <h4 className="text-base font-black uppercase leading-none italic">{req.design}</h4>
+                                      <h4 className="text-base font-black uppercase leading-none italic">{item.design}</h4>
                                       <div className="flex items-center gap-3 text-[8px] font-black uppercase text-slate-400 tracking-widest">
-                                          <span className="bg-white dark:bg-slate-950 px-2 py-0.5 rounded-md shadow-sm italic">🧵 {req.fabricGoj}YDS</span>
-                                          <span className="bg-slate-950 text-white px-2 py-0.5 rounded-md shadow-sm">📦 {req.totalBorka + req.totalHijab} PCS</span>
+                                          <span className="bg-slate-50 dark:bg-slate-950 px-2 py-0.5 rounded-md shadow-sm italic">LOT: {item.lotNo || 'PEND'}</span>
+                                          <span className="bg-slate-950 text-white px-2 py-0.5 rounded-md shadow-sm">📦 {(item.borka || 0) + (item.hijab || 0) || (item.totalBorka + item.totalHijab)} PCS</span>
                                       </div>
                                   </div>
                                   <div className="text-right">
-                                      <span className={`px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-widest shadow-md ${req.status === 'Approved' ? 'bg-emerald-600 text-white' : 'bg-slate-950 text-white animate-pulse'}`}>
-                                          {req.status}
-                                      </span>
-                                      <p className="text-[8px] font-black text-slate-400 mt-1.5 font-mono">{req.date}</p>
+                                      <div className="flex flex-col items-end gap-1">
+                                          <span className={`px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-widest shadow-md text-white ${item.stageColor}`}>
+                                              {item.currentStage}
+                                          </span>
+                                          <span className="text-[7px] font-black text-slate-300 uppercase tracking-tighter">PHASE {item.currentStage === 'ORDER_INTAKE' ? '01' : item.currentStage === 'CUTTING' ? '02' : '03'}</span>
+                                      </div>
                                   </div>
                               </div>
                           ))
@@ -635,7 +682,7 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify, logActio
                        <div key={i} className={`p-3 rounded-xl flex justify-between items-center ${t.type === 'PAYMENT' ? 'bg-emerald-50/50 dark:bg-emerald-900/10' : 'bg-slate-50 dark:bg-slate-800/30'}`}>
                            <div className="flex-1 min-w-0">
                                <div className="flex items-center gap-2 mb-0.5">
-                                   <h4 className="text-[8px] font-black uppercase tracking-widest text-slate-900 dark:text-white italic">
+                                   <h4 className="text-[8px] font-black uppercase tracking-widest text-[var(--text-primary)] italic">
                                      {t.type === 'BILL' ? 'INVOICE' : 'SETTLEMENT'}
                                    </h4>
                                    {deptLabel && t.type === 'BILL' && (
@@ -645,7 +692,7 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify, logActio
                                {t.note && t.type === 'BILL' && <p className="text-[7px] font-bold text-slate-400 truncate max-w-[160px] italic">{t.note.replace(/^(SEWING|STONE|PATA|OUTSIDE) BILL: /, '')}</p>}
                                <p className="text-[8px] font-black text-slate-400 mt-0.5">{t.date}</p>
                            </div>
-                           <p className={`text-base font-black italic tracking-tighter tabular-nums ${t.type === 'PAYMENT' ? 'text-emerald-600' : 'text-slate-950 dark:text-white'}`}>
+                           <p className={`text-base font-black italic tracking-tighter tabular-nums ${t.type === 'PAYMENT' ? 'text-emerald-600' : 'text-[var(--text-primary)]'}`}>
                                ৳ {t.amount?.toLocaleString()}
                            </p>
                        </div>

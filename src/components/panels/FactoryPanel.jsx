@@ -24,7 +24,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const FactoryPanel = ({ masterData, setMasterData, isAdmin, isWorker, showNotify }) => {
+const FactoryPanel = ({ masterData, setMasterData, isAdmin, isWorker, showNotify, type: propType }) => {
   const [view, setView] = useState("active");
   const [lotSearch, setLotSearch] = useState("");
   const [showIssueModal, setShowIssueModal] = useState(false);
@@ -34,7 +34,8 @@ const FactoryPanel = ({ masterData, setMasterData, isAdmin, isWorker, showNotify
   const [printSlip, setPrintSlip] = useState(null);
   const [showQR, setShowQR] = useState(false);
   
-  const type = masterData.type || "sewing";
+  const type = propType || masterData.type || "sewing";
+
   const [entryData, setEntryData] = useState({
     worker: "",
     design: "",
@@ -49,9 +50,9 @@ const FactoryPanel = ({ masterData, setMasterData, isAdmin, isWorker, showNotify
   });
 
   const workers = useMemo(() => {
-    const list = masterData.workers || [];
+    const list = masterData.workerDocs || masterData.workers || [];
     return list.filter(w => w.dept?.toLowerCase() === (type === 'sewing' ? 'sewing' : 'stone')).map(w => w.name);
-  }, [masterData.workers, type]);
+  }, [masterData.workerDocs, masterData.workers, type]);
 
   const activeEntries = useMemo(() => {
     return (masterData.productions || [])
@@ -121,11 +122,11 @@ const FactoryPanel = ({ masterData, setMasterData, isAdmin, isWorker, showNotify
     setMasterData(prev => ({
       ...prev,
       productions: prev.productions.map(p => p.worker === workerName && p.status === "Received" && !p.paid && p.type === type ? { ...p, paid: true, paymentId: pId } : p),
-      expenses: [...(prev.expenses || []), { 
-        id: pId, 
-        date: new Date().toISOString().split('T')[0], 
-        category: "Worker Payment", 
-        amount: Number(amount), 
+      expenses: [...(prev.expenses || []), {
+        id: pId,
+        date: new Date().toISOString().split('T')[0],
+        type: 'Payment',
+        amount: Number(amount),
         description: `${workerName} (${type.toUpperCase()}) পেমেন্ট`,
         worker: workerName,
         dept: type
@@ -136,79 +137,82 @@ const FactoryPanel = ({ masterData, setMasterData, isAdmin, isWorker, showNotify
   };
 
   return (
-    <div className="space-y-6 md:space-y-10 animate-fade-in pb-20">
+    <div className="space-y-6 md:space-y-8 animate-fade-up pb-20">
       {/* HUD Bar */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-5">
-        <div className="bg-white dark:bg-slate-900 p-3.5 md:p-5 rounded-xl border border-slate-100 dark:border-slate-800 shadow-md flex items-center justify-between group overflow-hidden relative">
-          <div className="relative z-10">
-            <p className="text-xl md:text-2xl font-black tracking-tighter leading-none mb-0.5">{activeEntries.length}</p>
-            <p className="text-[7.5px] font-black uppercase tracking-widest opacity-40 whitespace-nowrap">चलमान কাজ (ACTIVE)</p>
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+        <div className="saas-card flex items-center justify-between group">
+          <div className="relative z-10 space-y-1">
+            <p className="text-subtitle">চলমান কাজ (ACTIVE TASK)</p>
+            <p className="text-3xl font-black tracking-tighter leading-none italic text-[var(--text-primary)]">{activeEntries.length}</p>
           </div>
-          <div className="w-9 h-9 md:w-10 md:h-10 bg-blue-500 text-white rounded-lg flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform"><Activity size={18} /></div>
+          <div className="w-12 h-12 bg-blue-600 text-white rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform"><Activity size={20} /></div>
         </div>
 
-        <div className="bg-white dark:bg-slate-900 p-3.5 md:p-5 rounded-xl border border-slate-100 dark:border-slate-800 shadow-md flex items-center justify-between group overflow-hidden relative">
-          <div>
-            <p className="text-xl md:text-2xl font-black tracking-tighter leading-none mb-0.5">{historyEntries.length}</p>
-            <p className="text-[7.5px] font-black uppercase tracking-widest opacity-40 whitespace-nowrap">সম্পন্ন কাজ (DONE)</p>
+        <div className="saas-card flex items-center justify-between group">
+          <div className="space-y-1">
+            <p className="text-subtitle">সম্পন্ন কাজ (COMPLETED)</p>
+            <p className="text-3xl font-black tracking-tighter leading-none italic text-[var(--text-primary)]">{historyEntries.length}</p>
           </div>
-          <button onClick={() => setView('history')} className="w-9 h-9 md:w-10 md:h-10 bg-emerald-500 text-white rounded-lg flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform"><CheckCircle size={18} /></button>
+          <button onClick={() => setView('history')} className="w-12 h-12 bg-emerald-600 text-white rounded-2xl flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform"><CheckCircle size={20} /></button>
         </div>
 
-        <div className="bg-white dark:bg-slate-900 p-3.5 md:p-5 rounded-xl border border-slate-100 dark:border-slate-800 shadow-md flex items-center justify-between group overflow-hidden relative">
-          <div>
-            <p className="text-xl md:text-2xl font-black tracking-tighter leading-none mb-0.5">৳{(workers.reduce((s,w) => s + getWorkerDue(w), 0)).toLocaleString()}</p>
-            <p className="text-[7.5px] font-black uppercase tracking-widest opacity-40 whitespace-nowrap">মোট বকেয়া মজুরি</p>
+        <div className="saas-card flex items-center justify-between group">
+          <div className="space-y-1">
+            <p className="text-subtitle">মোট বকেয়া মজুরি (DUE)</p>
+            <p className="text-3xl font-black tracking-tighter leading-none italic text-blue-600 dark:text-blue-400">৳{(workers.reduce((s,w) => s + getWorkerDue(w), 0)).toLocaleString()}</p>
           </div>
-          <div className="w-9 h-9 md:w-10 md:h-10 bg-slate-100 dark:bg-white/5 text-slate-400 rounded-lg flex items-center justify-center group-hover:bg-slate-950 transition-all"><DollarSign size={18} /></div>
+          <div className="w-12 h-12 bg-slate-50 dark:bg-white/5 text-[var(--text-muted)] rounded-2xl flex items-center justify-center group-hover:bg-slate-950 dark:group-hover:bg-white dark:group-hover:text-[var(--bg-primary)] transition-all"><DollarSign size={20} /></div>
         </div>
       </div>
 
       {/* Control Bar */}
-      <div className="bg-white dark:bg-slate-900 p-1 md:p-1.5 flex flex-col md:flex-row items-center justify-between gap-2.5 md:gap-3 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm">
-        <div className="flex bg-slate-50 dark:bg-slate-800/50 p-1 rounded-lg w-full md:w-auto overflow-x-auto no-scrollbar">
+      <div className="bg-white dark:bg-slate-900 !p-2 flex flex-col md:flex-row items-center justify-between gap-4 rounded-[var(--radius-saas)] border border-[var(--border)] shadow-[var(--shadow-card)]">
+        <div className="flex bg-slate-50 dark:bg-slate-800/50 p-1 rounded-xl w-full md:w-auto overflow-x-auto no-scrollbar">
           {['active', 'history', 'payments'].map(v => (
-            <button key={v} onClick={() => setView(v)} className={`flex-1 md:flex-none px-4 md:px-6 py-1.5 md:py-2 rounded-lg text-[8.5px] font-black uppercase tracking-widest transition-all ${view === v ? 'bg-slate-950 text-white shadow-md' : 'text-slate-400'}`}>
+            <button key={v} onClick={() => setView(v)} className={`flex-1 md:flex-none px-6 py-2.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${view === v ? 'bg-slate-950 text-white shadow-xl dark:bg-white dark:text-[var(--bg-primary)]' : 'text-[var(--text-muted)] hover:text-black dark:hover:text-white'}`}>
               {v === 'active' ? 'চলমান' : v === 'history' ? 'পুরাতন' : 'পেমেন্ট'}
             </button>
           ))}
         </div>
 
-        <div className="flex items-center gap-2 md:gap-3 px-2 w-full md:w-auto">
+        <div className="flex items-center gap-3 px-2 w-full md:w-auto">
           <div className="relative group flex-1">
-            <Search size={12} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-            <input placeholder="লট বা কারিগর..." className="bg-slate-50 dark:bg-slate-800 h-9 md:h-10 pl-9 pr-4 rounded-xl text-[9px] font-black uppercase outline-none w-full md:w-40 border border-transparent focus:border-black transition-all italic" value={lotSearch} onChange={(e) => setLotSearch(e.target.value)} />
+            <Search size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" />
+            <input 
+                placeholder="লট বা কারিগর সার্চ..." 
+                className="premium-input !h-11 !pl-12 !w-full md:!w-56" 
+                value={lotSearch} 
+                onChange={(e) => setLotSearch(e.target.value)} 
+            />
           </div>
-          <button onClick={() => setShowQR(true)} className="w-9 h-9 md:w-10 md:h-10 bg-slate-50 dark:bg-slate-800 text-slate-400 rounded-xl flex items-center justify-center hover:bg-slate-950 transition-all"><Camera size={14} /></button>
+          <button onClick={() => setShowQR(true)} className="w-11 h-11 bg-slate-100 dark:bg-slate-800 text-slate-500 rounded-2xl flex items-center justify-center hover:bg-slate-950 hover:text-white transition-all shadow-sm border border-slate-200 dark:border-slate-700"><Camera size={16} /></button>
           {!isWorker && (
-            <button onClick={() => setShowIssueModal(true)} className="h-9 md:h-10 bg-slate-950 text-white px-4 md:px-5 rounded-xl flex items-center gap-2 shadow-md font-black uppercase text-[8.5px] tracking-widest italic active:scale-95 transition-all">
-              <Plus size={14} /> নতুন কাজ
+            <button onClick={() => setShowIssueModal(true)} className="action-btn-primary !px-6 !h-11 shadow-blue-500/10">
+              <Plus size={16} /> নতুন কাজ
             </button>
           )}
         </div>
       </div>
 
       {/* Grid Content */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {(() => {
           if (view === 'payments') {
             return workers.map((w, idx) => {
               const due = getWorkerDue(w);
               return (
-                <div key={idx} className="bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 rounded-2xl p-6 space-y-6 shadow-md hover:border-black transition-all group animate-fade-up">
-                  <div className="flex justify-between items-start">
-                    <div className="space-y-1">
-                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none italic">{type.toUpperCase()} SPECIALIST</p>
-                      <h4 className="text-xl font-black tracking-tighter uppercase italic">{w}</h4>
-                    </div>
+                <div key={idx} className="saas-card space-y-6 flex flex-col justify-between animate-fade-up">
+                  <div className="space-y-1.5">
+                    <p className="text-subtitle">{type.toUpperCase()} SPECIALIST</p>
+                    <h4 className="text-2xl font-black tracking-tighter uppercase italic text-[var(--text-primary)]">{w}</h4>
                   </div>
-                  <div className="bg-slate-50 dark:bg-slate-800/80 p-5 rounded-xl border border-white dark:border-slate-700 shadow-inner">
-                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2 italic">বকেয়া মজুরি (DUE)</p>
-                    <p className={`text-3xl font-black tracking-tighter italic ${due > 0 ? 'text-black dark:text-white' : 'text-slate-200'}`}>৳{due.toLocaleString()}</p>
+                  <div className="bg-slate-50 dark:bg-slate-800/80 p-5 rounded-2xl border border-white dark:border-slate-700 shadow-inner text-center">
+                    <p className="text-subtitle mb-2">বকেয়া মজুরি (DUE BALANCE)</p>
+                    <p className={`text-4xl font-black tracking-tighter italic ${due > 0 ? 'text-blue-600 dark:text-blue-400' : 'text-[var(--text-muted)] opacity-30'}`}>৳{due.toLocaleString()}</p>
                   </div>
-                  <div className="grid grid-cols-2 gap-3">
-                    <button onClick={() => setLedgerModal(w)} className="py-2.5 bg-slate-50 dark:bg-white rounded-xl font-black uppercase text-[9px] tracking-widest italic">লেজার</button>
-                    <button onClick={() => setPayModal(w)} className="py-2.5 bg-slate-950 text-white rounded-xl font-black uppercase text-[9px] tracking-widest italic shadow-md">পেমেন্ট দিন</button>
+                  <div className="grid grid-cols-2 gap-3 pt-2">
+                    <button onClick={() => setLedgerModal(w)} className="action-btn-secondary !py-3 !px-2">লেজার</button>
+                    <button onClick={() => setPayModal(w)} className="action-btn-primary !py-3 !px-2 shadow-blue-500/10">পেমেন্ট দিন</button>
                   </div>
                 </div>
               );
@@ -218,54 +222,61 @@ const FactoryPanel = ({ masterData, setMasterData, isAdmin, isWorker, showNotify
           const entries = view === 'active' ? activeEntries : historyEntries;
           if (entries.length === 0) {
             return (
-              <div className="col-span-full h-64 flex flex-col items-center justify-center bg-white dark:bg-slate-900 rounded-3xl border-2 border-dashed border-slate-100 dark:border-slate-800 italic">
-                <Activity size={48} strokeWidth={1} className="text-slate-100 mb-4" />
-                <p className="text-[9px] font-black text-slate-300 uppercase tracking-widest">রেকর্ড পাওয়া যায়নি</p>
+              <div className="col-span-full h-80 flex flex-col items-center justify-center bg-white dark:bg-slate-900 rounded-[var(--radius-xl)] border-2 border-dashed border-slate-100 dark:border-slate-800">
+                <div className="p-8 bg-slate-50 dark:bg-slate-800 rounded-full mb-6">
+                    <Activity size={48} strokeWidth={1} className="text-[var(--text-muted)] animate-pulse" />
+                </div>
+                <p className="text-subtitle">কোনো ডাটা নোড পাওয়া যায়নি (Zero Records)</p>
               </div>
             );
           }
 
           return entries.map((item) => (
-            <div key={item.id} className="flex flex-col h-full bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 rounded-2xl p-6 shadow-md hover:border-black transition-all group animate-fade-up">
-              <div className="flex justify-between items-start mb-3 md:mb-4">
-                <div className="space-y-0.5">
-                  <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest italic">কারিগর</p>
-                  <h4 className="text-lg md:text-xl font-black tracking-tighter uppercase italic truncate max-w-[150px] md:max-w-[200px]">{item.worker}</h4>
+            <div key={item.id} className="saas-card flex flex-col h-full animate-fade-up !p-6">
+              <div className="flex justify-between items-start mb-6">
+                <div className="space-y-1">
+                  <p className="text-subtitle">নিযুক্ত কারিগর</p>
+                  <h4 className="text-xl font-black tracking-tighter uppercase italic truncate max-w-[180px] text-[var(--text-primary)]">{item.worker}</h4>
                 </div>
-                <div className={`w-9 h-9 md:w-10 md:h-10 bg-slate-50 dark:bg-slate-800 rounded-lg flex items-center justify-center shadow-inner font-black text-[10px]`}>#{String(item.lotNo).slice(-3)}</div>
+                <div className="w-11 h-11 bg-slate-950 text-white dark:bg-white dark:text-[var(--bg-primary)] rounded-xl flex items-center justify-center shadow-xl font-black text-xs italic">#{String(item.lotNo).slice(-3)}</div>
               </div>
 
-              <div className="grid grid-cols-2 gap-2.5 mb-3 md:mb-4">
-                <div className="bg-slate-50 dark:bg-slate-800 p-2.5 md:p-3 rounded-xl border border-white dark:border-slate-700">
-                  <p className="text-[7.5px] font-black text-slate-400 uppercase tracking-widest mb-0.5 italic">রঙ</p>
-                  <p className="text-[11px] font-black uppercase italic truncate">{item.color}</p>
+              <div className="grid grid-cols-2 gap-3 mb-6">
+                <div className="bg-slate-50 dark:bg-slate-800/50 p-3 rounded-2xl border border-white dark:border-slate-800 shadow-inner">
+                  <p className="text-subtitle mb-1">ডিজাইন কালার</p>
+                  <p className="text-xs font-black uppercase italic truncate text-[var(--text-primary)]">{item.color}</p>
                 </div>
-                <div className="bg-slate-50 dark:bg-slate-800 p-2.5 md:p-3 rounded-xl border border-white dark:border-slate-700">
-                  <p className="text-[7.5px] font-black text-slate-400 uppercase tracking-widest mb-0.5 italic">সাইজ</p>
-                  <p className="text-[11px] font-black uppercase italic truncate">{item.size}</p>
+                <div className="bg-slate-50 dark:bg-slate-800/50 p-3 rounded-2xl border border-white dark:border-slate-800 shadow-inner">
+                  <p className="text-subtitle mb-1">সাইজ ভেরিয়েন্ট</p>
+                  <p className="text-xs font-black uppercase italic truncate text-[var(--text-primary)]">{item.size}</p>
                 </div>
               </div>
 
-              <div className="flex justify-between items-center py-3 md:py-4 border-y border-slate-50 dark:border-slate-800 border-dashed mb-3 md:mb-4">
+              <div className="flex justify-between items-center py-5 border-y border-slate-100 dark:border-slate-800 border-dashed mb-6">
                 <div>
-                  <p className="text-[7.5px] font-black text-slate-400 uppercase tracking-widest mb-0.5 italic">পরিমাণ</p>
-                  <p className="text-xl md:text-2xl font-black italic tracking-tighter">{(Number(item.issueBorka) || 0) + (Number(item.issueHijab) || 0)} <span className="text-[9px] opacity-40">PCS</span></p>
+                  <p className="text-subtitle mb-1">মোট পরিমাণ</p>
+                  <p className="text-3xl font-black italic tracking-tighter text-[var(--text-primary)]">
+                    {(Number(item.issueBorka) || 0) + (Number(item.issueHijab) || 0)} 
+                    <span className="text-[10px] text-[var(--text-muted)] ml-1.5 uppercase tracking-widest font-bold">Pcs</span>
+                  </p>
                 </div>
                 <div className="text-right">
-                  <p className="text-[7.5px] font-black text-slate-400 uppercase tracking-widest mb-0.5 italic">মজুরি</p>
-                  <p className="text-lg md:text-xl font-black italic text-emerald-500 tracking-tighter">৳{item.rate}</p>
+                  <p className="text-subtitle mb-1">মজুরি হার</p>
+                  <p className="text-2xl font-black italic text-emerald-500 tracking-tighter">৳{item.rate}</p>
                 </div>
               </div>
 
-              <div className="flex gap-3 mt-auto">
-                <button onClick={() => setPrintSlip(item)} className="w-12 h-12 bg-white dark:bg-slate-800 border border-slate-100 rounded-xl flex items-center justify-center shadow-md hover:border-black transition-all"><Printer size={18} /></button>
+              <div className="flex gap-2.5 mt-auto">
+                <button onClick={() => setPrintSlip(item)} className="w-12 h-12 action-btn-secondary !p-0 !rounded-xl" title="Print Slip"><Printer size={18} /></button>
                 {item.status === 'Pending' ? (
-                  <button onClick={() => setReceiveModal(item)} className="flex-1 h-12 bg-slate-950 text-white dark:bg-white dark:text-slate-950 rounded-xl font-black uppercase tracking-widest text-[9px] italic shadow-md hover:bg-emerald-500 transition-all">কাজ জমা (REC)</button>
+                  <button onClick={() => setReceiveModal(item)} className="flex-1 action-btn-primary shadow-emerald-500/10 hover:bg-emerald-600 !rounded-xl">জমা নিন (REC)</button>
                 ) : (
-                  <div className="flex-1 h-12 bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400 rounded-xl flex items-center justify-center font-black uppercase text-[9px] tracking-widest italic border border-emerald-100">RECEIVED {item.receiveDate}</div>
+                  <div className="flex-1 h-12 bg-emerald-50 text-emerald-600 dark:bg-emerald-900/10 dark:text-emerald-400 rounded-xl flex items-center justify-center font-black uppercase text-[10px] tracking-widest italic border border-emerald-100 shadow-sm">
+                    RECEIVED {item.receiveDate}
+                  </div>
                 )}
                 {isAdmin && (
-                  <button onClick={() => { if(window.confirm('মুছে ফেলতে চান?')) setMasterData(prev => ({ ...prev, productions: prev.productions.filter(p => p.id !== item.id) })) }} className="w-12 h-12 bg-rose-50 text-rose-500 rounded-xl flex items-center justify-center hover:bg-rose-500 hover:text-white transition-all"><Trash2 size={18} /></button>
+                  <button onClick={() => { if(window.confirm('মুছে ফেলতে চান?')) setMasterData(prev => ({ ...prev, productions: prev.productions.filter(p => p.id !== item.id) })) }} className="w-12 h-12 action-btn-secondary !p-0 !text-rose-500 hover:!bg-rose-500 hover:!text-white border-none !rounded-xl" title="Purge"><Trash2 size={18} /></button>
                 )}
               </div>
             </div>

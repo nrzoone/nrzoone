@@ -43,6 +43,7 @@ import {
     BarChart2,
     Shield,
 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import Overview from "./components/Overview";
 import CuttingPanel from "./components/panels/CuttingPanel";
 import FactoryPanel from "./components/panels/FactoryPanel";
@@ -57,7 +58,6 @@ import ExpensePanel from "./components/panels/ExpensePanel";
 import OutsideWorkPanel from "./components/panels/OutsideWorkPanel";
 import SecurityPanel from "./components/panels/SecurityPanel";
 import ClientDashboard from "./components/panels/ClientDashboard";
-
 import MenuPanel from "./components/panels/MenuPanel";
 import ClientLedgerPanel from "./components/panels/ClientLedgerPanel";
 import { useMasterData } from "./hooks/useMasterData";
@@ -106,30 +106,38 @@ class ErrorBoundary extends React.Component {
     render() {
         if (this.state.hasError) {
             return (
-                <div className="min-h-screen bg-slate-950 text-white flex flex-col items-center justify-center p-6 md:p-12 text-center font-outfit">
+                <div className="min-h-screen bg-slate-950 text-white flex flex-col items-center justify-center p-6 md:p-12 text-center font-outfit overflow-hidden">
+                    <div className="absolute inset-0 opacity-10 pointer-events-none">
+                        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-500/20 via-transparent to-transparent"></div>
+                    </div>
+                    
                     <div className="relative mb-12">
-                        <AlertTriangle size={64} className="text-amber-500 animate-pulse" />
-                        <div className="absolute inset-0 blur-3xl bg-amber-500 opacity-20 animate-pulse"></div>
+                        <div className="w-24 h-24 bg-rose-500/10 rounded-3xl flex items-center justify-center border border-rose-500/20 shadow-[0_0_50px_rgba(244,63,94,0.1)]">
+                            <AlertTriangle size={48} className="text-rose-500 animate-pulse" />
+                        </div>
                     </div>
-                    <h1 className="text-3xl font-black uppercase tracking-tighter mb-4">রিমোট সিস্টেম প্রটেকশন</h1>
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-relaxed max-w-sm mb-12 italic">
-                        সিস্টেমে একটি গুরুতর ত্রুটি পাওয়া গেছে। ডাটা সুরক্ষিত রাখতে অপারেশন সাময়িকভাবে বন্ধ করা হয়েছে।
+
+                    <h1 className="text-4xl font-black uppercase tracking-tighter mb-4 italic">CRITICAL <span className="text-rose-500">FAILURE</span></h1>
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] leading-relaxed max-w-sm mb-12 italic opacity-60">
+                        INDUSTRIAL GUARD ACTIVE: SEGMENTATION FAULT DETECTED
                     </p>
-                    <div className="bg-slate-900 border border-slate-800 p-6 rounded-2xl mb-12 w-full max-w-lg text-left overflow-auto max-h-40">
-                        <p className="text-rose-500 text-xs font-mono leading-relaxed">{this.state.error?.toString()}</p>
+
+                    <div className="saas-card !bg-white/5 backdrop-blur-xl border-white/10 !p-6 mb-12 w-full max-w-lg text-left overflow-auto max-h-40 shadow-2xl">
+                        <p className="text-rose-400 text-[10px] font-mono leading-relaxed break-all">{this.state.error?.toString()}</p>
                     </div>
-                    <div className="flex gap-4 w-full max-w-lg">
+
+                    <div className="flex flex-col md:flex-row gap-4 w-full max-w-lg">
                         <button
                             onClick={() => window.location.reload()}
-                            className="flex-1 bg-white border-2 border-black text-black px-10 py-5 rounded-xl font-black uppercase text-xs tracking-widest hover:bg-black hover:text-white transition-all shadow-xl"
+                            className="action-btn-primary flex-1 !py-5 !bg-white !text-black shadow-white/5"
                         >
-                            রিবুট করুন
+                            REBOOT CORE SYSTEM
                         </button>
                         <button
                             onClick={this.handleRecover}
-                            className="flex-1 bg-rose-600 text-white px-10 py-5 rounded-xl font-black uppercase text-xs tracking-widest hover:bg-rose-700 transition-all shadow-xl shadow-rose-600/20"
+                            className="action-btn-secondary flex-1 !py-5 !bg-rose-600 !text-white !border-none shadow-rose-600/20"
                         >
-                            ডাটা ক্লিন ও রিস্টার্ট
+                            PURGE DATA & RECOVERY
                         </button>
                     </div>
                 </div>
@@ -385,15 +393,17 @@ const Sidebar = ({ activePanel, setActivePanel, panelTab, setPanelTab, user, set
     };
 
     return (
-        <aside className={`fixed inset-y-0 left-0 z-[200] w-[280px] md:w-[300px] flex flex-col bg-white dark:bg-slate-950 border-r border-slate-200 dark:border-white/5 transition-all duration-500 cubic-bezier(0.19, 1, 0.22, 1) font-inter ${isOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full shadow-none'}`}>
-            {/* Dark Sidebar Brand */}
-            <div className="p-6 md:p-16 flex flex-col items-center relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-b from-blue-500/10 to-transparent pointer-events-none"></div>
-                <Logo size="sm" white={isDarkMode} customUrl={masterData.settings?.logo} />
-                <div className="mt-8 h-1 w-12 bg-black/10 dark:bg-white/20 rounded-full"></div>
+        <aside className={`fixed inset-y-0 left-0 z-[200] w-[280px] md:w-[320px] flex flex-col bg-[var(--bg-secondary)] border-r border-[var(--border)] transition-all duration-500 cubic-bezier(0.19, 1, 0.22, 1) font-inter ${isOpen ? 'translate-x-0 shadow-[var(--shadow-elite)]' : '-translate-x-full shadow-none'}`}>
+            {/* Sidebar Branding */}
+            <div className="pt-12 pb-10 px-8 flex flex-col items-center relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-b from-blue-600/5 to-transparent pointer-events-none"></div>
+                <div className="relative z-10 scale-110 mb-2">
+                    <Logo size="sm" white={isDarkMode} customUrl={masterData.settings?.logo} />
+                </div>
+                <p className="text-[8px] font-black uppercase tracking-[0.5em] text-[var(--text-muted)] mt-6 italic">INDUSTRIAL ERP V2.0</p>
             </div>
             
-            <div className="flex-1 overflow-y-auto px-5 md:px-6 space-y-6 no-scrollbar pb-12 mt-4">
+            <div className="flex-1 overflow-y-auto px-4 md:px-5 space-y-8 no-scrollbar pb-12">
                 {MENU_CATEGORIES.map(category => {
                     const filteredItems = category.items.filter(item => {
                         const role = user?.role?.toLowerCase();
@@ -405,24 +415,27 @@ const Sidebar = ({ activePanel, setActivePanel, panelTab, setPanelTab, user, set
                     if (filteredItems.length === 0) return null;
 
                     return (
-                        <nav key={category.id} className="space-y-1">
-                            <p className="px-5 text-[8.5px] font-black text-black/50 dark:text-white/40 tracking-[0.3em] mb-2 uppercase">{category.label}</p>
+                        <nav key={category.id} className="space-y-1.5">
+                            <p className="px-5 text-[8.5px] font-black text-[var(--text-muted)] tracking-[0.4em] mb-3 uppercase italic">{category.label}</p>
                             {filteredItems.map(item => {
                                 const Icon = item.icon;
                                 const active = activePanel === item.id;
                                 return (
                                     <button
-                                        key={item.id + (item.tab || "")} onClick={() => navigate(item.id, item.tab)}
-                                        className={`w-full flex items-center gap-3 px-4 py-2 rounded-xl transition-all group relative ${active && (item.tab ? panelTab === item.tab : true) ? "bg-black text-white dark:bg-white dark:text-black shadow-lg" : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/5"}`}
+                                        key={item.id + (item.tab || "")} 
+                                        onClick={() => navigate(item.id, item.tab)}
+                                        className={`w-full flex items-center gap-4 px-4 py-3 rounded-2xl transition-all group relative border ${active && (item.tab ? panelTab === item.tab : true) ? "bg-slate-950 text-white border-black dark:bg-white dark:text-black dark:border-white shadow-xl" : "text-[var(--text-secondary)] border-transparent hover:bg-slate-50 dark:hover:bg-white/5 hover:border-slate-100 dark:hover:border-white/5"}`}
                                     >
-                                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all ${active && (item.tab ? panelTab === item.tab : true) ? "bg-white/20 dark:bg-black/10" : "bg-slate-100 dark:bg-white/5 group-hover:bg-slate-200 dark:group-hover:bg-white/10"}`}>
-                                            <Icon size={16} strokeWidth={active ? 2.5 : 2} className="shrink-0" />
+                                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${active && (item.tab ? panelTab === item.tab : true) ? "bg-white/20 dark:bg-black/10 shadow-inner" : "bg-slate-100 dark:bg-white/10 group-hover:scale-110"}`}>
+                                            <Icon size={18} strokeWidth={active ? 2.5 : 2} className="shrink-0" />
                                         </div>
                                         <div className="flex flex-col items-start leading-tight">
-                                            <span className={`text-[0.68rem] tracking-tight font-bold`}>{t?.(item.id.toLowerCase() + (item.tab ? "_" + item.tab : "")) || item.label}</span>
-                                            <span className={`text-[0.52rem] uppercase tracking-widest font-medium opacity-50`}>{item.sub}</span>
+                                            <span className={`text-[0.7rem] tracking-tight font-black uppercase italic`}>{t?.(item.id.toLowerCase() + (item.tab ? "_" + item.tab : "")) || item.label}</span>
+                                            <span className={`text-[0.55rem] uppercase tracking-widest font-black opacity-60 italic mt-0.5`}>{item.sub}</span>
                                         </div>
-                                        {active && (item.tab ? panelTab === item.tab : true) && <div className="absolute right-4 w-1 h-1 bg-blue-500 dark:bg-black rounded-full animate-pulse"></div>}
+                                        {active && (item.tab ? panelTab === item.tab : true) && (
+                                            <motion.div layoutId="activeInd" className="absolute right-4 w-1.5 h-1.5 bg-blue-500 rounded-full shadow-[0_0_10px_rgba(59,130,246,0.8)]"></motion.div>
+                                        )}
                                     </button>
                                 );
                             })}
@@ -431,18 +444,18 @@ const Sidebar = ({ activePanel, setActivePanel, panelTab, setPanelTab, user, set
                 })}
             </div>
             
-            <div className="p-6 border-t border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-slate-900/50">
+            <div className="p-6 border-t border-slate-100 dark:border-white/5 bg-slate-50/50 dark:bg-black/20">
                 <button 
                     onClick={() => {
                         setUser(null);
                         localStorage.removeItem('nrzone_user');
                     }} 
-                    className="w-full flex items-center gap-3 p-3 rounded-xl text-black dark:text-white hover:text-rose-500 transition-all hover:bg-rose-500/10 group"
+                    className="w-full flex items-center gap-4 p-4 rounded-2xl text-[var(--text-muted)] hover:text-rose-500 transition-all hover:bg-rose-500/5 group border border-transparent hover:border-rose-500/20"
                 >
-                    <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-white/5 flex items-center justify-center group-hover:bg-rose-500/20">
-                        <LogOut size={16} />
+                    <div className="w-10 h-10 rounded-xl bg-white dark:bg-white/5 flex items-center justify-center group-hover:bg-rose-500/10 shadow-sm border border-slate-100 dark:border-transparent">
+                        <LogOut size={18} />
                     </div>
-                    <span className="text-[0.65rem] font-black uppercase tracking-widest">সিস্টেম বন্ধ করুন</span>
+                    <span className="text-[0.65rem] font-black uppercase tracking-[0.2em] italic">লিভ সিস্টেম (EXIT)</span>
                 </button>
             </div>
         </aside>
@@ -565,7 +578,13 @@ const AppContent = () => {
                     productions: masterData.productions || [],
                     inventory: masterData.inventory || {},
                     expenses: masterData.expenses || [],
-                    deliveries: masterData.deliveries || []
+                    deliveries: masterData.deliveries || [],
+                    pataEntries: masterData.pataEntries || [],
+                    cuttingStock: masterData.cuttingStock || [],
+                    clientTransactions: masterData.clientTransactions || [],
+                    logs: logs || [],
+                    timestamp: new Date().toISOString(),
+                    factoryName: masterData.settings?.factoryName || 'NRZO0NE'
                 })
             });
             
@@ -669,7 +688,7 @@ const AppContent = () => {
                                     </button>
                                 )}
                                 <div className="space-y-0.5">
-                                    <h2 className="text-xl md:text-2xl font-bold tracking-tight text-black dark:text-white uppercase leading-tight">
+                                    <h2 className="text-xl md:text-2xl font-bold tracking-tight text-[var(--text-primary)] uppercase leading-tight">
                                         {t?.(activePanel?.toLowerCase()) || activePanel}
                                     </h2>
                                     <div className="flex items-center gap-2">
@@ -684,7 +703,7 @@ const AppContent = () => {
                             <div className="flex items-center gap-3 md:gap-6">
                                 <div className="hidden sm:flex flex-col items-end pr-5 border-r border-slate-100 dark:border-slate-800">
                                     <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-0.5">অনুমোদিত ইউজার</p>
-                                    <p className="text-sm font-black uppercase text-black dark:text-white leading-none italic">{user?.name || 'অпераটর'}</p>
+                                    <p className="text-sm font-black uppercase text-[var(--text-primary)] leading-none italic">{user?.name || 'অпераটর'}</p>
                                 </div>
                                 <div className="flex gap-2">
                                     {user?.role !== 'client' && (
@@ -693,7 +712,7 @@ const AppContent = () => {
                                             className="w-10 h-10 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-center hover:bg-slate-50 dark:hover:bg-slate-700 transition-all group"
                                             title="সেটিংস"
                                         >
-                                            <Settings size={18} className="group-hover:rotate-45 transition-transform text-black dark:text-white" />
+                                            <Settings size={18} className="group-hover:rotate-45 transition-transform text-[var(--text-primary)]" />
                                         </button>
                                     )}
                                     <button 
@@ -722,15 +741,17 @@ const AppContent = () => {
                                         {activePanel === "Stock" && <InventoryPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} setActivePanel={setActivePanel} logAction={logAction} />}
                                         {activePanel === "Accounts" && <ExpensePanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} setActivePanel={setActivePanel} logAction={logAction} onSyncGoogle={handleSyncToGoogleSheets} initialTab={panelTab} logs={logs} />}
                                         {activePanel === "Attendance" && <AttendancePanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} setActivePanel={setActivePanel} />}
-                                        { activePanel === "Settings" && <SettingsPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} syncStatus={syncStatus} user={user} t={t} setActivePanel={setActivePanel} logs={logs} downloadBackup={downloadBackup} />}
-                                        { (activePanel === "Menu" || activePanel === "ClientLedger") && <ClientLedgerPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} setActivePanel={setActivePanel} />}
-                                        { activePanel === "History" && <SecurityPanel masterData={masterData} setActivePanel={setActivePanel} t={t} logs={logs} syncStatus={syncStatus} />}
+                                        {activePanel === "Transactions" && <ReportsPanel masterData={masterData} user={user} t={t} logAction={logAction} showNotify={showNotify} setActivePanel={setActivePanel} onSyncGoogle={handleSyncToGoogleSheets} />}
+                                        {activePanel === "Settings" && <SettingsPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} syncStatus={syncStatus} user={user} t={t} setActivePanel={setActivePanel} logs={logs} downloadBackup={downloadBackup} />}
+                                        {activePanel === "Menu" && <MenuPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} setActivePanel={setActivePanel} />}
+                                        {activePanel === "ClientLedger" && <ClientLedgerPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} setActivePanel={setActivePanel} />}
+                                        {activePanel === "History" && <SecurityPanel masterData={masterData} setActivePanel={setActivePanel} t={t} logs={logs} syncStatus={syncStatus} />}
                                     </>
                                 )}
                                 {activePanel === "Notifications" && (
                                     <div className="space-y-8 pb-24 animate-fade-up px-2">
                                          <div className="flex justify-between items-center mb-10">
-                                            <h1 className="text-3xl font-bold tracking-tight text-black dark:text-white uppercase leading-none">নোটিফিকেশন <span className="text-blue-600">প্যানেল</span></h1>
+                                            <h1 className="text-3xl font-bold tracking-tight text-[var(--text-primary)] uppercase leading-none">নোটিফিকেশন <span className="text-blue-600">প্যানেল</span></h1>
                                             <button 
                                                 onClick={() => setMasterData(p => ({ ...p, notifications: (p.notifications || []).map(n => ({ ...n, read: true })) }))} 
                                                 className="px-5 py-2.5 bg-slate-100 dark:bg-slate-800 rounded-xl text-[10px] font-bold uppercase tracking-widest hover:bg-slate-950 hover:text-white transition-all border border-slate-200 dark:border-slate-700 shadow-sm"
@@ -775,7 +796,7 @@ const AppContent = () => {
                 </div>
             )}
             {trackingId && <div className="fixed inset-0 z-[1000]"><TrackingView trackId={trackingId} masterData={masterData} onClose={() => setTrackingId(null)} isDarkMode={isDarkMode} /></div>}
-            {showQR && <QRScanner onScanSuccess={(data) => setTrackingId(data)} onClose={() => setShowQR(false)} />}
+            {showQR && <QRScanner onScanSuccess={setTrackingId} onClose={() => setShowQR(false)} />}
             {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
             
             {/* Multi-Utility Global Hub */}

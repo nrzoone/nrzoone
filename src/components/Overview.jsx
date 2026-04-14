@@ -54,16 +54,16 @@ const Overview = ({ masterData, stats: propStats, setActivePanel, t, user, syncS
         <div className="space-y-6 animate-fade-up pb-24">
             
             {/* Header Section */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-3 md:gap-5 mb-6 md:mb-8 px-1 md:px-2">
-                <div className="space-y-0.5">
-                     <h1 className="text-xl md:text-2xl font-black text-black dark:text-white">
-                        এনআরজোন <span className="text-blue-600">ফ্যাক্টরি ড্যাশবোর্ড</span>
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-3 md:gap-5 mb-8 px-1 md:px-2">
+                <div className="space-y-1.5">
+                     <h1 className="text-2xl md:text-3xl font-black text-[var(--text-primary)] tracking-tighter italic uppercase">
+                        এনআরজোন <span className="text-blue-600">ড্যাশবোর্ড</span>
                     </h1>
-                    <p className="text-[8.5px] md:text-[9.5px] font-black text-black/50 dark:text-white/40 uppercase tracking-widest italic leading-none">
-                        INDUSTRIAL ERP // LIVE OPERATIONAL HUB v5.2
+                    <p className="text-subtitle">
+                        INDUSTRIAL ERP // LIVE OPERATIONAL HUB v5.2 ELITE
                     </p>
                 </div>
-                <div className="flex bg-white dark:bg-slate-900 p-0.5 rounded-xl shadow-sm border border-slate-100 dark:border-slate-800">
+                <div className="flex bg-white dark:bg-slate-900 p-1.5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
                     {[
                         { id: "Daily", label: "দৈনিক" },
                         { id: "Weekly", label: "সাপ্তাহিক" },
@@ -72,7 +72,7 @@ const Overview = ({ masterData, stats: propStats, setActivePanel, t, user, syncS
                         <button 
                             key={tf.id}
                             onClick={() => setTimeframe(tf.id)}
-                            className={`px-3 md:px-5 py-1 md:py-1.5 rounded-lg md:rounded-xl text-[9.5px] md:text-[10.5px] font-black transition-all ${timeframe === tf.id ? 'bg-blue-600 text-white shadow-lg' : 'text-black dark:text-white hover:bg-slate-50 dark:hover:bg-slate-800'}`}
+                            className={`px-5 py-2 rounded-xl text-[10px] font-black transition-all ${timeframe === tf.id ? 'bg-slate-950 text-white shadow-xl dark:bg-white dark:text-black' : 'text-[var(--text-primary)] hover:bg-slate-50 dark:hover:bg-slate-800'}`}
                         >
                             {tf.label}
                         </button>
@@ -81,7 +81,7 @@ const Overview = ({ masterData, stats: propStats, setActivePanel, t, user, syncS
             </div>
 
             {/* KPI Grid */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 md:gap-3">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-5">
                 {[
                     { label: "মোট কারিগর", value: (masterData.workerDocs || []).length, trend: "+4.2%", icon: Users, id: "Settings", color: "text-blue-600", bg: "bg-blue-50 dark:bg-blue-900/10" },
                     { label: "চলমান কাজ", value: (masterData.productions || []).length + (masterData.pataEntries || []).length, trend: "+12.1%", icon: Activity, id: "Cutting", color: "text-emerald-600", bg: "bg-emerald-50 dark:bg-emerald-900/10" },
@@ -101,31 +101,31 @@ const Overview = ({ masterData, stats: propStats, setActivePanel, t, user, syncS
                     },
                     { label: "পেন্ডিং লট", value: (masterData.productions || []).filter(p => p.status === 'Pending').length, trend: "-2.1%", icon: Package, id: "Cutting", color: "text-amber-600", bg: "bg-amber-50 dark:bg-amber-900/10" }
                 ].map((kpi, idx) => (
-                    <div key={idx} className="saas-card group cursor-pointer !p-3 md:!p-4 border border-slate-100 dark:border-slate-800 shadow-sm" onClick={() => setActivePanel(kpi.id)}>
-                        <div className="flex justify-between items-start mb-1 md:mb-2">
-                            <div className={`w-6 h-6 md:w-8 md:h-8 ${kpi.bg} ${kpi.color} rounded flex items-center justify-center transition-transform duration-300 group-hover:scale-110`}>
-                                <kpi.icon size={12} className="md:w-[16px] md:h-[16px]" />
+                    <div key={idx} className="saas-card group cursor-pointer !p-5" onClick={() => setActivePanel(kpi.id)}>
+                        <div className="flex justify-between items-start mb-4">
+                            <div className={`w-10 h-10 ${kpi.bg} ${kpi.color} rounded-xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110 shadow-sm`}>
+                                <kpi.icon size={20} />
                             </div>
-                            <div className="flex items-center gap-1 px-1.5 py-0.5 bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 rounded-full text-[6.5px] md:text-[8px] font-black italic">
+                            <div className="flex items-center gap-1.5 px-2 py-1 bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 rounded-full text-[9px] font-black italic border border-emerald-100 dark:border-emerald-500/20">
                                 {kpi.trend}
                             </div>
                         </div>
-                        <div className="space-y-0">
-                            <p className="text-[7.5px] md:text-[8.5px] font-black uppercase text-black/50 dark:text-white/40 tracking-wider leading-none italic">{kpi.label}</p>
-                            <h3 className="text-sm md:text-xl font-black text-black dark:text-white leading-tight tracking-tighter italic">{kpi.value}</h3>
+                        <div className="space-y-1">
+                            <p className="text-subtitle">{kpi.label}</p>
+                            <h3 className="text-2xl font-black text-[var(--text-primary)] leading-tight tracking-tighter italic">{kpi.value}</h3>
                         </div>
                     </div>
                 ))}
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-4 md:mt-8">
-                <div className="space-y-3 md:space-y-4">
-                    <div className="saas-card bg-white dark:bg-slate-900 !p-4 border border-slate-100 dark:border-slate-800 shadow-sm">
-                        <h3 className="text-[9px] font-black uppercase mb-4 tracking-widest flex items-center gap-2 text-black dark:text-white italic">
-                            <TrendingUp size={14} className="text-blue-600" />
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-8">
+                <div className="space-y-4">
+                    <div className="saas-card bg-white dark:bg-slate-900 !p-6">
+                        <h3 className="text-[10px] font-black uppercase mb-6 tracking-widest flex items-center gap-3 text-[var(--text-primary)] italic">
+                            <TrendingUp size={16} className="text-blue-600" />
                             উৎপাদন গতি (Velocity)
                         </h3>
-                        <div className="h-28 w-full">
+                        <div className="h-32 w-full">
                             <ResponsiveContainer width="100%" height="100%">
                                 <AreaChart data={trendData}>
                                     <defs>
@@ -134,39 +134,42 @@ const Overview = ({ masterData, stats: propStats, setActivePanel, t, user, syncS
                                             <stop offset="95%" stopColor="#2563eb" stopOpacity={0}/>
                                         </linearGradient>
                                     </defs>
-                                    <Area type="monotone" dataKey="value" stroke="#3b82f6" strokeWidth={2} fillOpacity={1} fill="url(#colorVal)" />
+                                    <Area type="monotone" dataKey="value" stroke="#3b82f6" strokeWidth={3} fillOpacity={1} fill="url(#colorVal)" />
                                 </AreaChart>
                             </ResponsiveContainer>
                         </div>
-                        <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800">
-                            <div className="flex justify-between items-center mb-1.5">
-                                <span className="text-[8.5px] font-black text-black/40 dark:text-white/40 uppercase tracking-wider italic">প্রজেকশন</span>
-                                <span className="text-[8.5px] font-black text-emerald-600 uppercase tracking-wider italic">১৮.২%</span>
+                        <div className="mt-6 pt-5 border-t border-slate-100 dark:border-slate-800">
+                            <div className="flex justify-between items-center mb-2.5">
+                                <span className="text-subtitle">প্রজেকশন আউটপুট</span>
+                                <span className="text-[9px] font-black text-emerald-600 uppercase tracking-wider italic">১৮.২%</span>
                             </div>
-                            <div className="h-1 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                            <div className="h-1.5 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
                                 <div className="h-full bg-blue-600 w-[72%] rounded-full shadow-lg shadow-blue-500/20"></div>
                             </div>
                         </div>
                     </div>
 
-                    <div className="saas-card bg-slate-950 text-white border-none shadow-xl !p-6">
-                        <div className="space-y-8">
-                            <div className="space-y-0.5">
-                                <p className="text-[9px] font-black text-white/40 uppercase tracking-widest">BI Metrics</p>
-                                <h4 className="text-lg font-black uppercase tracking-tight leading-tight">সিস্টেম আর্কিটেকচার <br/><span className="text-white/60 font-medium">V5.2 ELITE</span></h4>
+                    <div className="saas-card bg-slate-950 text-white border-none shadow-2xl !p-8 relative overflow-hidden group">
+                        <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-125 transition-transform duration-700">
+                            <Activity size={150} />
+                        </div>
+                        <div className="relative z-10 space-y-8">
+                            <div className="space-y-1">
+                                <p className="text-[10px] font-black text-white/40 uppercase tracking-widest italic">Core Analytics</p>
+                                <h4 className="text-2xl font-black uppercase tracking-tight leading-tight">সিস্টেম আর্কিটেকচার <br/><span className="text-blue-400">V5.2 ELITE</span></h4>
                             </div>
-                            <div className="space-y-3">
-                                <div className="flex justify-between items-end border-b border-white/5 pb-2">
-                                    <p className="text-[9px] font-black uppercase tracking-wider text-white/30">এনক্রিপশন</p>
+                            <div className="space-y-4">
+                                <div className="flex justify-between items-end border-b border-white/10 pb-2">
+                                    <p className="text-[10px] font-black uppercase tracking-wider text-white/30 italic">এনক্রিপশন স্তর</p>
                                     <p className="text-xs font-black">AES-256 SECURE</p>
                                 </div>
-                                <div className="flex justify-between items-end border-b border-white/5 pb-2">
-                                    <p className="text-[9px] font-black uppercase tracking-wider text-white/30">সার্ভার স্ট্যাটাস</p>
-                                    <p className="text-xs font-black text-emerald-400 italic">OPTIMAL NODE</p>
+                                <div className="flex justify-between items-end border-b border-white/10 pb-2">
+                                    <p className="text-[10px] font-black uppercase tracking-wider text-white/30 italic">বুটলিঙ্ক নোড</p>
+                                    <p className="text-xs font-black text-emerald-400 italic">OPTIMAL STATE</p>
                                 </div>
                             </div>
-                            <button className="w-full py-3.5 bg-white text-black rounded-xl font-black uppercase text-[9px] tracking-widest hover:opacity-90 active:scale-[0.98] transition-all">
-                                রিপোর্ট ডাউনলোড (PDF)
+                            <button className="w-full py-4 bg-white text-black rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-blue-50 active:scale-[0.98] transition-all shadow-xl">
+                                রিপোর্ট জেনারেট করুন (PDF)
                             </button>
                         </div>
                     </div>
@@ -174,49 +177,49 @@ const Overview = ({ masterData, stats: propStats, setActivePanel, t, user, syncS
 
                 {/* Live Activity Table */}
                 <div className="lg:col-span-2 saas-card !p-0 overflow-hidden flex flex-col">
-                    <div className="p-5 md:p-6 flex justify-between items-center border-b border-slate-100 dark:border-slate-800">
-                        <div className="flex items-center gap-3">
-                            <div className="w-1 h-5 bg-blue-600 rounded-full"></div>
-                            <h3 className="text-lg font-black text-black dark:text-white uppercase tracking-tight">লাইভ প্রোডাকশন ফিড</h3>
+                    <div className="p-6 md:p-8 flex justify-between items-center border-b border-slate-100 dark:border-slate-800 bg-slate-50/30 dark:bg-slate-800/20">
+                        <div className="flex items-center gap-4">
+                            <div className="w-1.5 h-6 bg-blue-600 rounded-full shadow-sm"></div>
+                            <h3 className="text-xl font-black text-[var(--text-primary)] uppercase tracking-tight italic">লাইভ প্রোডাকশন ফিড</h3>
                         </div>
-                        <div className="flex items-center gap-2 px-3 py-1 bg-emerald-50 dark:bg-emerald-500/10 rounded-full border border-emerald-100 dark:border-emerald-500/20">
-                            <div className="w-1 h-1 bg-emerald-500 rounded-full animate-pulse"></div>
-                            <span className="text-[8px] font-black uppercase tracking-[0.2em] text-emerald-600">LIVE FEED</span>
+                        <div className="flex items-center gap-2.5 px-4 py-1.5 bg-emerald-50 dark:bg-emerald-500/10 rounded-full border border-emerald-100 dark:border-emerald-500/20 shadow-sm">
+                            <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]"></div>
+                            <span className="text-[9px] font-black uppercase tracking-widest text-emerald-600 italic">ACTIVE TRANSMISSION</span>
                         </div>
                     </div>
                     <div className="flex-1 overflow-x-auto no-scrollbar">
                         <table className="w-full text-left border-collapse">
                             <thead>
-                                <tr className="text-[8px] text-black/40 dark:text-white/40 uppercase tracking-widest font-black italic">
-                                    <th className="px-5 py-3 border-b border-slate-50 dark:border-slate-800">লট / কারিগর</th>
-                                    <th className="px-5 py-3 border-b border-slate-50 dark:border-slate-800">ডিজাইন</th>
-                                    <th className="px-5 py-3 border-b border-slate-50 dark:border-slate-800 text-center">পরিমাণ</th>
-                                    <th className="px-5 py-3 border-b border-slate-50 dark:border-slate-800 text-right">মডিউল</th>
+                                <tr className="text-[9px] text-black/40 dark:text-white/40 uppercase tracking-[0.2em] font-black italic bg-slate-50/50 dark:bg-slate-800/10">
+                                    <th className="px-8 py-5 border-b border-slate-50 dark:border-slate-800">লট / কারিগর</th>
+                                    <th className="px-8 py-5 border-b border-slate-50 dark:border-slate-800">ডিজাইন আইডেন্টিটি</th>
+                                    <th className="px-8 py-5 border-b border-slate-50 dark:border-slate-800 text-center">পরিমাণ</th>
+                                    <th className="px-8 py-5 border-b border-slate-50 dark:border-slate-800 text-right">মডিউল</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-50 dark:divide-slate-800">
                                 {(stats.activeJobs || []).slice(0, 10).map((job, i) => (
-                                    <tr key={i} className="group hover:bg-slate-50 dark:hover:bg-slate-800 transition-all cursor-pointer" onClick={() => setActivePanel(job.activityType === 'Pata' ? 'Pata' : job.activityType === 'Sewing' ? 'Swing' : 'Stone')}>
-                                        <td className="px-5 py-2.5">
-                                            <div className="flex items-center gap-2.5">
-                                                <div className="w-7 h-7 bg-slate-950 text-white rounded flex items-center justify-center font-black text-[8px] shadow-sm">
+                                    <tr key={i} className="group hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-all cursor-pointer" onClick={() => setActivePanel(job.activityType === 'Pata' ? 'Pata' : job.activityType === 'Sewing' ? 'Swing' : 'Stone')}>
+                                        <td className="px-8 py-4">
+                                            <div className="flex items-center gap-4">
+                                                <div className="w-9 h-9 bg-slate-950 text-white rounded-xl flex items-center justify-center font-black text-[10px] shadow-lg group-hover:scale-110 transition-transform">
                                                     #{job.lotNo}
                                                 </div>
-                                                <span className="text-[0.65rem] font-black text-black dark:text-white uppercase italic">/ {job.worker?.split(' ')[0] || 'System'}</span>
+                                                <span className="text-xs font-black text-[var(--text-primary)] uppercase italic tracking-tighter">/ {job.worker?.split(' ')[0] || 'System'}</span>
                                             </div>
                                         </td>
-                                        <td className="px-5 py-2.5">
-                                            <p className="text-[11px] font-black text-black dark:text-white uppercase leading-none mb-0.5 italic">{job.design}</p>
-                                            <p className="text-[7.5px] text-black/40 dark:text-white/30 uppercase tracking-wider font-bold italic">{job.activityType === 'Pata' ? 'Logistics' : job.activityType === 'Sewing' ? 'Factory' : 'Stone Unit'}</p>
+                                        <td className="px-8 py-4">
+                                            <p className="text-sm font-black text-[var(--text-primary)] uppercase leading-none mb-1 italic tracking-tight">{job.design}</p>
+                                            <p className="text-subtitle">{job.activityType === 'Pata' ? 'Logistics Node' : job.activityType === 'Sewing' ? 'Factory Line' : 'Stone Decor'}</p>
                                         </td>
-                                        <td className="px-5 py-2.5 text-center">
-                                            <span className="text-base font-black text-black dark:text-white italic">{job.issueBorka || job.pataQty || job.borka || 0}</span>
-                                            <span className="text-[8px] text-black/30 dark:text-white/30 ml-1 font-black uppercase">U</span>
+                                        <td className="px-8 py-4 text-center">
+                                            <span className="text-xl font-black text-[var(--text-primary)] italic tracking-tighter">{job.issueBorka || job.pataQty || job.borka || 0}</span>
+                                            <span className="text-[9px] text-black/30 dark:text-white/30 ml-1.5 font-black uppercase tracking-widest italic">units</span>
                                         </td>
-                                        <td className="px-5 py-2.5 text-right">
+                                        <td className="px-8 py-4 text-right">
                                             <div className="flex justify-end">
-                                               <div className="w-6 h-6 bg-white dark:bg-slate-800 rounded flex items-center justify-center text-slate-200 group-hover:text-blue-600 group-hover:bg-blue-50 transition-all border border-slate-100 dark:border-slate-800 shadow-inner">
-                                                   <ChevronRight size={12} />
+                                               <div className="w-8 h-8 bg-white dark:bg-slate-800 rounded-xl flex items-center justify-center text-slate-300 group-hover:text-blue-600 group-hover:bg-blue-50 dark:group-hover:bg-blue-900/20 transition-all border border-slate-100 dark:border-slate-800 shadow-sm">
+                                                   <ChevronRight size={14} />
                                                </div>
                                             </div>
                                         </td>
@@ -225,7 +228,7 @@ const Overview = ({ masterData, stats: propStats, setActivePanel, t, user, syncS
                             </tbody>
                         </table>
                         {(!stats.activeJobs || stats.activeJobs.length === 0) && (
-                            <div className="py-24 text-center italic opacity-30 text-xs font-bold text-black dark:text-white uppercase tracking-widest">সিস্টেমে কোনো তথ্য পাওয়া যায়নি</div>
+                            <div className="py-24 text-center italic opacity-30 text-xs font-bold text-[var(--text-primary)] uppercase tracking-widest">সিস্টেমে কোনো তথ্য পাওয়া যায়নি</div>
                         )}
                     </div>
                 </div>

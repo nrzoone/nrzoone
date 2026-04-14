@@ -271,7 +271,7 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
     }
 
     return (
-        <div className="space-y-6 pb-32 animate-fade-up px-1 md:px-2 italic font-outfit text-black dark:text-white">
+        <div className="space-y-6 pb-32 animate-fade-up px-1 md:px-2 italic font-outfit text-[var(--text-primary)]">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <button 
                   onClick={() => setView('active')}
@@ -336,7 +336,7 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
                         <div className="flex justify-between items-start mb-4">
                             <div className="space-y-0.5">
                                 <p className="text-[7.5px] font-black text-slate-400 uppercase tracking-widest leading-none italic">চুক্তিভিত্তিক কারিগর</p>
-                                <h4 className="text-xl font-black tracking-tighter text-black dark:text-white uppercase leading-none italic truncate max-w-[150px]">{item.worker}</h4>
+                                <h4 className="text-xl font-black tracking-tighter text-[var(--text-primary)] uppercase leading-none italic truncate max-w-[150px]">{item.worker}</h4>
                             </div>
                             <div className={`w-10 h-10 ${item.status === 'Pending' ? 'bg-amber-100 text-amber-600' : 'bg-emerald-100 text-emerald-600'} rounded-xl flex items-center justify-center shadow-inner`}>
                                 <ExternalLink size={18} />
@@ -346,11 +346,11 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
                         <div className="grid grid-cols-2 gap-3 mb-4">
                             <div className="bg-slate-50 dark:bg-slate-800 p-3 rounded-xl border border-white dark:border-slate-700">
                                 <p className="text-[7.5px] font-black text-slate-400 uppercase tracking-widest mb-1.5 italic">ডিজাইন</p>
-                                <p className="text-[11px] font-black text-black dark:text-white truncate uppercase italic">{item.design}</p>
+                                <p className="text-[11px] font-black text-[var(--text-primary)] truncate uppercase italic">{item.design}</p>
                             </div>
                             <div className="bg-slate-50 dark:bg-slate-800 p-3 rounded-xl border border-white dark:border-slate-700">
                                 <p className="text-[7.5px] font-black text-slate-400 uppercase tracking-widest mb-1.5 italic">কাজ/টাস্ক</p>
-                                <p className="text-[11px] font-black text-black dark:text-white truncate uppercase italic">{item.task}</p>
+                                <p className="text-[11px] font-black text-[var(--text-primary)] truncate uppercase italic">{item.task}</p>
                             </div>
                         </div>
 
@@ -361,7 +361,7 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
                              </div>
                              <div className="text-right">
                                 <span className="text-[7.5px] font-black text-slate-400 uppercase tracking-widest mb-1 block leading-none italic">পরিমাণ</span>
-                                <p className="text-xl font-black text-black dark:text-white italic leading-none tracking-tighter">{Number(item.borkaQty) + Number(item.hijabQty)} <span className="text-[9px] opacity-40 uppercase">Pcs</span></p>
+                                <p className="text-xl font-black text-[var(--text-primary)] italic leading-none tracking-tighter">{Number(item.borkaQty) + Number(item.hijabQty)} <span className="text-[9px] opacity-40 uppercase">Pcs</span></p>
                              </div>
                         </div>
 
@@ -466,7 +466,7 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
                     <div className="p-3 bg-slate-950 text-white rounded-xl transition-transform shadow-lg group-hover:-translate-x-2">
                         <ArrowLeft size={18} strokeWidth={3} />
                     </div>
-                    <span className="text-lg font-black tracking-tighter text-black dark:text-white uppercase leading-none italic">EXIT TO HUB</span>
+                    <span className="text-lg font-black tracking-tighter text-[var(--text-primary)] uppercase leading-none italic">EXIT TO HUB</span>
                 </button>
             </div>
         </div>

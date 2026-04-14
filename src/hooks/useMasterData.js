@@ -65,6 +65,10 @@ const initialData = {
     cashEntries: [],
     workerPayments: [],
     workerBiometrics: {},
+    finishedStock: [],
+    jobs: [],
+    workers: [],
+    cutting: [],
     auditLogs: [], 
     systemSettings: {
         offlineMode: true,

@@ -17,7 +17,8 @@ import {
   ArrowLeft,
   Camera,
   MessageCircle,
-  Fingerprint
+  Fingerprint,
+  TrendingDown
 } from "lucide-react";
 import { syncToSheet } from "../../utils/syncUtils";
 import NRZLogo from "../NRZLogo";
@@ -298,8 +299,8 @@ const AttendancePanel = ({
             >
               <div className="flex justify-between items-start mb-6">
                 <div>
-                   <h3 className="text-xl font-black tracking-tight text-black dark:text-white italic uppercase truncate w-32">{worker}</h3>
-                   <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mt-0.5 italic leading-none">ID: REF-{worker.slice(0,3).toUpperCase()}</p>
+                   <h3 className="text-xl font-black tracking-tight text-[var(--text-primary)] italic uppercase truncate w-32">{worker}</h3>
+                   <p className="text-[9px] font-black text-[var(--text-muted)] uppercase tracking-widest mt-0.5 italic leading-none">ID: REF-{worker.slice(0,3).toUpperCase()}</p>
                 </div>
                 <div className={`w-10 h-10 rounded-xl flex items-center justify-center shadow-lg ${status === 'present' ? 'bg-emerald-500 text-white' : 'bg-slate-50 dark:bg-slate-800 text-slate-300'}`}>
                    <UserCheck size={18} />
@@ -307,9 +308,9 @@ const AttendancePanel = ({
               </div>
 
               <div className="space-y-3 mb-6">
-                 <div className="flex justify-between items-center text-[9px] font-black uppercase text-slate-400 tracking-widest italic leading-none">
+                 <div className="flex justify-between items-center text-[9px] font-black uppercase text-[var(--text-muted)] tracking-widest italic leading-none">
                     <span>Base Earnings</span>
-                    <span className="text-black dark:text-white">৳{dailyWage}</span>
+                    <span className="text-[var(--text-primary)]">৳{dailyWage}</span>
                  </div>
                  <div className="w-full h-1.5 bg-slate-50 dark:bg-slate-800 rounded-full overflow-hidden shadow-inner">
                     <div className="h-full bg-emerald-500 transition-all duration-1000" style={{ width: status === 'present' ? '100%' : status === 'half-day' ? '50%' : '0%' }}></div>
@@ -419,63 +420,63 @@ const AttendancePanel = ({
   return (
     <div className="space-y-4 pb-24 animate-fade-up px-1 md:px-2 text-black dark:text-white border-t-0">
       {/* SaaS Stat Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm flex items-center gap-4 group">
-          <div className="w-11 h-11 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
-            <Users size={20} />
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="saas-card flex items-center gap-5 group">
+          <div className="w-12 h-12 bg-blue-50 text-blue-600 dark:bg-blue-900/10 rounded-2xl flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
+            <Users size={22} />
           </div>
           <div>
-            <p className="text-2xl font-bold tracking-tight text-black dark:text-white leading-none mb-0.5">{workers.length}</p>
-            <p className="text-[8px] font-bold text-black dark:text-white uppercase tracking-widest leading-none opacity-40">মোট কর্মী</p>
+            <p className="text-3xl font-black tracking-tighter text-black dark:text-white leading-none mb-1 italic">{workers.length}</p>
+            <p className="text-subtitle">মোট কর্মী (WORKFORCE)</p>
           </div>
         </div>
-        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm flex items-center gap-4 group">
-          <div className="w-11 h-11 bg-emerald-50 text-emerald-600 rounded-lg flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
-            <UserCheck size={20} />
+        <div className="saas-card flex items-center gap-5 group">
+          <div className="w-12 h-12 bg-emerald-50 text-emerald-600 dark:bg-emerald-900/10 rounded-2xl flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
+            <UserCheck size={22} />
           </div>
           <div>
-            <p className="text-2xl font-bold tracking-tight text-emerald-600 leading-none mb-0.5">{stats.present}</p>
-            <p className="text-[8px] font-bold text-black dark:text-white uppercase tracking-widest leading-none opacity-40">আজ উপস্থিত</p>
+            <p className="text-3xl font-black tracking-tighter text-emerald-600 leading-none mb-1 italic">{stats.present}</p>
+            <p className="text-subtitle">আজ উপস্থিত (PRESENT)</p>
           </div>
         </div>
-        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm flex items-center gap-4 group">
-          <div className="w-11 h-11 bg-amber-50 text-amber-600 rounded-lg flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
-            <DollarSign size={20} />
+        <div className="saas-card flex items-center gap-5 group">
+          <div className="w-12 h-12 bg-indigo-50 text-indigo-600 dark:bg-indigo-900/10 rounded-2xl flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
+            <DollarSign size={22} />
           </div>
           <div>
-            <p className="text-2xl font-bold tracking-tight text-black dark:text-white leading-none mb-0.5">৳{stats.wages.toLocaleString()}</p>
-            <p className="text-[8px] font-bold text-black dark:text-white uppercase tracking-widest leading-none opacity-40">দৈনিক পেমেন্ট</p>
+            <p className="text-3xl font-black tracking-tighter text-black dark:text-white leading-none mb-1 italic">৳{stats.wages.toLocaleString()}</p>
+            <p className="text-subtitle">দৈনিক মজুরি (WAGES)</p>
           </div>
         </div>
       </div>
 
 
 
-      {/* Control Bar - Standardized Pill Nav */}
-      <div className="bg-white dark:bg-slate-900 !p-1 flex flex-col lg:flex-row items-center justify-between gap-3 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm my-3">
-        <div className="flex flex-wrap gap-1 w-full lg:w-auto overflow-x-auto no-scrollbar">
+      {/* Control Bar - SaaS Pill Navigation */}
+      <div className="bg-white dark:bg-slate-900 !p-1.5 flex flex-col md:flex-row items-center justify-between gap-4 rounded-[var(--radius-saas)] border border-[var(--border)] shadow-[var(--shadow-card)]">
+        <div className="flex bg-slate-50 dark:bg-slate-800/50 p-1 rounded-xl w-full md:w-auto overflow-x-auto no-scrollbar">
           {[
             { id: 'monthly', label: 'মাসিক STAFF' },
             { id: 'office', label: 'OFFICE' },
             { id: 'cutting', label: 'CUTTING' },
-            { id: 'pata', label: 'PATA' }
+            { id: 'pata', label: 'PATA HUB' }
           ].map(dept => (
             <button
               key={dept.id}
               onClick={() => setSelectedDepartment(dept.id)}
-              className={`px-4 py-2 rounded-lg text-[8.5px] font-bold uppercase tracking-widest transition-all ${selectedDepartment === dept.id ? 'bg-slate-950 text-white shadow-md' : 'text-slate-400 dark:text-white hover:text-black dark:text-white dark:hover:text-white'}`}
+              className={`flex-1 md:flex-none px-6 py-2.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${selectedDepartment === dept.id ? 'bg-slate-950 text-white shadow-xl dark:bg-white dark:text-black' : 'text-[var(--text-muted)] hover:text-black dark:hover:text-white'}`}
             >
               {dept.label}
             </button>
           ))}
         </div>
 
-        <div className="flex items-center gap-3 w-full lg:w-auto">
-          <div className="relative group flex-1 lg:flex-none">
-            <Calendar size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-black dark:text-white" />
+        <div className="flex items-center gap-3 w-full md:w-auto px-2">
+          <div className="relative group flex-1 md:flex-none">
+            <Calendar size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" />
             <input
               type="date"
-              className="premium-input !pl-11 !h-11 !text-[10px] !bg-slate-50 dark:!bg-slate-800/50"
+              className="premium-input !pl-11 !h-11 !text-[11px] !bg-slate-50 dark:!bg-slate-800/20 !w-full md:!w-44"
               value={selectedDate}
               onChange={(e) => setSelectedDate(e.target.value)}
             />
@@ -485,14 +486,14 @@ const AttendancePanel = ({
             <div className="flex gap-2">
               <button 
                 onClick={() => setShowInvoice(true)} 
-                className="w-11 h-11 bg-slate-950 text-white rounded-xl shadow-lg flex items-center justify-center hover:bg-slate-800 transition-all"
+                className="w-11 h-11 action-btn-secondary !p-0 !rounded-xl"
                 title="সাপ্তাহিক রিপোর্ট"
               >
                 <Printer size={16} />
               </button>
               <button 
                 onClick={() => setShowQR(true)} 
-                className="w-11 h-11 bg-blue-600 text-white rounded-xl shadow-lg border border-blue-500 flex items-center justify-center hover:bg-blue-700 transition-all"
+                className="w-11 h-11 action-btn-primary !p-0 !rounded-xl shadow-blue-500/20"
                 title="কিউআর স্ক্যান"
               >
                 <Camera size={16} />
@@ -517,18 +518,18 @@ const AttendancePanel = ({
             const wage = workerDoc?.wage || getWorkerWage(worker);
             
             return (
-              <div key={idx} className="saas-card flex flex-col md:flex-row justify-between items-center gap-4 group p-3 md:p-3.5 hover:border-slate-950 dark:hover:border-white transition-all animate-fade-up border border-slate-100 dark:border-slate-800 shadow-sm rounded-xl bg-white dark:bg-slate-900">
-                <div className="flex items-center gap-4 flex-1 w-full md:w-auto">
-                  <div className="w-10 h-10 bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-lg font-bold rounded-lg border border-slate-100 dark:border-slate-700 transition-transform group-hover:scale-105">
+              <div key={idx} className="saas-card flex flex-col md:flex-row justify-between items-center gap-4 group !p-4 md:!p-5 hover:border-black transition-all animate-fade-up">
+                <div className="flex items-center gap-5 flex-1 w-full md:w-auto">
+                  <div className="w-12 h-12 bg-slate-950 text-white dark:bg-white dark:text-black flex items-center justify-center text-xl font-black rounded-2xl shadow-xl transition-transform group-hover:scale-105">
                     {worker[0].toUpperCase()}
                   </div>
-                  <div className="space-y-0.5">
-                    <div className="flex items-center gap-2">
-                        <h4 className="text-base font-black tracking-tight text-black dark:text-white uppercase leading-tight truncate max-w-[120px] md:max-w-[200px]">{worker}</h4>
-                        {workerId && <span className="px-1.5 py-0.5 bg-emerald-50 dark:bg-emerald-900/10 text-emerald-600 text-[8px] font-bold rounded border border-emerald-100 dark:border-emerald-800">ID: {workerId}</span>}
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-3">
+                        <h4 className="text-xl font-black tracking-tighter text-black dark:text-white uppercase leading-tight italic truncate max-w-[150px] md:max-w-[250px]">{worker}</h4>
+                        {workerId && <span className="px-2 py-0.5 bg-blue-50 dark:bg-blue-900/10 text-blue-600 text-[9px] font-black rounded-lg border border-blue-100 dark:border-blue-800">REF:{workerId}</span>}
                     </div>
-                    <p className="text-black dark:text-white text-[8px] font-bold uppercase tracking-widest leading-none mt-0.5 flex items-center gap-1.5 italic opacity-40">
-                       <DollarSign size={8} /> ৳{wage.toLocaleString()} (RATE)
+                    <p className="text-subtitle flex items-center gap-2">
+                       <DollarSign size={10} className="text-emerald-500" /> ৳{wage.toLocaleString()} (STANDARD DAILY RATE)
                     </p>
                   </div>
                 </div>
@@ -586,9 +587,6 @@ const AttendancePanel = ({
                 </div>
               </div>
             );
-        })}
-      </div>
-
         })}
       </div>
 

@@ -247,94 +247,92 @@ const CuttingPanel = ({
   }
 
   return (
-    <div className="space-y-10 pb-32 animate-fade-up px-1 md:px-4 text-black">
+    <div className="space-y-8 pb-32 animate-fade-up px-1 md:px-4 text-[var(--text-primary)]">
       {/* SaaS Operational HUD */}
-      {/* SaaS Operational HUD */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3">
-        <div className="bg-slate-950 p-3.5 md:p-5 rounded-xl text-white shadow-xl flex flex-col justify-between group overflow-hidden relative">
-            <div className="flex justify-between items-start mb-1.5 md:mb-2 relative z-10">
-                <div className="w-7 h-7 md:w-9 md:h-9 bg-white/10 text-white rounded-lg flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
-                    <Package size={14} className="md:w-4 md:h-4" />
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+        <div className="saas-card bg-slate-950 text-white border-none shadow-2xl flex flex-col justify-between group overflow-hidden relative !p-6">
+            <div className="flex justify-between items-start mb-4 relative z-10">
+                <div className="w-10 h-10 bg-white/10 text-white rounded-xl flex items-center justify-center shadow-inner group-hover:rotate-12 transition-transform">
+                    <Package size={20} />
                 </div>
                 <div className="text-right">
-                    <p className="text-base md:text-xl font-black tracking-tight leading-none">{stats.totalIssued.toLocaleString()}</p>
-                    <p className="text-[6.5px] font-black text-white/40 uppercase tracking-widest mt-0.5 leading-none">TOTAL ISSUED</p>
+                    <p className="text-2xl font-black tracking-tight leading-none italic">{stats.totalIssued.toLocaleString()}</p>
+                    <p className="text-[8px] font-black text-white/40 uppercase tracking-[0.3em] mt-1.5 leading-none">TOTAL ISSUED</p>
                 </div>
             </div>
-            <div className="flex items-center gap-2 text-white/30 border-t border-white/10 pt-2 md:pt-2.5 relative z-10">
-                <div className="flex gap-1">
-                    {[1,2,3].map(i => <div key={i} className="w-1.5 h-0.5 md:h-1 bg-white/20 rounded-full animate-pulse" style={{ animationDelay: `${i*0.2}s` }}></div>)}
+            <div className="flex items-center gap-3 text-white/30 border-t border-white/10 pt-4 relative z-10">
+                <div className="flex gap-1.5">
+                    {[1,2,3].map(i => <div key={i} className="w-2 h-0.5 bg-blue-500 rounded-full animate-pulse" style={{ animationDelay: `${i*0.2}s` }}></div>)}
                 </div>
-                <p className="text-[6px] md:text-[6.5px] font-bold tracking-[0.2em] uppercase whitespace-nowrap">PRODUCTION ACTIVE</p>
+                <p className="text-[7px] font-black tracking-widest uppercase">PRODUCTION PROTOCOL ACTIVE</p>
             </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-900 p-3.5 md:p-5 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm flex items-center justify-between group border-b-[3px] border-b-blue-500">
-            <div className="text-left">
-                <p className="text-base md:text-xl font-black tracking-tight text-black dark:text-white leading-none mb-1">{stats.inProduction.toLocaleString()}</p>
-                <p className="text-[6.5px] font-black text-slate-400 uppercase tracking-widest leading-none">IN PRODUCTION</p>
+        <div className="saas-card flex items-center justify-between group !p-6 border-b-4 border-b-blue-600">
+            <div className="text-left space-y-1">
+                <p className="text-subtitle">IN PRODUCTION</p>
+                <p className="text-3xl font-black tracking-tighter text-[var(--text-primary)] leading-none italic">{stats.inProduction.toLocaleString()}</p>
             </div>
-            <div className="w-7 h-7 md:w-9 md:h-9 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
-                <Activity size={14} className="md:w-4 md:h-4" />
-            </div>
-        </div>
-
-        <div className="bg-white dark:bg-slate-900 p-3.5 md:p-5 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm flex items-center justify-between group border-b-[3px] border-b-emerald-500">
-            <div className="text-left">
-                <p className="text-base md:text-xl font-black tracking-tight text-black dark:text-white leading-none mb-1">{stats.received.toLocaleString()}</p>
-                <p className="text-[6.5px] font-black text-slate-400 uppercase tracking-widest leading-none">TOTAL RECEIVED</p>
-            </div>
-            <div className="w-7 h-7 md:w-9 md:h-9 bg-emerald-50 text-emerald-600 rounded-lg flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
-                <CheckCircle size={14} className="md:w-4 md:h-4" />
+            <div className="w-12 h-12 bg-blue-50 text-blue-600 dark:bg-blue-900/10 rounded-2xl flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
+                <Activity size={20} />
             </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-900 p-3.5 md:p-5 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm flex items-center justify-between group border-b-[3px] border-b-rose-500 text-rose-500">
-            <div className="text-left">
-                <p className="text-base md:text-xl font-black tracking-tight leading-none mb-1">{stats.pending.toLocaleString()}</p>
-                <p className="text-[6.5px] font-black text-slate-400 uppercase tracking-widest leading-none">PENDING LOTS</p>
+        <div className="saas-card flex items-center justify-between group !p-6 border-b-4 border-b-emerald-600">
+            <div className="text-left space-y-1">
+                <p className="text-subtitle">TOTAL RECEIVED</p>
+                <p className="text-3xl font-black tracking-tighter text-[var(--text-primary)] leading-none italic">{stats.received.toLocaleString()}</p>
             </div>
-            <div className="w-7 h-7 md:w-9 md:h-9 bg-rose-50 rounded-lg flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
-                <Clock size={14} className="md:w-4 md:h-4" />
+            <div className="w-12 h-12 bg-emerald-50 text-emerald-600 dark:bg-emerald-900/10 rounded-2xl flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
+                <CheckCircle size={20} />
+            </div>
+        </div>
+
+        <div className="saas-card flex items-center justify-between group !p-6 border-b-4 border-b-rose-600">
+            <div className="text-left space-y-1">
+                <p className="text-subtitle text-rose-600">PENDING LOTS</p>
+                <p className="text-3xl font-black tracking-tighter text-rose-600 leading-none italic">{stats.pending.toLocaleString()}</p>
+            </div>
+            <div className="w-12 h-12 bg-rose-50 dark:bg-rose-900/10 rounded-2xl flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
+                <Clock size={20} />
             </div>
         </div>
       </div>
 
-
       {/* Control Bar - SaaS Pill Navigation */}
-      <div className="bg-white dark:bg-slate-900 !p-1.5 flex flex-col lg:flex-row items-center justify-between gap-6 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm mb-6">
+      <div className="bg-white dark:bg-slate-900 !p-1.5 flex flex-col lg:flex-row items-center justify-between gap-6 rounded-[var(--radius-saas)] border border-[var(--border)] shadow-[var(--shadow-card)]">
         <div className="flex flex-wrap gap-1 w-full lg:w-auto overflow-x-auto no-scrollbar">
           {[
             { id: "Incoming Orders", label: "ইনকামিং অর্ডার" },
             { id: "Design Registration", label: "ডিজাইন এন্ট্রি" },
             { id: "Cutting Queue", label: "কাটিং কিউ" },
-            { id: "Production Status", label: "স্ট্যাটাস" }
+            { id: "Production Status", label: "সিস্টেম স্ট্যাটাস" }
           ].map(tab => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`px-4 md:px-5 py-2 md:py-2 rounded-lg text-[8.5px] md:text-[9.5px] font-black uppercase tracking-widest transition-all ${activeTab === tab.id ? 'bg-slate-950 text-white shadow-md' : 'text-black dark:text-white hover:bg-slate-100 dark:hover:bg-white/5'}`}
+              className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === tab.id ? 'bg-slate-950 text-white shadow-xl dark:bg-white dark:text-black' : 'text-[var(--text-muted)] hover:text-black dark:hover:text-white'}`}
             >
               {tab.label}
             </button>
           ))}
         </div>
 
-        <div className="flex items-center gap-2 w-full lg:w-auto">
+        <div className="flex items-center gap-3 w-full lg:w-auto px-2">
           <div className="relative group flex-1 lg:flex-none">
-            <Search size={12} className="absolute left-3 top-1/2 -translate-y-1/2 text-black/30 dark:text-white/30" />
+            <Search size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" />
             <input
-              placeholder="ডিজাইন বা লট..."
-              className="premium-input !pl-9 !h-9 !text-[9px] !bg-slate-50 dark:!bg-slate-800/20"
+              placeholder="ডিজাইন বা লট সার্চ..."
+              className="premium-input !pl-12 !h-10 !text-[10px] !w-full lg:!w-56"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
           <button 
              onClick={() => setShowModal(true)}
-             className="w-9 h-9 bg-slate-950 text-white rounded-lg shadow-md flex items-center justify-center hover:bg-black transition-all"
+             className="action-btn-primary !w-10 !h-10 !p-0 !rounded-xl"
           >
-            <Plus size={16} />
+            <Plus size={18} />
           </button>
         </div>
       </div>
@@ -351,11 +349,11 @@ const CuttingPanel = ({
                       <div className="flex justify-between items-start">
                           <div>
                               <p className="text-[7.5px] font-black text-blue-600 uppercase tracking-widest mb-0.5 italic">B2B INCOMING</p>
-                              <h4 className="text-lg font-black uppercase italic leading-none">{req.design}</h4>
+                              <h4 className="text-lg font-black uppercase italic leading-none text-[var(--text-primary)]">{req.design}</h4>
                           </div>
                           <div className="text-right">
-                              <p className="text-[10px] font-black text-slate-400 uppercase">{req.client}</p>
-                              <p className="text-[8px] font-bold text-slate-300 font-mono mt-0.5">{req.date}</p>
+                              <p className="text-[10px] font-black text-[var(--text-muted)] uppercase">{req.client}</p>
+                              <p className="text-[8px] font-bold text-[var(--text-muted)] opacity-60 font-mono mt-0.5">{req.date}</p>
                           </div>
                       </div>
                       
@@ -373,7 +371,7 @@ const CuttingPanel = ({
                       </div>
 
                       <div className="space-y-3 border-t border-slate-100 dark:border-slate-800 pt-4 mt-auto">
-                          <p className="text-[9px] font-bold text-slate-500 line-clamp-1 italic uppercase leading-none">Note: {req.note || 'No special requirements listed.'}</p>
+                          <p className="text-[9px] font-bold text-[var(--text-muted)] line-clamp-1 italic uppercase leading-none">Note: {req.note || 'No special requirements listed.'}</p>
                           <button 
                             onClick={() => {
                                 setEntryData({
@@ -405,8 +403,8 @@ const CuttingPanel = ({
                 item.color?.toLowerCase().includes(searchTerm.toLowerCase())
               ).length === 0 ? (
                 <div className="col-span-full h-80 flex flex-col items-center justify-center bg-white dark:bg-slate-900 rounded-xl border-2 border-dashed border-slate-100 dark:border-slate-800 italic">
-                    <Box size={40} className="text-slate-200 mb-4" />
-                    <p className="text-[10px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest leading-none">কোনো রেকর্ড পাওয়া যায়নি (No Records)</p>
+                    <Box size={40} className="text-[var(--text-muted)] opacity-20 mb-4" />
+                    <p className="text-[10px] font-bold text-[var(--text-primary)] uppercase tracking-widest leading-none">কোনো রেকর্ড পাওয়া যায়নি (No Records)</p>
                 </div>
               ) : (
                 (masterData.cuttingStock || [])
@@ -419,8 +417,8 @@ const CuttingPanel = ({
                         <div className="p-4 space-y-4 flex-1">
                             <div className="flex justify-between items-start">
                                 <div className="space-y-0.5">
-                                    <p className="text-[8px] font-black text-black/30 dark:text-white/30 uppercase tracking-widest leading-none">ডিজাইন আইডি (Design)</p>
-                                    <h4 className="text-xl font-black tracking-tight text-black dark:text-white uppercase leading-none">{item.design}</h4>
+                                    <p className="text-[8px] font-black text-[var(--text-muted)] uppercase tracking-widest leading-none">ডিজাইন আইডি (Design)</p>
+                                    <h4 className="text-xl font-black tracking-tight text-[var(--text-primary)] uppercase leading-none">{item.design}</h4>
                                 </div>
                                 <div className="w-10 h-10 bg-slate-950 text-white rounded-lg flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform font-black text-[10px] flex-col leading-none text-center">
                                     <span>#{item.lotNo}</span>
@@ -429,16 +427,16 @@ const CuttingPanel = ({
 
                             <div className="grid grid-cols-3 gap-2">
                                 <div className="bg-slate-50 dark:bg-slate-800/50 p-2.5 rounded-lg border border-slate-100 dark:border-slate-800">
-                                    <p className="text-[7.5px] font-black text-black/30 dark:text-white/30 uppercase tracking-widest mb-0.5 italic">রঙ</p>
-                                    <p className="text-[11px] font-black text-black dark:text-white truncate uppercase">{item.color}</p>
+                                    <p className="text-[7.5px] font-black text-[var(--text-muted)] uppercase tracking-widest mb-0.5 italic">রঙ</p>
+                                    <p className="text-[11px] font-black text-[var(--text-primary)] truncate uppercase">{item.color}</p>
                                 </div>
                                 <div className="bg-slate-50 dark:bg-slate-800/50 p-2.5 rounded-lg border border-slate-100 dark:border-slate-800">
-                                    <p className="text-[7.5px] font-black text-black/30 dark:text-white/30 uppercase tracking-widest mb-0.5 italic">তারিখ</p>
-                                    <p className="text-[11px] font-black text-black dark:text-white truncate italic">{item.date}</p>
+                                    <p className="text-[7.5px] font-black text-[var(--text-muted)] uppercase tracking-widest mb-0.5 italic">তারিখ</p>
+                                    <p className="text-[11px] font-black text-[var(--text-primary)] truncate italic">{item.date}</p>
                                 </div>
                                 <div className="bg-slate-50 dark:bg-slate-800/50 p-2.5 rounded-lg border border-slate-100 dark:border-slate-800">
-                                    <p className="text-[7.5px] font-black text-black/30 dark:text-white/30 uppercase tracking-widest mb-0.5 italic">ক্লায়েন্ট</p>
-                                    <p className="text-[11px] font-black text-black dark:text-white truncate uppercase">{item.client || '-'}</p>
+                                    <p className="text-[7.5px] font-black text-[var(--text-muted)] uppercase tracking-widest mb-0.5 italic">ক্লায়েন্ট</p>
+                                    <p className="text-[11px] font-black text-[var(--text-primary)] truncate uppercase">{item.client || '-'}</p>
                                 </div>
                             </div>
                             
@@ -457,7 +455,7 @@ const CuttingPanel = ({
 
                         {/* Action Footer */}
                         <div className="flex gap-2 p-4 bg-slate-50 dark:bg-slate-800/20 border-t border-slate-100 dark:border-slate-800 mt-auto">
-                            <button onClick={() => setPrintSlip(item)} className="w-9 h-9 bg-white dark:bg-slate-900 rounded-lg flex items-center justify-center text-black dark:text-white hover:bg-slate-950 hover:text-white transition-all shadow-sm border border-slate-200 dark:border-slate-700" title="স্লিপ প্রিন্ট">
+                            <button onClick={() => setPrintSlip(item)} className="w-9 h-9 bg-white dark:bg-slate-900 rounded-lg flex items-center justify-center text-[var(--text-primary)] hover:bg-slate-950 hover:text-white transition-all shadow-sm border border-slate-200 dark:border-slate-700" title="স্লিপ প্রিন্ট">
                                 <Printer size={14} />
                             </button>
                             <button 
@@ -516,13 +514,13 @@ const CuttingPanel = ({
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                    {[
                      { label: "Fabric Usage", value: "96.4%", icon: Layers, color: "text-emerald-500" },
-                     { label: "Waste Factor", value: "3.6%", icon: Scissors, color: "text-black dark:text-white dark:text-white" },
+                     { label: "Waste Factor", value: "3.6%", icon: Scissors, color: "text-[var(--text-primary)]" },
                      { label: "Velocity", value: "142 U/H", icon: Activity, color: "text-blue-500" },
                      { label: "Queue Sync", value: "0.0s", icon: Clock, color: "text-rose-500" }
                    ].map((a, i) => (
                      <div key={i} className="p-6 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-800">
                         <div className="flex justify-between items-start mb-4">
-                           <div className="w-10 h-10 bg-white dark:bg-slate-900 rounded-lg shadow-sm flex items-center justify-center text-black dark:text-white dark:text-white">
+                           <div className="w-10 h-10 bg-white dark:bg-slate-900 rounded-lg shadow-sm flex items-center justify-center text-[var(--text-primary)]">
                               <a.icon size={16} />
                            </div>
                            <span className="text-[8px] font-bold uppercase tracking-widest text-slate-300">NODE 0{i+1}</span>
