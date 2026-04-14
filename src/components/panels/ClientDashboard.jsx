@@ -619,81 +619,58 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify, logActio
                <button onClick={() => setShowFabricModal(true)} className="flex-1 lg:flex-none px-6 py-3.5 bg-amber-500 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl flex items-center justify-center gap-2 hover:scale-105 active:scale-95 transition-all">
                   <Scissors size={16} /> FABRIC INWARD
                </button>
-              <h3 className="text-lg font-black text-[var(--text-primary)] italic tabular-nums leading-tight">{totalDelivered.toLocaleString()} <span className="text-[7px] uppercase opacity-30">PCS</span></h3>
-          </div>
+               <button onClick={() => setShowPaymentModal(true)} className="flex-1 lg:flex-none px-6 py-3.5 bg-emerald-600 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl flex items-center justify-center gap-2 hover:scale-105 active:scale-95 transition-all">
+                  <Wallet size={16} /> PAYMENT
+               </button>
+               {isAdmin && (
+                  <button onClick={() => setShowMalEntryModal(true)} className="flex-1 lg:flex-none px-6 py-3.5 bg-slate-100 text-black rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl flex items-center justify-center gap-2 hover:scale-105 active:scale-95 transition-all">
+                     <Plus size={16} /> PRODUCTION
+                  </button>
+               )}
+            </div>
+         </div>
       </div>
 
-      {/* COMPACT DASHBOARD GRID */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-8">
-          
-          <div className="lg:col-span-2 space-y-5">
-              {/* COMPACT PRODUCTION TRACKER */}
-              <div className="saas-card bg-white dark:bg-slate-900 shadow-xl flex flex-col !p-0 overflow-hidden rounded-2xl border border-slate-100 dark:border-slate-800">
-                  <div className="px-4 py-3 flex justify-between items-center border-b border-slate-50 dark:border-slate-800">
-                      <div className="flex items-center gap-2">
-                          <Activity size={14} className="text-blue-600" />
-                          <h3 className="text-xs font-black uppercase tracking-tight italic">ACTIVE PRODUCTION TRACKER</h3>
-                      </div>
-                      <span className="text-[7px] font-black px-2 py-0.5 bg-slate-950 text-white rounded-full uppercase tracking-widest">{liveWorkflow.length} QUEUED</span>
-                  </div>
-                  
-                  <div className="p-4 space-y-2 max-h-[350px] overflow-y-auto no-scrollbar">
-                      {liveWorkflow.length === 0 ? (
-                          <p className="py-10 text-[8px] font-black uppercase text-center opacity-20 tracking-widest">No active lots.</p>
-                      ) : (
-                          liveWorkflow.map((item, i) => (
-                   return hasAny ? (
-                     <div className="p-3 md:p-4 grid grid-cols-4 gap-2 border-b border-slate-50 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/20">
-                       <div className="text-center">
-                         <p className="text-[7px] font-black uppercase tracking-widest text-blue-500 mb-0.5">SEWING</p>
-                         <p className="text-sm font-black italic text-blue-600 tabular-nums">৳{sewingTotal.toLocaleString()}</p>
-                       </div>
-                       <div className="text-center">
-                         <p className="text-[7px] font-black uppercase tracking-widest text-amber-500 mb-0.5">STONE</p>
-                         <p className="text-sm font-black italic text-amber-600 tabular-nums">৳{stoneTotal.toLocaleString()}</p>
-                       </div>
-                       <div className="text-center">
-                         <p className="text-[7px] font-black uppercase tracking-widest text-emerald-500 mb-0.5">PATA</p>
-                         <p className="text-sm font-black italic text-emerald-600 tabular-nums">৳{pataTotal.toLocaleString()}</p>
-                       </div>
-                       <div className="text-center">
-                         <p className="text-[7px] font-black uppercase tracking-widest text-indigo-500 mb-0.5">OUTSIDE</p>
-                         <p className="text-sm font-black italic text-indigo-600 tabular-nums">৳{outsideTotal.toLocaleString()}</p>
-                       </div>
-                     </div>
-                   ) : null;
-               })()}
-               <div className="p-4 md:p-5 space-y-2.5 max-h-[350px] overflow-y-auto no-scrollbar">
-                   {clientTransactions.map((t, i) => {
-                       const deptColor = t.dept === 'SEWING' || t.note?.startsWith('SEWING') ? 'bg-blue-500'
-                         : t.dept === 'STONE' || t.note?.startsWith('STONE') ? 'bg-amber-500'
-                         : t.dept === 'PATA' || t.note?.startsWith('PATA') ? 'bg-emerald-500'
-                         : t.dept === 'OUTSIDE' || t.note?.startsWith('OUTSIDE') ? 'bg-indigo-500'
-                         : '';
-                       const deptLabel = t.dept || (t.note?.match(/^(SEWING|STONE|PATA|OUTSIDE)/)?.[1]) || '';
-                       return (
-                       <div key={i} className={`p-3 rounded-xl flex justify-between items-center ${t.type === 'PAYMENT' ? 'bg-emerald-50/50 dark:bg-emerald-900/10' : 'bg-slate-50 dark:bg-slate-800/30'}`}>
-                           <div className="flex-1 min-w-0">
-                               <div className="flex items-center gap-2 mb-0.5">
-                                   <h4 className="text-[8px] font-black uppercase tracking-widest text-[var(--text-primary)] italic">
-                                     {t.type === 'BILL' ? 'INVOICE' : 'SETTLEMENT'}
-                                   </h4>
-                                   {deptLabel && t.type === 'BILL' && (
-                                     <span className={`${deptColor} text-white text-[6px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded-md shadow-sm`}>{deptLabel}</span>
-                                   )}
-                               </div>
-                               {t.note && t.type === 'BILL' && <p className="text-[7px] font-bold text-slate-400 truncate max-w-[160px] italic">{t.note.replace(/^(SEWING|STONE|PATA|OUTSIDE) BILL: /, '')}</p>}
-                               <p className="text-[8px] font-black text-slate-400 mt-0.5">{t.date}</p>
-                           </div>
-                           <p className={`text-base font-black italic tracking-tighter tabular-nums ${t.type === 'PAYMENT' ? 'text-emerald-600' : 'text-[var(--text-primary)]'}`}>
-                               ৳ {t.amount?.toLocaleString()}
-                           </p>
-                       </div>
-                       );
-                   })}
-               </div>
-          </div>
-      </div>
+      {/* Transactions Ledger */}
+      {clientTransactions.length > 0 && (
+        <div className="glass-card !p-0 overflow-hidden mt-6">
+           <div className="px-5 py-4 border-b border-slate-100 flex items-center gap-2">
+              <Activity size={14} className="text-blue-600" />
+              <h3 className="text-xs font-black uppercase tracking-tight italic">Transaction Ledger</h3>
+           </div>
+           <div className="p-4 space-y-2 max-h-[320px] overflow-y-auto no-scrollbar">
+              {clientTransactions.map((t, i) => {
+                  const deptColor = t.dept === 'SEWING' || t.note?.startsWith('SEWING') ? 'bg-blue-500'
+                    : t.dept === 'STONE' || t.note?.startsWith('STONE') ? 'bg-amber-500'
+                    : t.dept === 'PATA' || t.note?.startsWith('PATA') ? 'bg-emerald-500'
+                    : t.dept === 'OUTSIDE' || t.note?.startsWith('OUTSIDE') ? 'bg-indigo-500'
+                    : '';
+                  const deptLabel = t.dept || (t.note?.match(/^(SEWING|STONE|PATA|OUTSIDE)/)?.[1]) || '';
+                  return (
+                    <div key={i} className={`p-3 rounded-xl flex justify-between items-center ${t.type === 'PAYMENT' ? 'bg-emerald-50 dark:bg-emerald-900/10' : 'bg-slate-50 dark:bg-slate-800/30'}`}>
+                        <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 mb-0.5">
+                                <h4 className="text-[8px] font-black uppercase tracking-widest italic">
+                                  {t.type === 'BILL' ? 'INVOICE' : 'SETTLEMENT'}
+                                </h4>
+                                {deptLabel && t.type === 'BILL' && (
+                                  <span className={`${deptColor} text-white text-[6px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded-md`}>{deptLabel}</span>
+                                )}
+                            </div>
+                            {t.note && t.type === 'BILL' && <p className="text-[7px] font-bold text-slate-400 truncate max-w-[160px] italic">{t.note.replace(/^(SEWING|STONE|PATA|OUTSIDE) BILL: /, '')}</p>}
+                            <p className="text-[8px] font-black text-slate-400 mt-0.5">{t.date}</p>
+                        </div>
+                        <p className={`text-base font-black italic tracking-tighter tabular-nums ${t.type === 'PAYMENT' ? 'text-emerald-600' : 'text-slate-900 dark:text-white'}`}>
+                            ৳ {t.amount?.toLocaleString()}
+                        </p>
+                    </div>
+                  );
+              })}
+           </div>
+        </div>
+      )}
+
+
 
       <AnimatePresence>
         {showOrderModal && (
