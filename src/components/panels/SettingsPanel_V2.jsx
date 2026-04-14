@@ -1262,28 +1262,41 @@ const SettingsPanel_V2 = ({
          </div>
       </div>
 
-      <div className="saas-card bg-rose-50 dark:bg-rose-950/20 border-2 border-rose-500/20 p-8 rounded-2xl">
-         <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-            <div className="text-center md:text-left">
-               <h4 className="text-xl font-black uppercase text-rose-500 italic mb-1 flex items-center gap-2">
-                 <ShieldAlert size={20} /> Danger Zone: Factory Reset
+      <div className="saas-card bg-rose-50 dark:bg-rose-950/20 border-2 border-rose-500/20 p-12 rounded-[3rem] shadow-2xl relative overflow-hidden">
+         <div className="absolute top-0 right-0 p-12 opacity-5">
+            <ShieldAlert size={120} />
+         </div>
+         <div className="flex flex-col md:flex-row justify-between items-center gap-10 relative z-10">
+            <div className="text-center md:text-left space-y-4">
+               <h4 className="text-4xl font-black uppercase text-rose-600 italic leading-none flex items-center gap-4">
+                 <Activity className="animate-pulse" /> CORE SYSTEM GATEWAY
                </h4>
-               <p className="text-[10px] font-bold text-rose-400 uppercase tracking-widest leading-relaxed max-w-md italic">
-                 সব এন্ট্রি করা তথ্য (Lots, Payments, Deliveries) এক ক্লিকে মুছে ফেলুন। এই কাজ রিস্টোর করা সম্ভব নয়।
+               <p className="text-[11px] font-black text-rose-500 uppercase tracking-[0.4em] leading-relaxed max-w-xl italic">
+                 CRITICAL: আপনি এখন সিস্টেমের মূল ডেটাবেস মোছার কমান্ড সেন্টারে আছেন। এই অ্যাকশন সম্পূর্ণ ইরিভারসিবল (Irreversible)।
                </p>
             </div>
-            <div className="flex gap-4">
+            <div className="flex flex-col gap-4 w-full md:w-auto">
                <button 
-                  onClick={() => handleMasterReset(false)} 
-                  className="px-6 py-4 bg-rose-500 text-white rounded-xl font-black uppercase text-[10px] tracking-widest shadow-xl hover:bg-rose-600 transition-all active:scale-95 border-b-4 border-rose-700"
+                  onClick={() => {
+                      if(confirm("ALERT: আপনি কি সমস্ত প্রোডাকশন এবং ইনভেন্টরি ডেটা ডিলিট করতে চান? কেবল ইউজার এবং সেটিংস থাকবে।")) {
+                          handleMasterReset(false);
+                          showNotify("SYSTEM PURGED: সকল এন্ট্রি মুছে ফেলা হয়েছে!", "success");
+                      }
+                  }} 
+                  className="px-12 py-6 bg-slate-950 text-white rounded-2xl font-black uppercase text-[11px] tracking-[0.3em] shadow-3xl hover:bg-black transition-all active:scale-95 border-b-8 border-rose-600"
                >
-                  Clear All Entries
+                  PURGE DATA & RECOVERY
                </button>
                <button 
-                  onClick={() => handleMasterReset(true)} 
-                  className="px-6 py-4 bg-slate-950 text-white rounded-xl font-black uppercase text-[10px] tracking-widest shadow-xl hover:bg-black transition-all active:scale-95 border-b-4 border-slate-800"
+                  onClick={() => {
+                      if(prompt("সিস্টেম সম্পূর্ণ ইরেজ করতে 'REBOOT' টাইপ করুন:") === 'REBOOT') {
+                          handleMasterReset(true);
+                          showNotify("CORE SYSTEM REBOOTED: ফ্যাক্টরি রিসেট সফল!", "success");
+                      }
+                  }} 
+                  className="px-12 py-6 bg-rose-600 text-white rounded-2xl font-black uppercase text-[11px] tracking-[0.3em] shadow-3xl hover:bg-rose-700 transition-all active:scale-95 border-b-8 border-rose-900"
                >
-                  Total Wipe (Zero Start)
+                  REBOOT CORE SYSTEM
                </button>
             </div>
          </div>

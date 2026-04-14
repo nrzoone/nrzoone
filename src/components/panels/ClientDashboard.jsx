@@ -326,6 +326,35 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify, logActio
     }
   };
 
+  const handleDepositMaterial = (e) => {
+    e.preventDefault();
+    const f = e.target;
+    const qty = Number(f.qty.value);
+    const date = new Date().toLocaleDateString("en-GB");
+    
+    const entry = {
+      id: Date.now(),
+      date: date,
+      item: f.item.value,
+      color: f.color.value,
+      design: f.design.value,
+      client: clientName,
+      qty,
+      unit: f.unit.value,
+      type: 'in',
+      note: f.note.value
+    };
+
+    setMasterData(prev => ({
+      ...prev,
+      rawInventory: [entry, ...(prev.rawInventory || [])]
+    }));
+
+    setShowMaterialModal(false);
+    showNotify(`${qty} ${f.unit.value} স্টক ইনজেক্ট করা হয়েছে!`, "success");
+    logAction(user, 'MATERIAL_DEPOSIT', `Added ${qty} ${f.unit.value} of ${entry.item} to warehouse.`);
+  };
+
   const handleDispatch = (e) => {
     e.preventDefault();
     const f = e.target;
