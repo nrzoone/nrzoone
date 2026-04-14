@@ -17,6 +17,7 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify, logActio
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [showOrderModal, setShowOrderModal] = useState(false);
   const [showMalEntryModal, setShowMalEntryModal] = useState(false);
+  const [showFabricModal, setShowFabricModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
 
   // -- Advanced Order State --
@@ -263,32 +264,38 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify, logActio
     }
   };
 
-  const handleDepositMaterial = (e) => {
+  const handleFabricInward = (e) => {
     e.preventDefault();
     const f = e.target;
+    const qty = Number(f.qty.value);
+    const date = f.date.value || new Date().toLocaleDateString("en-GB");
+    
+    if (qty <= 0) return;
+
     const newItem = {
       id: Date.now(),
-      date: new Date().toLocaleDateString("en-GB"),
-      item: f.item.value,
+      date,
+      item: "ফেব্রিক (Fabric)",
       color: f.color?.value || '',
       design: f.design?.value || '',
       client: clientName,
-      qty: Number(f.qty.value),
-      unit: f.unit.value,
+      qty,
+      unit: "গজ",
       type: "in",
-      note: `DEPOSITED BY CLIENT: ${f.note.value}`
+      note: `CLOTH RECEIVED: ${f.note.value}`
     };
+
     setMasterData(prev => ({
       ...prev,
       rawInventory: [newItem, ...(prev.rawInventory || [])]
     }));
-    setShowMaterialModal(false);
-    showNotify("মেটেরিয়াল স্টক আপডেট হয়েছে!", "success");
+    
+    setShowFabricModal(false);
+    showNotify(`${qty} গজ কাপড় রিসিভ করা হয়েছে!`, "success");
+    logAction(user, 'FABRIC_INWARD', `Received ${qty} yds fabric from ${clientName}`);
 
-    if (window.confirm("স্টোক ইনজেকশন রিপোর্ট হোয়াটসঅ্যাপে পাঠাতে চান?")) {
-        const colorInfo = newItem.color ? ` | Color: ${newItem.color}` : '';
-        const designInfo = newItem.design ? ` | Design: ${newItem.design}` : '';
-        shareToWhatsApp(`*NRZ0ONE MATERIAL DEPOSIT*\n\nItem: ${newItem.item}${colorInfo}${designInfo}\nQty: ${newItem.qty} ${newItem.unit}\nClient: ${clientName}\nRef: ${newItem.note}`);
+    if (window.confirm("কাপড় রিসিভ রিপোর্ট হোয়াটসঅ্যাপে পাঠাতে চান?")) {
+        shareToWhatsApp(`*NRZ0ONE FABRIC RECEPTION*\n\nQty: ${qty} গজ\nColor: ${newItem.color || 'N/A'}\nClient: ${clientName}\nDate: ${date}\nRef: ${f.note.value}`);
     }
   };
 
@@ -453,6 +460,9 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify, logActio
                <div className="flex gap-2 w-full lg:w-auto flex-wrap justify-center">
                   <button onClick={() => setShowOrderModal(true)} className="flex-1 lg:flex-none px-4 md:px-6 py-2.5 md:py-3 bg-blue-600 text-white rounded-xl text-[9px] font-black uppercase tracking-widest shadow-xl flex items-center justify-center gap-2 hover:scale-105 active:scale-95 transition-all">
                      <ShoppingCart size={14} /> NEW ORDER
+                  </button>
+                  <button onClick={() => setShowFabricModal(true)} className="flex-1 lg:flex-none px-4 md:px-6 py-2.5 md:py-3 bg-amber-500 text-white rounded-xl text-[9px] font-black uppercase tracking-widest shadow-xl flex items-center justify-center gap-2 hover:scale-105 active:scale-95 transition-all">
+                     <Scissors size={14} /> FABRIC INWARD
                   </button>
                   <button onClick={() => setShowMalEntryModal(true)} className="flex-1 lg:flex-none px-4 md:px-6 py-2.5 md:py-3 bg-slate-100 text-black rounded-xl text-[9px] font-black uppercase tracking-widest shadow-xl flex items-center justify-center gap-2 hover:scale-105 active:scale-95 transition-all border border-slate-200">
                      <Plus size={14} /> PRODUCTION
@@ -775,6 +785,51 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify, logActio
                        <button type="submit" className="flex-[3] py-3.5 bg-blue-600 text-white rounded-2xl font-black text-[9px] uppercase tracking-[0.3em] shadow-lg border-b-4 border-blue-900 active:scale-95 transition-all">COMMIT ORDER</button>
                     </div>
                  </form>
+             </motion.div>
+          </div>
+        )}
+
+        {showFabricModal && (
+          <div className="fixed inset-0 bg-slate-950/70 backdrop-blur-2xl z-[1000] flex items-center justify-center p-4">
+             <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-white dark:bg-slate-900 w-full max-w-md p-8 rounded-3xl shadow-3xl space-y-6 border border-slate-100 dark:border-slate-800 relative">
+                <button onClick={() => setShowFabricModal(false)} className="absolute top-6 right-6 text-slate-400 hover:text-black transition-colors"><X size={20} /></button>
+                <div className="text-center space-y-1.5">
+                   <div className="w-14 h-14 bg-amber-500 text-white rounded-xl flex items-center justify-center mx-auto shadow-lg rotate-3 mb-2"><Scissors size={24} /></div>
+                   <h3 className="text-xl font-black uppercase tracking-tight italic text-black dark:text-white leading-none">FABRIC RECEPTION</h3>
+                   <p className="text-[8px] font-black text-slate-400 uppercase tracking-[0.4em] leading-none italic">Inward Cloth Ledger</p>
+                </div>
+                <form onSubmit={handleFabricInward} className="space-y-5">
+                   <div className="grid grid-cols-2 gap-3">
+                        <div className="space-y-1.5">
+                            <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2 italic leading-none">Color / Grade</label>
+                            <input name="color" list="color-list" className="premium-input !h-11 uppercase font-black text-[10px]" placeholder="E.G. BLACK" />
+                        </div>
+                        <div className="space-y-1.5">
+                            <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2 italic leading-none">Design Ref (If any)</label>
+                            <input name="design" className="premium-input !h-11 uppercase font-black text-[10px]" placeholder="E.G. ABAYA-X" />
+                        </div>
+                   </div>
+                   <div className="space-y-1.5 text-center">
+                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4 block italic">Quantity in Yards (গজ)</label>
+                       <div className="bg-slate-950 rounded-2xl p-8 border-b-4 border-amber-500">
+                          <input name="qty" type="number" step="0.01" className="w-full text-center text-5xl font-black bg-transparent border-none text-white outline-none placeholder:text-white/10" placeholder="0.00" autoFocus required />
+                       </div>
+                   </div>
+                   <div className="grid grid-cols-2 gap-3">
+                       <div className="space-y-1.5">
+                           <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2 italic leading-none">Date</label>
+                           <input name="date" type="date" className="premium-input !h-11 text-center font-black text-[10px]" defaultValue={new Date().toISOString().split('T')[0]} />
+                       </div>
+                       <div className="space-y-1.5">
+                           <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2 italic leading-none">Notes</label>
+                           <input name="note" className="premium-input !h-11 font-black uppercase text-[10px]" placeholder="E.G. ROLL #102..." />
+                       </div>
+                   </div>
+                   <div className="flex gap-3 pt-2">
+                      <button type="button" onClick={() => setShowFabricModal(false)} className="flex-1 py-3.5 font-black text-[9px] uppercase tracking-[0.3em] text-slate-400 hover:text-black transition-all">CANCEL</button>
+                      <button type="submit" className="flex-[3] py-3.5 bg-amber-500 text-white rounded-2xl font-black text-[9px] uppercase tracking-[0.3em] shadow-lg border-b-4 border-amber-700 active:scale-95 transition-all">RECIEVE CLOTH</button>
+                   </div>
+                </form>
              </motion.div>
           </div>
         )}
