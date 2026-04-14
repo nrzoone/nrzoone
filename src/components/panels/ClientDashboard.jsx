@@ -584,12 +584,14 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify, logActio
                                       <div className="text-right">
                                           <p className="text-lg font-black italic">{s.qty} <span className="text-[8px] text-slate-400">PCS</span></p>
                                       </div>
-                                      <button 
-                                        onClick={() => { setActiveDispatch(s); setShowDispatchModal(true); }}
-                                        className="w-9 h-9 bg-slate-950 text-white rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-xl hover:scale-105"
-                                      >
-                                          <Truck size={14} />
-                                      </button>
+                                      {isAdmin && (
+                                          <button 
+                                              onClick={() => { setActiveDispatch(s); setShowDispatchModal(true); }}
+                                              className="w-9 h-9 bg-slate-950 text-white rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-xl hover:scale-105"
+                                          >
+                                              <Truck size={14} />
+                                          </button>
+                                      )}
                                   </div>
                               </div>
                           ))

@@ -693,6 +693,18 @@ const AppContent = () => {
                                     <p className="text-sm font-black uppercase text-[var(--text-primary)] leading-none italic">{user?.name || 'অпераটর'}</p>
                                 </div>
                                 <div className="flex gap-2">
+                                    {user?.role === 'client' && (
+                                        <button 
+                                            onClick={() => {
+                                                setUser(null);
+                                                localStorage.removeItem('nrzone_user');
+                                            }}
+                                            className="w-10 h-10 rounded-xl bg-rose-500 text-white shadow-lg flex items-center justify-center hover:bg-rose-600 transition-all"
+                                            title="লগআউট"
+                                        >
+                                            <LogOut size={18} />
+                                        </button>
+                                    )}
                                     {user?.role !== 'client' && (
                                         <button 
                                             onClick={() => setActivePanel("Settings")}
