@@ -4,13 +4,13 @@ import { doc, setDoc, onSnapshot, serverTimestamp } from 'firebase/firestore';
 
 const initialData = {
     workerCategories: {
-        stone: ["SABBIR", "BILLALL", "SOJIB", "SONIA", "SUMAIYA"],
-        sewing: ["JIHAN", "RAJIB", "IBRAHIM", "KULSUM", "SOBUJ"],
-        pata: ["ALAMIN", "SABBIR", "HASAN", "KASHEM"],
-        monthly: ["UZZAL"]
+        stone: [],
+        sewing: [],
+        pata: [],
+        monthly: []
     },
     workerWages: {
-        sewing: {}, stone: {}, pata: {}, monthly: { "UZZAL": 15000 }
+        sewing: {}, stone: {}, pata: {}, monthly: {}
     },
     designs: [
         { name: "পাতা", sewingRate: 40, stoneRate: 20, clientSewingRate: 60, clientStoneRate: 35, image: "" },
@@ -39,8 +39,7 @@ const initialData = {
     pataTypes: ["Single", "Double", "Triple", "Mix"],
     pataStoneColors: ["White", "Golden", "Black", "Silver", "Multi", "Rainbow"],
     users: [
-        { id: "NRZONE", password: "Irham@#", role: "admin", name: "Super Admin" },
-        { id: "MANAGER", password: "456", role: "manager", name: "Operations Manager" },
+        { id: "NRZONE", password: "Irham@#", role: "admin", name: "Super Admin" }
     ],
     cuttingStock: [],
     productions: [],
@@ -54,7 +53,7 @@ const initialData = {
     outsideWorkers: ["REPAIR MAN 1", "BUTTON EXPERT"],
     outsideTasks: ["BUTTON", "CHAIN", "REPAIR", "KAZ", "OTHERS"],
     adminNotes: [],
-    cutters: ["MEHEDI", "SABBIR", "HASAN"],
+    cutters: [],
     notifications: [],
     workerDocs: [],
     workerAdvances: [],
