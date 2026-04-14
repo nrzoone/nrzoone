@@ -747,7 +747,7 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify, logActio
                                 <div className="col-span-4 flex items-center gap-2">
                                    <select value={s.size} onChange={e => { const ns = [...orderForm.sizes]; ns[idx].size = e.target.value; setOrderForm(p => ({...p, sizes: ns})); }} className="w-full bg-slate-50 dark:bg-slate-950 h-9 rounded-lg text-[9px] font-black uppercase border-none outline-none text-center" required>
                                        <option value="">SIZE</option>
-                                       {(masterData.sizes || []).map(z => <option key={z} value={z}>{z}</option>)}
+                                       {(masterData.sizes && masterData.sizes.length > 0 ? masterData.sizes : ['50', '52', '54', '56', '58', '60']).map(z => <option key={z} value={z}>{z}</option>)}
                                    </select>
                                 </div>
                                 <div className="col-span-3 flex items-center gap-1 px-2 border-l border-slate-100 dark:border-slate-800">
@@ -1016,7 +1016,7 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify, logActio
                             <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2 italic">Size</label>
                             <select name="size" className="premium-input !h-12 uppercase font-black text-[11px]" required>
                                 <option value="">SELECT...</option>
-                                {(masterData.sizes || []).map(s => <option key={s} value={s}>{s}</option>)}
+                                {(masterData.sizes && masterData.sizes.length > 0 ? masterData.sizes : ['50', '52', '54', '56', '58', '60']).map(s => <option key={s} value={s}>{s}</option>)}
                             </select>
                         </div>
                    </div>
