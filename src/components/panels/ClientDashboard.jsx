@@ -393,14 +393,33 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify, logActio
            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em]">Select a client to view 360° Dashboard</p>
         </div>
 
-        <div className="max-w-xl mx-auto mb-12 relative group">
-            <Search size={18} className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-all" />
-            <input 
-              placeholder="সার্চ ক্লায়েন্ট (Search Client Name)..." 
-              className="premium-input !h-16 !pl-16 !pr-8 !text-base shadow-2xl !rounded-[2rem] border-slate-200 dark:border-slate-800"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
+        <div className="max-w-xl mx-auto mb-12 flex gap-3 group">
+            <div className="relative flex-1">
+                <Search size={18} className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-all" />
+                <input 
+                  placeholder="সার্চ ক্লায়েন্ট (Search Client Name)..." 
+                  className="premium-input !h-16 !pl-16 !pr-8 !text-base shadow-2xl !rounded-[2rem] border-slate-200 dark:border-slate-800"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+            </div>
+            <button 
+                onClick={() => {
+                    const name = prompt("Enter New Client Name:");
+                    if (name) {
+                        const newClient = { id: name.toUpperCase(), name: name, password: '123', role: 'client' };
+                        setMasterData(prev => ({
+                            ...prev,
+                            users: [...(prev.users || []), newClient]
+                        }));
+                        showNotify(`নতুন ক্লায়েন্ট '${name}' যোগ করা হয়েছে! ডিফল্ট পাসওয়ার্ড: 123`, "success");
+                    }
+                }}
+                className="w-16 h-16 bg-blue-600 text-white rounded-[2rem] shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all shrink-0"
+                title="নতুন ক্লায়েন্ট যোগ করুন"
+            >
+                <Plus size={24} />
+            </button>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
