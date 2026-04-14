@@ -1,9 +1,11 @@
 import React, { useState, useMemo } from 'react';
 import { 
-  Truck, DollarSign, Package, Calendar, ArrowRight, Activity, 
-  ShieldCheck, Download, Boxes, Plus, X, Wallet, Archive, 
-  History, ShoppingCart, Send, Layers, CheckCircle, Clock, BarChart2,
-  Search, User, ArrowLeft, ArrowUpRight
+  Plus, Search, X, Activity, Clock, Shield, 
+  LayoutGrid, Truck, ArrowLeft, PlusCircle, 
+  Package, Layers, DollarSign, MessageCircle,
+  Scissors, User, Calendar, ShieldCheck, Download, Boxes, 
+  Wallet, Archive, History, ShoppingCart, Send, CheckCircle, 
+  BarChart2, ArrowRight, ArrowUpRight
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -553,190 +555,43 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify, logActio
 
       {/* High-Density Analytics HUB */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-6">
-          <div className="saas-card bg-white dark:bg-slate-900 p-3 md:p-4 shadow-lg border-l-4 border-l-rose-500 group rounded-xl">
-              <p className="text-[9px] font-black text-[var(--text-muted)] uppercase tracking-widest mb-1">CURRENT DEBT</p>
-              <h3 className="text-lg md:text-xl font-black text-[var(--text-primary)] italic tabular-nums">৳ {financials.due.toLocaleString()}</h3>
+          <div className="saas-card bg-white dark:bg-slate-900 !p-3 shadow-lg border-l-4 border-l-rose-500 rounded-xl">
+              <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-0.5 opacity-60">BALANCE DUE</p>
+              <h3 className="text-lg font-black text-[var(--text-primary)] italic tabular-nums leading-tight">৳ {financials.due.toLocaleString()}</h3>
           </div>
-          <div className="saas-card bg-white dark:bg-slate-900 p-3 md:p-4 shadow-lg border-l-4 border-l-emerald-500 group rounded-xl">
-              <p className="text-[9px] font-black text-[var(--text-muted)] uppercase tracking-widest mb-1">AVAILABLE STOCK VALUE</p>
-              <h3 className="text-lg md:text-xl font-black text-[var(--text-primary)] italic tabular-nums">৳ {financials.pendingValue.toLocaleString()}</h3>
+          <div className="saas-card bg-white dark:bg-slate-900 !p-3 shadow-lg border-l-4 border-l-emerald-500 rounded-xl">
+              <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-0.5 opacity-60">READY VALUE</p>
+              <h3 className="text-lg font-black text-[var(--text-primary)] italic tabular-nums leading-tight">৳ {financials.pendingValue.toLocaleString()}</h3>
           </div>
-          <div className="saas-card bg-white dark:bg-slate-900 p-3 md:p-4 shadow-lg border-l-4 border-l-blue-600 group rounded-xl">
-              <p className="text-[9px] font-black text-[var(--text-muted)] uppercase tracking-widest mb-1">TOTAL BILLED</p>
-              <h3 className="text-lg md:text-xl font-black text-[var(--text-primary)] italic tabular-nums">৳ {financials.billed.toLocaleString()}</h3>
+          <div className="saas-card bg-white dark:bg-slate-900 !p-3 shadow-lg border-l-4 border-l-blue-600 rounded-xl">
+              <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-0.5 opacity-60">TOTAL BILLED</p>
+              <h3 className="text-lg font-black text-[var(--text-primary)] italic tabular-nums leading-tight">৳ {financials.billed.toLocaleString()}</h3>
           </div>
-          <div className="saas-card bg-white dark:bg-slate-900 p-3 md:p-4 shadow-lg border-l-4 border-l-slate-950 dark:border-l-white group rounded-xl">
-              <p className="text-[9px] font-black text-[var(--text-muted)] uppercase tracking-widest mb-1">GLOBAL OUTPUT</p>
-              <h3 className="text-lg md:text-xl font-black text-[var(--text-primary)] italic tabular-nums">{totalDelivered.toLocaleString()} <span className="text-[9px] uppercase opacity-30">PCS</span></h3>
+          <div className="saas-card bg-white dark:bg-slate-900 !p-3 shadow-lg border-l-4 border-l-slate-950 dark:border-l-white rounded-xl">
+              <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-0.5 opacity-60">GLOBAL OUTPUT</p>
+              <h3 className="text-lg font-black text-[var(--text-primary)] italic tabular-nums leading-tight">{totalDelivered.toLocaleString()} <span className="text-[7px] uppercase opacity-30">PCS</span></h3>
           </div>
       </div>
 
-      {/* Operational Matrix */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-12">
+      {/* COMPACT DASHBOARD GRID */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-8">
           
-          <div className="lg:col-span-2 space-y-6">
-              <div className="saas-card bg-white dark:bg-slate-900 shadow-xl min-h-[400px] flex flex-col !p-0 overflow-hidden rounded-2xl border border-slate-100 dark:border-slate-800">
-                  <div className="p-5 md:p-6 flex justify-between items-center border-b border-slate-50 dark:border-slate-800">
-                      <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 bg-blue-50 dark:bg-blue-900/20 text-blue-600 rounded-xl flex items-center justify-center shadow-inner"><Layers size={18} /></div>
-                          <h3 className="text-lg font-black uppercase tracking-tight italic">ACTIVE ORDERS</h3>
+          <div className="lg:col-span-2 space-y-5">
+              {/* COMPACT PRODUCTION TRACKER */}
+              <div className="saas-card bg-white dark:bg-slate-900 shadow-xl flex flex-col !p-0 overflow-hidden rounded-2xl border border-slate-100 dark:border-slate-800">
+                  <div className="px-4 py-3 flex justify-between items-center border-b border-slate-50 dark:border-slate-800">
+                      <div className="flex items-center gap-2">
+                          <Activity size={14} className="text-blue-600" />
+                          <h3 className="text-xs font-black uppercase tracking-tight italic">ACTIVE PRODUCTION TRACKER</h3>
                       </div>
-                      <span className="text-[8px] font-black px-3 py-1 bg-slate-950 text-white rounded-full uppercase tracking-widest shadow-xl">{myProductionRequests.length} QUEUED</span>
+                      <span className="text-[7px] font-black px-2 py-0.5 bg-slate-950 text-white rounded-full uppercase tracking-widest">{liveWorkflow.length} QUEUED</span>
                   </div>
                   
-                  <div className="p-5 md:p-6 space-y-4 max-h-[500px] overflow-y-auto no-scrollbar">
+                  <div className="p-4 space-y-2 max-h-[350px] overflow-y-auto no-scrollbar">
                       {liveWorkflow.length === 0 ? (
-                          <div className="py-20 flex flex-col items-center justify-center opacity-20">
-                              <Archive size={40} className="mb-4" />
-                              <p className="text-[9px] font-black uppercase tracking-[0.4em]">No active production lots</p>
-                          </div>
+                          <p className="py-10 text-[8px] font-black uppercase text-center opacity-20 tracking-widest">No active lots.</p>
                       ) : (
                           liveWorkflow.map((item, i) => (
-                              <div key={i} className={`group p-4 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl flex justify-between items-center hover:border-blue-500/20 transition-all border-l-[6px] ${item.stageColor}`}>
-                                  <div className="space-y-1.5">
-                                      <h4 className="text-base font-black uppercase leading-none italic">{item.design}</h4>
-                                      <div className="flex items-center gap-3 text-[8px] font-black uppercase text-slate-400 tracking-widest">
-                                          <span className="bg-slate-50 dark:bg-slate-950 px-2 py-0.5 rounded-md shadow-sm italic">LOT: {item.lotNo || 'PEND'}</span>
-                                          <span className="bg-slate-950 text-white px-2 py-0.5 rounded-md shadow-sm">📦 {(item.borka || 0) + (item.hijab || 0) || (item.totalBorka + item.totalHijab)} PCS</span>
-                                      </div>
-                                  </div>
-                                  <div className="text-right">
-                                      <div className="flex flex-col items-end gap-1">
-                                          <span className={`px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-widest shadow-md text-white ${item.stageColor}`}>
-                                              {item.currentStage}
-                                          </span>
-                                          <span className="text-[7px] font-black text-slate-300 uppercase tracking-tighter">PHASE {item.currentStage === 'ORDER_INTAKE' ? '01' : item.currentStage === 'CUTTING' ? '02' : '03'}</span>
-                                      </div>
-                                  </div>
-                              </div>
-                          ))
-                      )}
-                  </div>
-              </div>
-          </div>
-
-          <div className="space-y-6">
-              <div className="saas-card bg-emerald-600 text-white shadow-2xl relative overflow-hidden group !p-6 rounded-2xl">
-                  <div className="absolute top-0 right-0 p-6 opacity-[0.1] group-hover:rotate-12 transition-transform"><Archive size={100} /></div>
-                  <h4 className="text-base font-black uppercase tracking-[0.2em] mb-6 relative z-10 flex items-center justify-between italic">
-                    RAW STOCK <Plus size={16} className="cursor-pointer hover:rotate-90 transition-transform" onClick={() => setShowMaterialModal(true)} />
-                  </h4>
-                  <div className="grid grid-cols-1 gap-3 relative z-10">
-                      {materialStocks.length === 0 ? (
-                          <p className="text-[9px] font-black text-white/40 uppercase tracking-widest italic leading-relaxed">No warehouse inventory established for this entity.</p>
-                      ) : (
-                          materialStocks.map((m, i) => (
-                              <div key={i} className="p-4 bg-white/10 rounded-2xl backdrop-blur-xl border border-white/10 shadow-xl group/item hover:bg-white/20 transition-all">
-                                  <div className="flex justify-between items-start mb-1.5">
-                                    <p className="text-[8px] font-black uppercase tracking-widest text-emerald-100 italic underline decoration-white/20">{m.item}</p>
-                                    {m.design && <span className="text-[7px] font-black bg-white/15 text-white px-2 py-0.5 rounded-full uppercase tracking-widest">{m.design}</span>}
-                                  </div>
-                                  {m.color && <p className="text-[8px] font-black text-emerald-300/80 uppercase tracking-widest mb-1 italic">🎨 {m.color}</p>}
-                                  <p className="text-2xl font-black italic tracking-tighter tabular-nums">{m.qty.toLocaleString()} <span className="text-[9px] uppercase font-black text-white/50">{m.unit}</span></p>
-                              </div>
-                          ))
-                      )}
-                  </div>
-              </div>
-
-              <div className="saas-card bg-white dark:bg-slate-900 shadow-xl !p-6 rounded-2xl border border-slate-100 dark:border-slate-800">
-                  <h4 className="text-base font-black uppercase tracking-tight mb-6 pb-3 border-b border-slate-50 dark:border-slate-800 flex items-center gap-3 italic text-blue-600">
-                      <Boxes size={18} className="animate-pulse" /> WAREHOUSE (READY)
-                  </h4>
-                  <div className="space-y-3">
-                      {readyStock.length === 0 ? (
-                          <div className="bg-slate-50 dark:bg-slate-800/30 p-6 rounded-2xl text-center space-y-3 border border-dashed border-slate-100 dark:border-slate-800">
-                             <Activity size={24} className="mx-auto text-slate-300" />
-                             <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-relaxed">No stock awaiting dispatch.</p>
-                          </div>
-                      ) : (
-                          readyStock.map((s, i) => (
-                              <div key={i} className="flex justify-between items-center p-3.5 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-800 group hover:border-blue-500 transition-all">
-                                  <div>
-                                      <p className="text-[9px] font-black uppercase leading-none mb-1 italic">{s.design}</p>
-                                      <p className="text-[8px] font-black text-slate-400 uppercase">{s.color}</p>
-                                  </div>
-                                  <div className="flex items-center gap-3">
-                                      <div className="text-right">
-                                          <p className="text-lg font-black italic">{s.qty} <span className="text-[8px] text-slate-400">PCS</span></p>
-                                      </div>
-                                      {isAdmin && (
-                                          <button 
-                                              onClick={() => { setActiveDispatch(s); setShowDispatchModal(true); }}
-                                              className="w-9 h-9 bg-slate-950 text-white rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-xl hover:scale-105"
-                                          >
-                                              <Truck size={14} />
-                                          </button>
-                                      )}
-                                  </div>
-                              </div>
-                          ))
-                      )}
-                  </div>
-
-                  <h4 className="text-base font-black uppercase tracking-tight mt-10 mb-6 pb-3 border-b border-slate-50 dark:border-slate-800 flex items-center gap-3 italic text-amber-500">
-                      <Clock size={18} className="animate-spin-slow" /> PRODUCTION PIPELINE
-                  </h4>
-                  <div className="space-y-4">
-                      {liveLots.length === 0 ? (
-                          <p className="text-[9px] font-black text-slate-400 uppercase text-center py-4">No lots in active assembly.</p>
-                      ) : (
-                          liveLots.map((lot, idx) => (
-                              <div key={idx} className="p-3.5 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-800">
-                                  <p className="text-[9px] font-black uppercase italic">{lot.design} <span className="text-slate-400 text-[8px]">// {lot.color}</span></p>
-                                  <div className="flex justify-between items-center mt-1.5">
-                                      <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest">STATUS: {lot.status}</p>
-                                      <p className="text-xs font-black italic tracking-tighter">{lot.lotNo}</p>
-                                  </div>
-                              </div>
-                          ))
-                      )}
-                  </div>
-              </div>
-          </div>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <div className="saas-card bg-white dark:bg-slate-900 shadow-xl !p-0 overflow-hidden rounded-2xl border border-slate-100 dark:border-slate-800">
-               <div className="p-4 md:p-5 flex justify-between items-center border-b border-slate-50 dark:border-slate-800">
-                   <h3 className="text-lg font-black uppercase tracking-tight italic flex items-center gap-3">
-                       <Truck size={18} className="text-blue-600" /> DELIVERY FEED
-                   </h3>
-                   <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest bg-slate-50 dark:bg-slate-800 px-3 py-1 rounded-full">{clientDeliveries.length} RECS</span>
-               </div>
-               <div className="p-4 md:p-5 space-y-2.5 max-h-[350px] overflow-y-auto no-scrollbar">
-                   {clientDeliveries.map((d, i) => (
-                       <div key={i} className="p-3 bg-slate-50 dark:bg-slate-800/30 border border-slate-100 dark:border-slate-800 rounded-xl flex justify-between items-center group hover:border-blue-500/20 transition-all">
-                           <div className="flex items-center gap-3">
-                               <div className="w-9 h-9 bg-white dark:bg-slate-950 rounded-lg flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
-                                   <Package size={14} className="text-blue-500" />
-                               </div>
-                               <div>
-                                   <h4 className="text-[11px] font-black uppercase leading-none mb-0.5 italic">{d.design}</h4>
-                                   <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest">{d.date}</p>
-                               </div>
-                           </div>
-                           <p className="text-base font-black italic">{(d.qtyBorka || 0) + (d.qtyHijab || 0)} <span className="text-[8px] uppercase font-black text-slate-300">PCS</span></p>
-                       </div>
-                   ))}
-               </div>
-          </div>
-
-          <div className="saas-card bg-white dark:bg-slate-900 shadow-xl !p-0 overflow-hidden rounded-2xl border border-slate-100 dark:border-slate-800">
-               <div className="p-4 md:p-5 flex justify-between items-center border-b border-slate-50 dark:border-slate-800">
-                   <h3 className="text-lg font-black uppercase tracking-tight italic flex items-center gap-3 text-emerald-600">
-                       <Wallet size={18} /> LEDGER AUDIT
-                   </h3>
-                   <button onClick={() => setShowPaymentModal(true)} className="p-2 bg-slate-950 text-white rounded-lg shadow-xl hover:scale-105 active:scale-95 transition-all"><Plus size={12} /></button>
-               </div>
-               {/* Department-wise Bill Breakdown */}
-               {(() => {
-                   const bills = clientTransactions.filter(t => t.type === 'BILL');
-                   const sewingTotal = bills.filter(t => t.dept === 'SEWING' || t.note?.startsWith('SEWING')).reduce((s,t) => s + (t.amount || 0), 0);
-                   const stoneTotal = bills.filter(t => t.dept === 'STONE' || t.note?.startsWith('STONE')).reduce((s,t) => s + (t.amount || 0), 0);
-                   const pataTotal = bills.filter(t => t.dept === 'PATA' || t.note?.startsWith('PATA')).reduce((s,t) => s + (t.amount || 0), 0);
-                   const outsideTotal = bills.filter(t => t.dept === 'OUTSIDE' || t.note?.startsWith('OUTSIDE')).reduce((s,t) => s + (t.amount || 0), 0);
-                   const hasAny = sewingTotal || stoneTotal || pataTotal || outsideTotal;
                    return hasAny ? (
                      <div className="p-3 md:p-4 grid grid-cols-4 gap-2 border-b border-slate-50 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/20">
                        <div className="text-center">
