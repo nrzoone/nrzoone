@@ -416,6 +416,23 @@ const SettingsPanel_V2 = ({
     showNotify("কর্মী মুছে ফেলা হয়েছে!");
   };
 
+  const handleClearAllWorkers = () => {
+    if (confirm("🚨 সাবধান: এই অ্যাকশনটি সব কর্মীর প্রোফাইল, তথ্য এবং আইডি মুছে ফেলবে। আপনি কি নিশ্চিত?")) {
+      if (confirm("আপনি কি সত্যিই সব কর্মীকে পার্মানেন্টলি ডিলিট করতে চান? এটি আর ফিরিয়ে আনা যাবে না!")) {
+        setMasterData(prev => ({
+          ...prev,
+          workerCategories: { cutting: [], sewing: [], stone: [], pata: [], monthly: [] },
+          workerWages: { cutting: {}, sewing: {}, stone: {}, pata: {}, monthly: {} },
+          workerDocs: [],
+          workerBiometrics: {},
+          cutters: [], // Legacy list cleanup
+          users: (prev.users || []).filter(u => u.role !== 'worker') // Clear worker-role users too
+        }));
+        showNotify("সব কর্মীর তথ্য সফলভাবে মুছে ফেলা হয়েছে!");
+      }
+    }
+  };
+
   const handleAddUser = (id, password, name, role) => {
     if (!id.trim() || !password.trim()) return;
     setMasterData((prev) => ({
@@ -987,6 +1004,12 @@ const SettingsPanel_V2 = ({
         >
           <Plus size={18} strokeWidth={3} />
           কর্মী নিবন্ধন (Add Worker)
+        </button>
+        <button
+          onClick={handleClearAllWorkers}
+          className="px-8 py-4 bg-rose-500/10 text-rose-500 rounded-xl font-bold uppercase text-[10px] tracking-widest border border-rose-500/20 hover:bg-rose-500 hover:text-white transition-all active:scale-95 flex items-center gap-2"
+        >
+          <Trash2 size={16} /> সব কর্মী মুছুন (Clear All)
         </button>
         <div className="relative w-full md:w-80">
            <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-black dark:text-white dark:text-white" size={18} />
