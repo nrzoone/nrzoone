@@ -226,7 +226,7 @@ const LoginView = ({ onLogin, masterData }) => {
             {/* Login Form Section */}
             <div className="w-full md:w-1/2 flex flex-col items-center justify-center p-8 md:p-24 bg-white dark:bg-slate-950 relative">
                 <div className="absolute top-12 right-12 hidden md:block">
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] cursor-pointer hover:text-slate-950 transition-all">Create an account</p>
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] font-mono">NRZ SYSTEM SECURED</p>
                 </div>
 
                 <div className="w-full max-w-sm space-y-12 md:space-y-16 animate-fade-up">
@@ -267,13 +267,12 @@ const LoginView = ({ onLogin, masterData }) => {
                                 </button>
                             </div>
                             <div className="flex justify-between items-center pt-2 px-1">
-                                <div className="flex items-center gap-2 cursor-pointer group">
-                                    <div className="w-5 h-5 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg flex items-center justify-center transition-all group-hover:bg-slate-950 dark:group-hover:bg-white">
-                                        <CheckCircle size={12} className="text-white dark:text-black opacity-0 group-hover:opacity-100 transition-opacity" />
+                                <div className="flex items-center gap-2">
+                                    <div className="w-5 h-5 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg flex items-center justify-center">
+                                        <CheckCircle size={12} className="text-slate-950 dark:text-white" />
                                     </div>
-                                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Remember me</span>
+                                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Authorized Access Only</span>
                                 </div>
-                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest cursor-pointer hover:text-slate-950 dark:hover:text-white transition-colors">Forgot Pass?</span>
                             </div>
                         </div>
                     </div>
@@ -396,7 +395,8 @@ const Sidebar = ({ activePanel, setActivePanel, panelTab, setPanelTab, user, set
                         const role = user?.role?.toLowerCase();
                         if (role === 'admin') return true;
                         if (role === 'manager') return !['Settings', 'Security'].includes(item.id);
-                        return ['Menu', 'Overview', 'Cutting', 'Swing', 'Stone', 'Pata', 'Outside', 'Attendance', 'WorkerSummary'].includes(item.id);
+                        if (role === 'worker') return ['Cutting', 'Swing', 'Stone', 'Pata', 'Outside', 'Attendance', 'WorkerSummary'].includes(item.id);
+                        return false;
                     });
 
                     if (filteredItems.length === 0) return null;
@@ -539,8 +539,13 @@ const AppContent = () => {
             localStorage.setItem('nrzone_user', JSON.stringify(u));
             showNotify(`স্বাগতম, ${u.name}!`); 
             logAction(u, 'LOGIN', 'User logged in successfully');
+            
             if (u.role === 'client') {
                 setActivePanel('ClientDashboard');
+            } else if (u.role === 'worker') {
+                setActivePanel('WorkerSummary');
+            } else {
+                setActivePanel('Overview');
             }
         }
         else showNotify("ভুল আইডি বা পাসওয়ার্ড!", "error");
