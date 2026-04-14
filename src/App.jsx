@@ -459,7 +459,15 @@ const AppContent = () => {
         const saved = localStorage.getItem('nrzone_user');
         return saved ? JSON.parse(saved) : null;
     });
-    const [activePanel, setActivePanel] = useState("Overview");
+    const [activePanel, setActivePanel] = useState(() => {
+        const savedUser = localStorage.getItem('nrzone_user');
+        if (savedUser) {
+            const parsed = JSON.parse(savedUser);
+            if (parsed.role === 'client') return "ClientDashboard";
+            if (parsed.role === 'worker') return "WorkerSummary";
+        }
+        return "Overview";
+    });
     const [panelTab, setPanelTab] = useState("treasury");
     const [toast, setToast] = useState(null);
     const { masterData, setMasterData, isLoading, logs, downloadBackup, logAction, syncStatus } = useMasterData(user);
@@ -733,6 +741,13 @@ const AppContent = () => {
                         <div className="flex-1 overflow-y-auto px-1 md:px-4 py-2 md:py-4 relative custom-scrollbar">
                             <div className="max-w-[1400px] mx-auto space-y-4 md:space-y-6 animate-fade-up">
                                 {activePanel === "ClientDashboard" && <ClientDashboard masterData={masterData} user={user} setMasterData={setMasterData} showNotify={showNotify} logAction={logAction} />}
+                                
+                                {(!activePanel || (activePanel === "Overview" && user?.role === 'client')) && (
+                                    <div className="flex flex-col items-center justify-center h-[60vh] opacity-50 space-y-4">
+                                        <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+                                        <p className="text-[10px] font-black uppercase tracking-[0.4em]">Initializing Client Workspace...</p>
+                                    </div>
+                                )}
                                 
                                 {user?.role !== 'client' && (
                                     <>
