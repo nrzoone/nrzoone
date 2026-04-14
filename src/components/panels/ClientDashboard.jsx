@@ -18,6 +18,7 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify, logActio
   const [showOrderModal, setShowOrderModal] = useState(false);
   const [showMalEntryModal, setShowMalEntryModal] = useState(false);
   const [showFabricModal, setShowFabricModal] = useState(false);
+  const [showAddClientModal, setShowAddClientModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
 
   // -- Advanced Order State --
@@ -433,23 +434,50 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify, logActio
                 />
             </div>
             <button 
-                onClick={() => {
-                    const name = prompt("Enter New Client Name:");
-                    if (name) {
-                        const newClient = { id: name.toUpperCase(), name: name, password: '123', role: 'client' };
-                        setMasterData(prev => ({
-                            ...prev,
-                            users: [...(prev.users || []), newClient]
-                        }));
-                        showNotify(`নতুন ক্লায়েন্ট '${name}' যোগ করা হয়েছে! ডিফল্ট পাসওয়ার্ড: 123`, "success");
-                    }
-                }}
-                className="w-16 h-16 bg-blue-600 text-white rounded-[2rem] shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all shrink-0"
+                onClick={() => setShowAddClientModal(true)}
+                className="w-16 h-16 bg-blue-600 text-white rounded-[2rem] shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all shrink-0 group/btn"
                 title="নতুন ক্লায়েন্ট যোগ করুন"
             >
-                <Plus size={24} />
+                <Plus size={24} className="group-hover/btn:rotate-90 transition-transform" />
             </button>
         </div>
+
+        {showAddClientModal && (
+            <div className="fixed inset-0 bg-slate-950/40 backdrop-blur-md z-[500] flex items-center justify-center p-4">
+                <div className="bg-white dark:bg-slate-900 w-full max-w-md rounded-[2.5rem] shadow-3xl border border-slate-100 dark:border-slate-800 p-10 animate-fade-up">
+                    <div className="flex justify-between items-center mb-10">
+                        <div className="space-y-1">
+                            <h3 className="text-2xl font-black italic uppercase tracking-tighter">New <span className="text-blue-600">Client Entry</span></h3>
+                            <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Register B2B Partner</p>
+                        </div>
+                        <button onClick={() => setShowAddClientModal(false)} className="p-3 bg-slate-50 dark:bg-slate-800 rounded-full hover:bg-rose-500 hover:text-white transition-all"><X size={18} /></button>
+                    </div>
+
+                    <form onSubmit={(e) => {
+                        e.preventDefault();
+                        const f = e.target;
+                        const name = f.name.value.trim();
+                        if (!name) return;
+                        const newClient = { id: name.toUpperCase().replace(/\s/g, ''), name: name, password: f.pass.value || '123', role: 'client' };
+                        setMasterData(prev => ({ ...prev, users: [...(prev.users || []), newClient] }));
+                        showNotify(`নতুন ক্লায়েন্ট '${name}' যোগ করা হয়েছে!`, "success");
+                        setShowAddClientModal(false);
+                    }} className="space-y-6">
+                        <div className="space-y-2">
+                            <label className="text-[10px] font-black text-slate-400 uppercase ml-2 tracking-widest">Client / Company Name *</label>
+                            <input name="name" required className="premium-input !h-14 !text-lg !font-bold" placeholder="যেমন: MAHDI FASHION" />
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-[10px] font-black text-slate-400 uppercase ml-2 tracking-widest">Portal Password</label>
+                            <input name="pass" className="premium-input !h-14" placeholder="ডিফল্ট: 123" />
+                        </div>
+                        <button type="submit" className="w-full py-5 bg-blue-600 text-white rounded-2xl font-black text-xs uppercase tracking-[0.3em] shadow-2xl hover:bg-blue-700 active:scale-95 transition-all mt-4">
+                            Save Client Profile
+                        </button>
+                    </form>
+                </div>
+            </div>
+        )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredClients.length === 0 ? (
