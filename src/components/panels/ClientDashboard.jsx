@@ -670,7 +670,72 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify, logActio
         </div>
       )}
 
+      {/* ===== MY STOCK SECTION ===== */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-6">
 
+        {/* Fabric Stock (Raw Inventory) */}
+        <div className="glass-card !p-0 overflow-hidden">
+           <div className="px-5 py-4 border-b border-slate-100 flex justify-between items-center bg-amber-50/50">
+              <div className="flex items-center gap-2">
+                 <div className="w-7 h-7 bg-amber-500 text-white rounded-lg flex items-center justify-center"><Scissors size={14} /></div>
+                 <h3 className="text-xs font-black uppercase tracking-tight italic">কাপড়ের স্টক (Fabric Stock)</h3>
+              </div>
+              <span className="text-[8px] font-black text-amber-600 uppercase tracking-widest bg-amber-100 px-2 py-1 rounded-full">
+                 {materialStocks.reduce((s, m) => s + m.qty, 0).toFixed(1)} YDS
+              </span>
+           </div>
+           <div className="divide-y divide-slate-50">
+              {materialStocks.length === 0 ? (
+                 <p className="py-8 text-center text-[9px] font-black uppercase text-slate-300 tracking-widest italic">কোনো কাপড় জমা নেই</p>
+              ) : (
+                 materialStocks.map((m, i) => (
+                    <div key={i} className="px-5 py-3.5 flex justify-between items-center hover:bg-amber-50/30 transition-colors">
+                       <div>
+                          <p className="text-[10px] font-black uppercase italic text-slate-800">{m.color || 'N/A'}{m.design ? ` / ${m.design}` : ''}</p>
+                          <p className="text-[8px] font-medium text-slate-400 uppercase tracking-widest">{m.item || 'ফেব্রিক'}</p>
+                       </div>
+                       <div className="text-right">
+                          <p className={`text-base font-black tabular-nums ${m.qty < 0 ? 'text-rose-600' : 'text-amber-600'}`}>{Math.abs(m.qty).toFixed(1)}</p>
+                          <p className="text-[8px] font-black text-slate-400 uppercase">{m.unit || 'গজ'}</p>
+                       </div>
+                    </div>
+                 ))
+              )}
+           </div>
+        </div>
+
+        {/* Finished Goods Stock */}
+        <div className="glass-card !p-0 overflow-hidden">
+           <div className="px-5 py-4 border-b border-slate-100 flex justify-between items-center bg-emerald-50/50">
+              <div className="flex items-center gap-2">
+                 <div className="w-7 h-7 bg-emerald-600 text-white rounded-lg flex items-center justify-center"><Package size={14} /></div>
+                 <h3 className="text-xs font-black uppercase tracking-tight italic">রেডি মাল (Finished Stock)</h3>
+              </div>
+              <span className="text-[8px] font-black text-emerald-600 uppercase tracking-widest bg-emerald-100 px-2 py-1 rounded-full">
+                 {readyStock.reduce((s, r) => s + r.qty, 0)} PCS
+              </span>
+           </div>
+           <div className="divide-y divide-slate-50">
+              {readyStock.length === 0 ? (
+                 <p className="py-8 text-center text-[9px] font-black uppercase text-slate-300 tracking-widest italic">কোনো রেডি মাল নেই</p>
+              ) : (
+                 readyStock.map((r, i) => (
+                    <div key={i} className="px-5 py-3.5 flex justify-between items-center hover:bg-emerald-50/30 transition-colors">
+                       <div>
+                          <p className="text-[10px] font-black uppercase italic text-slate-800">{r.design}</p>
+                          <p className="text-[8px] font-medium text-slate-400 uppercase tracking-widest italic">{r.color}</p>
+                       </div>
+                       <div className="text-center">
+                          <p className="text-xl font-black text-emerald-600 tabular-nums leading-none">{r.qty}</p>
+                          <p className="text-[7px] font-black text-slate-400 uppercase">PCS</p>
+                       </div>
+                    </div>
+                 ))
+              )}
+           </div>
+        </div>
+
+      </div>
 
       <AnimatePresence>
         {showOrderModal && (
