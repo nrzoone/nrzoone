@@ -325,20 +325,7 @@ const TrackingView = ({ trackId, masterData, onClose, isDarkMode }) => {
                 </div>
 
                 <div className="flex justify-center pt-8">
-                    <button
-                        onClick={() => {
-                            const msg = `NRZO0NE FACTORY TRACKING:\n\n` +
-                                `Worker: ${item.worker}\n` +
-                                `Design: ${item.design}\n` +
-                                `Lot: #${item.lotNo}\n` +
-                                `Status: ${item.status}\n` +
-                                `Verify Link: ${window.location.href}`;
-                            window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
-                        }}
-                        className="px-10 py-6 bg-emerald-600 text-white rounded-full font-black uppercase text-xs tracking-widest shadow-2xl flex items-center gap-4 hover:scale-105 active:scale-95 transition-all"
-                    >
-                        <MessageCircle size={20} /> Share to WhatsApp
-                    </button>
+                     <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.5em] italic">INDUSTRIAL SECURITY ACTIVE // NO PUBLIC SHARE</p>
                 </div>
             </div>
         </div>
@@ -782,6 +769,7 @@ const AppContent = () => {
                             </div>
                         </div>
 
+                        {/* Floating Client Ledger Button - Only for non-clients */}
                         {activePanel !== "ClientLedger" && user?.role !== 'client' && (
                             <button 
                                 onClick={() => setActivePanel("ClientLedger")} 
@@ -792,48 +780,61 @@ const AppContent = () => {
                             </button>
                         )}
                     </main>
-                    {/* {activePanel === "Menu" && <MenuPanel masterData={masterData} setActivePanel={setActivePanel} user={user} t={t} showNotify={showNotify} />} */}
                 </div>
             )}
+            
+            {/* Multi-Utility Global Hub - RESTRICTED TO ADMIN/MANAGER - MOVED TO SIDE */}
+            {user && (user?.role === 'admin' || user?.role === 'manager') && (
+                <div className="fixed bottom-10 right-6 z-[200] flex flex-col gap-3 no-print animate-fade-left items-end">
+                    <p className="text-[7px] font-black text-slate-400 uppercase tracking-[0.5em] mb-2 rotate-90 translate-x-4">ADMIN SUITE</p>
+                    
+                    <button 
+                       onClick={() => {
+                           const num = masterData.settings?.whatsappNumber || '8801700000000';
+                           const cleaned = num.replace(/\D/g, "");
+                           const intl = cleaned.startsWith("880") ? cleaned : "880" + cleaned.replace(/^0/, "");
+                           window.open(`https://wa.me/${intl}`, '_blank');
+                       }}
+                       className="w-12 h-12 bg-emerald-500 text-white rounded-xl shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all border-2 border-white dark:border-slate-900"
+                       title="ওয়াটসঅ্যাপ সাপোর্ট"
+                    >
+                        <MessageCircle size={20} />
+                    </button>
+
+                    <button 
+                        onClick={() => setActivePanel('Notifications')}
+                        className="w-12 h-12 rounded-xl bg-white dark:bg-slate-800 shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all text-slate-950 dark:text-white relative border-2 border-white dark:border-slate-900"
+                        title="নোটিফিকেশন"
+                    >
+                        <Bell size={20} />
+                        {(masterData.notifications || []).filter(n => !n.read).length > 0 && (
+                            <span className="absolute -top-2 -right-2 w-5 h-5 bg-rose-600 text-white rounded-lg flex items-center justify-center text-[9px] font-black border-2 border-white dark:border-slate-900 shadow-lg">
+                                {(masterData.notifications || []).filter(n => !n.read).length}
+                            </span>
+                        )}
+                    </button>
+
+                    <button 
+                        onClick={() => { setIsListening(!isListening); playSound(); }}
+                        className={`w-12 h-12 rounded-xl shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all border-2 border-white dark:border-slate-900 ${isListening ? 'bg-rose-600 animate-pulse text-white' : 'bg-white dark:bg-slate-800 text-slate-950 dark:text-white'}`}
+                        title="ভয়েস কমান্ড"
+                    >
+                        <Activity size={20} />
+                    </button>
+                    
+                    <button 
+                        onClick={() => setShowQR(true)}
+                        className="w-12 h-12 rounded-xl bg-slate-950 text-white shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all border-2 border-white dark:border-slate-800"
+                        title="কিউ-আর স্ক্যানার"
+                    >
+                        <Search size={20} />
+                    </button>
+                </div>
+            )}
+
             {trackingId && <div className="fixed inset-0 z-[1000]"><TrackingView trackId={trackingId} masterData={masterData} onClose={() => setTrackingId(null)} isDarkMode={isDarkMode} /></div>}
             {showQR && <QRScanner onScanSuccess={setTrackingId} onClose={() => setShowQR(false)} />}
             {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
-            
-            {/* Multi-Utility Global Hub */}
-            <div className="fixed bottom-10 left-10 z-[200] flex flex-col gap-4 no-print">
-                <button 
-                   onClick={() => {
-                       const num = masterData.settings?.whatsappNumber || '8801700000000';
-                       const cleaned = num.replace(/\D/g, "");
-                       const intl = cleaned.startsWith("880") ? cleaned : "880" + cleaned.replace(/^0/, "");
-                       window.open(`https://wa.me/${intl}`, '_blank');
-                   }}
-                   className="w-14 h-14 bg-emerald-500 text-white rounded-2xl shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all border-4 border-white dark:border-slate-900"
-                   title="ওয়াটসঅ্যাপ সাপোর্ট"
-                >
-                    <MessageCircle size={24} />
-                </button>
-                   <button 
-                       onClick={() => setActivePanel('Notifications')}
-                       className="w-14 h-14 rounded-2xl bg-white dark:bg-slate-800 shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all text-black dark:text-white dark:text-black dark:text-white relative border-4 border-white dark:border-slate-900"
-                       title="নোটিফিকেশন"
-                   >
-                       <Bell size={24} />
-                       {(masterData.notifications || []).filter(n => !n.read).length > 0 && (
-                           <span className="absolute -top-2 -right-2 w-6 h-6 bg-rose-600 text-white rounded-xl flex items-center justify-center text-[10px] font-black animate-bounce border-2 border-white dark:border-slate-900 shadow-lg">
-                               {(masterData.notifications || []).filter(n => !n.read).length}
-                           </span>
-                       )}
-                   </button>
-
-                   <button 
-                       onClick={() => { setIsListening(!isListening); playSound(); }}
-                   className={`w-14 h-14 rounded-xl shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all border-4 border-white dark:border-slate-900 ${isListening ? 'bg-rose-600 animate-pulse text-white' : 'bg-white dark:bg-slate-800 text-black dark:text-white dark:text-black dark:text-white'}`}
-                   title="ভয়েস কমান্ড"
-                >
-                    <Activity size={24} />
-                </button>
-            </div>
         </div>
     );
 };
