@@ -175,17 +175,38 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify, logActio
     window.open(`https://wa.me/${formattedNum}?text=${encodeURIComponent(message)}`, '_blank');
   };
 
-  const handleSubmitOrder = (e) => {
+  const checkFabricStock = (color, requiredGoj) => {
+    const clientFabricLogs = (masterData.rawInventory || []).filter(item => 
+      item.client === clientName && item.color === color
+    );
+    const currentStock = clientFabricLogs.reduce((acc, curr) => 
+      curr.type === 'in' ? acc + parseFloat(curr.qty) : acc - parseFloat(curr.qty), 0
+    );
+    return { available: currentStock, isOk: currentStock >= parseFloat(requiredGoj) };
+  };
+
+  const updateMasterData = (key, data) => {
+    setMasterData(prev => ({ ...prev, [key]: data }));
+  };
+
+   const handleSubmitOrder = (e) => {
     e.preventDefault();
-    const reqId = Date.now();
     
-    // Calculate total items
+    // Calculate totals first
     const totalBorka = orderForm.sizes.reduce((s, x) => s + Number(x.borka || 0), 0);
     const totalHijab = orderForm.sizes.reduce((s, x) => s + Number(x.hijab || 0), 0);
+    const reqId = Date.now();
 
     if (totalBorka === 0 && totalHijab === 0) {
         showNotify("Pcs quantity cannot be zero!", "error");
         return;
+    }
+
+    // -- STOCK VALIDATION --
+    const validation = checkFabricStock(orderForm.color, orderForm.fabricGoj);
+    if (!validation.isOk) {
+      alert(`⛔ INSUFFICIENT FABRIC!\nColor: ${orderForm.color}\nAvailable: ${validation.available} YDS\nRequired: ${orderForm.fabricGoj} YDS`);
+      return;
     }
 
     const newRequest = {
@@ -195,28 +216,28 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify, logActio
       design: orderForm.design,
       color: orderForm.color,
       fabricGoj: Number(orderForm.fabricGoj),
-      sizes: orderForm.sizes.filter(s => s.size && (s.borka > 0 || s.hijab > 0)),
+      sizes: orderForm.sizes.filter(s => s.size && (Number(s.borka) > 0 || Number(s.hijab) > 0)),
       totalBorka,
       totalHijab,
       note: orderForm.note,
       status: 'Pending Review'
     };
 
-    // Fabric Deduction Logic
-    const fabricDeduction = Number(orderForm.fabricGoj) > 0 ? {
+    const fabricDeduction = {
         id: Date.now() + 1,
         date: new Date().toLocaleDateString("en-GB"),
         item: "ফেব্রিক রোল (Fabric)",
         client: clientName,
         qty: Number(orderForm.fabricGoj),
+        color: orderForm.color,
         type: "out",
         note: `ORDER REQ #${reqId} - ${orderForm.design}`
-    } : null;
+    };
 
     setMasterData(prev => ({
       ...prev,
       productionRequests: [newRequest, ...(prev.productionRequests || [])],
-      rawInventory: fabricDeduction ? [fabricDeduction, ...(prev.rawInventory || [])] : (prev.rawInventory || [])
+      rawInventory: [fabricDeduction, ...(prev.rawInventory || [])]
     }));
 
     setShowOrderModal(false);
@@ -446,8 +467,8 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify, logActio
 
         {showAddClientModal && (
             <div className="fixed inset-0 bg-slate-950/40 backdrop-blur-md z-[500] flex items-center justify-center p-4">
-                <div className="bg-white dark:bg-slate-900 w-full max-w-md rounded-[2.5rem] shadow-3xl border border-slate-100 dark:border-slate-800 p-10 animate-fade-up">
-                    <div className="flex justify-between items-center mb-10">
+                <div className="bg-white dark:bg-slate-900 w-full max-w-md rounded-[2.5rem] shadow-3xl border border-slate-100 dark:border-slate-800 p-8 animate-fade-up max-h-[90vh] overflow-y-auto no-scrollbar">
+                    <div className="flex justify-between items-center mb-6">
                         <div className="space-y-1">
                             <h3 className="text-2xl font-black italic uppercase tracking-tighter">New <span className="text-blue-600">Client Entry</span></h3>
                             <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Register B2B Partner</p>
@@ -460,20 +481,78 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify, logActio
                         const f = e.target;
                         const name = f.name.value.trim();
                         if (!name) return;
-                        const newClient = { id: name.toUpperCase().replace(/\s/g, ''), name: name, password: f.pass.value || '123', role: 'client' };
-                        setMasterData(prev => ({ ...prev, users: [...(prev.users || []), newClient] }));
+                        
+                        const clientId = name.toUpperCase().replace(/\s/g, '_');
+                        const phone = f.phone.value.trim();
+                        const openingBalance = Number(f.balance.value || 0);
+
+                        const newProfile = {
+                            id: clientId,
+                            name: name,
+                            owner: f.owner.value || '',
+                            phone: phone || '',
+                            address: f.address.value || '',
+                            openingBalance: openingBalance,
+                            createdAt: new Date().toLocaleDateString("en-GB")
+                        };
+
+                        const newUser = { 
+                            id: phone || clientId, 
+                            name: name, 
+                            password: f.pass.value || '123', 
+                            role: 'client' 
+                        };
+
+                        // Add opening balance transaction if > 0
+                        const openingTxn = openingBalance !== 0 ? [{
+                            id: `OB_${Date.now()}`,
+                            date: new Date().toLocaleDateString("en-GB"),
+                            client: name,
+                            type: 'BILL',
+                            amount: openingBalance,
+                            note: 'OPENING BALANCE'
+                        }] : [];
+
+                        setMasterData(prev => ({ 
+                            ...prev, 
+                            users: [...(prev.users || []), newUser],
+                            clients: [...new Set([...(prev.clients || []), name])],
+                            clientProfiles: [...(prev.clientProfiles || []), newProfile],
+                            clientTransactions: [...openingTxn, ...(prev.clientTransactions || [])]
+                        }));
+
                         showNotify(`নতুন ক্লায়েন্ট '${name}' যোগ করা হয়েছে!`, "success");
                         setShowAddClientModal(false);
-                    }} className="space-y-6">
-                        <div className="space-y-2">
-                            <label className="text-[10px] font-black text-slate-400 uppercase ml-2 tracking-widest">Client / Company Name *</label>
-                            <input name="name" required className="premium-input !h-14 !text-lg !font-bold" placeholder="যেমন: MAHDI FASHION" />
+                    }} className="space-y-4">
+                        <div className="space-y-1">
+                            <label className="text-[9px] font-black text-slate-400 uppercase ml-2 tracking-widest">Company Name *</label>
+                            <input name="name" required className="premium-input !h-12 !text-base !font-bold" placeholder="যেমন: MAHDI FASHION" />
                         </div>
-                        <div className="space-y-2">
-                            <label className="text-[10px] font-black text-slate-400 uppercase ml-2 tracking-widest">Portal Password</label>
-                            <input name="pass" className="premium-input !h-14" placeholder="ডিফল্ট: 123" />
+                        <div className="grid grid-cols-2 gap-3">
+                            <div className="space-y-1">
+                                <label className="text-[9px] font-black text-slate-400 uppercase ml-2 tracking-widest">Owner Name</label>
+                                <input name="owner" className="premium-input !h-12" placeholder="মালিকের নাম" />
+                            </div>
+                            <div className="space-y-1">
+                                <label className="text-[9px] font-black text-slate-400 uppercase ml-2 tracking-widest">Phone / WhatsApp</label>
+                                <input name="phone" className="premium-input !h-12" placeholder="017XXXXXXXX" />
+                            </div>
                         </div>
-                        <button type="submit" className="w-full py-5 bg-blue-600 text-white rounded-2xl font-black text-xs uppercase tracking-[0.3em] shadow-2xl hover:bg-blue-700 active:scale-95 transition-all mt-4">
+                        <div className="space-y-1">
+                            <label className="text-[9px] font-black text-slate-400 uppercase ml-2 tracking-widest">Address</label>
+                            <input name="address" className="premium-input !h-12" placeholder="দোকান/অফিস ঠিকানা" />
+                        </div>
+                        <div className="grid grid-cols-2 gap-3">
+                            <div className="space-y-1">
+                                <label className="text-[9px] font-black text-slate-400 uppercase ml-2 tracking-widest">Opening Balance</label>
+                                <input name="balance" type="number" className="premium-input !h-12" placeholder="বকেয়া থাকলে লিখুন" />
+                            </div>
+                            <div className="space-y-1">
+                                <label className="text-[9px] font-black text-slate-400 uppercase ml-2 tracking-widest">Portal Password</label>
+                                <input name="pass" className="premium-input !h-12" placeholder="ডিফল্ট: 123" />
+                            </div>
+                        </div>
+                        <button type="submit" className="w-full py-4 bg-blue-600 text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.3em] shadow-2xl hover:bg-blue-700 active:scale-95 transition-all mt-4 border-b-4 border-blue-900">
                             Save Client Profile
                         </button>
                     </form>
@@ -507,68 +586,39 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify, logActio
   }
 
   return (
-    <div className="min-h-screen pb-32 animate-fade-up font-outfit text-[var(--text-primary)] px-1 md:px-6">
+    <div className="app-shell pb-32 animate-fade-in">
       {isAdmin && (
         <button 
           onClick={() => setSelectedClient(null)}
-          className="mb-6 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-blue-600 hover:underline"
+          className="mb-4 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-blue-600 hover:scale-105 transition-transform"
         >
-          <ArrowLeft size={14} /> Back to Client Hub
+          <ArrowLeft size={14} /> Back to Hub
         </button>
       )}
-      {/* SaaS Compact Header */}
-      <div className="saas-card bg-slate-950 text-white !border-none relative overflow-hidden group mb-4 p-4 md:p-6 rounded-2xl shadow-xl">
-         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-blue-900/40 via-transparent to-transparent opacity-60 pointer-events-none"></div>
-         <div className="relative z-10 flex flex-col lg:flex-row justify-between items-center gap-4">
-            <div className="flex items-center gap-4">
-                <div className="w-12 h-12 md:w-14 md:h-14 bg-blue-600/20 rounded-xl flex items-center justify-center backdrop-blur-xl border border-white/10 shadow-2xl">
-                    <ShieldCheck size={24} className="text-blue-400" />
+
+      {/* SaaS Compact Profile Header */}
+      <div className="glass-card bg-slate-900 !border-none !p-6 mb-6 relative overflow-hidden group shadow-2xl">
+         <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 via-transparent to-transparent opacity-40"></div>
+         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div className="flex items-center gap-5">
+                <div className="w-16 h-16 bg-blue-600 text-white rounded-[2rem] flex items-center justify-center shadow-2xl rotate-3 group-hover:rotate-0 transition-all duration-500">
+                   <User size={32} />
                 </div>
-                <div className="text-center lg:text-left">
-                    <h2 className="text-xl md:text-2xl font-black tracking-tight uppercase leading-none mb-1 italic">
-                        B2B <span className="text-blue-500 uppercase">ARCHIVE</span>
-                    </h2>
-                    <p className="text-[7px] md:text-[8px] font-black text-white/30 uppercase tracking-[0.4em] font-mono leading-none">
-                        ENTITY: {clientName}
-                    </p>
+                <div>
+                   <h2 className="text-3xl font-black italic uppercase tracking-tighter text-white leading-none mb-2">{clientName}</h2>
+                   <div className="flex gap-2 items-center">
+                      <span className="px-2 py-0.5 bg-blue-500/20 text-blue-400 rounded text-[8px] font-black uppercase tracking-widest border border-blue-500/30 italic">Active Partner</span>
+                   </div>
                 </div>
             </div>
-            
-            {isAdmin && (
-               <div className="flex gap-2 w-full lg:w-auto flex-wrap justify-center">
-                  <button onClick={() => setShowOrderModal(true)} className="flex-1 lg:flex-none px-4 md:px-6 py-2.5 md:py-3 bg-blue-600 text-white rounded-xl text-[9px] font-black uppercase tracking-widest shadow-xl flex items-center justify-center gap-2 hover:scale-105 active:scale-95 transition-all">
-                     <ShoppingCart size={14} /> NEW ORDER
-                  </button>
-                  <button onClick={() => setShowFabricModal(true)} className="flex-1 lg:flex-none px-4 md:px-6 py-2.5 md:py-3 bg-amber-500 text-white rounded-xl text-[9px] font-black uppercase tracking-widest shadow-xl flex items-center justify-center gap-2 hover:scale-105 active:scale-95 transition-all">
-                     <Scissors size={14} /> FABRIC INWARD
-                  </button>
-                  <button onClick={() => setShowMalEntryModal(true)} className="flex-1 lg:flex-none px-4 md:px-6 py-2.5 md:py-3 bg-slate-100 text-black rounded-xl text-[9px] font-black uppercase tracking-widest shadow-xl flex items-center justify-center gap-2 hover:scale-105 active:scale-95 transition-all border border-slate-200">
-                     <Plus size={14} /> PRODUCTION
-                  </button>
-                  <button onClick={() => setShowPaymentModal(true)} className="flex-1 lg:flex-none px-4 md:px-6 py-2.5 md:py-3 bg-emerald-600 text-white rounded-xl text-[9px] font-black uppercase tracking-widest shadow-xl flex items-center justify-center gap-2 hover:scale-105 active:scale-95 transition-all">
-                     <Wallet size={14} /> PAYMENT
-                  </button>
-               </div>
-            )}
-         </div>
-      </div>
 
-      {/* High-Density Analytics HUB */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-6">
-          <div className="saas-card bg-white dark:bg-slate-900 !p-3 shadow-lg border-l-4 border-l-rose-500 rounded-xl">
-              <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-0.5 opacity-60">BALANCE DUE</p>
-              <h3 className="text-lg font-black text-[var(--text-primary)] italic tabular-nums leading-tight">৳ {financials.due.toLocaleString()}</h3>
-          </div>
-          <div className="saas-card bg-white dark:bg-slate-900 !p-3 shadow-lg border-l-4 border-l-emerald-500 rounded-xl">
-              <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-0.5 opacity-60">READY VALUE</p>
-              <h3 className="text-lg font-black text-[var(--text-primary)] italic tabular-nums leading-tight">৳ {financials.pendingValue.toLocaleString()}</h3>
-          </div>
-          <div className="saas-card bg-white dark:bg-slate-900 !p-3 shadow-lg border-l-4 border-l-blue-600 rounded-xl">
-              <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-0.5 opacity-60">TOTAL BILLED</p>
-              <h3 className="text-lg font-black text-[var(--text-primary)] italic tabular-nums leading-tight">৳ {financials.billed.toLocaleString()}</h3>
-          </div>
-          <div className="saas-card bg-white dark:bg-slate-900 !p-3 shadow-lg border-l-4 border-l-slate-950 dark:border-l-white rounded-xl">
-              <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-0.5 opacity-60">GLOBAL OUTPUT</p>
+            <div className="flex gap-2 w-full lg:w-auto flex-wrap justify-center">
+               <button onClick={() => setShowOrderModal(true)} className="flex-1 lg:flex-none px-6 py-3.5 bg-blue-600 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl flex items-center justify-center gap-2 hover:scale-105 active:scale-95 transition-all">
+                  <ShoppingCart size={16} /> NEW ORDER
+               </button>
+               <button onClick={() => setShowFabricModal(true)} className="flex-1 lg:flex-none px-6 py-3.5 bg-amber-500 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl flex items-center justify-center gap-2 hover:scale-105 active:scale-95 transition-all">
+                  <Scissors size={16} /> FABRIC INWARD
+               </button>
               <h3 className="text-lg font-black text-[var(--text-primary)] italic tabular-nums leading-tight">{totalDelivered.toLocaleString()} <span className="text-[7px] uppercase opacity-30">PCS</span></h3>
           </div>
       </div>
@@ -683,7 +733,15 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify, logActio
                           <h4 className="text-[8px] font-black uppercase text-slate-400 tracking-[0.2em] italic leading-none">Size Configuration</h4>
                           <button type="button" onClick={() => setOrderForm(p => ({...p, sizes: [...p.sizes, { size: '', borka: '', hijab: '' }]}))} className="w-7 h-7 bg-slate-950 text-white rounded-lg flex items-center justify-center hover:scale-110 shadow-md"><Plus size={12} /></button>
                        </div>
-                       <div className="space-y-2 max-h-[160px] overflow-y-auto no-scrollbar pr-1">
+                       <div className="space-y-3 max-h-[220px] overflow-y-auto no-scrollbar pr-1">
+                          {/* Grid Header */}
+                          <div className="grid grid-cols-12 gap-2 px-2">
+                             <div className="col-span-4 text-[7px] font-black uppercase text-slate-400 tracking-[0.2em] text-center">Select Size</div>
+                             <div className="col-span-3 text-[7px] font-black uppercase text-slate-400 tracking-[0.2em] text-center">Borka (Qty)</div>
+                             <div className="col-span-3 text-[7px] font-black uppercase text-slate-400 tracking-[0.2em] text-center">Hijab (Qty)</div>
+                             <div className="col-span-2"></div>
+                          </div>
+                          
                           {orderForm.sizes.map((s, idx) => (
                              <div key={idx} className="grid grid-cols-12 gap-2 items-center bg-white dark:bg-slate-900 p-2 rounded-xl border border-slate-100 dark:border-slate-800 group relative">
                                 <div className="col-span-4 flex items-center gap-2">
@@ -693,14 +751,14 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify, logActio
                                    </select>
                                 </div>
                                 <div className="col-span-3 flex items-center gap-1 px-2 border-l border-slate-100 dark:border-slate-800">
-                                   <input type="number" value={s.borka} onChange={e => { const ns = [...orderForm.sizes]; ns[idx].borka = e.target.value; setOrderForm(p => ({...p, sizes: ns})); }} className="w-full text-center text-base font-black bg-transparent border-none outline-none" placeholder="B:0" />
+                                   <input type="number" value={s.borka} onChange={e => { const ns = [...orderForm.sizes]; ns[idx].borka = e.target.value; setOrderForm(p => ({...p, sizes: ns})); }} className="w-full text-center text-sm font-black bg-transparent border-none outline-none" placeholder="0" />
                                 </div>
                                 <div className="col-span-3 flex items-center gap-1 px-2 border-l border-slate-100 dark:border-slate-800">
-                                    <input type="number" value={s.hijab} onChange={e => { const ns = [...orderForm.sizes]; ns[idx].hijab = e.target.value; setOrderForm(p => ({...p, sizes: ns})); }} className="w-full text-center text-base font-black bg-transparent border-none outline-none" placeholder="H:0" />
+                                    <input type="number" value={s.hijab} onChange={e => { const ns = [...orderForm.sizes]; ns[idx].hijab = e.target.value; setOrderForm(p => ({...p, sizes: ns})); }} className="w-full text-center text-sm font-black bg-transparent border-none outline-none" placeholder="0" />
                                 </div>
                                 <div className="col-span-2 flex justify-end">
                                    {orderForm.sizes.length > 1 && (
-                                      <button type="button" onClick={() => setOrderForm(p => ({...p, sizes: p.sizes.filter((_, i) => i !== idx)}))} className="w-7 h-7 flex items-center justify-center text-rose-500 hover:bg-rose-50 rounded-lg transition-all"><X size={12} /></button>
+                                      <button type="button" onClick={() => setOrderForm(p => ({...p, sizes: p.sizes.filter((_, i) => i !== idx)}))} className="w-7 h-7 flex items-center justify-center text-rose-500 hover:bg-rose-100 dark:hover:bg-rose-900/40 rounded-lg transition-all"><X size={12} /></button>
                                    )}
                                 </div>
                              </div>
@@ -752,6 +810,15 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify, logActio
                        <div className="space-y-1.5">
                            <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2 italic leading-none">Date</label>
                            <input name="date" type="date" className="premium-input !h-11 text-center font-black text-[10px]" defaultValue={new Date().toISOString().split('T')[0]} />
+                       </div>
+                       <div className="space-y-1.5">
+                           <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2 italic leading-none">Roll Specification (Manual)</label>
+                           <input name="rollSize" list="roll-suggestions" className="premium-input !h-11 font-black uppercase text-[10px]" placeholder="E.G. 60 GOJ" />
+                           <datalist id="roll-suggestions">
+                              <option value="60 GOJ" />
+                              <option value="90 GOJ" />
+                              <option value="100 GOJ" />
+                           </datalist>
                        </div>
                        <div className="space-y-1.5">
                            <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2 italic leading-none">Notes</label>
@@ -819,9 +886,20 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify, logActio
                           </select>
                        </div>
                    </div>
-                   <div className="space-y-1.5">
-                       <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2 italic leading-none">নোট (Note)</label>
-                       <input name="note" className="premium-input !h-11 uppercase text-[9px] font-black italic tracking-widest shadow-inner !bg-slate-50 dark:!bg-slate-800" placeholder="অতিরিক্ত তথ্য..." />
+                   <div className="grid grid-cols-2 gap-3">
+                      <div className="space-y-1.5">
+                         <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2 italic leading-none">Roll Size / Spec</label>
+                         <select name="rollSize" className="premium-input !h-11 font-black uppercase text-[10px]">
+                            <option value="">N/A</option>
+                            <option value="60M">60 MITTER</option>
+                            <option value="90M">90 MITTER</option>
+                            <option value="100M">100 MITTER</option>
+                         </select>
+                      </div>
+                      <div className="space-y-1.5">
+                          <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2 italic leading-none">নোট (Note)</label>
+                          <input name="note" className="premium-input !h-11 uppercase text-[9px] font-black italic tracking-widest shadow-inner !bg-slate-50 dark:!bg-slate-800" placeholder="অতিরিক্ত তথ্য..." />
+                      </div>
                    </div>
                    <div className="flex gap-3 pt-2">
                       <button type="button" onClick={() => setShowMaterialModal(false)} className="flex-1 py-3.5 font-black text-[9px] text-slate-400 uppercase">ABORT</button>
