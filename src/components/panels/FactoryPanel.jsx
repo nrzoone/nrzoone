@@ -183,7 +183,7 @@ const FactoryPanel = ({ masterData, setMasterData, isAdmin, isWorker, showNotify
         <div className="flex bg-slate-50 dark:bg-slate-800/50 p-1 rounded-lg w-full md:w-auto overflow-x-auto no-scrollbar">
           {isAdmin && (
             <button 
-                onClick={() => { if(window.confirm('⚠️ সাবধান! সব ফ্যাক্টরি কাজ মুছে ফেলতে চান?')) setMasterData(prev => ({ ...prev, productions: [] })) }}
+                onClick={() => { if(window.confirm('\u26a0\ufe0f \u09b8\u09be\u09ac\u09a7\u09be\u09a8! \u09b8\u09ac \u09ab\u09cd\u09af\u09be\u0995\u09cd\u099f\u09bprime \u0995\u09be\u099c \u09ae\u09c1\u099b\u09c7 \u09ab\u09c7\u09b2\u09a4\u09c7 \u099a\u09be\u09a8?')) setMasterData(prev => ({ ...prev, productions: [] })) }}
                 className="px-3 text-rose-500 hover:scale-110 transition-transform"
             >
                 <Trash2 size={16} />
@@ -210,7 +210,7 @@ const FactoryPanel = ({ masterData, setMasterData, isAdmin, isWorker, showNotify
           {!isWorker && (
             <div className="flex gap-2">
                 <button onClick={() => setShowIssueModal(true)} className="action-btn-primary !px-4 !h-9 shadow-blue-500/10 !text-[8px] !rounded-xl">
-                    <Plus size={14} /> নতুন কাজ
+                    <Plus size={14} /> \u09a8\u09a4\u09c1\u09a8 \u0995\u09be\u099c
                 </button>
             </div>
           )}
@@ -230,12 +230,12 @@ const FactoryPanel = ({ masterData, setMasterData, isAdmin, isWorker, showNotify
                     <h4 className="text-lg font-black tracking-tighter uppercase italic text-[var(--text-primary)]">{w}</h4>
                   </div>
                   <div className="bg-slate-50 dark:bg-slate-800/80 p-4 rounded-xl border border-white dark:border-slate-700 shadow-inner text-center">
-                    <p className="text-subtitle !text-[7px] mb-1.5">বকেয়া মজুরি (DUE)</p>
-                    <p className={`text-2xl font-black tracking-tighter italic ${due > 0 ? 'text-blue-600 dark:text-blue-400' : 'text-[var(--text-muted)] opacity-30'}`}>৳{due.toLocaleString()}</p>
+                    <p className="text-subtitle !text-[7px] mb-1.5">\u09ac\u0995\u09c7\u09af\u09bc\u09be \u09ae\u099c\u09c1\u09b0\u09bf (DUE)</p>
+                    <p className={`text-2xl font-black tracking-tighter italic ${due > 0 ? 'text-blue-600 dark:text-blue-400' : 'text-[var(--text-muted)] opacity-30'}`}>\u09f3{due.toLocaleString()}</p>
                   </div>
                   <div className="grid grid-cols-2 gap-2 pt-1">
-                    <button onClick={() => setLedgerModal(w)} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 py-2 px-2 rounded-lg text-[8px] font-black uppercase tracking-widest">লেজার</button>
-                    <button onClick={() => setPayModal(w)} className="bg-slate-950 text-white dark:bg-white dark:text-black py-2 px-2 rounded-lg text-[8px] font-black uppercase tracking-widest">পেমেন্ট</button>
+                    <button onClick={() => setLedgerModal(w)} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 py-2 px-2 rounded-lg text-[8px] font-black uppercase tracking-widest">\u09b2\u09c7\u099c\u09be\u09b0</button>
+                    <button onClick={() => setPayModal(w)} className="bg-slate-950 text-white dark:bg-white dark:text-black py-2 px-2 rounded-lg text-[8px] font-black uppercase tracking-widest">\u09aa\u09c7\u09ae\u09c7\u09a8\u09cd\u099f</button>
                   </div>
                 </div>
               );
@@ -249,7 +249,7 @@ const FactoryPanel = ({ masterData, setMasterData, isAdmin, isWorker, showNotify
                 <div className="p-6 bg-slate-50 dark:bg-slate-800 rounded-full mb-4">
                     <Activity size={32} strokeWidth={1} className="text-[var(--text-muted)] animate-pulse" />
                 </div>
-                <p className="text-[9px] font-black uppercase tracking-widest opacity-30">কোনো ডাটা নোড পাওয়া যায়নি</p>
+                <p className="text-[9px] font-black uppercase tracking-widest opacity-30">\u0995\u09cb\u09a8\u09cb \u09a1\u09be\u099f\u09be \u09a8\u09cb\u09a1\u09cd \u09aa\u09be\u0993\u09af\u09bc\u09be \u09af\u09be\u09af\u09bc\u09a8\u09bf</p>
               </div>
             );
           }
@@ -260,62 +260,63 @@ const FactoryPanel = ({ masterData, setMasterData, isAdmin, isWorker, showNotify
             const remaining = totalIssued - totalReceived;
 
             return (
-            <div key={item.id} className="saas-card flex flex-col h-full animate-fade-up !p-5">
-              <div className="flex justify-between items-start mb-4">
-                <div className="space-y-0.5">
-                  <p className="text-subtitle !text-[7px]">নিযুক্ত কারিগর</p>
-                  <h4 className="text-base font-black tracking-tighter uppercase italic truncate max-w-[150px] text-[var(--text-primary)]">{item.worker}</h4>
-                </div>
-                <div className="text-right">
+              <div key={item.id} className="saas-card flex flex-col h-full animate-fade-up !p-5">
+                <div className="flex justify-between items-start mb-4">
+                  <div className="space-y-0.5">
+                    <p className="text-subtitle !text-[7px]">\u09a8\u09bf\u09af\u09c1\u0995\u09cd\u09a4 \u0995\u09be\u09b0\u09bf\u0997\u09b0</p>
+                    <h4 className="text-base font-black tracking-tighter uppercase italic truncate max-w-[150px] text-[var(--text-primary)]">{item.worker}</h4>
+                  </div>
+                  <div className="text-right">
                     <div className="w-8 h-8 bg-slate-950 text-white dark:bg-white dark:text-black rounded-lg flex items-center justify-center shadow-md font-black text-[9px] italic mb-1 ml-auto">#{String(item.lotNo).slice(-3)}</div>
                     {remaining > 0 && (
-                        <span className="px-1.5 py-0.5 bg-rose-50 dark:bg-rose-900/10 text-rose-600 text-[7px] font-black rounded border border-rose-100 dark:border-rose-800 animate-pulse">
-                            বাকি: {remaining}
-                        </span>
+                      <span className="px-1.5 py-0.5 bg-rose-50 dark:bg-rose-900/10 text-rose-600 text-[7px] font-black rounded border border-rose-100 dark:border-rose-800 animate-pulse">
+                        \u09ac\u09be\u0995\u09bf: {remaining}
+                      </span>
                     )}
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-2 mb-4">
-                <div className="bg-slate-50 dark:bg-slate-800/50 p-2.5 rounded-xl border border-white dark:border-slate-800 shadow-inner">
-                  <p className="text-subtitle !text-[7px] mb-0.5">ডিজাইন কালার</p>
-                  <p className="text-[10px] font-black uppercase italic truncate text-[var(--text-primary)]">{item.color}</p>
-                </div>
-                <div className="bg-slate-50 dark:bg-slate-800/50 p-2.5 rounded-xl border border-white dark:border-slate-800 shadow-inner">
-                  <p className="text-subtitle !text-[7px] mb-0.5">সাইজ ভেরিয়েন্ট</p>
-                  <p className="text-[10px] font-black uppercase italic truncate text-[var(--text-primary)]">{item.size}</p>
-                </div>
-              </div>
-
-              <div className="flex justify-between items-center py-4 border-y border-slate-100 dark:border-slate-800 border-dashed mb-4">
-                <div>
-                  <p className="text-subtitle !text-[7px] mb-0.5">মোট পরিমাণ</p>
-                  <p className="text-2xl font-black italic tracking-tighter text-[var(--text-primary)]">
-                    {(Number(item.issueBorka) || 0) + (Number(item.issueHijab) || 0)} 
-                    <span className="text-[8px] text-[var(--text-muted)] ml-1.5 uppercase tracking-widest font-bold">Pcs</span>
-                  </p>
-                </div>
-                <div className="text-right">
-                  <p className="text-subtitle !text-[7px] mb-0.5">মজুরি হার</p>
-                  <p className="text-xl font-black italic text-emerald-500 tracking-tighter">৳{item.rate}</p>
-                </div>
-              </div>
-
-              <div className="flex gap-2 mt-auto">
-                <button onClick={() => setPrintSlip(item)} className="w-10 h-10 bg-slate-50 dark:bg-slate-800 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-950 dark:hover:text-white" title="Print Slip"><Printer size={16} /></button>
-                {item.status === 'Pending' ? (
-                  <button onClick={() => setReceiveModal(item)} className="flex-1 bg-slate-950 text-white dark:bg-white dark:text-black rounded-lg text-[9px] font-black uppercase tracking-widest italic">জমা নিন (REC)</button>
-                ) : (
-                  <div className="flex-1 h-10 bg-emerald-50 text-emerald-600 dark:bg-emerald-900/10 dark:text-emerald-400 rounded-lg flex items-center justify-center font-black uppercase text-[8px] tracking-widest italic border border-emerald-100 shadow-sm">
-                    RECEIVED {item.receiveDate}
                   </div>
-                )}
-                {isAdmin && (
-                  <button onClick={() => { if(window.confirm('মুছে ফেলতে চান?')) setMasterData(prev => ({ ...prev, productions: prev.productions.filter(p => p.id !== item.id) })) }} className="w-10 h-10 flex items-center justify-center text-rose-500 hover:bg-rose-50 rounded-lg"><Trash2 size={16} /></button>
-                )}
+                </div>
+
+                <div className="grid grid-cols-2 gap-2 mb-4">
+                  <div className="bg-slate-50 dark:bg-slate-800/50 p-2.5 rounded-xl border border-white dark:border-slate-800 shadow-inner">
+                    <p className="text-subtitle !text-[7px] mb-0.5">\u09a1\u09bf\u099c\u09be\u098 tapes \u0995\u09be\u09b2\u09be\u09b0</p>
+                    <p className="text-[10px] font-black uppercase italic truncate text-[var(--text-primary)]">{item.color}</p>
+                  </div>
+                  <div className="bg-slate-50 dark:bg-slate-800/50 p-2.5 rounded-xl border border-white dark:border-slate-800 shadow-inner">
+                    <p className="text-subtitle !text-[7px] mb-0.5">\u09b8\u09be\u0987\u099c \u09ad\u09c7\u09b0\u09bf\u09af\u09bc\u09c7\u09a8\u09cd\u099f</p>
+                    <p className="text-[10px] font-black uppercase italic truncate text-[var(--text-primary)]">{item.size}</p>
+                  </div>
+                </div>
+
+                <div className="flex justify-between items-center py-4 border-y border-slate-100 dark:border-slate-800 border-dashed mb-4">
+                  <div>
+                    <p className="text-subtitle !text-[7px] mb-0.5">\u09ae\u09cb\u099f \u09aa\u09b0\u09bf\u09ae\u09be\u09a3</p>
+                    <p className="text-2xl font-black italic tracking-tighter text-[var(--text-primary)]">
+                      {(Number(item.issueBorka) || 0) + (Number(item.issueHijab) || 0)} 
+                      <span className="text-[8px] text-[var(--text-muted)] ml-1.5 uppercase tracking-widest font-bold">Pcs</span>
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-subtitle !text-[7px] mb-0.5">\u09ae\u099c\u09c1\u09b0\u09bf \u09b9\u09be\u09b0</p>
+                    <p className="text-xl font-black italic text-emerald-500 tracking-tighter">\u09f3{item.rate}</p>
+                  </div>
+                </div>
+
+                <div className="flex gap-2 mt-auto">
+                  <button onClick={() => setPrintSlip(item)} className="w-10 h-10 bg-slate-50 dark:bg-slate-800 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-950 dark:hover:text-white" title="Print Slip"><Printer size={16} /></button>
+                  {item.status === 'Pending' ? (
+                    <button onClick={() => setReceiveModal(item)} className="flex-1 bg-slate-950 text-white dark:bg-white dark:text-black rounded-lg text-[9px] font-black uppercase tracking-widest italic">\u099c\u09ae\u09be \u09a8\u09bf\u09a8 (REC)</button>
+                  ) : (
+                    <div className="flex-1 h-10 bg-emerald-50 text-emerald-600 dark:bg-emerald-900/10 dark:text-emerald-400 rounded-lg flex items-center justify-center font-black uppercase text-[8px] tracking-widest italic border border-emerald-100 shadow-sm">
+                      RECEIVED {item.receiveDate}
+                    </div>
+                  )}
+                  {isAdmin && (
+                    <button onClick={() => { if(window.confirm('\u09ae\u09c1\u099b\u09c7 \u09ab\u09c7\u09b2\u09a4\u09c7 \u099a\u09be\u09a8?')) setMasterData(prev => ({ ...prev, productions: prev.productions.filter(p => p.id !== item.id) })) }} className="w-10 h-10 flex items-center justify-center text-rose-500 hover:bg-rose-50 rounded-lg"><Trash2 size={16} /></button>
+                  )}
+                </div>
               </div>
             );
-          })}
+          });
         })()}
       </div>
 
@@ -325,11 +326,11 @@ const FactoryPanel = ({ masterData, setMasterData, isAdmin, isWorker, showNotify
           <div className="fixed inset-0 z-[1000] bg-slate-950/60 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto no-scrollbar">
             <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-white dark:bg-slate-900 w-full max-w-2xl rounded-3xl shadow-2xl p-6 md:p-10 relative border border-slate-100 my-auto">
               <button onClick={() => setShowIssueModal(false)} className="absolute top-6 right-6 text-slate-400"><X size={20} /></button>
-              <h2 className="text-2xl font-black uppercase italic mb-8 tracking-tighter text-center">নতুন কাজ <span className="text-blue-600 underline">ইস্যু করুন</span></h2>
+              <h2 className="text-2xl font-black uppercase italic mb-8 tracking-tighter text-center">\u09a8\u09a4\u09c1\u09a8 \u0995\u09be\u099c <span className="text-blue-600 underline">\u0987\u09b8\u09cd\u09af\u09c1 \u0995\u09b0\u09c1\u09a8</span></h2>
               
               <div className="bg-blue-600/5 p-5 rounded-2xl border border-blue-500/10 mb-8 flex flex-col items-center gap-4">
                 <div className="w-full space-y-2">
-                  <label className="text-[9px] font-black uppercase text-blue-600 tracking-widest ml-2 italic">মাস্টার লট সিন্ক্রোনাইজ করুন (SCAN/SEARCH)</label>
+                  <label className="text-[9px] font-black uppercase text-blue-600 tracking-widest ml-2 italic">\u09ae\u09be\u09b8\u09cd\u099f\u09be\u09b0 \u09b2\u099f \u09b8\u09bf\u09a8\u09cd\u0995\u09cd\u09b0\u09cb\u09a8\u09be\u0987\u099c \u0995\u09b0\u09c1\u09a8 (SCAN/SEARCH)</label>
                   <div className="relative">
                     <Search size={16} className="absolute left-6 top-1/2 -translate-y-1/2 text-blue-600" />
                     <input className="premium-input !h-14 !pl-14 !text-xl !font-black !bg-white border-blue-200" placeholder="ENTER LOT NO..." value={lotSearch} onChange={(e) => handleLotSearch(e.target.value)} />
@@ -340,29 +341,29 @@ const FactoryPanel = ({ masterData, setMasterData, isAdmin, isWorker, showNotify
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-6">
                   <div>
-                    <label className="text-[10px] font-black uppercase text-slate-400 ml-4">কারিগর</label>
+                    <label className="text-[10px] font-black uppercase text-slate-400 ml-4">\u0995\u09be\u09b0\u09bf\u0997\u09b0</label>
                     <select className="premium-input !h-14 font-black uppercase" value={entryData.worker} onChange={(e) => setEntryData(p => ({ ...p, worker: e.target.value }))}>
-                      <option value="">কারিগর নির্বাচন করুন...</option>
+                      <option value="">\u0995\u09be\u09b0\u09bf\u0997\u09b0 \u09a8\u09bf\u09b0\u09cd\u09ac\u09be\u099a\u09a8 \u0995\u09b0\u09c1\u09a8...</option>
                       {workers.map(w => <option key={w} value={w}>{w}</option>)}
                     </select>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="text-[10px] font-black uppercase text-slate-400 ml-4">ডিজাইন</label>
+                      <label className="text-[10px] font-black uppercase text-slate-400 ml-4">\u09a1\u09bf\u099c\u09be\u0987\u09a8</label>
                       <input className="premium-input !h-14 font-black uppercase" value={entryData.design} disabled />
                     </div>
                     <div>
-                      <label className="text-[10px] font-black uppercase text-slate-400 ml-4">লট নম্বর</label>
+                      <label className="text-[10px] font-black uppercase text-slate-400 ml-4">\u09b2\u099f \u09a8\u09ae\u09cd\u09ac\u09b0</label>
                       <input className="premium-input !h-14 font-black uppercase" value={entryData.lotNo} disabled />
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="relative">
-                      <label className="text-[10px] font-black uppercase text-slate-400 ml-4">উইথ বোরকা (PCS)</label>
+                      <label className="text-[10px] font-black uppercase text-slate-400 ml-4">\u098a\u0987\u09a5 \u09ac\u09cb\u09b0\u0995\u09be (PCS)</label>
                       <input type="number" className="premium-input !h-14 font-black text-center" value={entryData.issueBorka} onChange={(e) => setEntryData(p => ({ ...p, issueBorka: e.target.value }))} placeholder="0" />
                     </div>
                     <div className="relative">
-                      <label className="text-[10px] font-black uppercase text-slate-400 ml-4">উইথ হিজাব (PCS)</label>
+                      <label className="text-[10px] font-black uppercase text-slate-400 ml-4">\u098a\u0987\u09a5 \u09b9\u09bf\u099c\u09be\u09ac (PCS)</label>
                       <input type="number" className="premium-input !h-14 font-black text-center" value={entryData.issueHijab} onChange={(e) => setEntryData(p => ({ ...p, issueHijab: e.target.value }))} placeholder="0" />
                     </div>
                   </div>
@@ -370,28 +371,28 @@ const FactoryPanel = ({ masterData, setMasterData, isAdmin, isWorker, showNotify
                 <div className="space-y-6">
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="text-[10px] font-black uppercase text-slate-400 ml-4">কালার</label>
+                      <label className="text-[10px] font-black uppercase text-slate-400 ml-4">\u0995\u09be\u09b2\u09be\u09b0</label>
                       <input className="premium-input !h-14 font-black uppercase" value={entryData.color} disabled />
                     </div>
                     <div>
-                      <label className="text-[10px] font-black uppercase text-slate-400 ml-4">সাইজ</label>
+                      <label className="text-[10px] font-black uppercase text-slate-400 ml-4">\u09b8\u09be\u0987\u099c</label>
                       <input className="premium-input !h-14 font-black uppercase" value={entryData.size} disabled />
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="text-[10px] font-black uppercase text-slate-400 ml-4">মজুরি হার (RATE)</label>
+                      <label className="text-[10px] font-black uppercase text-slate-400 ml-4">\u09ae\u099c\u09c1\u09b0\u09bf \u09b9\u09be\u09b0 (RATE)</label>
                       <input className="premium-input !h-14 font-black !text-emerald-500" value={entryData.rate} onChange={(e) => setEntryData(p => ({ ...p, rate: e.target.value }))} />
                     </div>
                     <div>
-                      <label className="text-[10px] font-black uppercase text-slate-400 ml-4">তারিখ</label>
+                      <label className="text-[10px] font-black uppercase text-slate-400 ml-4">\u09a4\u09be\u09b0\u09bf\u0996</label>
                       <input type="date" className="premium-input !h-14 font-black italic" value={entryData.date} onChange={(e) => setEntryData(p => ({ ...p, date: e.target.value }))} />
                     </div>
                   </div>
-                  <textarea className="premium-input !h-16 pt-3 font-black uppercase italic" placeholder="বিঃ দ্রঃ / নোট..." value={entryData.note} onChange={(e) => setEntryData(p => ({ ...p, note: e.target.value }))} />
+                  <textarea className="premium-input !h-16 pt-3 font-black uppercase italic" placeholder="\u09ac\u09bf\u003a \u09a6\u09cd\u09b0\u003a / \u09a8\u09cb\u099f..." value={entryData.note} onChange={(e) => setEntryData(p => ({ ...p, note: e.target.value }))} />
                 </div>
               </div>
-              <button onClick={saveIssue} className="w-full mt-8 py-5 bg-slate-950 text-white rounded-2xl font-black uppercase text-[10px] tracking-widest italic shadow-xl">নিশ্চিত করুন (ISSUE TASK)</button>
+              <button onClick={saveIssue} className="w-full mt-8 py-5 bg-slate-950 text-white rounded-2xl font-black uppercase text-[10px] tracking-widest italic shadow-xl">\u09a8\u09bf\u09binit \u0995\u09b0\u09c1\u09a8 (ISSUE TASK)</button>
             </motion.div>
           </div>
         )}
@@ -400,23 +401,23 @@ const FactoryPanel = ({ masterData, setMasterData, isAdmin, isWorker, showNotify
           <div className="fixed inset-0 z-[1000] bg-slate-950/40 backdrop-blur-md flex items-center justify-center p-4">
             <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-white dark:bg-slate-900 w-full max-w-md rounded-3xl shadow-2xl p-8 relative">
               <button onClick={() => setReceiveModal(null)} className="absolute top-6 right-6 text-slate-400"><X size={20} /></button>
-              <h2 className="text-xl font-black uppercase italic mb-8 text-center">{receiveModal.worker} <span className="text-emerald-500">জমা নিন</span></h2>
+              <h2 className="text-xl font-black uppercase italic mb-8 text-center">{receiveModal.worker} <span className="text-emerald-500">\u099c\u09ae\u09be \u09a8\u09bf\u09a8</span></h2>
               <div className="space-y-6">
                  <div className="grid grid-cols-2 gap-4">
                      <div>
-                        <label className="text-[10px] font-black uppercase text-slate-400 ml-4 italic">প্রাপ্ত বোরকা (BORKA RECV)</label>
+                        <label className="text-[10px] font-black uppercase text-slate-400 ml-4 italic">\u09aa\u09cd\u09b0\u09be\u09aa\u09cd\u09a4 \u09ac\u09cb\u09b0\u0995\u09be (BORKA RECV)</label>
                         <input type="number" id="rec_borka" className="premium-input !h-14 font-black text-center" defaultValue={receiveModal.issueBorka} />
                      </div>
                      <div>
-                        <label className="text-[10px] font-black uppercase text-slate-400 ml-4 italic">প্রাপ্ত হিজাব (HIJAB RECV)</label>
+                        <label className="text-[10px] font-black uppercase text-slate-400 ml-4 italic">\u09aa\u09cd\u09b0\u09be\u09aa\u09cd\u09a4 \u09b9\u09bf\u099c\u09be\u09ac (HIJAB RECV)</label>
                         <input type="number" id="rec_hijab" className="premium-input !h-14 font-black text-center" defaultValue={receiveModal.issueHijab} />
                      </div>
                  </div>
                  <div>
-                    <label className="text-[10px] font-black uppercase text-slate-400 ml-4 italic">গ্রহণের তারিখ (RECEIVE DATE)</label>
+                    <label className="text-[10px] font-black uppercase text-slate-400 ml-4 italic">\u0997\u09cd\u09b0\u09b9\u09a3\u09c7\u09b0 \u09a4\u09be\u09b0\u09bf\u0996 (RECEIVE DATE)</label>
                     <input type="date" id="rec_date" className="premium-input !h-14 font-black italic" defaultValue={new Date().toISOString().split('T')[0]} />
                  </div>
-                 <button onClick={() => setReceive(receiveModal.id, document.getElementById('rec_date').value, document.getElementById('rec_borka').value, document.getElementById('rec_hijab').value)} className="w-full py-4 bg-emerald-500 text-white rounded-xl font-black uppercase text-[10px] tracking-widest italic shadow-lg">জমা সম্পন্ন করুন (CONFIRM)</button>
+                 <button onClick={() => setReceive(receiveModal.id, document.getElementById('rec_date').value, document.getElementById('rec_borka').value, document.getElementById('rec_hijab').value)} className="w-full py-4 bg-emerald-500 text-white rounded-xl font-black uppercase text-[10px] tracking-widest italic shadow-lg">\u099c\u09ae\u09be \u09b8\u09ae\u09cd\u09aa\u09a8\u09cd\u09a8 \u0995\u09b0\u09c1\u09a8 (CONFIRM)</button>
               </div>
             </motion.div>
           </div>
@@ -426,17 +427,17 @@ const FactoryPanel = ({ masterData, setMasterData, isAdmin, isWorker, showNotify
           <div className="fixed inset-0 z-[1000] bg-slate-950/40 backdrop-blur-md flex items-center justify-center p-4">
              <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-white dark:bg-slate-900 w-full max-w-md rounded-3xl shadow-2xl p-8 relative">
                <button onClick={() => setPayModal(null)} className="absolute top-6 right-6 text-slate-400"><X size={20} /></button>
-               <h2 className="text-xl font-black uppercase italic mb-8 text-center">{payModal} <span className="text-blue-600">পেমেন্ট দিন</span></h2>
+               <h2 className="text-xl font-black uppercase italic mb-8 text-center">{payModal} <span className="text-blue-600">\u09aa\u09c7\u09ae\u09c7\u09a8\u09cd\u099f \u09a6\u09bf\u09a8</span></h2>
                <div className="space-y-6">
                   <div className="bg-slate-50 dark:bg-slate-800 p-6 rounded-2xl border border-dashed border-slate-200 text-center">
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">প্রদেয় বকেয়া</p>
-                    <p className="text-4xl font-black tracking-tighter italic">৳{getWorkerDue(payModal).toLocaleString()}</p>
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">\u09aa\u09cd\u09b0\u09a6\u09c7\u09af\u09bc \u09ac\u0995\u09c7\u09af\u09bc\u09be</p>
+                    <p className="text-4xl font-black tracking-tighter italic">\u09f3{getWorkerDue(payModal).toLocaleString()}</p>
                   </div>
                   <div>
-                    <label className="text-[10px] font-black uppercase text-slate-400 ml-4 italic">পেমেন্ট অ্যামাউন্ট (৳)</label>
+                    <label className="text-[10px] font-black uppercase text-slate-400 ml-4 italic">\u09aa\u09c7\u09ae\u09c7\u09a8\u09cd\u099f \u0985\u09cd\u09af\u09be\u09ae\u09be\u098a\u09a8\u09cd\u099f (\u09f3)</label>
                     <input type="number" id="pay_amt" className="premium-input !h-16 !text-3xl font-black text-center" defaultValue={getWorkerDue(payModal)} />
                   </div>
-                  <button onClick={() => setPayment(payModal, document.getElementById('pay_amt').value)} className="w-full py-5 bg-slate-950 text-white rounded-2xl font-black uppercase text-[10px] tracking-widest italic shadow-xl">পেমেন্ট নিশ্চিত করুন (SYNC)</button>
+                  <button onClick={() => setPayment(payModal, document.getElementById('pay_amt').value)} className="w-full py-5 bg-slate-950 text-white rounded-2xl font-black uppercase text-[10px] tracking-widest italic shadow-xl">\u09aa\u09c7\u09ae\u09c7\u09a8\u09cd\u099f \u09a8\u09bf\u09binit \u0995\u09b0\u09c1\u09a8 (SYNC)</button>
                </div>
              </motion.div>
           </div>
