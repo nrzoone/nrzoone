@@ -100,7 +100,33 @@ const Overview = ({ masterData, stats: propStats, setActivePanel, t, user, syncS
                         bg: "bg-indigo-50 dark:bg-indigo-900/10" 
                     },
                     { label: "পেন্ডিং লট", value: (masterData.productions || []).filter(p => p.status === 'Pending').length, trend: "-2.1%", icon: Package, id: "Cutting", color: "text-amber-600", bg: "bg-amber-50 dark:bg-amber-900/10" }
-                ].map((kpi, idx) => (
+                ].concat([
+                    { 
+                        label: "মোট ফেব্রিক স্টক (গজ)", 
+                        value: (() => {
+                            if (!masterData || !masterData.rawInventory) return "0.0";
+                            const logs = masterData.rawInventory || [];
+                            const total = logs.reduce((acc, curr) => 
+                                curr.type === 'in' ? acc + parseFloat(curr.qty || 0) : acc - parseFloat(curr.qty || 0), 0
+                            );
+                            return total.toFixed(1);
+                        })(), 
+                        trend: "Inventory", 
+                        icon: Scissors, 
+                        id: "Cutting", 
+                        color: "text-amber-600", 
+                        bg: "bg-amber-50 dark:bg-amber-900/10" 
+                    },
+                    { 
+                        label: "তৈরি মাল স্টক (পিস)", 
+                        value: masterData?.finishedStock ? masterData.finishedStock.reduce((acc, curr) => acc + (Number(curr.qty) || 0), 0) : 0, 
+                        trend: "Ready", 
+                        icon: Package, 
+                        id: "ClientLedger", 
+                        color: "text-emerald-600", 
+                        bg: "bg-emerald-50 dark:bg-emerald-900/10" 
+                    }
+                ]).map((kpi, idx) => (
                     <div key={idx} className="saas-card group cursor-pointer !p-5" onClick={() => setActivePanel(kpi.id)}>
                         <div className="flex justify-between items-start mb-4">
                             <div className={`w-10 h-10 ${kpi.bg} ${kpi.color} rounded-xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110 shadow-sm`}>

@@ -586,7 +586,7 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify, logActio
   }
 
   return (
-    <div className="app-shell pb-32 animate-fade-in">
+    <div className="app-shell premium-shell pb-32 animate-fade-in">
       {isAdmin && (
         <button 
           onClick={() => setSelectedClient(null)}

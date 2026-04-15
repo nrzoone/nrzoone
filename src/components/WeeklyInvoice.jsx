@@ -54,7 +54,7 @@ const WeeklyInvoice = ({ masterData, user, logAction, showNotify, setActivePanel
                 return p.worker === name && p.type === selectedDept && p.status === 'Received' && pDate >= range.saturday && pDate <= range.thursday;
             });
             const totalBill = items.reduce((acc, b) => {
-                const design = masterData.designs.find(d => d.name === b.design);
+                const design = (masterData.designs || []).find(d => d.name === b.design);
                 const netBorka = Number(b.receivedBorka || 0);
                 const netHijab = Number(b.receivedHijab || 0);
                 if (selectedDept === 'sewing') {

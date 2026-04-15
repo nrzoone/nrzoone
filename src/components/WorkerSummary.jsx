@@ -56,7 +56,7 @@ const WorkerSummary = ({ masterData, setMasterData, showNotify, user, logAction,
             const totalShortage = history.reduce((a, b) => a + Number(b.totalShortage || 0), 0);
             const totalPenalty = history.reduce((acc, b) => acc + Number(b.penalty || 0), 0);
             const totalBill = history.reduce((acc, b) => {
-                const design = masterData.designs.find(d => d.name === b.design);
+                const design = (masterData.designs || []).find(d => d.name === b.design);
                 const netBorka = Number(b.receivedBorka || 0);
                 const netHijab = Number(b.receivedHijab || 0);
                 let earnings = 0;
