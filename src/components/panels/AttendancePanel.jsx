@@ -473,8 +473,11 @@ const AttendancePanel = ({
       <div className="bg-white dark:bg-slate-900 !p-1.5 flex flex-col md:flex-row items-center justify-between gap-4 rounded-[var(--radius-saas)] border border-[var(--border)] shadow-[var(--shadow-card)]">
         <div className="flex bg-slate-50 dark:bg-slate-800/50 p-1 rounded-xl w-full md:w-auto overflow-x-auto no-scrollbar">
           {[
-            { id: 'monthly', label: 'মাসিক STAFF' },
+            { id: 'monthly', label: 'MONTHLY' },
+            { id: 'sewing', label: 'SWING' },
+            { id: 'stone', label: 'STONE' },
             { id: 'office', label: 'OFFICE' },
+            { id: 'admin', label: 'ADMIN' },
             { id: 'cutting', label: 'CUTTING' },
             { id: 'pata', label: 'PATA HUB' }
           ].map(dept => (
