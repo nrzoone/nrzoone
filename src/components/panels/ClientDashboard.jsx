@@ -8,7 +8,7 @@ import {
   BarChart2, ArrowRight, ArrowUpRight
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import jsPDF from "jspdf";
+import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 
 const ClientDashboard = ({ masterData, user, setMasterData, showNotify, logAction }) => {
