@@ -254,14 +254,26 @@ const FactoryPanel = ({ masterData, setMasterData, isAdmin, isWorker, showNotify
             );
           }
 
-          return entries.map((item) => (
+          return entries.map((item) => {
+            const totalIssued = (Number(item.issueBorka) || 0) + (Number(item.issueHijab) || 0);
+            const totalReceived = (Number(item.receivedBorka) || 0) + (Number(item.receivedHijab) || 0);
+            const remaining = totalIssued - totalReceived;
+
+            return (
             <div key={item.id} className="saas-card flex flex-col h-full animate-fade-up !p-5">
               <div className="flex justify-between items-start mb-4">
                 <div className="space-y-0.5">
                   <p className="text-subtitle !text-[7px]">নিযুক্ত কারিগর</p>
                   <h4 className="text-base font-black tracking-tighter uppercase italic truncate max-w-[150px] text-[var(--text-primary)]">{item.worker}</h4>
                 </div>
-                <div className="w-8 h-8 bg-slate-950 text-white dark:bg-white dark:text-black rounded-lg flex items-center justify-center shadow-md font-black text-[9px] italic">#{String(item.lotNo).slice(-3)}</div>
+                <div className="text-right">
+                    <div className="w-8 h-8 bg-slate-950 text-white dark:bg-white dark:text-black rounded-lg flex items-center justify-center shadow-md font-black text-[9px] italic mb-1 ml-auto">#{String(item.lotNo).slice(-3)}</div>
+                    {remaining > 0 && (
+                        <span className="px-1.5 py-0.5 bg-rose-50 dark:bg-rose-900/10 text-rose-600 text-[7px] font-black rounded border border-rose-100 dark:border-rose-800 animate-pulse">
+                            বাকি: {remaining}
+                        </span>
+                    )}
+                </div>
               </div>
 
               <div className="grid grid-cols-2 gap-2 mb-4">
@@ -302,8 +314,8 @@ const FactoryPanel = ({ masterData, setMasterData, isAdmin, isWorker, showNotify
                   <button onClick={() => { if(window.confirm('মুছে ফেলতে চান?')) setMasterData(prev => ({ ...prev, productions: prev.productions.filter(p => p.id !== item.id) })) }} className="w-10 h-10 flex items-center justify-center text-rose-500 hover:bg-rose-50 rounded-lg"><Trash2 size={16} /></button>
                 )}
               </div>
-            </div>
-          ));
+            );
+          })}
         })()}
       </div>
 
