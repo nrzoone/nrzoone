@@ -1460,7 +1460,7 @@ const SettingsPanel_V2 = ({
                 <select id="new-user-role" className="premium-input !h-12 !text-[10px] !font-bold">
                   <option value="manager">ম্যানেজার (Manager)</option>
                   <option value="client">ক্লায়েন্ট (B2B Client)</option>
-                  <option value="admin" disabled>অ্যাডমিন (Restricted)</option>
+                  <option value="admin">অ্যাডমিন (Admin Access)</option>
                 </select>
               </div>
               <div className="space-y-1">

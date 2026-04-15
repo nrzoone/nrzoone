@@ -58,6 +58,9 @@ const AttendancePanel = ({
   }, [masterData.workerCategories, selectedDepartment]);
 
   const getWorkerWage = (worker) => {
+    // Only 'monthly' and 'office' workers get wages based on attendance
+    if (selectedDepartment !== 'monthly' && selectedDepartment !== 'office') return 0;
+    
     const monthlySalary =
       masterData.workerWages?.[selectedDepartment]?.[worker] || 0;
     return Math.round(monthlySalary / 30);
@@ -204,7 +207,13 @@ const AttendancePanel = ({
     const halfDay = todayAttendance.filter(
       (a) => a.status === "half-day",
     ).length;
-    const wages = todayAttendance.reduce((sum, a) => sum + (a.wage || 0), 0);
+    const wages = todayAttendance.reduce((sum, a) => {
+        // Double check: only sum wages for monthly/office stakeholders
+        if (a.department === 'monthly' || a.department === 'office') {
+            return sum + (a.wage || 0);
+        }
+        return sum;
+    }, 0);
     return { present, halfDay, wages };
   }, [todayAttendance]);
 

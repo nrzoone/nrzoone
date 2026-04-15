@@ -404,6 +404,14 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
 
                             <div className="flex gap-3 mt-auto">
                                 <button onClick={() => setPrintSlip(item)} className="w-12 h-12 bg-white dark:bg-slate-800 border border-slate-100 rounded-xl flex items-center justify-center shadow-md hover:border-black transition-all"><Printer size={18} /></button>
+                                {isAdmin && (
+                                    <button 
+                                      onClick={() => { if(window.confirm('মুছে ফেলতে চান?')) setMasterData(prev => ({ ...prev, pataEntries: prev.pataEntries.filter(e => e.id !== item.id) })) }} 
+                                      className="w-12 h-12 bg-rose-50 text-rose-500 rounded-xl flex items-center justify-center border border-rose-100 hover:bg-rose-500 hover:text-white transition-all shadow-sm"
+                                    >
+                                      <Trash2 size={18} />
+                                    </button>
+                                )}
                                 {item.status === 'Pending' ? (
                                     <button onClick={() => setReceiveModal(item)} className="flex-1 h-12 bg-slate-950 text-white dark:bg-white dark:text-slate-950 rounded-xl font-black uppercase tracking-widest text-[9px] italic shadow-md hover:bg-emerald-500 transition-all">কাজ জমা (REC)</button>
                                 ) : (
