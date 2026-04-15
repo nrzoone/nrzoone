@@ -631,6 +631,58 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify, logActio
          </div>
       </div>
 
+      {/* NEW: Live Production Tracker */}
+      <div className="mb-0 animate-fade-up">
+          <div className="flex justify-between items-center mb-4 px-1">
+             <div className="space-y-0.5">
+                <h3 className="text-xl font-black italic uppercase tracking-tighter text-black dark:text-white leading-none">লাইভ প্রোডাকশন ট্র্যাকিং <span className="text-blue-600">(LIVE)</span></h3>
+                <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest italic leading-none">Real-time Manufacturing Status Pipeline</p>
+             </div>
+             <Activity className="text-blue-500 animate-pulse" size={20} />
+          </div>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+             {liveWorkflow.length === 0 ? (
+                <div className="col-span-full py-12 bg-white dark:bg-slate-900 border-2 border-dashed border-slate-100 dark:border-slate-800 rounded-3xl flex flex-col items-center justify-center space-y-3">
+                   <Boxes size={40} className="text-slate-100 dark:text-slate-800 opacity-20" />
+                   <p className="text-[10px] font-black uppercase text-slate-300 tracking-widest italic">বর্তমানে কোনো প্রোডাকশন রানিং নেই</p>
+                </div>
+             ) : (
+                liveWorkflow.map((lot, idx) => (
+                    <div key={idx} className="saas-card group relative !p-5 overflow-hidden border border-slate-100 dark:border-slate-800 hover:border-blue-500 transition-all">
+                        <div className={`absolute top-0 right-0 px-3 py-1.5 ${lot.stageColor} text-white text-[8px] font-black uppercase tracking-widest shadow-lg rounded-bl-2xl`}>
+                            {lot.currentStage}
+                        </div>
+                        <div className="space-y-4">
+                            <div>
+                                <h4 className="text-lg font-black italic uppercase tracking-tighter text-black dark:text-white leading-none truncate mb-1 pr-16">{lot.design}</h4>
+                                <p className="text-[8px] font-black text-slate-400 tracking-widest italic uppercase">LOT: #{lot.lotNo || 'PRO-LOG'}</p>
+                            </div>
+                            <div className="flex items-center gap-4">
+                               <div className="flex-1 space-y-1">
+                                  <div className="flex justify-between items-center text-[7px] font-black uppercase text-slate-400 italic">
+                                     <span>Manufacturing Progress</span>
+                                     <span>{lot.currentStage === 'ORDER_INTAKE' ? '10%' : lot.currentStage === 'CUTTING' ? '30%' : lot.currentStage === 'SEWING' ? '55%' : lot.currentStage === 'STONE' ? '75%' : lot.currentStage === 'PATA' ? '85%' : '95%'}</span>
+                                  </div>
+                                  <div className="w-full h-1.5 bg-slate-50 dark:bg-slate-800 rounded-full overflow-hidden shadow-inner">
+                                     <div 
+                                        style={{ width: lot.currentStage === 'ORDER_INTAKE' ? '10%' : lot.currentStage === 'CUTTING' ? '30%' : lot.currentStage === 'SEWING' ? '55%' : lot.currentStage === 'STONE' ? '75%' : lot.currentStage === 'PATA' ? '85%' : '95%' }} 
+                                        className={`h-full ${lot.stageColor} shadow-lg transition-all duration-1000`}
+                                      />
+                                  </div>
+                               </div>
+                            </div>
+                            <div className="flex justify-between items-center pt-2 border-t border-slate-50 dark:border-slate-800">
+                                <span className="text-[9px] font-bold text-slate-400 uppercase italic">Expected Output</span>
+                                <span className="text-sm font-black text-black dark:text-white italic">~{lot.totalBorka || lot.borka || 0} PCS</span>
+                            </div>
+                        </div>
+                    </div>
+                ))
+             )}
+          </div>
+      </div>
+
       {/* Transactions Ledger */}
       {clientTransactions.length > 0 && (
         <div className="glass-card !p-0 overflow-hidden mt-6">
