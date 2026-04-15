@@ -7,6 +7,7 @@ import {
     DollarSign,
     ChevronRight,
     Package,
+    Scissors,
 } from "lucide-react";
 import { 
   AreaChart, 
