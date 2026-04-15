@@ -426,26 +426,26 @@ const AttendancePanel = ({
             <Users size={22} />
           </div>
           <div>
-            <p className="text-3xl font-black tracking-tighter text-black dark:text-white leading-none mb-1 italic">{workers.length}</p>
-            <p className="text-subtitle">মোট কর্মী (WORKFORCE)</p>
+            <p className="text-2xl font-black tracking-tighter text-black dark:text-white leading-none mb-1 italic">{workers.length}</p>
+            <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none">মোট কর্মী (WORKFORCE)</p>
           </div>
         </div>
-        <div className="saas-card flex items-center gap-5 group">
-          <div className="w-12 h-12 bg-emerald-50 text-emerald-600 dark:bg-emerald-900/10 rounded-2xl flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
-            <UserCheck size={22} />
+        <div className="saas-card flex items-center gap-4 group">
+          <div className="w-10 h-10 bg-emerald-50 text-emerald-600 dark:bg-emerald-900/10 rounded-xl flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
+            <UserCheck size={20} />
           </div>
           <div>
-            <p className="text-3xl font-black tracking-tighter text-emerald-600 leading-none mb-1 italic">{stats.present}</p>
-            <p className="text-subtitle">আজ উপস্থিত (PRESENT)</p>
+            <p className="text-2xl font-black tracking-tighter text-emerald-600 leading-none mb-1 italic">{stats.present}</p>
+            <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none">আজ উপস্থিত (PRESENT)</p>
           </div>
         </div>
-        <div className="saas-card flex items-center gap-5 group">
-          <div className="w-12 h-12 bg-indigo-50 text-indigo-600 dark:bg-indigo-900/10 rounded-2xl flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
-            <DollarSign size={22} />
+        <div className="saas-card flex items-center gap-4 group">
+          <div className="w-10 h-10 bg-indigo-50 text-indigo-600 dark:bg-indigo-900/10 rounded-xl flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
+            <DollarSign size={20} />
           </div>
           <div>
-            <p className="text-3xl font-black tracking-tighter text-black dark:text-white leading-none mb-1 italic">৳{stats.wages.toLocaleString()}</p>
-            <p className="text-subtitle">দৈনিক মজুরি (WAGES)</p>
+            <p className="text-2xl font-black tracking-tighter text-black dark:text-white leading-none mb-1 italic">৳{stats.wages.toLocaleString()}</p>
+            <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none">দৈনিক মজুরি (WAGES)</p>
           </div>
         </div>
       </div>
@@ -519,17 +519,17 @@ const AttendancePanel = ({
             
             return (
               <div key={idx} className="saas-card flex flex-col md:flex-row justify-between items-center gap-4 group !p-4 md:!p-5 hover:border-black transition-all animate-fade-up">
-                <div className="flex items-center gap-5 flex-1 w-full md:w-auto">
-                  <div className="w-12 h-12 bg-slate-950 text-white dark:bg-white dark:text-black flex items-center justify-center text-xl font-black rounded-2xl shadow-xl transition-transform group-hover:scale-105">
+                <div className="flex items-center gap-4 flex-1 w-full md:w-auto">
+                  <div className="w-10 h-10 bg-slate-950 text-white dark:bg-white dark:text-black flex items-center justify-center text-lg font-black rounded-xl shadow-xl transition-transform group-hover:scale-105">
                     {worker[0].toUpperCase()}
                   </div>
                   <div className="space-y-1">
                     <div className="flex items-center gap-3">
-                        <h4 className="text-xl font-black tracking-tighter text-black dark:text-white uppercase leading-tight italic truncate max-w-[150px] md:max-w-[250px]">{worker}</h4>
-                        {workerId && <span className="px-2 py-0.5 bg-blue-50 dark:bg-blue-900/10 text-blue-600 text-[9px] font-black rounded-lg border border-blue-100 dark:border-blue-800">REF:{workerId}</span>}
+                        <h4 className="text-lg font-black tracking-tighter text-black dark:text-white uppercase leading-tight italic truncate max-w-[150px] md:max-w-[250px]">{worker}</h4>
+                        {workerId && <span className="px-1.5 py-0.5 bg-blue-50 dark:bg-blue-900/10 text-blue-600 text-[8px] font-black rounded border border-blue-100 dark:border-blue-800">REF:{workerId}</span>}
                     </div>
-                    <p className="text-subtitle flex items-center gap-2">
-                       <DollarSign size={10} className="text-emerald-500" /> ৳{wage.toLocaleString()} (STANDARD DAILY RATE)
+                    <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none flex items-center gap-2 italic">
+                       <DollarSign size={10} className="text-emerald-500" /> ৳{wage.toLocaleString()} (DAILY RATE)
                     </p>
                   </div>
                 </div>

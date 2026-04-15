@@ -139,8 +139,8 @@ const WorkerSummary = ({ masterData, setMasterData, showNotify, user, logAction,
                         <NRZLogo size="xs" white />
                     </div>
                     <div>
-                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-0.5 px-0.5 italic">System Intelligent</p>
-                        <h2 className="text-2xl md:text-3xl font-black uppercase tracking-tighter leading-tight text-black dark:text-white italic">
+                        <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-0.5 px-0.5 italic">System Intelligent</p>
+                        <h2 className="text-xl md:text-2xl font-black uppercase tracking-tighter leading-tight text-black dark:text-white italic">
                             কারিগর <span className="text-black dark:text-white">লেজার বুক</span>
                         </h2>
                     </div>
@@ -245,38 +245,38 @@ const WorkerSummary = ({ masterData, setMasterData, showNotify, user, logAction,
             {/* Payment / Advance Modal */}
             {showPayModal && (
                 <div className="fixed inset-0 z-[1100] bg-black/40 backdrop-blur-3xl flex items-center justify-center p-6 animate-fade-in">
-                     <form onSubmit={handleConfirmPayment} className="bg-white dark:bg-slate-900 w-full max-w-md rounded-[3rem] p-8 space-y-8 shadow-2xl border-[15px] border-slate-50 dark:border-slate-800 italic">
-                        <div className="text-center space-y-2">
-                           <div className="mx-auto w-16 h-16 bg-emerald-600 text-white rounded-2xl flex items-center justify-center shadow-lg rotate-12 mb-4 animate-pulse"><DollarSign size={28} /></div>
-                           <h3 className="text-3xl font-black italic uppercase text-black dark:text-white">নতুন দাদন বা পেমেন্ট</h3>
-                           <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{showPayModal.name} — {showPayModal.dept}</p>
+                     <form onSubmit={handleConfirmPayment} className="bg-white dark:bg-slate-900 w-full max-w-md rounded-3xl p-6 space-y-6 shadow-2xl border-4 border-slate-50 dark:border-slate-800 italic">
+                        <div className="text-center space-y-1">
+                           <div className="mx-auto w-12 h-12 bg-emerald-600 text-white rounded-xl flex items-center justify-center shadow-lg rotate-12 mb-3 animate-pulse"><DollarSign size={20} /></div>
+                           <h3 className="text-xl font-black italic uppercase text-black dark:text-white">নতুন দাদন বা পেমেন্ট</h3>
+                           <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">{showPayModal.name} — {showPayModal.dept}</p>
                         </div>
-                        <div className="space-y-8">
+                        <div className="space-y-6">
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-black dark:text-white uppercase ml-4 italic font-mono tracking-widest">পেমেন্ট ধরণ</label>
-                                    <select name="payType" className="w-full bg-slate-50 dark:bg-slate-800 h-16 px-8 rounded-2xl text-[11px] font-black uppercase tracking-widest border border-slate-100 dark:border-slate-700 shadow-inner outline-none focus:border-black transition-all italic text-black dark:text-white">
+                                    <label className="text-[9px] font-black text-black dark:text-white uppercase ml-2 italic tracking-widest">পেমেন্ট ধরণ</label>
+                                    <select name="payType" className="w-full bg-slate-50 dark:bg-slate-800 h-12 px-6 rounded-xl text-[10px] font-black uppercase tracking-widest border border-slate-100 dark:border-slate-700 shadow-inner outline-none focus:border-black transition-all italic text-black dark:text-white">
                                         <option value="Dadon">অ্যাডভান্স / দাদন (Dadon)</option>
                                         <option value="Salary">বেতন পেমেন্ট (Salary)</option>
                                     </select>
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-black dark:text-white uppercase ml-4 italic font-mono tracking-widest">তারিখ</label>
-                                    <input name="date" type="date" defaultValue={new Date().toISOString().split('T')[0]} className="w-full bg-slate-50 dark:bg-slate-800 h-16 px-8 rounded-2xl text-[11px] font-black tracking-widest border border-slate-100 dark:border-slate-700 shadow-inner outline-none focus:border-black transition-all italic text-black dark:text-white" />
+                                    <label className="text-[9px] font-black text-black dark:text-white uppercase ml-2 italic tracking-widest">তারিখ</label>
+                                    <input name="date" type="date" defaultValue={new Date().toISOString().split('T')[0]} className="w-full bg-slate-50 dark:bg-slate-800 h-12 px-6 rounded-xl text-[10px] font-black tracking-widest border border-slate-100 dark:border-slate-700 shadow-inner outline-none focus:border-black transition-all italic text-black dark:text-white" />
                                 </div>
                             </div>
-                            <div className="space-y-4">
-                                <label className="text-[10px] font-black text-slate-400 ml-4 italic font-mono tracking-widest">টাকার পরিমাণ (Amount)</label>
-                                <div className="bg-slate-950 p-6 rounded-[2rem] shadow-xl text-center relative overflow-hidden">
-                                   <div className="absolute top-0 right-0 p-6 opacity-10 text-white"><DollarSign size={80} /></div>
-                                   <div className="flex items-center justify-center text-white"><span className="text-2xl font-black text-white/20 mr-4 italic">৳</span><input name="amount" type="number" placeholder="0" className="w-full text-center text-5xl font-black bg-transparent border-none text-white outline-none leading-none h-16 italic tracking-tighter" required autoFocus /></div>
+                            <div className="space-y-3">
+                                <label className="text-[9px] font-black text-slate-400 ml-2 italic tracking-widest">টাকার পরিমাণ (Amount)</label>
+                                <div className="bg-slate-950 p-4 rounded-xl shadow-xl text-center relative overflow-hidden">
+                                   <div className="absolute top-0 right-0 p-4 opacity-10 text-white"><DollarSign size={40} /></div>
+                                   <div className="flex items-center justify-center text-white"><span className="text-xl font-black text-white/20 mr-3 italic">৳</span><input name="amount" type="number" placeholder="0" className="w-full text-center text-3xl font-black bg-transparent border-none text-white outline-none leading-none h-12 italic tracking-tighter" required autoFocus /></div>
                                 </div>
                              </div>
-                             <input name="note" placeholder="নোট থাকলে এখানে লিখুন..." className="w-full bg-slate-50 dark:bg-slate-800 h-14 px-8 rounded-xl text-[10px] font-black uppercase tracking-widest border border-slate-100 dark:border-slate-700 shadow-inner outline-none focus:border-black transition-all italic text-black dark:text-white" />
+                             <input name="note" placeholder="নোট থাকলে এখানে লিখুন..." className="w-full bg-slate-50 dark:bg-slate-800 h-11 px-6 rounded-xl text-[9px] font-black uppercase tracking-widest border border-slate-100 dark:border-slate-700 shadow-inner outline-none focus:border-black transition-all italic text-black dark:text-white" />
                         </div>
-                        <div className="flex gap-4 pt-6">
-                            <button type="button" onClick={() => setShowPayModal(null)} className="flex-1 h-20 rounded-[2.5rem] bg-slate-50 dark:bg-slate-800 text-black dark:text-white font-black uppercase text-[11px] italic">বাতিল</button>
-                            <button type="submit" className="flex-[2] h-20 rounded-[2.5rem] bg-black dark:bg-white dark:text-black text-white font-black uppercase text-[11px] tracking-widest shadow-2xl active:scale-95 transition-all italic">সংরক্ষণ করুন (Confirm)</button>
+                        <div className="flex gap-4 pt-4">
+                            <button type="button" onClick={() => setShowPayModal(null)} className="flex-1 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800 text-black dark:text-white font-black uppercase text-[10px] italic">বাতিল</button>
+                            <button type="submit" className="flex-[2] h-16 rounded-2xl bg-black dark:bg-white dark:text-black text-white font-black uppercase text-[10px] tracking-widest shadow-2xl active:scale-95 transition-all italic">সংরক্ষণ করুন (Confirm)</button>
                         </div>
                     </form>
                 </div>

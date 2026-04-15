@@ -133,15 +133,15 @@ export const getFinishedStock = (masterData, design, color, size) => {
             hijab: acc.hijab + Number(curr.receivedHijab || 0)
         }), { borka: 0, hijab: 0 });
 
-    // Fallback: If no finishing happened, maybe it's in old flow (Direct Stone/Sewing to Finish)
-    // But since we are ENFORCING the new flow capability, we simply allow 'Finishing' to be the supply.
-    // If the user hasn't done 'Finishing' entries, stock will be 0. This encourages using the new flow.
-    // WAIT: For existing data, this would break 'Available for Delivery'.
-    // COMPATIBILITY LOGIC:
-    // If there are ANY 'finishing' entries for this design, assume Full Workflow.
-    // If NO 'finishing' entries exist, use the Legacy logic (Stone/Sewing Received).
-
     const hasFinishingEntries = (masterData.productions || []).some(p => p.type === 'finishing' && p.design === design);
+
+    // 1.5 Direct Entries Balance
+    const directEntryAmount = (masterData.finishedStock || [])
+        .filter(s => s.design === design && s.color === color && s.size === size)
+        .reduce((acc, curr) => ({
+            borka: acc.borka + Number(curr.qtyBorka || 0),
+            hijab: acc.hijab + Number(curr.qtyHijab || 0)
+        }), { borka: 0, hijab: 0 });
 
     let finished = finishingReceived;
 
@@ -181,8 +181,8 @@ export const getFinishedStock = (masterData, design, color, size) => {
         }), { borka: 0, hijab: 0 });
 
     return {
-        borka: finished.borka - delivered.borka,
-        hijab: finished.hijab - delivered.hijab
+        borka: (finished.borka + directEntryAmount.borka) - delivered.borka,
+        hijab: (finished.hijab + directEntryAmount.hijab) - delivered.hijab
     };
 };
 

@@ -55,19 +55,29 @@ const ClientLedgerPanel = ({ masterData, setMasterData, showNotify, user, setAct
         .filter(t => t.client?.toUpperCase() === cName)
         .sort((a,b) => new Date(b.date?.split('/').reverse().join('-')) - new Date(a.date?.split('/').reverse().join('-')));
     
-    const readyStock = (masterData.productions || [])
-        .filter(p => p.client?.toUpperCase() === cName && p.status === 'Received');
+    const readyStock = [
+        ...(masterData.productions || []).filter(p => p.client?.toUpperCase() === cName && p.status === 'Received'),
+        ...(masterData.finishedStock || []).filter(p => p.client?.toUpperCase() === cName)
+    ];
     
-    const totalReady = readyStock.reduce((sum, p) => sum + (p.receivedBorka || 0) + (p.receivedHijab || 0), 0);
+    const totalReady = readyStock.reduce((sum, p) => sum + Number(p.receivedBorka || p.qtyBorka || 0) + Number(p.receivedHijab || p.qtyHijab || 0), 0);
     
     const deliveries = (masterData.deliveries || [])
         .filter(d => d.client?.toUpperCase() === cName)
         .sort((a,b) => new Date(b.date?.split('/').reverse().join('-')) - new Date(a.date?.split('/').reverse().join('-')));
 
     const totalDelivered = deliveries.reduce((sum, d) => sum + (d.qty || 0), 0);
+
+    const rawMats = (masterData.rawInventory || []).filter(m => m.client?.toUpperCase() === cName);
+    const rawSummary = {};
+    rawMats.forEach(m => {
+        if(!rawSummary[m.item]) rawSummary[m.item] = { name: m.item, qty: 0, unit: m.unit || 'গজ' };
+        if(m.type === 'in') rawSummary[m.item].qty += Number(m.qty);
+        else rawSummary[m.item].qty -= Number(m.qty);
+    });
     
-    return { transactions, readyStock, totalReady, deliveries, totalDelivered };
-  }, [selectedClient, masterData.clientTransactions, masterData.productions, masterData.deliveries]);
+    return { transactions, readyStock, totalReady, deliveries, totalDelivered, rawSummary: Object.values(rawSummary) };
+  }, [selectedClient, masterData.clientTransactions, masterData.productions, masterData.deliveries, masterData.rawInventory, masterData.finishedStock]);
 
   const handleClientAction = (e) => {
     e.preventDefault();
@@ -220,76 +230,76 @@ const ClientLedgerPanel = ({ masterData, setMasterData, showNotify, user, setAct
   return (
     <div className="space-y-10 pb-32 animate-fade-up font-outfit text-slate-950 dark:text-white">
       {/* Header Central Hub Style */}
-      <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-10 saas-card bg-slate-950 text-white !border-slate-800 relative overflow-hidden group !p-8 md:!p-12">
+      <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-8 saas-card bg-slate-950 text-white !border-slate-800 relative overflow-hidden group !p-8 md:!p-10">
          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-blue-900/30 via-transparent to-transparent opacity-60"></div>
-         <div className="relative z-10 flex flex-col md:flex-row items-center gap-6 md:gap-8 text-center md:text-left">
-            <div className="w-16 h-16 md:w-20 md:h-20 bg-white/10 rounded-2xl md:rounded-3xl flex items-center justify-center backdrop-blur-xl border border-white/10 shadow-2xl group-hover:rotate-12 transition-transform duration-700 mx-auto">
-                <LayoutGrid size={32} className="text-blue-400" />
+         <div className="relative z-10 flex flex-col md:flex-row items-center gap-6 md:gap-6 text-center md:text-left">
+            <div className="w-14 h-14 md:w-16 md:h-16 bg-white/10 rounded-2xl flex items-center justify-center backdrop-blur-xl border border-white/10 shadow-2xl group-hover:rotate-12 transition-transform duration-700 mx-auto">
+                <LayoutGrid size={24} className="text-blue-400" />
             </div>
-            <div className="space-y-1">
-                <h2 className="text-3xl md:text-5xl lg:text-6xl font-black tracking-tighter uppercase leading-none italic">
+            <div className="space-y-0.5">
+                <h2 className="text-2xl md:text-4xl lg:text-4xl font-black tracking-tighter uppercase leading-none italic">
                     {selectedClient ? <span className="text-white">{selectedClient} <span className="text-blue-500">Hub</span></span> : <span>Client <span className="text-blue-500">Ledger Hub</span></span>}
                 </h2>
-                <p className="text-[9px] md:text-[10px] font-bold text-white/50 uppercase tracking-[0.4em] font-mono leading-none">
-                    {selectedClient ? `B2B ACCOUNT PROTOCOL: SECURE` : 'B2B Partner Matrix • NRZOONE v5.2'}
+                <p className="text-[10px] font-bold text-white/50 uppercase tracking-[0.4em] font-mono leading-none">
+                    {selectedClient ? `B2B ACCOUNT PROTOCOL: SECURE` : 'B2B Partner Matrix • Managed Security'}
                 </p>
             </div>
          </div>
          <div className="relative z-10 flex gap-4">
             <button 
                 onClick={() => { if(selectedClient) setSelectedClient(null); else setActivePanel('Overview'); }}
-                className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/20 transition-all text-white shadow-xl"
+                className="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/20 transition-all text-white shadow-xl"
             >
-                {selectedClient ? <ArrowLeft size={20} /> : <X size={20} />}
+                {selectedClient ? <ArrowLeft size={18} /> : <X size={18} />}
             </button>
          </div>
       </div>
 
       {!selectedClient ? (
         <>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16 px-1 md:px-0">
-                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="saas-card bg-white dark:bg-slate-900 shadow-2xl flex flex-col justify-between group h-48 border-l-8 border-l-rose-500 overflow-hidden relative">
-                    <div className="absolute top-0 right-0 p-10 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity">
-                        <TrendingDown size={140} className="text-rose-500" />
-                    </div>
-                    <div className="flex justify-between items-start mb-6">
-                        <div>
-                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] leading-none mb-4">Total Receivables</p>
-                        <h3 className="text-5xl font-black tracking-tighter text-rose-500 leading-none italic">৳ {stats.totalDue.toLocaleString()}</h3>
-                        </div>
-                        <div className="w-14 h-14 bg-rose-50 dark:bg-rose-900/20 text-rose-500 flex items-center justify-center rounded-2xl shadow-inner group-hover:scale-110 transition-transform">
-                            <DollarSign size={28} />
-                        </div>
-                    </div>
-                    <div className="w-full bg-slate-100 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
-                        <div className="h-full bg-rose-500" style={{ width: stats.totalDue > 0 ? '100%' : '0%' }}></div>
-                    </div>
-                </motion.div>
-                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="saas-card bg-white dark:bg-slate-900 shadow-2xl flex flex-col justify-between group h-40 md:h-48 border-l-8 border-l-blue-600 overflow-hidden relative p-6 md:p-8">
-                    <div className="absolute top-0 right-0 p-10 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity">
-                        <TrendingUp size={140} className="text-blue-600" />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 px-1 md:px-0">
+                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="saas-card bg-white dark:bg-slate-900 shadow-xl flex flex-col justify-between group h-44 border-l-4 border-l-rose-500 overflow-hidden relative !p-6">
+                    <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity">
+                        <TrendingDown size={100} className="text-rose-500" />
                     </div>
                     <div className="flex justify-between items-start mb-4">
                         <div>
-                        <p className="text-[9px] md:text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] leading-none mb-3">Life-Time Billed</p>
-                        <h3 className="text-3xl md:text-4xl font-black tracking-tight text-slate-900 dark:text-white leading-none">৳ {stats.totalBilled.toLocaleString()}</h3>
+                        <p className="text-[9px] font-bold text-slate-400 uppercase tracking-[0.2em] leading-none mb-3">Total Receivables</p>
+                        <h3 className="text-3xl font-black tracking-tighter text-rose-500 leading-none italic">৳ {stats.totalDue.toLocaleString()}</h3>
                         </div>
-                        <div className="w-10 h-10 md:w-14 md:h-14 bg-blue-50 dark:bg-blue-900/20 text-blue-600 flex items-center justify-center rounded-xl md:rounded-2xl shadow-inner group-hover:scale-110 transition-transform">
-                            <BarChart2 size={24} />
+                        <div className="w-11 h-11 bg-rose-50 dark:bg-rose-900/20 text-rose-500 flex items-center justify-center rounded-xl shadow-inner group-hover:scale-110 transition-transform">
+                            <DollarSign size={18} />
+                        </div>
+                    </div>
+                    <div className="w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                        <div className="h-full bg-rose-500" style={{ width: stats.totalDue > 0 ? '100%' : '0%' }}></div>
+                    </div>
+                </motion.div>
+                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="saas-card bg-white dark:bg-slate-900 shadow-xl flex flex-col justify-between group h-44 border-l-4 border-l-blue-600 overflow-hidden relative !p-6">
+                    <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity">
+                        <TrendingUp size={100} className="text-blue-600" />
+                    </div>
+                    <div className="flex justify-between items-start mb-4">
+                        <div>
+                        <p className="text-[9px] font-bold text-slate-400 uppercase tracking-[0.2em] leading-none mb-3">Life-Time Billed</p>
+                        <h3 className="text-3xl font-black tracking-tighter text-slate-900 dark:text-white leading-none italic">৳ {stats.totalBilled.toLocaleString()}</h3>
+                        </div>
+                        <div className="w-11 h-11 bg-blue-50 dark:bg-blue-900/20 text-blue-600 flex items-center justify-center rounded-xl shadow-inner group-hover:scale-110 transition-transform">
+                            <BarChart2 size={18} />
                         </div>
                     </div>
                 </motion.div>
-                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="saas-card bg-white dark:bg-slate-900 shadow-2xl flex flex-col justify-between group h-48 border-l-8 border-l-emerald-500 overflow-hidden relative">
-                    <div className="absolute top-0 right-0 p-10 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity">
-                        <CheckCircle size={140} className="text-emerald-500" />
+                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="saas-card bg-white dark:bg-slate-900 shadow-xl flex flex-col justify-between group h-44 border-l-4 border-l-emerald-500 overflow-hidden relative !p-6">
+                    <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity">
+                        <CheckCircle size={100} className="text-emerald-500" />
                     </div>
-                    <div className="flex justify-between items-start mb-6">
+                    <div className="flex justify-between items-start mb-4">
                         <div>
-                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] leading-none mb-4">Payment Recovery</p>
-                        <h3 className="text-4xl font-black tracking-tight text-emerald-600 leading-none">৳ {stats.totalPaid.toLocaleString()}</h3>
+                        <p className="text-[9px] font-bold text-slate-400 uppercase tracking-[0.2em] leading-none mb-3">Payment Recovery</p>
+                        <h3 className="text-3xl font-black tracking-tighter text-emerald-600 leading-none italic">৳ {stats.totalPaid.toLocaleString()}</h3>
                         </div>
-                        <div className="w-14 h-14 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-500 flex items-center justify-center rounded-2xl shadow-inner group-hover:scale-110 transition-transform">
-                            <Wallet size={28} />
+                        <div className="w-11 h-11 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-500 flex items-center justify-center rounded-xl shadow-inner group-hover:scale-110 transition-transform">
+                            <Wallet size={18} />
                         </div>
                     </div>
                 </motion.div>
@@ -425,20 +435,53 @@ const ClientLedgerPanel = ({ masterData, setMasterData, showNotify, user, setAct
             )}
 
             {clientTab === 'Stock Hub' && (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 animate-fade-up">
-                    {clientData.readyStock.map((s, idx) => (
-                        <div key={idx} className="saas-card bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 p-8 space-y-6 group">
-                            <div className="flex justify-between items-start"><div className="space-y-1"><p className="text-[9px] font-black text-blue-600 tracking-widest uppercase">Finished Product</p><h5 className="text-2xl font-black uppercase italic">{s.design}</h5></div><div className="w-12 h-12 bg-slate-50 dark:bg-slate-800 rounded-2xl flex items-center justify-center font-black text-xs">#{s.lotNo}</div></div>
-                            <div className="grid grid-cols-2 gap-4 border-y border-slate-50 dark:border-slate-800 py-6"><div><p className="text-[8px] font-black uppercase text-slate-400 mb-1">Color</p><p className="text-xs font-bold uppercase">{s.color}</p></div><div className="text-right"><p className="text-[8px] font-black uppercase text-slate-400 mb-1">Lot Size</p><p className="text-xs font-bold uppercase">{s.size}</p></div></div>
-                            <div className="flex justify-between items-center pt-2"><div className="flex flex-col"><span className="text-[10px] font-black uppercase text-emerald-600">Total Borka</span><span className="text-3xl font-black italic">{s.receivedBorka || 0}</span></div><div className="flex flex-col text-right"><span className="text-[10px] font-black uppercase text-emerald-600">Total Hijab</span><span className="text-3xl font-black italic">{s.receivedHijab || 0}</span></div></div>
+                <div className="space-y-12 animate-fade-up">
+                    {/* Raw Materials Segment */}
+                    <div className="space-y-6">
+                        <h4 className="text-[10px] font-black uppercase text-slate-400 tracking-[0.4em] flex items-center gap-4">
+                            <Layers size={14} className="text-blue-600" /> Material Inventory (Raw Assets)
+                        </h4>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            {clientData.rawSummary.map((m, idx) => (
+                                <div key={idx} className="saas-card bg-slate-50 dark:bg-slate-800/20 border-l-4 border-l-blue-600 !p-6 flex justify-between items-center group">
+                                    <div>
+                                        <p className="text-[8px] font-black uppercase text-slate-400 mb-1 tracking-widest">Inventory Item</p>
+                                        <p className="text-lg font-black uppercase italic text-slate-950 dark:text-white">{m.name}</p>
+                                    </div>
+                                    <div className="text-right">
+                                        <p className="text-2xl font-black italic text-blue-600">{m.qty.toFixed(1)} <span className="text-[10px] text-slate-400">{m.unit}</span></p>
+                                    </div>
+                                </div>
+                            ))}
+                            {clientData.rawSummary.length === 0 && (
+                                <div className="col-span-full py-12 text-center border-2 border-dashed border-slate-100 dark:border-slate-800 rounded-3xl opacity-30">
+                                    <p className="text-[9px] font-bold uppercase tracking-widest italic">No raw materials deposited.</p>
+                                </div>
+                            )}
                         </div>
-                    ))}
-                    {clientData.readyStock.length === 0 && (
-                        <div className="col-span-full py-32 text-center bg-slate-50 dark:bg-slate-800/20 rounded-3xl border-2 border-dashed border-slate-100 dark:border-slate-800">
-                             <Package size={48} className="mx-auto mb-6 text-slate-200" />
-                             <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Zero inventory ready for delivery.</p>
+                    </div>
+
+                    {/* Finished Stock Segment */}
+                    <div className="space-y-6">
+                        <h4 className="text-[10px] font-black uppercase text-slate-400 tracking-[0.4em] flex items-center gap-4">
+                            <Package size={14} className="text-emerald-600" /> Finished Stock (Ready to Dispatch)
+                        </h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            {clientData.readyStock.map((s, idx) => (
+                                <div key={idx} className="saas-card bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 p-8 space-y-6 group">
+                                    <div className="flex justify-between items-start"><div className="space-y-1"><p className="text-[9px] font-black text-blue-600 tracking-widest uppercase">Finished Product</p><h5 className="text-2xl font-black uppercase italic">{s.design}</h5></div><div className="w-12 h-12 bg-slate-50 dark:bg-slate-800 rounded-2xl flex items-center justify-center font-black text-xs">#{s.lotNo || 'Direct'}</div></div>
+                                    <div className="grid grid-cols-2 gap-4 border-y border-slate-50 dark:border-slate-800 py-6"><div><p className="text-[8px] font-black uppercase text-slate-400 mb-1">Color</p><p className="text-xs font-bold uppercase">{s.color}</p></div><div className="text-right"><p className="text-[8px] font-black uppercase text-slate-400 mb-1">Lot Size</p><p className="text-xs font-bold uppercase">{s.size}</p></div></div>
+                                    <div className="flex justify-between items-center pt-2"><div className="flex flex-col"><span className="text-[10px] font-black uppercase text-emerald-600">Total Borka</span><span className="text-3xl font-black italic">{s.receivedBorka || s.qtyBorka || 0}</span></div><div className="flex flex-col text-right"><span className="text-[10px] font-black uppercase text-emerald-600">Total Hijab</span><span className="text-3xl font-black italic">{s.receivedHijab || s.qtyHijab || 0}</span></div></div>
+                                </div>
+                            ))}
+                            {clientData.readyStock.length === 0 && (
+                                <div className="col-span-full py-32 text-center bg-slate-50 dark:bg-slate-800/20 rounded-3xl border-2 border-dashed border-slate-100 dark:border-slate-800">
+                                    <Package size={48} className="mx-auto mb-6 text-slate-200" />
+                                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Zero inventory ready for delivery.</p>
+                                </div>
+                            )}
                         </div>
-                    )}
+                    </div>
                 </div>
             )}
 

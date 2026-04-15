@@ -272,39 +272,39 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
 
     return (
         <div className="space-y-6 pb-32 animate-fade-up px-1 md:px-2 italic font-outfit text-[var(--text-primary)]">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
                 <button 
                   onClick={() => setView('active')}
-                  className={`bg-white dark:bg-slate-900 p-5 rounded-2xl border flex items-center gap-6 group transition-all text-left shadow-md ${view === 'active' ? 'border-amber-500 bg-amber-50/10' : 'border-slate-100 dark:border-slate-800'}`}
+                  className={`bg-white dark:bg-slate-900 p-4 rounded-xl border flex items-center gap-4 group transition-all text-left shadow-md ${view === 'active' ? 'border-amber-500 bg-amber-50/10' : 'border-slate-100 dark:border-slate-800'}`}
                 >
-                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center shadow-inner transition-transform group-hover:rotate-3 ${view === 'active' ? 'bg-amber-500 text-white' : 'bg-slate-50 dark:bg-slate-800 text-slate-300'}`}>
-                        <Clock size={24} />
+                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center shadow-inner transition-transform group-hover:rotate-3 ${view === 'active' ? 'bg-amber-500 text-white' : 'bg-slate-50 dark:bg-slate-800 text-slate-300'}`}>
+                        <Clock size={20} />
                     </div>
                     <div>
-                        <p className="text-2xl font-black tracking-tighter leading-none mb-1">{activeEntries.length}</p>
-                        <p className="text-[7.5px] font-black uppercase tracking-widest leading-none opacity-40">চলমান কাজ</p>
+                        <p className="text-lg md:text-xl font-black tracking-tighter leading-none mb-1">{activeEntries.length}</p>
+                        <p className="text-[9px] font-black uppercase tracking-widest leading-none opacity-40">চলমান কাজ</p>
                     </div>
                 </button>
 
                 <button 
                   onClick={() => setView('history')}
-                  className={`bg-white dark:bg-slate-900 p-5 rounded-2xl border flex items-center gap-6 group transition-all text-left shadow-md ${view === 'history' ? 'border-emerald-500 bg-emerald-50/10' : 'border-slate-100 dark:border-slate-800'}`}
+                  className={`bg-white dark:bg-slate-900 p-4 rounded-xl border flex items-center gap-4 group transition-all text-left shadow-md ${view === 'history' ? 'border-emerald-500 bg-emerald-50/10' : 'border-slate-100 dark:border-slate-800'}`}
                 >
-                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center shadow-inner transition-transform group-hover:rotate-3 ${view === 'history' ? 'bg-emerald-500 text-white' : 'bg-slate-50 dark:bg-slate-800 text-slate-300'}`}>
-                        <CheckCircle size={24} />
+                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center shadow-inner transition-transform group-hover:rotate-3 ${view === 'history' ? 'bg-emerald-500 text-white' : 'bg-slate-50 dark:bg-slate-800 text-slate-300'}`}>
+                        <CheckCircle size={20} />
                     </div>
                     <div>
-                        <p className="text-2xl font-black tracking-tighter leading-none mb-1">{historyEntries.length}</p>
-                        <p className="text-[7.5px] font-black uppercase tracking-widest leading-none opacity-40">জমা হওয়া রেকর্ড</p>
+                        <p className="text-lg md:text-xl font-black tracking-tighter leading-none mb-1">{historyEntries.length}</p>
+                        <p className="text-[9px] font-black uppercase tracking-widest leading-none opacity-40">জমা হওয়া রেকর্ড</p>
                     </div>
                 </button>
 
-                <div className="bg-slate-950 p-5 rounded-2xl text-white shadow-xl flex items-center justify-between group overflow-hidden relative">
+                <div className="bg-slate-950 p-4 rounded-xl text-white shadow-xl flex items-center justify-between group overflow-hidden relative">
                     <div className="relative z-10">
-                        <p className="text-2xl font-black tracking-tighter leading-none mb-1">৳{(activeEntries.reduce((s,e)=>s+(Number(e.borkaQty)+Number(e.hijabQty))*Number(e.rate), 0)).toLocaleString()}</p>
-                        <p className="text-[7.5px] font-black uppercase tracking-widest leading-none opacity-40">চলমান কাজের ভ্যালু</p>
+                        <p className="text-lg md:text-xl font-black tracking-tighter leading-none mb-1">৳{(activeEntries.reduce((s,e)=>s+(Number(e.borkaQty)+Number(e.hijabQty))*Number(e.rate), 0)).toLocaleString()}</p>
+                        <p className="text-[9px] font-black uppercase tracking-widest leading-none opacity-40">চলমান কাজের ভ্যালু</p>
                     </div>
-                    <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform"><Activity size={24} className="text-blue-400" /></div>
+                    <div className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform"><Activity size={20} className="text-blue-400" /></div>
                 </div>
             </div>
 
@@ -445,14 +445,14 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
 
                 {payModal && (
                     <div className="fixed inset-0 z-[1000] bg-slate-950/60 backdrop-blur-md flex items-center justify-center p-4">
-                        <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-white dark:bg-slate-900 w-full max-w-md rounded-3xl shadow-2xl p-8 relative border border-slate-100 dark:border-slate-800">
-                            <button onClick={() => setPayModal(null)} className="absolute top-6 right-6 text-slate-400 hover:text-black transition-colors"><X size={24} /></button>
-                            <h2 className="text-2xl font-black uppercase italic mb-8 tracking-tighter text-center">{payModal.worker} <span className="text-blue-500">পেমেন্ট</span></h2>
-                            <div className="p-8 bg-slate-50 dark:bg-slate-800/50 rounded-2xl text-center mb-8 border border-white dark:border-slate-700">
-                                <p className="text-[10px] font-black uppercase text-slate-400 mb-4 opacity-60 tracking-widest">টাকার পরিমাণ (৳)</p>
-                                <input type="number" className="w-full text-4xl font-black text-center bg-transparent outline-none text-blue-600" placeholder="0" value={paymentAmount} onChange={(e) => setPaymentAmount(e.target.value)} />
+                        <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-white dark:bg-slate-900 w-full max-w-md rounded-2xl shadow-2xl p-6 relative border border-slate-100 dark:border-slate-800">
+                            <button onClick={() => setPayModal(null)} className="absolute top-6 right-6 text-slate-400 hover:text-black transition-colors"><X size={20} /></button>
+                            <h2 className="text-xl font-black uppercase italic mb-6 tracking-tighter text-center">{payModal.worker} <span className="text-blue-500">পেমেন্ট</span></h2>
+                            <div className="p-6 bg-slate-50 dark:bg-slate-800/50 rounded-2xl text-center mb-6 border border-white dark:border-slate-700">
+                                <p className="text-[9px] font-black uppercase text-slate-400 mb-2 opacity-60 tracking-widest leading-none italic">টাকার পরিমাণ (৳)</p>
+                                <input type="number" className="w-full text-2xl font-black text-center bg-transparent outline-none text-blue-600 italic leading-none" placeholder="0" value={paymentAmount} onChange={(e) => setPaymentAmount(e.target.value)} />
                             </div>
-                            <button onClick={handlePayment} className="w-full py-5 bg-emerald-500 text-white rounded-2xl font-black uppercase tracking-widest italic shadow-xl hover:scale-[1.02] active:scale-95 transition-all">কনফার্ম পেমেন্ট</button>
+                            <button onClick={handlePayment} className="w-full py-4 bg-emerald-500 text-white rounded-xl font-black uppercase tracking-widest italic shadow-xl hover:scale-[1.02] active:scale-95 transition-all text-[10px] leading-none">কনফার্ম পেমেন্ট</button>
                         </motion.div>
                     </div>
                 )}

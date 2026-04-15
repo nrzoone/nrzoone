@@ -214,28 +214,28 @@ const ExpensePanel = ({
          {activeTab === 'treasury' && (
             <div className="space-y-4 md:space-y-6 animate-fade-up">
                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
-                  <div className="saas-card p-3.5 md:p-5 flex flex-col justify-between group h-36 md:h-44 relative overflow-hidden bg-white dark:bg-slate-900 shadow-md border-emerald-500/10 hover:border-emerald-500/30">
-                     <div className="absolute top-0 right-0 p-6 opacity-[0.03] group-hover:opacity-[0.1] transition-all duration-700"><TrendingUp size={140} /></div>
-                     <div className="w-8 h-8 md:w-10 md:h-10 bg-emerald-600 text-white rounded-lg flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform"><Wallet size={16} /></div>
+                  <div className="saas-card p-4 flex flex-col justify-between group h-32 md:h-36 relative overflow-hidden bg-white dark:bg-slate-900 shadow-md border-emerald-500/10 hover:border-emerald-500/30">
+                     <div className="absolute top-0 right-0 p-4 opacity-[0.03] group-hover:opacity-[0.1] transition-all duration-700"><TrendingUp size={100} /></div>
+                     <div className="w-8 h-8 bg-emerald-600 text-white rounded-lg flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform"><Wallet size={14} /></div>
                      <div className="relative z-10">
-                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">Factory Liquid Capital</p>
-                        <h2 className="text-xl md:text-2xl font-black tracking-tighter text-[var(--text-primary)] leading-none italic">৳{currentBalance.toLocaleString()}</h2>
+                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-0.5 italic">Factory Liquid Capital</p>
+                        <h2 className="text-lg md:text-xl font-black tracking-tighter text-[var(--text-primary)] leading-none italic">৳{currentBalance.toLocaleString()}</h2>
                      </div>
                   </div>
 
-                  <div className="saas-card p-3.5 md:p-5 flex flex-col justify-between group h-36 md:h-44 relative overflow-hidden bg-white dark:bg-slate-900 shadow-md border-rose-500/10 hover:border-rose-500/30">
-                     <div className="absolute top-0 right-0 p-6 opacity-[0.03] group-hover:opacity-[0.1] transition-all duration-700"><TrendingDown size={140} /></div>
-                     <div className="w-8 h-8 md:w-10 md:h-10 bg-rose-600 text-white rounded-lg flex items-center justify-center shadow-lg group-hover:rotate-0 transition-transform"><DollarSign size={16} /></div>
+                  <div className="saas-card p-4 flex flex-col justify-between group h-32 md:h-36 relative overflow-hidden bg-white dark:bg-slate-900 shadow-md border-rose-500/10 hover:border-rose-500/30">
+                     <div className="absolute top-0 right-0 p-4 opacity-[0.03] group-hover:opacity-[0.1] transition-all duration-700"><TrendingDown size={100} /></div>
+                     <div className="w-8 h-8 bg-rose-600 text-white rounded-lg flex items-center justify-center shadow-lg group-hover:rotate-0 transition-transform"><DollarSign size={14} /></div>
                      <div className="relative z-10">
-                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">Operational Burn Rate</p>
-                        <h2 className="text-xl md:text-2xl font-black tracking-tighter text-[var(--text-primary)] leading-none italic">৳{totalExpenses.toLocaleString()}</h2>
+                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-0.5 italic">Operational Burn Rate</p>
+                        <h2 className="text-lg md:text-xl font-black tracking-tighter text-[var(--text-primary)] leading-none italic">৳{totalExpenses.toLocaleString()}</h2>
                      </div>
                   </div>
 
-                  <button onClick={() => setShowPrint(true)} className="saas-card p-3.5 md:p-5 flex flex-col justify-between group h-36 md:h-44 relative overflow-hidden bg-slate-950 text-white border-none shadow-md hover:translate-y-[-2px] active:scale-95 transition-all">
-                     <div className="w-8 h-8 md:w-10 md:h-10 bg-white/10 text-white rounded-lg flex items-center justify-center shadow-inner group-hover:bg-blue-600 transition-all"><Printer size={16} /></div>
+                  <button onClick={() => setShowPrint(true)} className="saas-card p-4 flex flex-col justify-between group h-32 md:h-36 relative overflow-hidden bg-slate-950 text-white border-none shadow-md hover:translate-y-[-2px] active:scale-95 transition-all">
+                     <div className="w-8 h-8 bg-white/10 text-white rounded-lg flex items-center justify-center shadow-inner group-hover:bg-blue-600 transition-all"><Printer size={14} /></div>
                      <div className="text-left relative z-10">
-                        <h2 className="text-lg md:text-xl font-black text-white italic uppercase mb-0.5 leading-none tracking-tighter">GENERATE AUDIT</h2>
+                        <h2 className="text-base md:text-lg font-black text-white italic uppercase mb-0.5 leading-none tracking-tighter">GENERATE AUDIT</h2>
                         <p className="text-[9px] font-black text-white/40 uppercase tracking-widest italic leading-none">Official Financial Transcript</p>
                      </div>
                   </button>
@@ -320,41 +320,41 @@ const ExpensePanel = ({
 
                {(cashSubTab === 'new' || cashSubTab === 'cashIn') && (
                   <div className="flex justify-center">
-                     <form onSubmit={cashSubTab === 'new' ? handleAddExpense : handleAddCash} className="saas-card w-full max-w-2xl !p-12 space-y-8 animate-fade-up border-[10px] border-slate-50 dark:border-slate-800 shadow-2xl relative overflow-hidden italic bg-white dark:bg-slate-900">
-                        <div className="text-center space-y-4">
-                           <div className={`mx-auto w-20 h-20 text-white rounded-[2rem] flex items-center justify-center shadow-xl rotate-12 mb-6 animate-bounce ${cashSubTab === 'new' ? 'bg-rose-600' : 'bg-emerald-600'}`}>
-                              {cashSubTab === 'new' ? <TrendingDown size={32} /> : <TrendingUp size={32} />}
+                     <form onSubmit={cashSubTab === 'new' ? handleAddExpense : handleAddCash} className="saas-card w-full max-w-xl !p-8 space-y-6 animate-fade-up border-[6px] border-slate-50 dark:border-slate-800 shadow-2xl relative overflow-hidden italic bg-white dark:bg-slate-900">
+                        <div className="text-center space-y-2">
+                           <div className={`mx-auto w-12 h-12 text-white rounded-2xl flex items-center justify-center shadow-xl rotate-12 mb-4 animate-bounce ${cashSubTab === 'new' ? 'bg-rose-600' : 'bg-emerald-600'}`}>
+                              {cashSubTab === 'new' ? <TrendingDown size={20} /> : <TrendingUp size={20} />}
                            </div>
-                           <h3 className="text-4xl font-black text-[var(--text-primary)] uppercase italic leading-none tracking-tighter">{cashSubTab === 'new' ? 'CONSUMPTION' : 'INJECTION'}</h3>
-                           <p className="text-[10px] font-black text-[var(--text-muted)] uppercase tracking-widest italic leading-none">{cashSubTab === 'new' ? 'Operational Burn Sequence' : 'Capital Growth Protocol'}</p>
+                           <h3 className="text-2xl font-black text-[var(--text-primary)] uppercase italic leading-none tracking-tighter">{cashSubTab === 'new' ? 'CONSUMPTION' : 'INJECTION'}</h3>
+                           <p className="text-[9px] font-black text-[var(--text-muted)] uppercase tracking-widest italic leading-none">{cashSubTab === 'new' ? 'Operational Burn Sequence' : 'Capital Growth Protocol'}</p>
                         </div>
-                        <div className="grid grid-cols-2 gap-6">
+                        <div className="grid grid-cols-2 gap-4">
                            {cashSubTab === 'new' && (
-                              <div className="space-y-4">
-                                 <label className="text-[11px] font-black text-[var(--text-muted)] ml-6 uppercase italic tracking-widest leading-none">Category Node</label>
-                                 <select name="category" className="premium-input !h-14 !text-xs font-black uppercase italic bg-slate-50 dark:bg-slate-800 rounded-xl shadow-inner text-[var(--text-primary)]" required>
+                              <div className="space-y-2">
+                                 <label className="text-[10px] font-black text-[var(--text-muted)] ml-4 uppercase italic tracking-widest leading-none">Category Node</label>
+                                 <select name="category" className="premium-input !h-11 !text-[10px] font-black uppercase italic bg-slate-50 dark:bg-slate-800 rounded-xl shadow-inner text-[var(--text-primary)]" required>
                                     {["teaSnacks", "transport", "material", "utilities", "salary", "bonus", "others"].map(c => <option key={c} value={c}>{t(c)}</option>)}
                                  </select>
                               </div>
                            )}
-                           <div className="space-y-4">
-                              <label className="text-[11px] font-black text-[var(--text-muted)] ml-6 uppercase italic tracking-widest leading-none">Timeline Protocol</label>
-                              <input name="date" type="date" defaultValue={new Date().toISOString().split('T')[0]} className="premium-input !h-14 !bg-slate-950 !text-white !border-none text-center rounded-xl shadow-lg text-sm" required />
+                           <div className="space-y-2">
+                              <label className="text-[10px] font-black text-[var(--text-muted)] ml-4 uppercase italic tracking-widest leading-none">Timeline Protocol</label>
+                              <input name="date" type="date" defaultValue={new Date().toISOString().split('T')[0]} className="premium-input !h-11 !bg-slate-950 !text-white !border-none text-center rounded-xl shadow-lg text-[10px]" required />
                            </div>
                         </div>
-                        <div className="space-y-4">
-                           <label className="text-[11px] font-black text-[var(--text-muted)] ml-6 uppercase italic tracking-widest leading-none">Memo Registry</label>
-                           <input name="description" placeholder="ENTER TRANSACTION METADATA..." className="premium-input !h-14 !text-xs font-bold italic uppercase bg-slate-50 dark:bg-slate-800 rounded-xl shadow-inner text-[var(--text-primary)]" required />
+                        <div className="space-y-2">
+                           <label className="text-[10px] font-black text-[var(--text-muted)] ml-4 uppercase italic tracking-widest leading-none">Memo Registry</label>
+                           <input name="description" placeholder="ENTER TRANSACTION METADATA..." className="premium-input !h-11 !text-[10px] font-bold italic uppercase bg-slate-50 dark:bg-slate-800 rounded-xl shadow-inner text-[var(--text-primary)]" required />
                         </div>
-                        <div className="bg-slate-950 p-12 rounded-[3rem] shadow-xl text-center relative overflow-hidden">
-                           <div className="absolute top-0 right-0 p-8 opacity-10 text-white"><DollarSign size={100} /></div>
-                           <label className="text-[11px] font-black text-white/30 uppercase tracking-widest mb-6 block italic leading-none">LIQUIDITY VALUE</label>
+                        <div className="bg-slate-950 p-8 rounded-3xl shadow-xl text-center relative overflow-hidden">
+                           <div className="absolute top-0 right-0 p-4 opacity-10 text-white"><DollarSign size={50} /></div>
+                           <label className="text-[10px] font-black text-white/30 uppercase tracking-widest mb-4 block italic leading-none">LIQUIDITY VALUE</label>
                            <div className="flex items-center justify-center text-white">
-                              <span className="text-4xl font-black text-white/20 mr-6 italic">৳</span>
-                              <input name="amount" type="number" placeholder="0" className="w-full text-center text-7xl font-black bg-transparent border-none text-white outline-none leading-none h-24 italic tracking-tighter" required autoFocus />
+                              <span className="text-2xl font-black text-white/20 mr-4 italic">৳</span>
+                              <input name="amount" type="number" placeholder="0" className="w-full text-center text-3xl font-black bg-transparent border-none text-white outline-none leading-none h-12 italic tracking-tighter" required autoFocus />
                            </div>
                         </div>
-                        <button type="submit" className={`w-full py-8 rounded-[2rem] shadow-xl border-b-8 transition-all text-2xl font-black uppercase italic active:scale-95 leading-none ${cashSubTab === 'new' ? 'bg-rose-600 border-rose-900 text-white' : 'bg-emerald-600 border-emerald-900 text-white'}`}>
+                        <button type="submit" className={`w-full py-5 rounded-2xl shadow-xl border-b-6 transition-all text-sm font-black uppercase italic active:scale-95 leading-none ${cashSubTab === 'new' ? 'bg-rose-600 border-rose-900 text-white' : 'bg-emerald-600 border-emerald-900 text-white'}`}>
                            {cashSubTab === 'new' ? 'EXECUTE BURN' : 'COMMIT CAPITAL'}
                         </button>
                      </form>
@@ -527,14 +527,26 @@ const ExpensePanel = ({
          )}
 
          {receivePaymentModal && (
-            <div className="fixed inset-0 bg-slate-950/95 backdrop-blur-3xl z-[1000] flex items-center justify-center p-6">
-               <div className="saas-card bg-white dark:bg-slate-900 w-full max-w-2xl rounded-[4rem] shadow-2xl p-12 md:p-16 animate-fade-up relative border-[15px] border-slate-50 dark:border-slate-800 italic">
-                  <button onClick={() => setReceivePaymentModal(null)} className="absolute top-10 right-10 w-16 h-16 bg-slate-50 dark:bg-slate-800 rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all shadow-lg"><X size={32} className="text-black dark:text-white" /></button>
-                  <div className="text-center space-y-6 mb-12"><div className="mx-auto w-24 h-24 bg-emerald-600 text-white rounded-[2.5rem] flex items-center justify-center shadow-xl rotate-12 mb-10 animate-pulse"><Wallet size={44} /></div><h3 className="text-5xl font-black uppercase italic leading-none text-black dark:text-white tracking-tighter">B2B INFLOW</h3><p className="text-[11px] font-black text-slate-400 uppercase tracking-widest leading-none mb-8 italic">Global B2B Capital Injection Authorization Sequence</p><div className="inline-block bg-blue-600 text-white py-4 px-10 rounded-full text-sm font-black uppercase tracking-widest shadow-xl rotate-1 transform">NODE: {receivePaymentModal}</div></div>
-                  <form onSubmit={handleReceiveClientPayment} className="space-y-12">
-                     <div className="bg-slate-950 p-12 rounded-[3.5rem] shadow-xl text-center relative overflow-hidden"><div className="absolute top-0 right-0 p-10 opacity-10 text-white"><TrendingUp size={160} /></div><label className="text-[13px] font-black text-white/30 uppercase tracking-widest mb-10 block italic leading-none">LIQUID DEPOSIT VALUE</label><div className="flex items-center justify-center text-white"><span className="text-5xl font-black text-white/20 mr-8 italic">৳</span><input name="amount" type="number" placeholder="0" className="w-full text-center text-8xl font-black bg-transparent border-none text-white outline-none leading-none h-28 italic tracking-tighter" required autoFocus /></div></div>
-                     <div className="space-y-4"><label className="text-[11px] font-black text-slate-400 ml-10 uppercase italic tracking-widest font-mono italic leading-none">Deposit Authorization Memo</label><input name="note" placeholder="E.G. NEFT / RTGS / PHYSICAL CASH NODES" className="premium-input !h-16 !p-6 uppercase text-[10px] font-black bg-slate-50 dark:bg-slate-800 text-center rounded-2xl shadow-inner text-black dark:text-white" required /></div>
-                     <div className="flex gap-4 pt-8"><button type="button" onClick={() => setReceivePaymentModal(null)} className="flex-1 py-10 rounded-[2.5rem] font-bold uppercase text-[11px] tracking-widest text-slate-400 hover:text-black transition-all italic leading-none">ABORT</button><button type="submit" className="flex-[4] py-10 bg-emerald-600 text-white rounded-[2.5rem] shadow-xl font-black uppercase text-[11px] tracking-widest border-b-12 border-emerald-900 active:scale-95 transition-all italic leading-none">AUTHORIZE CAPITAL DEPOSIT</button></div>
+            <div className="fixed inset-0 bg-slate-950/95 backdrop-blur-3xl z-[1000] flex items-center justify-center p-4">
+               <div className="saas-card bg-white dark:bg-slate-900 w-full max-w-lg rounded-3xl shadow-2xl p-8 md:p-10 animate-fade-up relative border-[8px] border-slate-50 dark:border-slate-800 italic">
+                  <button onClick={() => setReceivePaymentModal(null)} className="absolute top-6 right-6 w-10 h-10 bg-slate-50 dark:bg-slate-800 rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all shadow-lg"><X size={20} className="text-black dark:text-white" /></button>
+                  <div className="text-center space-y-4 mb-8">
+                     <div className="mx-auto w-16 h-16 bg-emerald-600 text-white rounded-2xl flex items-center justify-center shadow-xl rotate-12 mb-6 animate-pulse"><Wallet size={24} /></div>
+                     <h3 className="text-2xl font-black uppercase italic leading-none text-black dark:text-white tracking-tighter">B2B INFLOW</h3>
+                     <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none mb-4 italic">Global B2B Capital Injection Authorization Sequence</p>
+                     <div className="inline-block bg-blue-600 text-white py-2 px-6 rounded-full text-[10px] font-black uppercase tracking-widest shadow-xl rotate-1 transform">NODE: {receivePaymentModal}</div>
+                  </div>
+                  <form onSubmit={handleReceiveClientPayment} className="space-y-8">
+                     <div className="bg-slate-950 p-8 rounded-3xl shadow-xl text-center relative overflow-hidden">
+                        <div className="absolute top-0 right-0 p-6 opacity-10 text-white"><TrendingUp size={60} /></div>
+                        <label className="text-[10px] font-black text-white/30 uppercase tracking-widest mb-6 block italic leading-none">LIQUID DEPOSIT VALUE</label>
+                        <div className="flex items-center justify-center text-white">
+                           <span className="text-3xl font-black text-white/20 mr-6 italic">৳</span>
+                           <input name="amount" type="number" placeholder="0" className="w-full text-center text-4xl font-black bg-transparent border-none text-white outline-none leading-none h-16 italic tracking-tighter" required autoFocus />
+                        </div>
+                     </div>
+                     <div className="space-y-2"><label className="text-[10px] font-black text-slate-400 ml-6 uppercase italic tracking-widest font-mono italic leading-none">Deposit Authorization Memo</label><input name="note" placeholder="E.G. NEFT / RTGS / PHYSICAL CASH NODES" className="premium-input !h-12 !p-4 uppercase text-[9px] font-black bg-slate-50 dark:bg-slate-800 text-center rounded-xl shadow-inner text-black dark:text-white" required /></div>
+                     <div className="flex gap-4 pt-4"><button type="button" onClick={() => setReceivePaymentModal(null)} className="flex-1 py-4 rounded-xl font-bold uppercase text-[10px] tracking-widest text-slate-400 hover:text-black transition-all italic leading-none">ABORT</button><button type="submit" className="flex-[4] py-4 bg-emerald-600 text-white rounded-xl shadow-xl font-black uppercase text-[10px] tracking-widest border-b-6 border-emerald-900 active:scale-95 transition-all italic leading-none">AUTHORIZE CAPITAL DEPOSIT</button></div>
                   </form>
                </div>
             </div>

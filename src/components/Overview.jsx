@@ -55,16 +55,16 @@ const Overview = ({ masterData, stats: propStats, setActivePanel, t, user, syncS
         <div className="space-y-6 animate-fade-up pb-24">
             
             {/* Header Section */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-3 md:gap-5 mb-8 px-1 md:px-2">
-                <div className="space-y-1.5">
-                     <h1 className="text-2xl md:text-3xl font-black text-[var(--text-primary)] tracking-tighter italic uppercase">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-3 mb-6 px-1 md:px-2">
+                <div className="space-y-1">
+                     <h1 className="text-xl md:text-2xl font-black text-[var(--text-primary)] tracking-tighter italic uppercase">
                         এনআরজোন <span className="text-blue-600">ড্যাশবোর্ড</span>
                     </h1>
-                    <p className="text-subtitle">
+                    <p className="text-subtitle !text-[7px]">
                         INDUSTRIAL ERP // LIVE OPERATIONAL HUB v5.2 ELITE
                     </p>
                 </div>
-                <div className="flex bg-white dark:bg-slate-900 p-1.5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
+                <div className="flex bg-white dark:bg-slate-900 p-1 rounded-xl shadow-sm border border-slate-100 dark:border-slate-800">
                     {[
                         { id: "Daily", label: "দৈনিক" },
                         { id: "Weekly", label: "সাপ্তাহিক" },
@@ -73,7 +73,7 @@ const Overview = ({ masterData, stats: propStats, setActivePanel, t, user, syncS
                         <button 
                             key={tf.id}
                             onClick={() => setTimeframe(tf.id)}
-                            className={`px-5 py-2 rounded-xl text-[10px] font-black transition-all ${timeframe === tf.id ? 'bg-slate-950 text-white shadow-xl dark:bg-white dark:text-black' : 'text-[var(--text-primary)] hover:bg-slate-50 dark:hover:bg-slate-800'}`}
+                            className={`px-4 py-1.5 rounded-lg text-[9px] font-black transition-all ${timeframe === tf.id ? 'bg-slate-950 text-white shadow-lg dark:bg-white dark:text-black' : 'text-[var(--text-primary)] hover:bg-slate-50 dark:hover:bg-slate-800'}`}
                         >
                             {tf.label}
                         </button>
@@ -82,7 +82,7 @@ const Overview = ({ masterData, stats: propStats, setActivePanel, t, user, syncS
             </div>
 
             {/* KPI Grid */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-5">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 md:gap-4">
                 {[
                     { label: "মোট কারিগর", value: (masterData.workerDocs || []).length, trend: "+4.2%", icon: Users, id: "Settings", color: "text-blue-600", bg: "bg-blue-50 dark:bg-blue-900/10" },
                     { label: "চলমান কাজ", value: (masterData.productions || []).length + (masterData.pataEntries || []).length, trend: "+12.1%", icon: Activity, id: "Cutting", color: "text-emerald-600", bg: "bg-emerald-50 dark:bg-emerald-900/10" },
@@ -103,7 +103,7 @@ const Overview = ({ masterData, stats: propStats, setActivePanel, t, user, syncS
                     { label: "পেন্ডিং লট", value: (masterData.productions || []).filter(p => p.status === 'Pending').length, trend: "-2.1%", icon: Package, id: "Cutting", color: "text-amber-600", bg: "bg-amber-50 dark:bg-amber-900/10" }
                 ].concat([
                     { 
-                        label: "মোট ফেব্রিক স্টক (গজ)", 
+                        label: "মোট ফেব্রিক (গজ)", 
                         value: (() => {
                             if (!masterData || !masterData.rawInventory) return "0.0";
                             const logs = masterData.rawInventory || [];
@@ -119,7 +119,7 @@ const Overview = ({ masterData, stats: propStats, setActivePanel, t, user, syncS
                         bg: "bg-amber-50 dark:bg-amber-900/10" 
                     },
                     { 
-                        label: "তৈরি মাল স্টক (পিস)", 
+                        label: "তৈরি মাল (পিস)", 
                         value: masterData?.finishedStock ? masterData.finishedStock.reduce((acc, curr) => acc + (Number(curr.qty) || 0), 0) : 0, 
                         trend: "Ready", 
                         icon: Package, 
@@ -128,18 +128,18 @@ const Overview = ({ masterData, stats: propStats, setActivePanel, t, user, syncS
                         bg: "bg-emerald-50 dark:bg-emerald-900/10" 
                     }
                 ]).map((kpi, idx) => (
-                    <div key={idx} className="saas-card group cursor-pointer !p-5" onClick={() => setActivePanel(kpi.id)}>
-                        <div className="flex justify-between items-start mb-4">
-                            <div className={`w-10 h-10 ${kpi.bg} ${kpi.color} rounded-xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110 shadow-sm`}>
-                                <kpi.icon size={20} />
+                    <div key={idx} className="saas-card group cursor-pointer !p-4 !rounded-2xl" onClick={() => setActivePanel(kpi.id)}>
+                        <div className="flex justify-between items-start mb-3">
+                            <div className={`w-8 h-8 ${kpi.bg} ${kpi.color} rounded-lg flex items-center justify-center transition-transform duration-300 group-hover:rotate-12 shadow-sm`}>
+                                <kpi.icon size={16} />
                             </div>
-                            <div className="flex items-center gap-1.5 px-2 py-1 bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 rounded-full text-[9px] font-black italic border border-emerald-100 dark:border-emerald-500/20">
+                            <div className="flex items-center gap-1 px-1.5 py-0.5 bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 rounded-full text-[8px] font-black italic border border-emerald-100 dark:border-emerald-500/20">
                                 {kpi.trend}
                             </div>
                         </div>
-                        <div className="space-y-1">
-                            <p className="text-subtitle">{kpi.label}</p>
-                            <h3 className="text-2xl font-black text-[var(--text-primary)] leading-tight tracking-tighter italic">{kpi.value}</h3>
+                        <div className="space-y-0.5">
+                            <p className="text-subtitle !text-[7px]">{kpi.label}</p>
+                            <h3 className="text-xl font-black text-[var(--text-primary)] leading-tight tracking-tighter italic">{kpi.value}</h3>
                         </div>
                     </div>
                 ))}
