@@ -1244,6 +1244,90 @@ const SettingsPanel_V2 = ({
        </div>
     </div>
   );
+  const renderMaintenanceContent = () => (
+    <div className="space-y-8 animate-fade-up">
+        {/* Warning Header */}
+        <div className="bg-rose-600 rounded-3xl p-8 md:p-12 text-white relative overflow-hidden shadow-2xl">
+            <div className="absolute top-0 right-0 p-12 opacity-10 rotate-12">
+                <ShieldAlert size={180} />
+            </div>
+            <div className="relative z-10 flex flex-col md:flex-row items-center gap-10">
+                <div className="w-24 h-24 bg-white/20 backdrop-blur-xl rounded-3xl flex items-center justify-center shadow-2xl animate-pulse">
+                    <Trash2 size={48} />
+                </div>
+                <div className="text-center md:text-left flex-1">
+                    <h2 className="text-4xl font-black uppercase italic tracking-tighter mb-4">ডেঞ্জার জোন ! <span className="underline decoration-4 underline-offset-8 decoration-rose-400">সিস্টেম রিসেট</span></h2>
+                    <p className="text-sm font-bold opacity-80 uppercase tracking-widest leading-relaxed">এই সেকশনটি শুধুমাত্র নতুন সিজন বা নতুন কারখানা শুরুর সময় ব্যবহার করবেন। এই বাটনে ক্লিক করলে আপনার সব স্টক, এন্ট্রি এবং ট্রানজ্যাকশন পার্মানেন্টলি ডিলিট হয়ে যাবে।</p>
+                </div>
+            </div>
+        </div>
+
+        {/* Action Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="saas-card !p-10 border-2 border-slate-100 dark:border-slate-800 hover:border-blue-600 transition-all group flex flex-col justify-between">
+                <div>
+                    <div className="w-16 h-16 bg-blue-50 dark:bg-blue-900/20 text-blue-600 rounded-2xl flex items-center justify-center mb-8 shadow-inner group-hover:rotate-6 transition-transform">
+                        <Database size={32} />
+                    </div>
+                    <h3 className="text-2xl font-black uppercase italic tracking-tighter mb-4 text-[var(--text-primary)]">ডেটা পোর্টিং (Backup First)</h3>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-relaxed mb-6 italic">রিসেট করার আগে আপনার বর্তমান ডাটা একটি অফলাইন ফাইল হিসেবে সেভ করে নিন যেন পরবর্তীতে প্রয়োজন হলে দেখা যায়।</p>
+                </div>
+                <button onClick={downloadBackup} className="w-full py-5 bg-slate-950 text-white rounded-2xl font-black uppercase text-[10px] tracking-[0.2em] shadow-xl hover:bg-black active:scale-95 transition-all">Download Full JSON</button>
+            </div>
+
+            <div className="saas-card !p-10 border-2 border-rose-100 dark:border-rose-900/10 hover:border-rose-600 transition-all group flex flex-col justify-between bg-rose-50/10">
+                <div>
+                    <div className="w-16 h-16 bg-rose-100 dark:bg-rose-900/20 text-rose-600 rounded-2xl flex items-center justify-center mb-8 shadow-inner group-hover:rotate-6 transition-transform">
+                        <Trash2 size={32} />
+                    </div>
+                    <h3 className="text-2xl font-black uppercase italic tracking-tighter mb-4 text-rose-600">নিউক্লিয়ার রিসেট (HARD RESET)</h3>
+                    <p className="text-[10px] font-bold text-rose-400 uppercase tracking-widest leading-relaxed mb-6 italic">সব প্রোডাকশন, লট, স্টক এবং খরচ মুছে ফেলুন। কারিগর এবং ডিজাইনগুলো নিরাপদ থাকবে।</p>
+                </div>
+                <button 
+                  onClick={() => {
+                    if(window.confirm('⚠️ চরম সাবধান! আপনি কি নিশ্চিতভাবে সব স্টক এবং এন্ট্রি মুছে ফেলতে চান? এটি আর ফিরিয়ে আনা সম্ভব নয়।')) {
+                        if(window.confirm('সর্বশেষ নিশ্চিতকরণ: আপনি কি সত্যিই কারখানার সব ট্রানজ্যাকশন মুছে ফ্রেশ শুরু করতে চান?')) {
+                             setMasterData(prev => ({
+                                 ...prev,
+                                 productions: [],
+                                 rawInventory: [],
+                                 cutting: [],
+                                 pataEntries: [],
+                                 outsideWorkEntries: [],
+                                 expenses: [],
+                                 clientTransactions: [],
+                                 attendance: [],
+                                 deliveries: [],
+                                 notifications: [],
+                                 finishedStock: [],
+                                 productionRequests: [],
+                                 whatsappRequests: [],
+                                 workerPayments: [],
+                                 workerBiometrics: {},
+                                 jobEntries: [],
+                                 logs: []
+                             }));
+                             showNotify("সিস্টেম সফলভাবে রিসেট করা হয়েছে!", "success");
+                             setActivePanel("overview");
+                        }
+                    }
+                  }}
+                  className="w-full py-5 bg-rose-600 text-white rounded-2xl font-black uppercase text-[10px] tracking-[0.2em] shadow-xl hover:bg-rose-700 active:scale-95 transition-all"
+                >
+                    WIPE PRODUCTION DATA
+                </button>
+            </div>
+        </div>
+
+        {/* Footer info */}
+        <div className="p-8 bg-zinc-50 dark:bg-slate-900/50 rounded-3xl border border-slate-200 dark:border-slate-800 border-dashed text-center">
+            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 opacity-60">
+                NRZONE CORE ENGINE V4.0 • SYSTEM MAINTENANCE MODULE
+            </p>
+        </div>
+    </div>
+  );
+
 
   const renderDatabaseContent = () => (
     <div className="space-y-6 animate-fade-up">
@@ -1356,7 +1440,8 @@ const SettingsPanel_V2 = ({
             { id: 'nodes_config', label: 'সিস্টেম নোডস (Config)', icon: Server, desc: 'Node Architecture' },
             { id: 'branding', label: 'ব্র্যান্ডিং (Identity)', icon: Palette, desc: 'Visual Branding' },
             { id: 'audit', label: 'অডিট লগ (Logs)', icon: Clock, desc: 'Security Audit' },
-            { id: 'database', label: 'ডাটাসোর্স (Cloud)', icon: Database, desc: 'Persistence' }
+            { id: 'database', label: 'ডাটাসোর্স (Cloud)', icon: Database, desc: 'Persistence' },
+            { id: 'maintenance', label: 'মেইনটেন্যান্স (Clean)', icon: ShieldAlert, desc: 'Factory Reset' }
           ].map(tab => (
             <button
               key={tab.id}
@@ -1388,7 +1473,8 @@ const SettingsPanel_V2 = ({
           {activeMainTab === 'nodes_config' && renderNodesContent()}
           {activeMainTab === 'branding' && renderBrandingContent()}
           {activeMainTab === 'audit' && renderAuditContent()}
-          {activeMainTab === 'database' && renderDatabaseContent()}
+          { activeMainTab === 'database' && renderDatabaseContent() }
+          { activeMainTab === 'maintenance' && renderMaintenanceContent() }
         </div>
       </div>
 
