@@ -720,6 +720,15 @@ const AppContent = () => {
                                     <p className="text-sm font-black uppercase text-[var(--text-primary)] leading-none italic">{user?.name || 'অпераটর'}</p>
                                 </div>
                                 <div className="flex gap-2">
+                                    {lowStockItems.length > 0 && user?.role !== 'client' && (
+                                        <button 
+                                            onClick={() => setActivePanel("Stock")}
+                                            className="w-10 h-10 rounded-xl bg-orange-500 text-white shadow-lg flex items-center justify-center animate-pulse border-2 border-white dark:border-slate-900"
+                                            title={`Low Stock Alert: ${lowStockItems.length} items need attention!`}
+                                        >
+                                            <AlertTriangle size={18} />
+                                        </button>
+                                    )}
                                     {user?.role === 'client' && (
                                         <button 
                                             onClick={() => {
