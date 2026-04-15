@@ -533,6 +533,65 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify, logActio
             </button>
         </div>
 
+        {/* Material & Financial Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="saas-card p-6 border-b-4 border-black dark:border-white shadow-xl relative overflow-hidden group">
+            <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:rotate-12 transition-transform">
+                <LayoutGrid size={80} />
+            </div>
+            <p className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400 mb-2 italic">Active Status</p>
+            <h3 className="text-3xl font-black uppercase text-black dark:text-white tracking-tighter italic leading-none">
+              {clientLots.filter(l => l.currentStage !== 'READY').length} <span className="text-blue-600">IN PROD</span>
+            </h3>
+            <p className="text-[9px] font-bold text-slate-500 mt-4 uppercase tracking-widest flex items-center gap-2 italic">
+               <Activity size={10} className="text-blue-500 animate-pulse" /> Live manufacturing tracker active
+            </p>
+          </div>
+
+          <div className="saas-card p-6 border-b-4 border-emerald-500 shadow-xl relative overflow-hidden group">
+            <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:-rotate-12 transition-transform">
+                <Package size={80} />
+            </div>
+            <p className="text-[10px] font-black uppercase tracking-[0.4em] text-emerald-500 mb-2 italic">Material Balance</p>
+            <div className="space-y-2">
+                {Object.entries((masterData.rawInventory || [])
+                    .filter(i => i.note?.toUpperCase().includes(clientName.toUpperCase()))
+                    .reduce((acc, curr) => {
+                        const key = curr.item + (curr.color ? ` (${curr.color})` : '');
+                        acc[key] = (acc[key] || 0) + (curr.type === 'in' ? Number(curr.qty) : -Number(curr.qty));
+                        return acc;
+                    }, {}))
+                    .filter(([_, qty]) => qty > 0)
+                    .map(([name, qty]) => (
+                        <div key={name} className="flex justify-between items-center border-b border-slate-50 dark:border-slate-800 pb-1">
+                            <span className="text-[9px] font-black uppercase italic text-slate-600 dark:text-slate-400">{name}</span>
+                            <span className="text-xs font-black italic">{qty.toLocaleString()} YDS</span>
+                        </div>
+                    ))
+                }
+                {Object.keys((masterData.rawInventory || []).filter(i => i.note?.toUpperCase().includes(clientName.toUpperCase()))).length === 0 && (
+                     <h3 className="text-3xl font-black uppercase text-emerald-600 tracking-tighter italic leading-none">0.00 <span className="text-[10px]">REMAINING</span></h3>
+                )}
+            </div>
+            <p className="text-[9px] font-bold text-slate-500 mt-4 uppercase tracking-widest flex items-center gap-2 italic">
+               <ShieldCheck size={10} className="text-emerald-500" /> Authorized stock visibility
+            </p>
+          </div>
+
+          <div className="saas-card p-6 border-b-4 border-rose-500 shadow-xl relative overflow-hidden group">
+            <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:rotate-45 transition-transform">
+                <DollarSign size={80} />
+            </div>
+            <p className="text-[10px] font-black uppercase tracking-[0.4em] text-rose-500 mb-2 italic">Outstanding Bill</p>
+            <h3 className="text-3xl font-black uppercase text-black dark:text-white tracking-tighter italic leading-none">
+                ৳{Math.abs(clientLedger.balance).toLocaleString()} <span className={clientLedger.balance < 0 ? 'text-rose-600' : 'text-emerald-600'}>{clientLedger.balance < 0 ? 'DUE' : 'ADV'}</span>
+            </h3>
+            <p className="text-[9px] font-bold text-slate-500 mt-4 uppercase tracking-widest flex items-center gap-2 italic">
+               <Wallet size={10} className="text-rose-500" /> Real-time financial sync active
+            </p>
+          </div>
+        </div>
+
         {showAddClientModal && (
             <div className="fixed inset-0 bg-slate-950/40 backdrop-blur-md z-[500] flex items-center justify-center p-4">
                 <div className="bg-white dark:bg-slate-900 w-full max-w-md rounded-[2.5rem] shadow-3xl border border-slate-100 dark:border-slate-800 p-8 animate-fade-up max-h-[90vh] overflow-y-auto no-scrollbar">
