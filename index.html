@@ -108,10 +108,14 @@
     </script>
     <script type="module" src="/src/main.jsx"></script>
     <script>
-      // Force unregister stale workers
+      // Professional PWA Registration to enable App Installation
       if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.getRegistrations().then(regs => {
-          for(let r of regs) r.unregister();
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js').then(reg => {
+            console.log('✅ NRZONE App Node: Online/Stable (' + reg.scope + ')');
+          }).catch(err => {
+            console.error('❌ App Registry Failed:', err);
+          });
         });
       }
     </script>
