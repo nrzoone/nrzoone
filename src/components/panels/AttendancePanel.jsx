@@ -76,7 +76,7 @@ const AttendancePanel = ({
     return record?.status || "absent";
   };
 
-  const markAttendance = (worker, status) => {
+  const markAttendance = (worker, status, penaltyVoid = false) => {
     setMasterData((prev) => {
       const existingIndex = (prev.attendance || []).findIndex(
         (a) =>
@@ -91,14 +91,21 @@ const AttendancePanel = ({
       let effectiveWage = 0;
       if (status === "present") effectiveWage = dailyWage;
       else if (status === "half-day") effectiveWage = Math.round(dailyWage / 2);
+      else if (status === "late") {
+          // Check if already voided in existing record
+          const existing = (prev.attendance || []).find(a => a.date === selectedDate && a.worker === worker && a.department === selectedDepartment);
+          const isVoid = penaltyVoid || (existing?.penaltyVoid || false);
+          effectiveWage = isVoid ? dailyWage : Math.round(dailyWage * 0.9); 
+      }
 
       if (existingIndex >= 0) {
         newAttendance[existingIndex] = {
           ...newAttendance[existingIndex],
           status,
           wage: effectiveWage,
+          penaltyVoid: status === 'late' ? (penaltyVoid || newAttendance[existingIndex].penaltyVoid || false) : false,
           markedAt: new Date().toISOString(),
-          verification: "biometric"
+          verification: "manual"
         };
       } else {
         newAttendance.push({
@@ -108,6 +115,7 @@ const AttendancePanel = ({
           department: selectedDepartment,
           status,
           wage: effectiveWage,
+          penaltyVoid: status === 'late' ? penaltyVoid : false,
           markedAt: new Date().toISOString(),
           verification: "manual"
         });
@@ -546,28 +554,54 @@ const AttendancePanel = ({
                 <div className="flex items-center gap-2.5 w-full md:w-auto justify-between md:justify-end">
                   <div className="flex p-0.5 bg-slate-50 dark:bg-slate-800/50 rounded-lg gap-1 border border-slate-100/50">
                     {(user?.role?.toLowerCase() === 'admin' || user?.role?.toLowerCase() === 'manager') ? (
-                      <>
-                        {[
-                          { id: "present", label: "FULL" },
-                          { id: "half-day", label: "HALF" },
-                          { id: "absent", label: "ABSENT" }
-                        ].map((s) => (
-                          <button
-                            key={s.id}
-                            onClick={() => markAttendance(worker, s.id)}
-                            className={`px-3 py-1.5 rounded-md text-[8.5px] font-black uppercase tracking-widest transition-all ${
-                                status === s.id 
-                                ? (s.id === "present" ? "bg-slate-950 text-white shadow-md" : s.id === "half-day" ? "bg-amber-500 text-white shadow-md" : "bg-rose-500 text-white shadow-md") 
-                                : "text-black dark:text-white hover:text-black dark:text-white dark:hover:text-white"
-                            }`}
-                          >
-                            {s.label}
-                          </button>
-                        ))}
-                      </>
+                      <div className="flex gap-1">
+                        <button
+                          onClick={() => markAttendance(worker, "present")}
+                          className={`px-3 py-1.5 rounded-md text-[8.5px] font-black uppercase tracking-widest transition-all ${status === "present" ? "bg-slate-950 text-white shadow-md" : "text-black dark:text-white"}`}
+                        >
+                          FULL
+                        </button>
+                        <div className="flex flex-col gap-1">
+                            <button
+                                onClick={() => markAttendance(worker, "late")}
+                                className={`px-3 py-1.5 rounded-md text-[8.5px] font-black uppercase tracking-widest transition-all ${status === "late" ? "bg-amber-500 text-white shadow-md" : "text-black dark:text-white"}`}
+                            >
+                                LATE
+                            </button>
+                            {status === 'late' && (
+                                <button 
+                                    onClick={() => {
+                                        setMasterData(prev => ({
+                                            ...prev,
+                                            attendance: prev.attendance.map(a => 
+                                                (a.date === selectedDate && a.worker === worker && a.department === selectedDepartment)
+                                                ? { ...a, penaltyVoid: !a.penaltyVoid, wage: !a.penaltyVoid ? getWorkerWage(worker) : Math.round(getWorkerWage(worker) * 0.9) }
+                                                : a
+                                            )
+                                        }));
+                                    }}
+                                    className={`text-[6px] font-black uppercase tracking-tighter px-1 py-0.5 rounded ${masterData.attendance.find(a => a.date === selectedDate && a.worker === worker && a.department === selectedDepartment)?.penaltyVoid ? 'bg-emerald-500 text-white' : 'bg-slate-100 text-slate-400'}`}
+                                >
+                                    {masterData.attendance.find(a => a.date === selectedDate && a.worker === worker && a.department === selectedDepartment)?.penaltyVoid ? 'VOIDED' : 'FORGIVE?'}
+                                </button>
+                            )}
+                        </div>
+                        <button
+                          onClick={() => markAttendance(worker, "half-day")}
+                          className={`px-3 py-1.5 rounded-md text-[8.5px] font-black uppercase tracking-widest transition-all ${status === "half-day" ? "bg-blue-500 text-white shadow-md" : "text-black dark:text-white"}`}
+                        >
+                          HALF
+                        </button>
+                        <button
+                          onClick={() => markAttendance(worker, "absent")}
+                          className={`px-3 py-1.5 rounded-md text-[8.5px] font-black uppercase tracking-widest transition-all ${status === "absent" ? "bg-rose-500 text-white shadow-md" : "text-black dark:text-white"}`}
+                        >
+                          ABSENT
+                        </button>
+                      </div>
                     ) : (
                       <div className={`px-4 py-1.5 rounded-lg text-[8.5px] font-bold uppercase tracking-widest ${status === 'present' ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'}`}>
-                          {status === 'present' ? 'PRESENT' : status === 'half-day' ? 'HALF' : 'ABSENT'}
+                          {status === 'present' ? 'PRESENT' : status === 'late' ? 'LATE' : status === 'half-day' ? 'HALF' : 'ABSENT'}
                       </div>
                     )}
                   </div>

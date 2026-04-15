@@ -21,7 +21,8 @@ import {
   CheckCircle as ConfirmIcon,
   ChevronRight,
   ShieldCheck,
-  Zap
+  Zap,
+  Trash2
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { syncToSheet } from "../../utils/syncUtils";

@@ -11,6 +11,8 @@ import {
   MessageCircle,
   AlertCircle,
 } from "lucide-react";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
 import WorkerSummary from "../WorkerSummary";
 import WeeklyInvoice from "../WeeklyInvoice";
 import BusinessIntel from "../BusinessIntel";
@@ -19,6 +21,54 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t, logAction, showNoti
   const [activeTab, setActiveTab] = useState(
     user?.role?.toLowerCase() === "admin" ? "intel" : "summary",
   );
+  
+  const handleExportPDF = () => {
+    const doc = new jsPDF();
+    doc.setFontSize(22);
+    doc.setTextColor(40);
+    doc.text("NRZONE ERP - SYSTEM AUDIT REPORT", 14, 22);
+    doc.setFontSize(10);
+    doc.setTextColor(100);
+    doc.text(`Generated on: ${new Date().toLocaleString()} | User: ${user.name}`, 14, 30);
+    
+    let tableData = [];
+    let headers = [];
+    let title = "";
+
+    if (transactionTab === "productions") {
+        title = "Production Logs";
+        headers = ["Date", "Worker", "Design", "Status", "Lot"];
+        tableData = filteredProductions.map(p => [p.date, p.worker, p.design, p.status, p.lotNo]);
+    } else if (transactionTab === "expense") {
+        title = "Expense Ledger";
+        headers = ["Date", "Category", "Description", "Amount"];
+        tableData = filteredExpenses.map(e => [e.date, e.category, e.description, `৳${e.amount}`]);
+    } else if (transactionTab === "attendance") {
+        title = "Attendance History";
+        headers = ["Date", "Worker", "Dept", "Status"];
+        tableData = filteredAttendance.map(a => [a.date, a.worker, a.department, a.status]);
+    } else {
+        title = "Inventory/Pata Activity";
+        headers = ["Design", "Worker", "Status"];
+        tableData = (transactionTab === 'pata' ? filteredPata : filteredOutside).map(x => [x.design, x.worker, x.status]);
+    }
+
+    doc.setFontSize(14);
+    doc.setTextColor(0);
+    doc.text(title.toUpperCase(), 14, 42);
+
+    doc.autoTable({
+        startY: 48,
+        head: [headers],
+        body: tableData,
+        headStyles: { fillStyle: 'black', textColor: 255 },
+        alternateRowStyles: { fillColor: [245, 245, 245] },
+        styles: { fontSize: 8, font: 'helvetica' }
+    });
+
+    doc.save(`NRZONE_${title.replace(/\s+/g, '_')}_${Date.now()}.pdf`);
+    showNotify("রিপোর্ট পিডিএফ হিসেবে ডাউনলোড হচ্ছে...", "success");
+  };
   const [transactionTab, setTransactionTab] = useState("productions");
   const [search, setSearch] = useState("");
   const role = user?.role?.toLowerCase();
@@ -354,9 +404,16 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t, logAction, showNoti
                   />
                 </div>
                 <button
+                  onClick={handleExportPDF}
+                  className="px-6 h-11 bg-white dark:bg-slate-900 text-black dark:text-white border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm flex items-center justify-center font-black text-[9px] uppercase tracking-widest gap-2 hover:bg-slate-50 transition-all active:scale-95"
+                  title="PDF ডাউনলোড করুন"
+                >
+                  <FileText size={16} /> DOWNLOAD PDF
+                </button>
+                <button
                   onClick={() => setIsPrinting(true)}
                   className="w-11 h-11 bg-slate-950 text-white rounded-xl shadow-lg flex items-center justify-center hover:bg-slate-900 transition-all active:scale-95 shadow-blue-500/10"
-                  title="PDF রিপোর্ট জেনারেট"
+                  title="প্রিন্ট ভিউ ওপেন করুন"
                 >
                   <Printer size={18} />
                 </button>

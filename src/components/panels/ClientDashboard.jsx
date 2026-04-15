@@ -8,11 +8,59 @@ import {
   BarChart2, ArrowRight, ArrowUpRight
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import jsPDF from "jspdf";
+import "jspdf-autotable";
 
 const ClientDashboard = ({ masterData, user, setMasterData, showNotify, logAction }) => {
   const isAdmin = user?.role === 'admin' || user?.role === 'manager';
   const [selectedClient, setSelectedClient] = useState(isAdmin ? null : user.name);
   const clientName = selectedClient || '';
+  
+  const handleDownloadInvoice = (txn) => {
+    const doc = new jsPDF({ format: 'a5' }); // A5 is professional for invoices
+    
+    // Header
+    doc.setFillColor(0, 0, 0);
+    doc.rect(0, 0, 148, 40, 'F');
+    doc.setTextColor(255);
+    doc.setFontSize(18);
+    doc.setFont('helvetica', 'bold');
+    doc.text(masterData.settings?.factoryName?.toUpperCase() || "NRZONE ERP", 14, 20);
+    doc.setFontSize(8);
+    doc.text("B2B TRANSACTION INVOICE", 14, 28);
+    
+    // Client Info
+    doc.setTextColor(0);
+    doc.setFontSize(10);
+    doc.text("INVOICE TO:", 14, 55);
+    doc.setFontSize(12);
+    doc.text(txn.client || clientName, 14, 62);
+    
+    // Txn Info
+    doc.setFontSize(10);
+    doc.text("DATE:", 90, 55);
+    doc.text(txn.date || new Date().toLocaleDateString(), 110, 55);
+    doc.text("TXN ID:", 90, 62);
+    doc.text(`${txn.id}`.slice(-8), 110, 62);
+    
+    // Table
+    doc.autoTable({
+        startY: 80,
+        head: [['DESCRIPTION', 'TYPE', 'AMOUNT']],
+        body: [[txn.note || "Product/Service Delivery", txn.type, `BDT ${txn.amount}`]],
+        theme: 'grid',
+        headStyles: { fillStyle: 'black', textColor: 255 },
+        styles: { font: 'helvetica', fontSize: 10 }
+    });
+    
+    // Footer
+    doc.setFontSize(8);
+    doc.text("This is a computer generated invoice and requires no signature.", 14, 180);
+    doc.text("System Secured by NRZONE ERP v5.5", 14, 185);
+    
+    doc.save(`Invoice_${txn.id}_${txn.client}.pdf`);
+    showNotify("ইনভয়েস ডাউনলোড হচ্ছে...", "success");
+  };
 
   // -- Modals --
   const [showMaterialModal, setShowMaterialModal] = useState(false);
@@ -28,6 +76,7 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify, logActio
     design: '',
     color: '',
     fabricGoj: '',
+    isFabricProvided: true, // Default to true as per user feedback
     sizes: [{ size: '', borka: '', hijab: '' }],
     note: ''
   });
@@ -203,10 +252,12 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify, logActio
     }
 
     // -- STOCK VALIDATION --
-    const validation = checkFabricStock(orderForm.color, orderForm.fabricGoj);
-    if (!validation.isOk) {
-      alert(`⛔ INSUFFICIENT FABRIC!\nColor: ${orderForm.color}\nAvailable: ${validation.available} YDS\nRequired: ${orderForm.fabricGoj} YDS`);
-      return;
+    if (!orderForm.isFabricProvided) {
+        const validation = checkFabricStock(orderForm.color, orderForm.fabricGoj);
+        if (!validation.isOk) {
+          alert(`⛔ INSUFFICIENT FABRIC!\nColor: ${orderForm.color}\nAvailable: ${validation.available} YDS\nRequired: ${orderForm.fabricGoj} YDS`);
+          return;
+        }
     }
 
     const newRequest = {
@@ -223,8 +274,25 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify, logActio
       status: 'Pending Review'
     };
 
-    const fabricDeduction = {
-        id: Date.now() + 1,
+    const inventoryActions = [];
+    
+    if (orderForm.isFabricProvided) {
+        // Record Inward
+        inventoryActions.push({
+            id: Date.now() + 5,
+            date: new Date().toLocaleDateString("en-GB"),
+            item: "ফেব্রিক রোল (Fabric)",
+            client: clientName,
+            qty: Number(orderForm.fabricGoj),
+            color: orderForm.color,
+            type: "in",
+            note: `FABRIC PROVIDED WITH ORDER #${reqId}`
+        });
+    }
+
+    // Record Deduction for production
+    inventoryActions.push({
+        id: Date.now() + 10,
         date: new Date().toLocaleDateString("en-GB"),
         item: "ফেব্রিক রোল (Fabric)",
         client: clientName,
@@ -232,12 +300,12 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify, logActio
         color: orderForm.color,
         type: "out",
         note: `ORDER REQ #${reqId} - ${orderForm.design}`
-    };
+    });
 
     setMasterData(prev => ({
       ...prev,
       productionRequests: [newRequest, ...(prev.productionRequests || [])],
-      rawInventory: [fabricDeduction, ...(prev.rawInventory || [])]
+      rawInventory: [...inventoryActions, ...(prev.rawInventory || [])]
     }));
 
     setShowOrderModal(false);
@@ -712,9 +780,18 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify, logActio
                             {t.note && t.type === 'BILL' && <p className="text-[7px] font-bold text-slate-400 truncate max-w-[160px] italic">{t.note.replace(/^(SEWING|STONE|PATA|OUTSIDE) BILL: /, '')}</p>}
                             <p className="text-[8px] font-black text-slate-400 mt-0.5">{t.date}</p>
                         </div>
-                        <p className={`text-base font-black italic tracking-tighter tabular-nums ${t.type === 'PAYMENT' ? 'text-emerald-600' : 'text-slate-900 dark:text-white'}`}>
-                            ৳ {t.amount?.toLocaleString()}
-                        </p>
+                        <div className="flex items-center gap-3">
+                            <p className={`text-base font-black italic tracking-tighter tabular-nums ${t.type === 'PAYMENT' ? 'text-emerald-600' : 'text-slate-900 dark:text-white'}`}>
+                                ৳ {t.amount?.toLocaleString()}
+                            </p>
+                            <button 
+                                onClick={() => handleDownloadInvoice(t)} 
+                                className="w-8 h-8 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-lg flex items-center justify-center text-slate-400 hover:text-blue-500 hover:border-blue-500 transition-all shadow-sm group-hover:scale-110"
+                                title="Download PDF Invoice"
+                            >
+                                <Download size={12} />
+                            </button>
+                        </div>
                     </div>
                   );
               })}
@@ -817,9 +894,21 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify, logActio
                             </select>
                         </div>
                     </div>
-                    <div className="space-y-1.5">
-                       <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2 italic leading-none">Fabric (YDS)</label>
-                       <input type="number" value={orderForm.fabricGoj} onChange={e => setOrderForm(p => ({...p, fabricGoj: e.target.value}))} className="premium-input !h-11 text-center font-black text-base !bg-slate-950 !text-white !border-none" placeholder="0.00" required />
+                    <div className="grid grid-cols-2 gap-3">
+                        <div className="space-y-1.5">
+                           <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2 italic leading-none">Cloth Required (YDS)</label>
+                           <input type="number" value={orderForm.fabricGoj} onChange={e => setOrderForm(p => ({...p, fabricGoj: e.target.value}))} className="premium-input !h-11 text-center font-black text-base !bg-slate-950 !text-white !border-none" placeholder="0.00" required />
+                        </div>
+                        <div className="space-y-1.5">
+                           <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2 italic leading-none">Adding Cloth Now?</label>
+                           <button 
+                             type="button"
+                             onClick={() => setOrderForm(p => ({...p, isFabricProvided: !p.isFabricProvided}))}
+                             className={`w-full h-11 rounded-xl font-black text-[9px] uppercase tracking-widest border-2 transition-all ${orderForm.isFabricProvided ? 'bg-emerald-500 border-emerald-600 text-white shadow-lg' : 'bg-slate-100 border-slate-200 text-slate-400'}`}
+                           >
+                             {orderForm.isFabricProvided ? 'YES ( কাপড় দিচ্ছি )' : 'NO ( স্টকে আছে )'}
+                           </button>
+                        </div>
                     </div>
 
                     <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-100 dark:border-slate-800 space-y-3">

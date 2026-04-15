@@ -475,6 +475,20 @@ const AppContent = () => {
     const [trackingId, setTrackingId] = useState(null);
     const [showQR, setShowQR] = useState(false);
 
+    // NEW: Stock Alert Logic
+    const lowStockItems = useMemo(() => {
+        const inventory = {};
+        (masterData.rawInventory || []).forEach(log => {
+            const key = log.color ? `${log.item} (${log.color})` : log.item;
+            if (!inventory[key]) inventory[key] = 0;
+            if (log.type === 'in') inventory[key] += Number(log.qty);
+            else inventory[key] -= Number(log.qty);
+        });
+        return Object.entries(inventory)
+            .filter(([_, qty]) => qty > 0 && qty < 20)
+            .map(([name, qty]) => ({ name, qty }));
+    }, [masterData.rawInventory]);
+
     useEffect(() => {
         if (isDarkMode) {
             document.documentElement.classList.add('dark');

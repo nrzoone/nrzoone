@@ -71,7 +71,10 @@ const FactoryPanel = ({ masterData, setMasterData, isAdmin, isWorker, showNotify
   const getWorkerDue = (workerName) => {
     return (masterData.productions || [])
       .filter(p => p.worker === workerName && p.status === "Received" && !p.paid && p.type === type)
-      .reduce((s, p) => s + (Number(p.rate) || 0), 0);
+      .reduce((s, p) => {
+          const qty = (Number(p.receivedBorka) || 0) + (Number(p.receivedHijab) || 0);
+          return s + (qty * (Number(p.rate) || 0));
+      }, 0);
   };
 
   const handleLotSearch = (val) => {
@@ -108,10 +111,20 @@ const FactoryPanel = ({ masterData, setMasterData, isAdmin, isWorker, showNotify
     setEntryData({ worker: "", design: "", lotNo: "", color: "", size: "", issueBorka: "", issueHijab: "", rate: "", date: new Date().toISOString().split('T')[0], note: "" });
   };
 
-  const setReceive = (id, date) => {
+  const setReceive = (id, date, rBorka, rHijab) => {
     setMasterData(prev => ({
       ...prev,
-      productions: prev.productions.map(p => p.id === id ? { ...p, status: "Received", receiveDate: date } : p)
+      productions: prev.productions.map(p => 
+        p.id === id 
+        ? { 
+            ...p, 
+            status: "Received", 
+            receiveDate: date,
+            receivedBorka: Number(rBorka) || 0,
+            receivedHijab: Number(rHijab) || 0
+          } 
+        : p
+      )
     }));
     showNotify("কাজ সফলভাবে গ্রহণ করা হয়েছে!");
     setReceiveModal(null);
@@ -168,6 +181,14 @@ const FactoryPanel = ({ masterData, setMasterData, isAdmin, isWorker, showNotify
       {/* Control Bar */}
       <div className="bg-white dark:bg-slate-900 !p-1.5 flex flex-col md:flex-row items-center justify-between gap-3 rounded-xl border border-[var(--border)] shadow-sm">
         <div className="flex bg-slate-50 dark:bg-slate-800/50 p-1 rounded-lg w-full md:w-auto overflow-x-auto no-scrollbar">
+          {isAdmin && (
+            <button 
+                onClick={() => { if(window.confirm('⚠️ সাবধান! সব ফ্যাক্টরি কাজ মুছে ফেলতে চান?')) setMasterData(prev => ({ ...prev, productions: [] })) }}
+                className="px-3 text-rose-500 hover:scale-110 transition-transform"
+            >
+                <Trash2 size={16} />
+            </button>
+          )}
           {['active', 'history', 'payments'].map(v => (
             <button key={v} onClick={() => setView(v)} className={`flex-1 md:flex-none px-4 py-2 rounded-md text-[9px] font-black uppercase tracking-widest transition-all ${view === v ? 'bg-slate-950 text-white shadow-md dark:bg-white dark:text-black' : 'text-[var(--text-muted)] hover:text-black dark:hover:text-white'}`}>
               {v === 'active' ? 'চলমান' : v === 'history' ? 'পুরাতন' : 'পেমেন্ট'}
@@ -187,9 +208,11 @@ const FactoryPanel = ({ masterData, setMasterData, isAdmin, isWorker, showNotify
           </div>
           <button onClick={() => setShowQR(true)} className="w-9 h-9 bg-slate-100 dark:bg-slate-800 text-slate-500 rounded-xl flex items-center justify-center hover:bg-slate-950 hover:text-white transition-all shadow-sm border border-slate-200 dark:border-slate-700"><Camera size={14} /></button>
           {!isWorker && (
-            <button onClick={() => setShowIssueModal(true)} className="action-btn-primary !px-4 !h-9 shadow-blue-500/10 !text-[8px] !rounded-xl">
-              <Plus size={14} /> নতুন কাজ
-            </button>
+            <div className="flex gap-2">
+                <button onClick={() => setShowIssueModal(true)} className="action-btn-primary !px-4 !h-9 shadow-blue-500/10 !text-[8px] !rounded-xl">
+                    <Plus size={14} /> নতুন কাজ
+                </button>
+            </div>
           )}
         </div>
       </div>
@@ -367,11 +390,21 @@ const FactoryPanel = ({ masterData, setMasterData, isAdmin, isWorker, showNotify
               <button onClick={() => setReceiveModal(null)} className="absolute top-6 right-6 text-slate-400"><X size={20} /></button>
               <h2 className="text-xl font-black uppercase italic mb-8 text-center">{receiveModal.worker} <span className="text-emerald-500">জমা নিন</span></h2>
               <div className="space-y-6">
+                 <div className="grid grid-cols-2 gap-4">
+                     <div>
+                        <label className="text-[10px] font-black uppercase text-slate-400 ml-4 italic">প্রাপ্ত বোরকা (BORKA RECV)</label>
+                        <input type="number" id="rec_borka" className="premium-input !h-14 font-black text-center" defaultValue={receiveModal.issueBorka} />
+                     </div>
+                     <div>
+                        <label className="text-[10px] font-black uppercase text-slate-400 ml-4 italic">প্রাপ্ত হিজাব (HIJAB RECV)</label>
+                        <input type="number" id="rec_hijab" className="premium-input !h-14 font-black text-center" defaultValue={receiveModal.issueHijab} />
+                     </div>
+                 </div>
                  <div>
                     <label className="text-[10px] font-black uppercase text-slate-400 ml-4 italic">গ্রহণের তারিখ (RECEIVE DATE)</label>
                     <input type="date" id="rec_date" className="premium-input !h-14 font-black italic" defaultValue={new Date().toISOString().split('T')[0]} />
                  </div>
-                 <button onClick={() => setReceive(receiveModal.id, document.getElementById('rec_date').value)} className="w-full py-4 bg-emerald-500 text-white rounded-xl font-black uppercase text-[10px] tracking-widest italic shadow-lg">জমা সম্পন্ন করুন (CONFIRM)</button>
+                 <button onClick={() => setReceive(receiveModal.id, document.getElementById('rec_date').value, document.getElementById('rec_borka').value, document.getElementById('rec_hijab').value)} className="w-full py-4 bg-emerald-500 text-white rounded-xl font-black uppercase text-[10px] tracking-widest italic shadow-lg">জমা সম্পন্ন করুন (CONFIRM)</button>
               </div>
             </motion.div>
           </div>

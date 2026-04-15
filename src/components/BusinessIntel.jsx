@@ -1,5 +1,5 @@
-import React, { useMemo } from 'react';
-import { TrendingUp, AlertTriangle, Star, CheckCircle, ArrowUpRight, ArrowDownRight, Activity, Grid, Database, ArrowLeft } from 'lucide-react';
+import { TrendingUp, AlertTriangle, Star, CheckCircle, ArrowUpRight, ArrowDownRight, Activity, Grid, Database, ArrowLeft, BarChart2 } from 'lucide-react';
+import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, Cell, AreaChart, Area } from 'recharts';
 import { getPataStockSummary } from '../utils/calculations';
 import NRZLogo from "./NRZLogo";
 
@@ -64,7 +64,21 @@ const BusinessIntel = ({ masterData }) => {
 
         const pataSummary = getPataStockSummary(masterData);
 
-        return { totalProduced, totalPata, lowStockItems, topDesigns, efficiency, pendingWork, pataSummary, topWorkers, depletionTrends };
+        // -- NEW: Last 7 Days Production for Chart --
+        const last7Days = [...Array(7)].map((_, i) => {
+            const d = new Date();
+            d.setDate(d.getDate() - (6 - i));
+            return d.toLocaleDateString('en-GB');
+        });
+
+        const chartData = last7Days.map(date => {
+            const prodUnits = (masterData.productions || []).filter(p => p.date === date && p.status === 'Received').reduce((acc, p) => acc + (p.receivedBorka || p.issueBorka || 0) + (p.receivedHijab || p.issueHijab || 0), 0);
+            const pataUnits = (masterData.pataEntries || []).filter(e => e.receiveDate === date && e.status === 'Received').reduce((acc, e) => acc + (e.receivedQty || e.pataQty || 0), 0);
+            const outsideUnits = (masterData.outsideWorkEntries || []).filter(e => e.receivedDate === date && e.status === 'Received').reduce((acc, e) => acc + (e.borkaQty || 0) + (e.hijabQty || 0), 0);
+            return { date: date.split('/')[0] + '/' + date.split('/')[1], total: prodUnits + pataUnits + outsideUnits };
+        });
+
+        return { totalProduced, totalPata, lowStockItems, topDesigns, efficiency, pendingWork, pataSummary, topWorkers, depletionTrends, chartData };
     }, [masterData]);
 
     return (
@@ -76,40 +90,75 @@ const BusinessIntel = ({ masterData }) => {
                            <NRZLogo size="md" white />
                         </div>
                         <div>
-                            <p className="text-xs md:text-sm font-black text-black dark:text-white dark:text-white uppercase tracking-[0.4em] mb-3 italic">ব্যবসা বিশ্লেষণ (Strategic Analytics)</p>
-                            <h2 className="text-4xl md:text-7xl lg:text-8xl font-black uppercase italic tracking-tighter leading-none text-black">বিজনেস <span className="text-black dark:text-white dark:text-white">ইন্টেল</span></h2>
+                            <p className="text-xs md:text-sm font-black text-black dark:text-white uppercase tracking-[0.4em] mb-3 italic">ব্যবসা বিশ্লেষণ (Strategic Analytics)</p>
+                            <h2 className="text-4xl md:text-7xl lg:text-8xl font-black uppercase italic tracking-tighter leading-none text-black">বিজনেস <span className="text-black dark:text-white">ইন্টেল</span></h2>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-
-                <div className="bg-white p-10 rounded-[4rem] border-4 border-slate-50 shadow-xl relative overflow-hidden group">
-                    <p className="text-[10px] font-black uppercase tracking-[0.4em] text-black dark:text-white dark:text-white mb-4">উৎপাদন আউটপুট</p>
-                    <h3 className="text-5xl font-black italic tracking-tighter text-black dark:text-white mb-2">{(stats.totalProduced + stats.totalPata).toLocaleString()}</h3>
-                    <p className="text-[10px] font-black uppercase tracking-widest text-black dark:text-white dark:text-white">সর্বমোট তৈরি ইউনিট (পিস)</p>
-                    <TrendingUp className="absolute bottom-[-10%] right-[-5%] text-slate-100 opacity-75" size={120} />
-                </div>
-
-                <div className="bg-white p-10 rounded-[4rem] border-4 border-slate-50 shadow-xl relative overflow-hidden">
-                    <p className="text-[10px] font-black uppercase tracking-[0.4em] text-black dark:text-white dark:text-white mb-4">কাজের দক্ষতা (Efficiency)</p>
-                    <div className="flex items-end gap-4">
-                        <h3 className="text-7xl font-black italic tracking-tighter text-black">{stats.efficiency}%</h3>
-                        <div className="mb-4 space-y-1">
-                            <div className="w-12 h-2 bg-slate-100 rounded-full overflow-hidden">
-                                <div className="h-full bg-black" style={{ width: `${stats.efficiency}%` }}></div>
-                            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div className="lg:col-span-2 bg-white dark:bg-slate-900 p-10 rounded-[3rem] border-4 border-slate-50 dark:border-slate-800 shadow-xl overflow-hidden min-h-[400px]">
+                    <div className="flex justify-between items-center mb-10">
+                        <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-black">সাপ্তাহিক উৎপাদন ধারা (Weekly Production Trend)</h4>
+                        <div className="flex items-center gap-2">
+                             <div className="w-3 h-3 bg-black dark:bg-white rounded-full"></div>
+                             <span className="text-[8px] font-black uppercase tracking-widest">রেডি মাল (Output)</span>
                         </div>
                     </div>
-                    <p className="text-[10px] font-black uppercase tracking-widest text-emerald-500 mt-2">সচল অর্ডার সম্পন্ন করার হার</p>
+                    <div className="h-[280px] w-full">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <BarChart data={stats.chartData} margin={{ top: 20, right: 20, left: -20, bottom: 0 }}>
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                                <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 900, fill: '#94a3b8' }} dy={15} />
+                                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 900, fill: '#94a3b8' }} />
+                                <Tooltip 
+                                    cursor={{ fill: '#f8fafc' }}
+                                    contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)', fontSize: '12px', fontWeight: 'bold' }}
+                                />
+                                <Bar dataKey="total" radius={[8, 8, 8, 8]} barSize={24} fill="#000">
+                                    {stats.chartData.map((entry, index) => (
+                                        <Cell key={`cell-${index}`} fill={index === 6 ? '#2563eb' : '#000'} />
+                                    ))}
+                                </Bar>
+                            </BarChart>
+                        </ResponsiveContainer>
+                    </div>
                 </div>
 
-                <div className={`p-10 rounded-[4rem] border-4 shadow-xl relative overflow-hidden transition-all ${stats.lowStockItems.length > 0 ? 'bg-rose-50 border-rose-100' : 'bg-emerald-50 border-emerald-100'}`}>
-                    <p className={`text-[10px] font-black uppercase tracking-[0.4em] mb-4 ${stats.lowStockItems.length > 0 ? 'text-rose-400' : 'text-emerald-400'}`}>কাঁচামালের অবস্থা</p>
+                <div className="bg-slate-950 p-10 rounded-[3rem] shadow-2xl relative overflow-hidden group flex flex-col justify-center">
+                    <p className={`text-[10px] font-black uppercase tracking-[0.4em] mb-4 text-white/50`}>উৎপাদন সমাপ্ত হার</p>
+                    <div className="flex items-baseline gap-4 mb-4">
+                        <h3 className="text-8xl font-black italic tracking-tighter text-white">{stats.efficiency}%</h3>
+                    </div>
+                    <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden mb-6">
+                         <motion.div initial={{ width: 0 }} animate={{ width: `${stats.efficiency}%` }} className="h-full bg-white" />
+                    </div>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-white/40 italic">পেন্ডিং কাজ দ্রুত শেষ করার দিকে মনোযোগ দিন</p>
+                    <Activity className="absolute bottom-[-10%] right-[-10%] text-white opacity-[0.03] group-hover:scale-125 transition-transform" size={200} />
+                </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div className="bg-white dark:bg-slate-900 p-10 rounded-[3rem] border-4 border-slate-50 dark:border-slate-800 shadow-xl relative overflow-hidden group">
+                    <p className="text-[10px] font-black uppercase tracking-[0.4em] text-black mb-4">মোট উৎপাদন ইউনিট</p>
+                    <h3 className="text-5xl font-black italic tracking-tighter text-black">{(stats.totalProduced + stats.totalPata).toLocaleString()}</h3>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mt-2">ফ্যাক্টরির সামগ্রিক আউটপুট (পিস)</p>
+                    <TrendingUp className="absolute bottom-[-10%] right-[-5%] text-slate-100 dark:text-slate-800 opacity-75" size={120} />
+                </div>
+
+                <div className={`p-10 rounded-[3rem] border-4 shadow-xl relative overflow-hidden transition-all ${stats.lowStockItems.length > 0 ? 'bg-rose-50 border-rose-100 dark:bg-rose-950/20' : 'bg-emerald-50 border-emerald-100 dark:bg-emerald-950/20'}`}>
+                    <p className={`text-[10px] font-black uppercase tracking-[0.4em] mb-4 ${stats.lowStockItems.length > 0 ? 'text-rose-400' : 'text-emerald-400'}`}>কাঁচামালের অ্যালার্ট</p>
                     <h3 className={`text-5xl font-black italic tracking-tighter mb-2 ${stats.lowStockItems.length > 0 ? 'text-rose-600' : 'text-emerald-600'}`}>{stats.lowStockItems.length > 0 ? 'ঝুঁকিপূর্ণ' : 'স্বাভাবিক (Safe)'}</h3>
                     <p className="text-[10px] font-black uppercase tracking-widest opacity-75">{stats.lowStockItems.length}টি মাল দ্রুত কিনতে হবে</p>
                     <AlertTriangle className={`absolute bottom-[-10%] right-[-5%] opacity-10 ${stats.lowStockItems.length > 0 ? 'text-rose-500' : 'text-emerald-500'}`} size={120} />
+                </div>
+
+                <div className="bg-blue-600 p-10 rounded-[3rem] shadow-xl relative overflow-hidden text-white">
+                    <p className="text-[10px] font-black uppercase tracking-[0.4em] mb-4 text-white/60">চলমান পেন্ডিং লট</p>
+                    <h3 className="text-6xl font-black italic tracking-tighter mb-2">{stats.pendingWork}</h3>
+                    <p className="text-[10px] font-black uppercase tracking-widest opacity-70">ফ্যাক্টরির ভেতরে চলমান কাজ</p>
+                    <BarChart2 className="absolute bottom-[-10%] right-[-5%] opacity-10" size={120} />
                 </div>
             </div>
 
