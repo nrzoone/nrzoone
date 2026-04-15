@@ -1449,6 +1449,55 @@ const SettingsPanel_V2 = ({
          </div>
       )}
 
+      {showAddModal === "user" && (
+        <div className="fixed inset-0 bg-slate-950/40 backdrop-blur-sm z-[200] flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-slate-900 px-6 py-8 md:p-10 w-full max-w-md rounded-3xl shadow-2xl animate-fade-up border-b-8 border-slate-950">
+            <h3 className="text-xl font-bold uppercase mb-1">নতুন এক্সেস নোড <span className="text-blue-600">নিবন্ধন</span></h3>
+            <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-8 italic">মাস্টার এক্সেস কন্ট্রোল হাব</p>
+            <div className="space-y-5">
+              <div className="space-y-1">
+                <label className="text-[9px] font-bold uppercase ml-2 italic">ইউজার টাইপ (Role)</label>
+                <select id="new-user-role" className="premium-input !h-12 !text-[10px] !font-bold">
+                  <option value="manager">ম্যানেজার (Manager)</option>
+                  <option value="client">ক্লায়েন্ট (B2B Client)</option>
+                  <option value="admin" disabled>অ্যাডমিন (Restricted)</option>
+                </select>
+              </div>
+              <div className="space-y-1">
+                <label className="text-[9px] font-bold uppercase ml-2 italic">লগইন আইডি / ফোন *</label>
+                <input id="new-user-id" className="premium-input !h-12 !text-[10px] !font-bold" placeholder="EG: 01700000000" />
+              </div>
+              <div className="space-y-1">
+                <label className="text-[9px] font-bold uppercase ml-2 italic">পূর্ণ নাম (Display Name) *</label>
+                <input id="new-user-name" className="premium-input !h-12 !text-[10px] !font-bold" placeholder="EG: RAHIM (CLIENT)" />
+              </div>
+              <div className="space-y-1">
+                <label className="text-[9px] font-bold uppercase ml-2 italic">পাসওয়ার্ড (Password) *</label>
+                <input id="new-user-pass" type="password" className="premium-input !h-12 !text-center !text-xl !font-black !tracking-widest" placeholder="••••••••" />
+              </div>
+
+              <div className="flex gap-4 pt-6">
+                <button onClick={() => setShowAddModal(false)} className="flex-1 py-4 rounded-xl font-bold uppercase text-[10px] tracking-widest text-black dark:text-white hover:bg-slate-50 dark:hover:bg-slate-800 transition-all border border-slate-100 dark:border-slate-800">বাতিল</button>
+                <button 
+                  onClick={() => {
+                    const id = document.getElementById("new-user-id").value;
+                    const pass = document.getElementById("new-user-pass").value;
+                    const name = document.getElementById("new-user-name").value;
+                    const role = document.getElementById("new-user-role").value;
+                    if(id && pass && name) {
+                      handleAddUser(id, pass, name, role);
+                    } else {
+                      showNotify("সব তথ্য পূরণ করুন!", "error");
+                    }
+                  }} 
+                  className="flex-[2] py-4 rounded-xl bg-slate-950 text-white font-bold uppercase text-[10px] tracking-[0.2em] shadow-xl hover:bg-black transition-all active:scale-95 border-b-4 border-slate-800"
+                >সংরক্ষণ করুন</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {showAddModal === "worker" && (
         <div className="fixed inset-0 bg-slate-950/40 backdrop-blur-sm z-[200] flex items-center justify-center p-4">
           <div className="bg-white dark:bg-slate-900 px-6 py-8 md:p-10 w-full max-w-lg rounded-3xl shadow-2xl animate-fade-up">
