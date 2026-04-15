@@ -38,7 +38,8 @@ import {
   ShieldAlert,
   Server,
   Palette,
-  Star
+  Star,
+  Activity
 } from "lucide-react";
 import { storage } from "../../firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
