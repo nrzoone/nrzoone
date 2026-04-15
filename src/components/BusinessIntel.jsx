@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react';
 import { TrendingUp, AlertTriangle, Star, CheckCircle, ArrowUpRight, ArrowDownRight, Activity, Grid, Database, ArrowLeft, BarChart2 } from 'lucide-react';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, Cell, AreaChart, Area } from 'recharts';
 import { getPataStockSummary } from '../utils/calculations';
