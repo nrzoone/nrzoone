@@ -82,7 +82,9 @@ export const Toast = ({ message, type, onClose }) => {
     return (
         <div className={`fixed bottom-12 left-1/2 -translate-x-1/2 z-[1000] px-14 py-8 rounded-full animate-fade-slide-up flex items-center gap-8 whitespace-nowrap italic backdrop-blur-3xl ${styles[type] || styles.info}`}>
             <div className="w-3 h-3 rounded-full bg-white animate-pulse shadow-[0_0_15px_white]"></div>
-            <p className="font-black uppercase text-sm tracking-[0.6em] leading-none text-white">{message}</p>
+            <p className="font-black uppercase text-sm tracking-[0.6em] leading-none text-white">
+                {typeof message === 'object' ? JSON.stringify(message) : message}
+            </p>
         </div>
     );
 };

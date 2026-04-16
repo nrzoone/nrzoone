@@ -564,7 +564,9 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify, logActio
                     .filter(([_, qty]) => qty > 0)
                     .map(([name, qty]) => (
                         <div key={name} className="flex justify-between items-center border-b border-slate-50 dark:border-slate-800 pb-1">
-                            <span className="text-[9px] font-black uppercase italic text-slate-600 dark:text-slate-400">{name}</span>
+                            <span className="text-[9px] font-black uppercase italic text-slate-600 dark:text-slate-400">
+                                {typeof name === 'object' ? JSON.stringify(name) : name}
+                            </span>
                             <span className="text-xs font-black italic">{qty.toLocaleString()} YDS</span>
                         </div>
                     ))
@@ -732,7 +734,9 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify, logActio
                    <User size={24} />
                 </div>
                 <div>
-                   <h2 className="text-xl font-black italic uppercase tracking-tighter text-white leading-none mb-1.5">{clientName}</h2>
+                   <h2 className="text-xl font-black italic uppercase tracking-tighter text-white leading-none mb-1.5">
+                     {typeof clientName === 'object' ? JSON.stringify(clientName) : clientName}
+                   </h2>
                    <div className="flex gap-2 items-center">
                       <span className="px-2 py-0.5 bg-blue-500/20 text-blue-400 rounded text-[8px] font-black uppercase tracking-widest border border-blue-500/30 italic">Active Partner</span>
                    </div>
@@ -782,7 +786,9 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify, logActio
                         </div>
                         <div className="space-y-4">
                             <div>
-                                <h4 className="text-lg font-black italic uppercase tracking-tighter text-black dark:text-white leading-none truncate mb-1 pr-16">{lot.design}</h4>
+                                <h4 className="text-lg font-black italic uppercase tracking-tighter text-black dark:text-white leading-none truncate mb-1 pr-16">
+                                    {typeof lot.design === 'object' ? JSON.stringify(lot.design) : lot.design}
+                                </h4>
                                 <p className="text-[8px] font-black text-slate-400 tracking-widest italic uppercase">LOT: #{lot.lotNo || 'PRO-LOG'}</p>
                             </div>
                             <div className="flex items-center gap-4">

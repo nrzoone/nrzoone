@@ -264,7 +264,9 @@ const FactoryPanel = ({ masterData, setMasterData, isAdmin, isWorker, showNotify
                 <div className="flex justify-between items-start mb-4">
                   <div className="space-y-0.5">
                     <p className="text-subtitle !text-[7px]">নিযুক্ত কারিগর</p>
-                    <h4 className="text-base font-black tracking-tighter uppercase italic truncate max-w-[150px] text-[var(--text-primary)]">{item.worker}</h4>
+                    <h4 className="text-base font-black tracking-tighter uppercase italic truncate max-w-[150px] text-[var(--text-primary)]">
+                      {typeof item.worker === 'object' ? JSON.stringify(item.worker) : item.worker}
+                    </h4>
                   </div>
                   <div className="text-right">
                     <div className="w-8 h-8 bg-slate-950 text-white dark:bg-white dark:text-black rounded-lg flex items-center justify-center shadow-md font-black text-[9px] italic mb-1 ml-auto">#{String(item.lotNo).slice(-3)}</div>
@@ -279,11 +281,15 @@ const FactoryPanel = ({ masterData, setMasterData, isAdmin, isWorker, showNotify
                 <div className="grid grid-cols-2 gap-2 mb-4">
                   <div className="bg-slate-50 dark:bg-slate-800/50 p-2.5 rounded-xl border border-white dark:border-slate-800 shadow-inner">
                     <p className="text-subtitle !text-[7px] mb-0.5">ডিজাইন কালার</p>
-                    <p className="text-[10px] font-black uppercase italic truncate text-[var(--text-primary)]">{item.color}</p>
+                    <p className="text-[10px] font-black uppercase italic truncate text-[var(--text-primary)]">
+                      {typeof item.color === 'object' ? JSON.stringify(item.color) : item.color}
+                    </p>
                   </div>
                   <div className="bg-slate-50 dark:bg-slate-800/50 p-2.5 rounded-xl border border-white dark:border-slate-800 shadow-inner">
                     <p className="text-subtitle !text-[7px] mb-0.5">সাইজ ভেরিয়েন্ট</p>
-                    <p className="text-[10px] font-black uppercase italic truncate text-[var(--text-primary)]">{item.size}</p>
+                    <p className="text-[10px] font-black uppercase italic truncate text-[var(--text-primary)]">
+                      {typeof item.size === 'object' ? JSON.stringify(item.size) : item.size}
+                    </p>
                   </div>
                 </div>
 

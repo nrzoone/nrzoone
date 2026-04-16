@@ -505,7 +505,9 @@ const AppContent = () => {
 
     const showNotify = (message, type = "success") => {
         playSound(type);
-        setToast({ message, type });
+        // Defensive: ensure message is not an raw Error object without stringification
+        const safeMessage = (message instanceof Error) ? message.message : message;
+        setToast({ message: safeMessage, type });
         setTimeout(() => setToast(null), 3000);
     };
 
@@ -770,7 +772,14 @@ const AppContent = () => {
                                                     {(masterData.notifications || []).map((n, i) => (
                                                         <div key={i} className={`saas-card flex items-center gap-6 ${n.read ? 'opacity-50' : 'bg-blue-600/5'}`}>
                                                             <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 shadow-lg ${n.read ? 'bg-slate-100' : 'bg-blue-600 text-white'}`}>{n.type === 'task' ? <Activity size={20} /> : <ShieldAlert size={20} />}</div>
-                                                            <div className="flex-1 space-y-1"><h4 className="text-lg font-black uppercase italic leading-none">{n.title}</h4><p className="text-[11px] font-bold text-slate-400 italic">{n.message}</p></div>
+                                                            <div className="flex-1 space-y-1">
+                                                                <h4 className="text-lg font-black uppercase italic leading-none">
+                                                                    {typeof n.title === 'object' ? JSON.stringify(n.title) : n.title}
+                                                                </h4>
+                                                                <p className="text-[11px] font-bold text-slate-400 italic">
+                                                                    {typeof n.message === 'object' ? JSON.stringify(n.message) : n.message}
+                                                                </p>
+                                                            </div>
                                                         </div>
                                                     ))}
                                                  </div>

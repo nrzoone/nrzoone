@@ -247,10 +247,13 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t, logAction, showNoti
                   <td className="py-6 text-black dark:text-white">{item.date}</td>
                   <td className="py-6 uppercase">
                     <p className="text-base text-black">
-                      {item.worker || item.cutterName || item.description || item.task}
+                      {(() => {
+                        const val = item.worker || item.cutterName || item.description || item.task;
+                        return typeof val === 'object' ? JSON.stringify(val) : val;
+                      })()}
                     </p>
                     <p className="text-[9px] text-black dark:text-white mt-0.5">
-                      {item.design ? `${item.design} (${item.color})` : item.department || item.source || "Factory Registry"}
+                      {item.design ? `${typeof item.design === 'object' ? JSON.stringify(item.design) : item.design} (${typeof item.color === 'object' ? JSON.stringify(item.color) : item.color})` : (typeof (item.department || item.source) === 'object' ? JSON.stringify(item.department || item.source) : item.department || item.source || "Factory Registry")}
                     </p>
                   </td>
                   <td className="py-6 text-center">
@@ -443,7 +446,7 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t, logAction, showNoti
                                 {p.worker}
                               </p>
                               <p className="text-[9px] text-black dark:text-white italic uppercase tracking-widest">
-                                {p.design} ({p.color}) • Lot: {p.lotNo}
+                                {typeof p.design === 'object' ? JSON.stringify(p.design) : p.design} ({typeof p.color === 'object' ? JSON.stringify(p.color) : p.color}) • Lot: {p.lotNo}
                               </p>
                             </td>
                             <td className="py-6 px-6 text-center">

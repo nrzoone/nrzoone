@@ -5,7 +5,7 @@ import {
   BarChart2, X, LayoutGrid, ChevronRight, Share2, Database
 } from 'lucide-react';
 
-const MenuPanel = ({ setActivePanel, user, t, showNotify, lowStockItems }) => {
+const MenuPanel = ({ masterData, setMasterData, showNotify, user, t, logAction, setActivePanel, lowStockItems }) => {
     const categories = [
         {
             title: "মুখ্য হাব (CORE HUB)",

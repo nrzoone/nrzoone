@@ -316,7 +316,9 @@ const AttendancePanel = ({
             >
               <div className="flex justify-between items-start mb-6">
                 <div>
-                   <h3 className="text-xl font-black tracking-tight text-[var(--text-primary)] italic uppercase truncate w-32">{worker}</h3>
+                   <h3 className="text-xl font-black tracking-tight text-[var(--text-primary)] italic uppercase truncate w-32">
+                     {typeof worker === 'object' ? JSON.stringify(worker) : worker}
+                   </h3>
                    <p className="text-[9px] font-black text-[var(--text-muted)] uppercase tracking-widest mt-0.5 italic leading-none">ID: REF-{worker.slice(0,3).toUpperCase()}</p>
                 </div>
                 <div className={`w-10 h-10 rounded-xl flex items-center justify-center shadow-lg ${status === 'present' ? 'bg-emerald-500 text-white' : 'bg-slate-50 dark:bg-slate-800 text-slate-300'}`}>
@@ -545,11 +547,13 @@ const AttendancePanel = ({
                   </div>
                   <div className="space-y-1">
                     <div className="flex items-center gap-3">
-                        <h4 className="text-lg font-black tracking-tighter text-black dark:text-white uppercase leading-tight italic truncate max-w-[150px] md:max-w-[250px]">{worker}</h4>
+                        <h4 className="text-lg font-black tracking-tighter text-black dark:text-white uppercase leading-tight italic truncate max-w-[150px] md:max-w-[250px]">
+                          {typeof worker === 'object' ? JSON.stringify(worker) : worker}
+                        </h4>
                         {workerId && <span className="px-1.5 py-0.5 bg-blue-50 dark:bg-blue-900/10 text-blue-600 text-[8px] font-black rounded border border-blue-100 dark:border-blue-800">REF:{workerId}</span>}
                     </div>
                     <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none flex items-center gap-2 italic">
-                       <DollarSign size={10} className="text-emerald-500" /> ৳{wage.toLocaleString()} (DAILY RATE)
+                       <DollarSign size={10} className="text-emerald-500" /> {typeof wage === 'object' ? JSON.stringify(wage) : wage.toLocaleString()} (DAILY RATE)
                     </p>
                   </div>
                 </div>

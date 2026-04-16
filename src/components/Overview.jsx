@@ -139,7 +139,9 @@ const Overview = ({ masterData, stats: propStats, setActivePanel, t, user, syncS
                         </div>
                         <div className="space-y-0.5">
                             <p className="text-subtitle !text-[7px]">{kpi.label}</p>
-                            <h3 className="text-xl font-black text-[var(--text-primary)] leading-tight tracking-tighter italic">{kpi.value}</h3>
+                            <h3 className="text-xl font-black text-[var(--text-primary)] leading-tight tracking-tighter italic">
+                                {typeof kpi.value === 'object' ? JSON.stringify(kpi.value) : kpi.value}
+                            </h3>
                         </div>
                     </div>
                 ))}
@@ -232,11 +234,13 @@ const Overview = ({ masterData, stats: propStats, setActivePanel, t, user, syncS
                                                 <div className="w-9 h-9 bg-slate-950 text-white rounded-xl flex items-center justify-center font-black text-[10px] shadow-lg group-hover:scale-110 transition-transform">
                                                     #{job.lotNo}
                                                 </div>
-                                                <span className="text-xs font-black text-[var(--text-primary)] uppercase italic tracking-tighter">/ {job.worker?.split(' ')[0] || 'System'}</span>
+                                                <span className="text-xs font-black text-[var(--text-primary)] uppercase italic tracking-tighter">/ {(typeof job.worker === 'string' ? job.worker.split(' ')[0] : 'System')}</span>
                                             </div>
                                         </td>
                                         <td className="px-8 py-4">
-                                            <p className="text-sm font-black text-[var(--text-primary)] uppercase leading-none mb-1 italic tracking-tight">{job.design}</p>
+                                            <p className="text-sm font-black text-[var(--text-primary)] uppercase leading-none mb-1 italic tracking-tight">
+                                                {typeof job.design === 'object' ? JSON.stringify(job.design) : job.design}
+                                            </p>
                                             <p className="text-subtitle">{job.activityType === 'Pata' ? 'Logistics Node' : job.activityType === 'Sewing' ? 'Factory Line' : 'Stone Decor'}</p>
                                         </td>
                                         <td className="px-8 py-4 text-center">

@@ -251,8 +251,12 @@ const InventoryPanel = ({
                         <div key={idx} className="flex flex-col h-full bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl p-4 shadow-sm hover:border-slate-950 transition-all group animate-fade-up">
                             <div className="flex justify-between items-start mb-4">
                                 <div className="space-y-0">
-                                    <h4 className="text-base font-black tracking-tight text-black dark:text-white uppercase leading-none truncate max-w-[150px] italic">{item.design}</h4>
-                                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest italic leading-none mt-1.5">• {item.color} ({item.size})</p>
+                                    <h4 className="text-base font-black tracking-tight text-black dark:text-white uppercase leading-none truncate max-w-[150px] italic">
+                                        {typeof item.design === 'object' ? JSON.stringify(item.design) : item.design}
+                                    </h4>
+                                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest italic leading-none mt-1.5">
+                                        • {typeof item.color === 'object' ? JSON.stringify(item.color) : item.color} ({typeof item.size === 'object' ? JSON.stringify(item.size) : item.size})
+                                    </p>
                                 </div>
                                 <div className="w-8 h-8 bg-slate-50 dark:bg-slate-800 rounded flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
                                     <Zap size={14} className="text-blue-500" />
@@ -299,7 +303,7 @@ const InventoryPanel = ({
                             <div key={idx} className="saas-card p-4 border border-slate-100 dark:border-slate-800 hover:border-slate-950 transition-all group rounded-xl bg-white dark:bg-slate-900 shadow-sm">
                                 <div className="flex justify-between items-start mb-0.5">
                                   <h4 className="text-[13px] font-black tracking-tight text-black dark:text-white uppercase truncate italic">
-                                      {item.name}
+                                      {typeof item.name === 'object' ? JSON.stringify(item.name) : item.name}
                                   </h4>
                                   {item.client !== 'FACTORY' && <span className="px-1.5 py-0.5 bg-blue-100 dark:bg-blue-900/50 text-blue-600 rounded text-[6.5px] font-black uppercase tracking-widest">B2B</span>}
                                 </div>
