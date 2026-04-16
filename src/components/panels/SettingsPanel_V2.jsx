@@ -1501,19 +1501,13 @@ const SettingsPanel_V2 = ({
                     }} 
                   />
                   {showAddModal === 'clients' && (
-                     <div className="p-6 bg-blue-600/10 border-2 border-blue-600/20 rounded-2xl flex items-center gap-5 group hover:bg-blue-600/20 transition-all cursor-pointer" onClick={() => {
-                        const cb = document.getElementById("client-portal-access");
-                        if(cb) cb.checked = !cb.checked;
-                     }}>
-                        <div className="w-10 h-10 bg-blue-600 text-white rounded-xl flex items-center justify-center shadow-lg">
-                           <ShieldCheck size={20} />
+                     <div className="p-6 bg-slate-100 dark:bg-slate-800/50 rounded-2xl flex items-center gap-5 border border-slate-200 dark:border-slate-700">
+                        <div className="w-10 h-10 bg-slate-900 text-white rounded-xl flex items-center justify-center">
+                           <UserCheck size={20} />
                         </div>
                         <div className="flex-1">
-                           <div className="flex items-center gap-3">
-                              <input type="checkbox" id="client-portal-access" className="w-5 h-5 accent-blue-600 cursor-pointer" defaultChecked />
-                              <label className="text-[11px] font-black text-blue-900 dark:text-blue-400 uppercase tracking-widest cursor-pointer">ক্লায়েন্ট পোর্টাল আইডি তৈরি করুন</label>
-                           </div>
-                           <p className="text-[9px] font-bold text-blue-600/60 uppercase tracking-widest mt-1 ml-8 italic">পাসওয়ার্ড অটো সেট হবে: login123</p>
+                           <h4 className="text-[11px] font-black uppercase text-slate-800 dark:text-white">অভ্যন্তরীণ ক্লায়েন্ট রেকর্ড</h4>
+                           <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1 italic">এই ক্লায়েন্ট কোনো পোর্টাল এক্সেস পাবে না।</p>
                         </div>
                      </div>
                   )}

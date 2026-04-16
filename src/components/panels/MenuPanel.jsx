@@ -27,8 +27,7 @@ const MenuPanel = ({ setActivePanel, user, t, showNotify }) => {
             title: "অপারেশন ও হিসাব (MANAGEMENT)",
             items: [
                 { id: 'Outside', label: 'বাইরের কাজ', icon: <Truck size={32} />, color: 'bg-[var(--text-primary)]', desc: 'এক্সটার্নাল ইউনিট প্রোডাকশন' },
-                { id: 'ClientLedger', label: 'Client Hub', icon: <UserCheck size={32} />, color: 'bg-[var(--text-primary)]', desc: 'বি২বি ক্লায়েন্ট এবং বিলিং হাব' },
-                { id: 'Accounts', label: 'মাস্টার কন্ট্রোল', icon: <DollarSign size={32} />, color: 'bg-[var(--text-primary)]', desc: 'হিসাব, রিপোর্ট এবং সিকিউরিটি হাব' }
+                { id: 'Accounts', label: 'Client Ledger', icon: <UserCheck size={32} />, color: 'bg-[var(--text-primary)]', desc: 'অভ্যন্তরীণ ক্লায়েন্ট এবং হিসাব' }
             ]
         },
         {
