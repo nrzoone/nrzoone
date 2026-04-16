@@ -411,7 +411,7 @@ const Sidebar = ({ activePanel, setActivePanel, panelTab, setPanelTab, user, set
 
                     return (
                         <nav key={category.id} className="space-y-1.5">
-                            <p className="px-5 text-[8.5px] font-black text-[var(--text-muted)] tracking-[0.4em] mb-3 uppercase italic">{category.label}</p>
+                            <p className="px-5 text-[8.5px] font-black text-[var(--text-muted)] tracking-[0.4em] mb-3 uppercase italic"><SafeText data={category.label} /></p>
                             {filteredItems.map(item => {
                                 const Icon = item.icon;
                                 const active = activePanel === item.id;
@@ -426,8 +426,8 @@ const Sidebar = ({ activePanel, setActivePanel, panelTab, setPanelTab, user, set
                                             <Icon size={18} strokeWidth={active ? 2.5 : 2} className="shrink-0" />
                                         </div>
                                         <div className="flex flex-col items-start leading-tight">
-                                            <span className={`text-[0.7rem] tracking-tight font-black uppercase italic`}>{t?.(item.id.toLowerCase() + (item.tab ? "_" + item.tab : "")) || item.label}</span>
-                                            <span className={`text-[0.55rem] uppercase tracking-widest font-black opacity-60 italic mt-0.5`}>{item.sub}</span>
+                                            <span className={`text-[0.7rem] tracking-tight font-black uppercase italic`}><SafeText data={t?.(item.id.toLowerCase() + (item.tab ? "_" + item.tab : "")) || item.label} /></span>
+                                            <span className={`text-[0.55rem] uppercase tracking-widest font-black opacity-60 italic mt-0.5`}><SafeText data={item.sub} /></span>
                                         </div>
                                         {active && (item.tab ? panelTab === item.tab : true) && (
                                             <motion.div layoutId="activeInd" className="absolute right-4 w-1.5 h-1.5 bg-blue-500 rounded-full shadow-[0_0_10px_rgba(59,130,246,0.8)]"></motion.div>

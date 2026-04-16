@@ -939,7 +939,7 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify, logActio
                 <div className="text-center space-y-1.5">
                    <div className="w-14 h-14 bg-blue-600 text-white rounded-xl flex items-center justify-center mx-auto shadow-lg rotate-3 mb-2"><ShoppingCart size={24} /></div>
                    <h3 className="text-xl font-black uppercase tracking-tight italic text-black dark:text-white leading-none">NEW PRODUCTION</h3>
-                   <p className="text-[8px] font-black text-slate-400 uppercase tracking-[0.4em] leading-none italic">Entity: {clientName}</p>
+                   <p className="text-[8px] font-black text-slate-400 uppercase tracking-[0.4em] leading-none italic">Entity: <SafeText data={clientName} /></p>
                 </div>
 
                  <form onSubmit={handleSubmitOrder} className="space-y-5">

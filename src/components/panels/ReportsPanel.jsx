@@ -244,7 +244,7 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t, logAction, showNoti
             <tbody className="divide-y divide-slate-50">
               {printData.map((item, idx) => (
                 <tr key={idx} className="text-sm font-bold">
-                  <td className="py-6 text-black dark:text-white">{item.date}</td>
+                  <td className="py-6 text-black dark:text-white"><SafeText data={item.date} /></td>
                   <td className="py-6 uppercase">
                     <p className="text-base text-black">
                       <SafeText data={item.worker || item.cutterName || item.description || item.task} />
@@ -478,13 +478,13 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t, logAction, showNoti
                   {/* Rendering logic for other tabs follows the same pattern... */}
                   {(transactionTab === "outside" ? filteredOutside : transactionTab === "pata" ? filteredPata : transactionTab === "attendance" ? filteredAttendance : transactionTab === "expense" ? filteredExpenses : []).map((item, idx) => (
                     <tr key={idx} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/20 transition-all font-bold">
-                        <td className="py-6 px-6 text-black dark:text-white text-sm">{item.date}</td>
+                        <td className="py-6 px-6 text-black dark:text-white text-sm"><SafeText data={item.date} /></td>
                         <td className="py-6 px-6 uppercase">
                             <p className="text-base text-black dark:text-white leading-none mb-1"><SafeText data={item.worker || item.description} /></p>
                             <p className="text-[9px] text-black dark:text-white italic uppercase tracking-widest"><SafeText data={item.task || item.category || item.department} fallback="Factory Record" /></p>
                         </td>
                         <td className="py-6 px-6 text-center">
-                            <span className="px-3 py-1 bg-slate-100 dark:bg-slate-800 rounded-md text-[8px] font-bold uppercase tracking-widest text-black dark:text-white">{item.status || "LOG"}</span>
+                            <span className="px-3 py-1 bg-slate-100 dark:bg-slate-800 rounded-md text-[8px] font-bold uppercase tracking-widest text-black dark:text-white"><SafeText data={item.status || "LOG"} /></span>
                         </td>
                         <td className="py-6 px-6 text-right text-xl font-bold">
                             {item.amount ? `৳${item.amount.toLocaleString()}` : item.borkaQty || item.pataQty || "—"}

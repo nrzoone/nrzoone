@@ -157,7 +157,7 @@ const BusinessIntel = ({ masterData, SafeText }) => {
 
                 <div className="bg-blue-600 p-10 rounded-[3rem] shadow-xl relative overflow-hidden text-white">
                     <p className="text-[10px] font-black uppercase tracking-[0.4em] mb-4 text-white/60">চলমান পেন্ডিং লট</p>
-                    <h3 className="text-6xl font-black italic tracking-tighter mb-2">{stats.pendingWork}</h3>
+                    <h3 className="text-6xl font-black italic tracking-tighter mb-2"><SafeText data={stats.pendingWork} /></h3>
                     <p className="text-[10px] font-black uppercase tracking-widest opacity-70">ফ্যাক্টরির ভেতরে চলমান কাজ</p>
                     <BarChart2 className="absolute bottom-[-10%] right-[-5%] opacity-10" size={120} />
                 </div>

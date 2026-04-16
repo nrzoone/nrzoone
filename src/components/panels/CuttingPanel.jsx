@@ -444,12 +444,12 @@ const CuttingPanel = ({
                             <div className="flex justify-between items-center py-3 border-y border-slate-100 dark:border-slate-800 border-dashed">
                                 <div className="flex flex-col">
                                      <span className="text-[7px] font-black text-black/30 dark:text-white/30 uppercase tracking-widest mb-0.5 leading-none">বোরকা (Borka)</span>
-                                     <span className="text-xl font-black text-black dark:text-white leading-none">{item.borka}</span>
+                                     <span className="text-xl font-black text-black dark:text-white leading-none"><SafeText data={item.borka} /></span>
                                 </div>
                                 <div className="w-px h-6 bg-slate-100 dark:bg-slate-800"></div>
                                 <div className="text-right">
                                      <span className="text-[7px] font-black text-black/30 dark:text-white/30 uppercase tracking-widest mb-0.5 leading-none">হিজাব (Hijab)</span>
-                                     <span className="text-xl font-black text-black dark:text-white leading-none">{item.hijab}</span>
+                                     <span className="text-xl font-black text-black dark:text-white leading-none"><SafeText data={item.hijab} /></span>
                                 </div>
                             </div>
                         </div>
@@ -526,8 +526,8 @@ const CuttingPanel = ({
                            </div>
                            <span className="text-[7.5px] font-bold uppercase tracking-widest text-slate-300">NODE 0{i+1}</span>
                         </div>
-                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 italic leading-none">{a.label}</p>
-                        <h4 className={`text-2xl font-bold italic leading-none ${a.color}`}>{a.value}</h4>
+                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 italic leading-none"><SafeText data={a.label} /></p>
+                        <h4 className={`text-2xl font-bold italic leading-none ${a.color}`}><SafeText data={a.value} /></h4>
                      </div>
                    ))}
                 </div>
@@ -604,7 +604,7 @@ const CuttingPanel = ({
                         onChange={(e) => setEntryData(p => ({ ...p, design: e.target.value }))}
                       >
                         <option value="">ডিজাইন নির্বাচন করুন...</option>
-                        {(masterData.designs || []).map(d => <option key={d.name} value={d.name}>{d.name}</option>)}
+                        {(masterData.designs || []).map(d => <option key={d.name} value={d.name}><SafeText data={d.name} /></option>)}
                       </select>
                     </div>
                     
@@ -616,7 +616,7 @@ const CuttingPanel = ({
                         onChange={(e) => setEntryData(p => ({ ...p, color: e.target.value }))}
                       >
                         <option value="">রঙ নির্বাচন করুন...</option>
-                        {(masterData.colors || []).map(c => <option key={c} value={c}>{c}</option>)}
+                        {(masterData.colors || []).map(c => <option key={c} value={c}><SafeText data={c} /></option>)}
                       </select>
                     </div>
 

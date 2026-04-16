@@ -350,7 +350,7 @@ const ClientLedgerPanel = ({ masterData, setMasterData, showNotify, user, setAct
                         className={`${act.color} p-6 rounded-2xl text-white flex flex-col items-center justify-center gap-3 shadow-xl hover:scale-105 transition-all text-center border-b-8 border-black/20`}
                     >
                         <act.icon size={24} />
-                        <span className="text-[10px] font-black uppercase tracking-widest">{act.label}</span>
+                        <span className="text-[10px] font-black uppercase tracking-widest"><SafeText data={act.label} /></span>
                     </button>
                 ))}
             </div>
@@ -525,7 +525,7 @@ const ClientLedgerPanel = ({ masterData, setMasterData, showNotify, user, setAct
                             {showActionModal === 'FINANCE' && 'Record Transaction'}
                         </h3>
                         <div className="inline-block px-6 py-2 bg-blue-50 dark:bg-blue-900/20 rounded-full border border-blue-100 dark:border-blue-800">
-                            <p className="text-[10px] font-black uppercase text-blue-600 tracking-widest">{selectedClient}</p>
+                            <p className="text-[10px] font-black uppercase text-blue-600 tracking-widest"><SafeText data={selectedClient} /></p>
                         </div>
                     </div>
 
@@ -546,11 +546,11 @@ const ClientLedgerPanel = ({ masterData, setMasterData, showNotify, user, setAct
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-1">
                                         <label className="text-[10px] font-black uppercase text-slate-400 ml-1">Design</label>
-                                        <select name="design" className="premium-input !h-14 uppercase text-xs font-black">{(masterData.designs || []).map(d => <option key={d.name}>{d.name}</option>)}</select>
+                                        <select name="design" className="premium-input !h-14 uppercase text-xs font-black">{(masterData.designs || []).map(d => <option key={d.name} value={d.name}><SafeText data={d.name} /></option>)}</select>
                                     </div>
                                     <div className="space-y-1">
                                         <label className="text-[10px] font-black uppercase text-slate-400 ml-1">Color</label>
-                                        <select name="color" className="premium-input !h-14 uppercase text-xs font-black">{(masterData.colors || []).map(c => <option key={c} value={c}>{c}</option>)}</select>
+                                        <select name="color" className="premium-input !h-14 uppercase text-xs font-black">{(masterData.colors || []).map(c => <option key={c} value={c}><SafeText data={c} /></option>)}</select>
                                     </div>
                                 </div>
                                 <div className="space-y-1">
@@ -562,7 +562,7 @@ const ClientLedgerPanel = ({ masterData, setMasterData, showNotify, user, setAct
                                     <div className="max-h-[220px] overflow-y-auto pr-2 no-scrollbar space-y-3">
                                         {(masterData.sizes || []).map(sz => (
                                             <div key={sz} className="grid grid-cols-12 gap-3 items-center bg-white dark:bg-slate-900 p-3 rounded-xl shadow-sm border border-slate-50 dark:border-slate-800">
-                                                <div className="col-span-3 font-black text-xs text-center border-r border-slate-100 dark:border-slate-800">{sz}</div>
+                                                <div className="col-span-3 font-black text-xs text-center border-r border-slate-100 dark:border-slate-800"><SafeText data={sz} /></div>
                                                 <div className="col-span-4 flex flex-col items-center">
                                                     <span className="text-[8px] font-black text-slate-400 mb-1">BORKA</span>
                                                     <input name={`borka_${sz}`} type="number" placeholder="0" className="w-full h-10 rounded-lg bg-white dark:bg-slate-950 text-center font-black text-sm outline-none border-none shadow-inner" />
@@ -583,7 +583,7 @@ const ClientLedgerPanel = ({ masterData, setMasterData, showNotify, user, setAct
                         )}
                         {showActionModal === 'DELIVERY' && (
                             <>
-                                <div className="space-y-1"><label className="text-[10px] font-black uppercase text-slate-400 ml-1">Product Portfolio</label><select name="design" className="premium-input !h-14 uppercase text-xs font-black">{clientData.readyStock.map(s => <option key={s.id} value={s.design}>{s.design} [LOT {s.lotNo} - {s.color}]</option>)}</select></div>
+                                <div className="space-y-1"><label className="text-[10px] font-black uppercase text-slate-400 ml-1">Product Portfolio</label><select name="design" className="premium-input !h-14 uppercase text-xs font-black">{clientData.readyStock.map(s => <option key={s.id} value={s.design}><SafeText data={s.design} /> [LOT <SafeText data={s.lotNo} /> - <SafeText data={s.color} />]</option>)}</select></div>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-1"><label className="text-[10px] font-black uppercase text-slate-400 ml-1">Borka Pcs</label><input name="borka" type="number" placeholder="0" className="premium-input !h-14 font-black" required /></div>
                                     <div className="space-y-1"><label className="text-[10px] font-black uppercase text-slate-400 ml-1">Hijab Pcs</label><input name="hijab" type="number" placeholder="0" className="premium-input !h-14 font-black" required /></div>
@@ -611,11 +611,11 @@ const ClientLedgerPanel = ({ masterData, setMasterData, showNotify, user, setAct
                                     <input name="date" type="date" defaultValue={new Date().toISOString().split('T')[0]} className="premium-input !h-14 font-black" required />
                                 </div>
                                 <div className="grid grid-cols-2 gap-4">
-                                    <div className="space-y-1"><label className="text-[10px] font-black uppercase text-slate-400 ml-1">Design</label><select name="design" className="premium-input !h-14 uppercase text-[11px] font-black">{(masterData.designs || []).map(d => <option key={d.name}>{d.name}</option>)}</select></div>
-                                    <div className="space-y-1"><label className="text-[10px] font-black uppercase text-slate-400 ml-1">Color</label><select name="color" className="premium-input !h-14 uppercase text-[11px] font-black">{(masterData.colors || []).map(c => <option key={c}>{c}</option>)}</select></div>
+                                    <div className="space-y-1"><label className="text-[10px] font-black uppercase text-slate-400 ml-1">Design</label><select name="design" className="premium-input !h-14 uppercase text-[11px] font-black">{(masterData.designs || []).map(d => <option key={d.name} value={d.name}><SafeText data={d.name} /></option>)}</select></div>
+                                    <div className="space-y-1"><label className="text-[10px] font-black uppercase text-slate-400 ml-1">Color</label><select name="color" className="premium-input !h-14 uppercase text-[11px] font-black">{(masterData.colors || []).map(c => <option key={c} value={c}><SafeText data={c} /></option>)}</select></div>
                                 </div>
                                 <div className="grid grid-cols-3 gap-4">
-                                    <div className="space-y-1"><label className="text-[10px] font-black uppercase text-slate-400 ml-1">Size</label><select name="size" className="premium-input !h-12 font-black">{(masterData.sizes || []).map(sz => <option key={sz}>{sz}</option>)}</select></div>
+                                    <div className="space-y-1"><label className="text-[10px] font-black uppercase text-slate-400 ml-1">Size</label><select name="size" className="premium-input !h-12 font-black">{(masterData.sizes || []).map(sz => <option key={sz} value={sz}><SafeText data={sz} /></option>)}</select></div>
                                     <div className="space-y-1"><label className="text-[10px] font-black uppercase text-slate-400 ml-1">Borka</label><input name="borka" type="number" placeholder="0" className="premium-input !h-12 font-black text-center" /></div>
                                     <div className="space-y-1"><label className="text-[10px] font-black uppercase text-slate-400 ml-1">Hijab</label><input name="hijab" type="number" placeholder="0" className="premium-input !h-12 font-black text-center" /></div>
                                 </div>

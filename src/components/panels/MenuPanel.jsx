@@ -5,7 +5,7 @@ import {
   BarChart2, X, LayoutGrid, ChevronRight, Share2, Database
 } from 'lucide-react';
 
-const MenuPanel = ({ masterData, setMasterData, showNotify, user, t, logAction, setActivePanel, lowStockItems }) => {
+const MenuPanel = ({ masterData, setMasterData, showNotify, user, t, logAction, setActivePanel, lowStockItems, SafeText }) => {
     const categories = [
         {
             title: "মুখ্য হাব (CORE HUB)",
@@ -89,8 +89,8 @@ const MenuPanel = ({ masterData, setMasterData, showNotify, user, t, logAction, 
                                                     {item.icon}
                                                 </div>
                                                 <div className="space-y-1">
-                                                    <h4 className="text-xl md:text-3xl font-black uppercase tracking-tight text-[var(--text-primary)] leading-tight">{item.label}</h4>
-                                                    <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest leading-none">{item.desc}</p>
+                                                    <h4 className="text-xl md:text-3xl font-black uppercase tracking-tight text-[var(--text-primary)] leading-tight"><SafeText data={item.label} /></h4>
+                                                    <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest leading-none"><SafeText data={item.desc} /></p>
                                                 </div>
                                             </div>
                                             <ChevronRight size={24} className="text-slate-300 dark:text-slate-600 group-hover:text-[var(--text-primary)] transition-all" />

@@ -42,7 +42,7 @@ const UniversalSlip = ({ data, type, copyTitle, logoUrl = null, SafeText }) => {
                                 <p className="text-[10px] font-black tracking-[0.4em] opacity-50">প্রিমিয়াম পোশাক প্রস্তুতকারক</p>
                              </div>
                              <div className="text-right">
-                                 <p className="text-2xl font-black tracking-tighter">{date}</p>
+                                 <p className="text-2xl font-black tracking-tighter"><SafeText data={date} /></p>
                                  <p className="text-[9px] font-black opacity-70">সিস্টেম লগ V4.2</p>
                              </div>
                          </div>

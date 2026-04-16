@@ -59,8 +59,8 @@ const AccordionItem = ({ id, label, icon: Icon, description, children, activeTab
             <Icon size={20} />
           </div>
           <div>
-            <h3 className={`text-lg font-bold uppercase tracking-tight leading-none transition-colors text-[var(--text-primary)]`}>{label}</h3>
-            <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest mt-2 italic">{description}</p>
+            <h3 className={`text-lg font-bold uppercase tracking-tight leading-none transition-colors text-[var(--text-primary)]`}><SafeText data={label} /></h3>
+            <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest mt-2 italic"><SafeText data={description} /></p>
           </div>
         </div>
         <div className={`w-8 h-8 rounded-lg flex items-center justify-center border border-slate-200 dark:border-zinc-700 transition-all ${isOpen ? 'bg-slate-950 border-slate-950 text-white rotate-180' : 'bg-white dark:bg-slate-800 text-slate-300 group-hover:text-black'}`}>
@@ -621,7 +621,7 @@ const SettingsPanel_V2 = ({
           </div>
           <div>
             <h3 className="text-2xl font-bold tracking-tight text-[var(--text-primary)] uppercase leading-none">
-              {title}
+              <SafeText data={title} />
             </h3>
             <p className="text-[10px] text-[var(--text-muted)] font-bold uppercase tracking-widest mt-2">
               {items?.length || 0} টি কনফিগার করা হয়েছে
@@ -679,7 +679,7 @@ const SettingsPanel_V2 = ({
                   <div className="space-y-1">
                     <p className="text-[8px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest mb-2">Item ID: {idx + 1}</p>
                     <p className="font-bold text-xl uppercase tracking-tight text-[var(--text-primary)] leading-tight">
-                      {item}
+                      <SafeText data={item} />
                     </p>
                   </div>
                   <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-all mt-6">
@@ -860,7 +860,7 @@ const SettingsPanel_V2 = ({
 
                 <div className="space-y-4 flex-1 flex flex-col">
                     <div className="flex justify-between items-start">
-                        <h4 className="text-base font-black uppercase tracking-tighter truncate max-w-[70%] italic">{d.name}</h4>
+                        <h4 className="text-base font-black uppercase tracking-tighter truncate max-w-[70%] italic"><SafeText data={d.name} /></h4>
                         <span className="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 rounded text-[7px] font-bold uppercase tracking-widest">ID: {idx+1}</span>
                     </div>
                     
@@ -895,7 +895,7 @@ const SettingsPanel_V2 = ({
                                <p className="text-[7px] font-bold text-slate-400 uppercase italic mb-1 tracking-widest">Extra B2B Rates Active</p>
                                <div className="flex gap-1.5 overflow-x-auto no-scrollbar pb-1">
                                    {Object.keys(d.clientRates).map(c => (
-                                       <span key={c} className="shrink-0 px-1.5 py-0.5 bg-white dark:bg-slate-900 text-[6.5px] font-black uppercase rounded border border-slate-100 dark:border-slate-800 text-slate-500">{c}</span>
+                                       <span key={c} className="shrink-0 px-1.5 py-0.5 bg-white dark:bg-slate-900 text-[6.5px] font-black uppercase rounded border border-slate-100 dark:border-slate-800 text-slate-500"><SafeText data={c} /></span>
                                    ))}
                                </div>
                            </div>
@@ -974,7 +974,7 @@ const SettingsPanel_V2 = ({
                <div className="flex items-center gap-4">
                   <div className="w-12 h-12 bg-slate-50 dark:bg-slate-800 text-black dark:text-white rounded-xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all shadow-inner"><sec.icon size={20} /></div>
                   <div>
-                     <h4 className="text-lg font-bold tracking-tight uppercase leading-none text-black dark:text-white">{sec.label}</h4>
+                     <h4 className="text-lg font-bold tracking-tight uppercase leading-none text-black dark:text-white"><SafeText data={sec.label} /></h4>
                      <p className="text-[8px] font-bold text-slate-400 uppercase tracking-widest mt-1.5 leading-none">{sec.items?.length || 0} টি সংরক্ষিত • {sec.sub}</p>
                   </div>
                </div>
@@ -1056,8 +1056,8 @@ const SettingsPanel_V2 = ({
                 </div>
 
                 <div className="space-y-1 mb-6">
-                   <h4 className="text-lg font-bold tracking-tight text-black dark:text-white dark:text-white uppercase leading-none truncate">{w.name}</h4>
-                   <p className="text-[9px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest italic">{w.phone || "No Connection"}</p>
+                   <h4 className="text-lg font-bold tracking-tight text-black dark:text-white dark:text-white uppercase leading-none truncate"><SafeText data={w.name} /></h4>
+                   <p className="text-[9px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest italic"><SafeText data={w.phone || "No Connection"} /></p>
                 </div>
 
                 <div className="mt-auto pt-6 border-t border-slate-100 dark:border-slate-800 flex justify-between items-end">
@@ -1101,17 +1101,17 @@ const SettingsPanel_V2 = ({
             {(masterData.auditLogs || []).slice(0, 50).map((log, i) => (
               <tr key={i} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/20 transition-all">
                 <td className="px-6 py-4">
-                   <p className="text-[10px] font-bold text-black dark:text-white dark:text-white leading-none mb-1">{new Date(log.timestamp).toLocaleTimeString()}</p>
-                   <p className="text-[9px] font-bold text-black dark:text-white dark:text-white">{new Date(log.timestamp).toLocaleDateString()}</p>
+                   <p className="text-[10px] font-bold text-black dark:text-white dark:text-white leading-none mb-1"><SafeText data={new Date(log.timestamp).toLocaleTimeString()} /></p>
+                   <p className="text-[9px] font-bold text-black dark:text-white dark:text-white"><SafeText data={new Date(log.timestamp).toLocaleDateString()} /></p>
                 </td>
                 <td className="px-6 py-4">
-                   <p className="text-xs font-bold uppercase text-black dark:text-white dark:text-white">{log.user}</p>
-                   <span className="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 text-[8px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest rounded">{log.role}</span>
+                   <p className="text-xs font-bold uppercase text-black dark:text-white dark:text-white"><SafeText data={log.user} /></p>
+                   <span className="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 text-[8px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest rounded"><SafeText data={log.role} /></span>
                 </td>
                 <td className="px-6 py-4">
-                    <span className="text-[10px] font-bold uppercase text-blue-600 dark:text-blue-400">{log.action}</span>
+                    <span className="text-[10px] font-bold uppercase text-blue-600 dark:text-blue-400"><SafeText data={log.action} /></span>
                 </td>
-                <td className="px-6 py-4 text-[10px] text-black dark:text-white dark:text-white truncate max-w-xs">{typeof log.details === 'string' ? log.details : JSON.stringify(log.details)}</td>
+                <td className="px-6 py-4 text-[10px] text-black dark:text-white dark:text-white truncate max-w-xs"><SafeText data={typeof log.details === 'string' ? log.details : JSON.stringify(log.details)} /></td>
               </tr>
             ))}
           </tbody>
@@ -1396,7 +1396,7 @@ const SettingsPanel_V2 = ({
          {['productions', 'cuttingStock', 'pataEntries', 'deliveries', 'attendance'].map(key => (
             <div key={key} className="saas-card flex justify-between items-center group hover:border-rose-500 transition-all">
                <div>
-                  <p className="text-[9px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest mb-1">{key.toUpperCase()}</p>
+                  <p className="text-[9px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest mb-1"><SafeText data={key.toUpperCase()} /></p>
                   <p className="text-2xl font-bold tracking-tighter text-black dark:text-white dark:text-white">{masterData[key]?.length || 0}</p>
                </div>
                <button onClick={() => { if(confirm(`সব ${key} মুছে ফেলতে চান?`)) setMasterData(prev => ({...prev, [key]: []})); }} className="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-800 text-rose-500 flex items-center justify-center hover:bg-rose-500 hover:text-white transition-all shadow-sm opacity-20 group-hover:opacity-100">
@@ -1462,8 +1462,8 @@ const SettingsPanel_V2 = ({
                     <tab.icon size={18} />
                  </div>
                  <div className="text-left">
-                    <p className="text-xs font-bold uppercase tracking-tight leading-none">{tab.label}</p>
-                    <p className="text-[8px] font-bold uppercase tracking-widest mt-1 opacity-40">{tab.desc}</p>
+                    <p className="text-xs font-bold uppercase tracking-tight leading-none"><SafeText data={tab.label} /></p>
+                    <p className="text-[8px] font-bold uppercase tracking-widest mt-1 opacity-40"><SafeText data={tab.desc} /></p>
                  </div>
               </div>
               <ChevronRight size={14} className={activeMainTab === tab.id ? 'opacity-100' : 'opacity-0 group-hover:opacity-100 translate-x-1'} />
@@ -1802,7 +1802,7 @@ const SettingsPanel_V2 = ({
                             return (
                              <div key={client} className="flex items-center gap-4 bg-slate-50 dark:bg-slate-800/50 p-3 rounded-xl border border-slate-200 dark:border-slate-700/50 hover:border-blue-600 transition-all group shadow-sm">
                                 <div className="w-32 shrink-0">
-                                   <p className="text-[11px] font-black uppercase truncate text-black dark:text-white italic" title={client}>{client}</p>
+                                   <p className="text-[11px] font-black uppercase truncate text-black dark:text-white italic" title={client}><SafeText data={client} /></p>
                                    <p className="text-[7px] font-bold text-blue-500 uppercase tracking-widest mt-0.5 leading-none">Custom B2B Override</p>
                                 </div>
                                 <div className="flex-1 grid grid-cols-4 gap-3">

@@ -138,7 +138,7 @@ const Overview = ({ masterData, stats: propStats, setActivePanel, t, user, syncS
                             </div>
                         </div>
                         <div className="space-y-0.5">
-                            <p className="text-subtitle !text-[7px]">{kpi.label}</p>
+                            <p className="text-subtitle !text-[7px]"><SafeText data={kpi.label} /></p>
                             <h3 className="text-xl font-black text-[var(--text-primary)] leading-tight tracking-tighter italic">
                                 <SafeText data={kpi.value} />
                             </h3>

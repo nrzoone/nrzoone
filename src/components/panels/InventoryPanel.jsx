@@ -628,7 +628,7 @@ const InventoryPanel = ({
                                 ) : (
                                     <div className="animate-fade-up text-center space-y-8 p-12">
                                         <div className="flex justify-center"><div className="px-6 py-2 bg-emerald-500/10 text-emerald-500 rounded-full text-[10px] font-black uppercase tracking-[0.3em] border border-emerald-500/20">Protocol Confirmed</div></div>
-                                        <h4 className="text-6xl md:text-8xl font-black italic tracking-tighter uppercase text-black dark:text-white dark:text-white">{masterData.designs?.[0]?.name || 'Unknown Node'}</h4>
+                                        <h4 className="text-6xl md:text-8xl font-black italic tracking-tighter uppercase text-black dark:text-white dark:text-white"><SafeText data={masterData.designs?.[0]?.name} fallback="Unknown Node" /></h4>
                                         <div className="flex justify-center gap-12 text-black dark:text-white dark:text-white">
                                             <div><p className="text-[9px] font-black text-black dark:text-white dark:text-white uppercase tracking-widest mb-1 italic">Match Confidence</p><p className="text-3xl font-black">99.2%</p></div>
                                             <div className="w-px h-10 bg-slate-200 dark:bg-slate-800"></div>
