@@ -23,30 +23,26 @@ import {
     Moon,
     Globe,
     MessageCircle,
+    MessageSquare,
     ShieldCheck,
+    Shield,
+    ShieldAlert,
     Bell,
     X,
     Send,
     Archive,
     CheckCircle,
     Search,
-    Bell,
-    MessageSquare,
-    MessageCircle,
     AlertTriangle,
     Eye,
     EyeOff,
     Printer,
     Plus,
-    ShieldCheck,
-    ShieldAlert,
     Trash2,
     ChevronRight,
     UserCheck,
     BarChart2,
-    Shield,
 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
 import Overview from "./components/Overview";
 import CuttingPanel from "./components/panels/CuttingPanel";
 import FactoryPanel from "./components/panels/FactoryPanel";
