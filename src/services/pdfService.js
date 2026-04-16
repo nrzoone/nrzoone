@@ -65,3 +65,68 @@ export const generateWorkerPaySlip = (worker, masterData) => {
     
     doc.save(`${worker.name}_Statement_${dateStr.replace(/\//g, '-')}.pdf`);
 };
+
+export const generateDeliverySlip = (delivery, masterData) => {
+    const doc = new jsPDF({ format: 'a5' }); // A5 is standard for delivery slips
+    const dateStr = delivery.date || new Date().toLocaleDateString('en-GB');
+
+    const renderSlip = (yOffset, label) => {
+        // Branding Header
+        doc.setFillColor(30, 41, 59);
+        doc.rect(10, yOffset, 128, 15, 'F');
+        doc.setTextColor(255);
+        doc.setFontSize(14);
+        doc.setFont('helvetica', 'bold');
+        doc.text(masterData.settings?.factoryName?.toUpperCase() || 'NRZO0NE ERP', 15, yOffset + 10);
+        doc.setFontSize(7);
+        doc.text(label, 110, yOffset + 10);
+
+        // Client & Meta info
+        doc.setTextColor(0);
+        doc.setFontSize(9);
+        doc.setFont('helvetica', 'normal');
+        doc.text(`CLIENT: ${delivery.receiver?.toUpperCase() || 'N/A'}`, 15, yOffset + 22);
+        doc.text(`DATE: ${dateStr}`, 90, yOffset + 22);
+        doc.text(`LOT/ID: #${delivery.id?.toString().slice(-6)}`, 90, yOffset + 27);
+
+        // Table
+        doc.autoTable({
+            startY: yOffset + 32,
+            margin: { left: 10, right: 10 },
+            tableWidth: 128,
+            head: [['DESIGN / ITEM', 'COLOR', 'SIZE', 'BORKA', 'HIJAB']],
+            body: [[
+                delivery.design?.toUpperCase() || 'N/A',
+                delivery.color?.toUpperCase() || 'MIX',
+                delivery.size || 'N/A',
+                `${delivery.qtyBorka || 0} PCS`,
+                `${delivery.qtyHijab || 0} PCS`
+            ]],
+            theme: 'grid',
+            headStyles: { fillColor: [51, 65, 85], textColor: 255 },
+            styles: { font: 'helvetica', fontSize: 8, cellPadding: 2 }
+        });
+
+        const finalY = doc.lastAutoTable.finalY + 15;
+        doc.setFontSize(7);
+        doc.text('PREPARED BY', 15, finalY);
+        doc.text('AUTHORIZED SIGN', 100, finalY);
+        doc.setDrawColor(200);
+        doc.line(10, finalY - 5, 40, finalY - 5);
+        doc.line(95, finalY - 5, 138, finalY - 5);
+    };
+
+    // Copy 1: Factory Copy
+    renderSlip(10, 'FACTORY COPY');
+    
+    // Cutting Line
+    doc.setLineDash([2, 1], 0);
+    doc.setDrawColor(150);
+    doc.line(0, 105, 148, 105);
+    doc.setLineDash([], 0);
+
+    // Copy 2: Client Copy
+    renderSlip(115, 'CLIENT COPY');
+
+    doc.save(`Delivery_Slip_${delivery.receiver}_${delivery.id}.pdf`);
+};

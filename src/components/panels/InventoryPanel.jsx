@@ -27,6 +27,7 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { syncToSheet } from "../../utils/syncUtils";
 import { getFinishedStock, getSewingStock, getFinishingStock } from "../../utils/calculations";
+import { generateDeliverySlip } from "../../services/pdfService";
 
 const InventoryPanel = ({
   masterData,
@@ -40,7 +41,7 @@ const InventoryPanel = ({
   const [searchTerm, setSearchTerm] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [transactionType, setTransactionType] = useState("in"); // 'in' or 'out'
-  const [view, setView] = useState("overview"); // 'overview', 'raw', 'add'
+  const [view, setView] = useState("delivery"); // Default to 'delivery'
   const [showAIScan, setShowAIScan] = useState(false);
   const [identifying, setIdentifying] = useState(false);
 
@@ -132,19 +133,21 @@ const InventoryPanel = ({
     const qtyB = Number(form.qtyBorka.value) || 0;
     const qtyH = Number(form.qtyHijab.value) || 0;
 
+    const newDelivery = {
+        id: Date.now(),
+        date: new Date().toLocaleDateString("en-GB"),
+        design: form.design.value,
+        color: form.color.value || "",
+        size: form.size.value || "",
+        receiver: clientName,
+        qtyBorka: qtyB,
+        qtyHijab: qtyH,
+        note: form.note?.value || ""
+    };
+
     setMasterData(prev => ({
         ...prev,
-        deliveries: [{
-            id: Date.now(),
-            date: new Date().toLocaleDateString("en-GB"),
-            design: form.design.value,
-            color: form.color.value || "",
-            size: form.size.value || "",
-            receiver: clientName,
-            qtyBorka: qtyB,
-            qtyHijab: qtyH,
-            note: form.note?.value || ""
-        }, ...(prev.deliveries || [])],
+        deliveries: [newDelivery, ...(prev.deliveries || [])],
         cuttingStock: (prev.cuttingStock || []).map(lot => {
           if (lot.design === form.design.value && lot.color === (form.color.value || "") && lot.size === (form.size.value || "")) {
             return {
@@ -156,7 +159,11 @@ const InventoryPanel = ({
           return lot;
         })
     }));
-    showNotify("পণ্য ডেলিভারি সম্পন্ন হয়েছে!");
+
+    // Trigger Digital Slip
+    generateDeliverySlip(newDelivery, masterData);
+    
+    showNotify("পণ্য ডেলিভারি সম্পন্ন এবং স্লিপ তৈরি হয়েছে!");
     form.reset();
   };
 
@@ -212,18 +219,18 @@ const InventoryPanel = ({
       </div>
 
       {/* Navigation Pill */}
-      <div className="bg-white dark:bg-slate-900 !p-1 flex flex-wrap gap-1 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm overflow-x-auto no-scrollbar">
+      <div className="bg-white dark:bg-slate-900 !p-1.5 flex flex-wrap gap-1.5 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-xl overflow-x-auto no-scrollbar">
         {[
-            { id: "overview", label: "তৈরি মাল" },
-            { id: "raw", label: "কাঁচামাল" },
-            { id: "delivery", label: "ডেলিভারি" },
-            { id: "requisitions", label: "অনুরোধ" },
-            { id: "history", label: "অডিট লগ" }
+            { id: "delivery", label: "ডেলিভারি স্লিপ (DELIVERY)" },
+            { id: "overview", label: "স্টক এন্ট্রি (READY)" },
+            { id: "raw", label: "কাঁচামাল (RAW)" },
+            { id: "requisitions", label: "অনুরোধ (REPO)" },
+            { id: "history", label: "লগ (LOGS)" }
         ].map((v) => (
           <button
             key={v.id}
             onClick={() => setView(v.id)}
-            className={`flex-1 min-w-[100px] px-4 py-2 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${view === v.id ? "bg-slate-950 text-white shadow-md" : "text-black dark:text-white hover:bg-slate-100 dark:hover:bg-white/5"}`}
+            className={`flex-1 min-w-[120px] px-6 py-3.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${view === v.id ? "bg-blue-600 text-white shadow-lg scale-[1.02]" : "text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800"}`}
           >
             {v.label}
           </button>

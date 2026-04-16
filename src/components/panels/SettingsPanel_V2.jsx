@@ -1290,7 +1290,7 @@ const SettingsPanel_V2 = ({
                              setMasterData(prev => ({
                                  ...prev,
                                  productions: [],
-                                 rawInventory: [],
+                                 rawInventory: (prev.rawInventory || []).filter(item => item.client === 'FACTORY'),
                                  cutting: [],
                                  pataEntries: [],
                                  outsideWorkEntries: [],
