@@ -7,7 +7,7 @@ export const DashboardCard = ({ title, pending, finished, bill, color, label2 = 
             <div className="flex justify-between items-start mb-10">
                 <div className="space-y-1">
                     <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-black dark:text-white dark:text-white">Operational Node</p>
-                    <h3 className="text-3xl md:text-4xl font-black uppercase tracking-tighter italic leading-none text-[var(--text-primary)]">{title}</h3>
+                    <h3 className="text-3xl md:text-4xl font-black uppercase tracking-tighter italic leading-none text-[var(--text-primary)]">{typeof title === 'object' ? JSON.stringify(title) : title}</h3>
                 </div>
                 <div className="w-12 h-12 rounded-2xl bg-[var(--bg-primary)] shadow-[var(--neu-button)] flex items-center justify-center group-hover:bg-black group-hover:text-white transition-all duration-500">
                     <TrendingUp size={20} />
@@ -17,11 +17,11 @@ export const DashboardCard = ({ title, pending, finished, bill, color, label2 = 
             <div className="grid grid-cols-2 gap-6">
                 <div className="bg-[var(--bg-primary)] p-6 md:p-8 rounded-3xl shadow-[var(--neu-concave)]">
                     <p className="text-[9px] font-bold uppercase tracking-widest text-black dark:text-white dark:text-white mb-2">In Progress</p>
-                    <p className="text-3xl md:text-5xl font-black tracking-tighter leading-none italic text-[var(--text-primary)]">{pending}</p>
+                    <p className="text-3xl md:text-5xl font-black tracking-tighter leading-none italic text-[var(--text-primary)]">{typeof pending === 'object' ? JSON.stringify(pending) : pending}</p>
                 </div>
                 <div className="bg-[var(--bg-primary)] p-6 md:p-8 rounded-3xl shadow-[var(--neu-concave)]">
                     <p className="text-[9px] font-bold uppercase tracking-widest text-black dark:text-white dark:text-white mb-2">{label2.toUpperCase()}</p>
-                    <p className="text-3xl md:text-5xl font-black tracking-tighter leading-none italic text-[var(--text-primary)]">{finished}</p>
+                    <p className="text-3xl md:text-5xl font-black tracking-tighter leading-none italic text-[var(--text-primary)]">{typeof finished === 'object' ? JSON.stringify(finished) : finished}</p>
                 </div>
             </div>
 

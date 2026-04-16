@@ -708,7 +708,7 @@ const AppContent = () => {
                                 )}
                                 <div className="space-y-0.5">
                                     <h2 className="text-xl md:text-2xl font-bold tracking-tight uppercase leading-tight">
-                                        {t?.(activePanel?.toLowerCase()) || activePanel}
+                                        {typeof activePanel === 'object' ? JSON.stringify(activePanel) : (t?.(activePanel?.toLowerCase()) || activePanel)}
                                     </h2>
                                     <div className="flex items-center gap-2">
                                         <div className={`w-1.5 h-1.5 rounded-full ${syncStatus === 'syncing' ? 'bg-amber-500 animate-pulse' : syncStatus === 'error' ? 'bg-rose-500' : 'bg-emerald-500'}`}></div>

@@ -175,10 +175,10 @@ const BusinessIntel = ({ masterData }) => {
                             <div key={idx} className="flex items-center justify-between p-6 bg-slate-50 rounded-3xl group hover:bg-black hover:text-white transition-all">
                                 <div className="flex items-center gap-6">
                                     <span className="w-10 h-10 flex items-center justify-center bg-white rounded-xl text-black dark:text-white font-black text-xs shadow-sm">#{idx + 1}</span>
-                                    <p className="text-xl font-black uppercase italic">{name}</p>
+                                    <p className="text-xl font-black uppercase italic">{typeof name === 'object' ? JSON.stringify(name) : name}</p>
                                 </div>
                                 <div className="text-right">
-                                    <p className="text-2xl font-black italic tracking-tighter">+{qty.toLocaleString()}</p>
+                                    <p className="text-2xl font-black italic tracking-tighter">+{typeof qty === 'object' ? JSON.stringify(qty) : qty.toLocaleString()}</p>
                                     <p className="text-[9px] font-black uppercase opacity-70">মোট উৎপাদন (Pcs)</p>
                                 </div>
                             </div>
@@ -199,13 +199,13 @@ const BusinessIntel = ({ masterData }) => {
                             {stats.pataSummary.map((item, idx) => (
                                 <div key={idx} className="flex items-center justify-between p-6 border-2 border-slate-50 rounded-3xl bg-slate-50/50 italic group hover:border-black transition-all">
                                     <div>
-                                        <p className="text-xl font-black text-black dark:text-white uppercase">{item.design}</p>
-                                        <p className="text-[10px] font-black text-black dark:text-white dark:text-white uppercase mt-1">{item.color} • {item.type}</p>
+                                        <p className="text-xl font-black text-black dark:text-white uppercase">{typeof item.design === 'object' ? JSON.stringify(item.design) : item.design}</p>
+                                        <p className="text-[10px] font-black text-black dark:text-white dark:text-white uppercase mt-1">{typeof item.color === 'object' ? JSON.stringify(item.color) : item.color} • {typeof item.type === 'object' ? JSON.stringify(item.type) : item.type}</p>
                                     </div>
                                     <div className="flex items-center gap-6">
                                         <div className="text-right">
                                             <p className="text-xs font-black text-black dark:text-white dark:text-white uppercase">ব্যালেন্স পিস</p>
-                                            <p className={`text-4xl font-black italic tracking-tighter leading-none ${item.balance > 0 ? 'text-black' : 'text-rose-500'}`}>{item.balance}</p>
+                                            <p className={`text-4xl font-black italic tracking-tighter leading-none ${item.balance > 0 ? 'text-black' : 'text-rose-500'}`}>{typeof item.balance === 'object' ? JSON.stringify(item.balance) : item.balance}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -230,13 +230,13 @@ const BusinessIntel = ({ masterData }) => {
                             {stats.depletionTrends.sort((a,b) => (a.daysLeft === 'INF' ? 999 : a.daysLeft) - (b.daysLeft === 'INF' ? 999 : b.daysLeft)).map((item, idx) => (
                                 <div key={idx} className="flex items-center justify-between p-6 border-2 border-slate-50 rounded-3xl bg-slate-50/50 italic group hover:border-black transition-all">
                                     <div className="flex-1">
-                                        <p className="text-xl font-black text-black dark:text-white uppercase">{item.name}</p>
-                                        <p className="text-[10px] font-black text-black dark:text-white dark:text-white uppercase mt-1">গড় ব্যবহার: {item.dailyBurn} / দিন</p>
+                                        <p className="text-xl font-black text-black dark:text-white uppercase">{typeof item.name === 'object' ? JSON.stringify(item.name) : item.name}</p>
+                                        <p className="text-[10px] font-black text-black dark:text-white dark:text-white uppercase mt-1">গড় ব্যবহার: {typeof item.dailyBurn === 'object' ? JSON.stringify(item.dailyBurn) : item.dailyBurn} / দিন</p>
                                     </div>
                                     <div className="text-right">
                                         <p className="text-[9px] font-black uppercase text-black dark:text-white dark:text-white">ফুরিয়ে যাবে প্রায়</p>
                                         <p className={`text-4xl font-black italic tracking-tighter leading-none ${item.daysLeft < 3 ? 'text-rose-500' : item.daysLeft < 7 ? 'text-amber-500' : 'text-emerald-500'}`}>
-                                            {item.daysLeft === 'INF' ? '∞' : `${item.daysLeft} দিন`}
+                                            {item.daysLeft === 'INF' ? '∞' : `${typeof item.daysLeft === 'object' ? JSON.stringify(item.daysLeft) : item.daysLeft} দিন`}
                                         </p>
                                     </div>
                                 </div>
@@ -259,8 +259,8 @@ const BusinessIntel = ({ masterData }) => {
                                             #{idx + 1}
                                         </div>
                                         <div>
-                                            <p className="text-xl font-black uppercase">{w.name}</p>
-                                            <p className="text-[10px] font-black text-white/70 uppercase group-hover/row:text-black/40">আউটপুট: {w.received} পিস</p>
+                                            <p className="text-xl font-black uppercase">{typeof w.name === 'object' ? JSON.stringify(w.name) : w.name}</p>
+                                            <p className="text-[10px] font-black text-white/70 uppercase group-hover/row:text-black/40">আউটপুট: {typeof w.received === 'object' ? JSON.stringify(w.received) : w.received} পিস</p>
                                         </div>
                                     </div>
                                     <div className="text-right">

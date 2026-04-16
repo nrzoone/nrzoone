@@ -304,7 +304,7 @@ const WorkerSummary = ({ masterData, setMasterData, showNotify, user, logAction,
                                     </div>
                                     <div className="text-center md:text-left">
                                         <p className="text-[9px] font-black uppercase tracking-widest text-white/40 mb-2">Permanent Professional Ledger</p>
-                                        <h2 className="text-4xl md:text-5xl font-black uppercase italic tracking-tighter leading-tight">{selectedWorker.name}</h2>
+                                        <h2 className="text-4xl md:text-5xl font-black uppercase italic tracking-tighter leading-tight">{typeof selectedWorker.name === 'object' ? JSON.stringify(selectedWorker.name) : selectedWorker.name}</h2>
                                         <div className="flex gap-3 mt-4 justify-center md:justify-start">
                                              <span className="px-4 py-1.5 bg-white/10 rounded-full text-[8px] font-black italic tracking-widest border border-white/10">{selectedWorker.dept.toUpperCase()} UNIT</span>
                                              <span className="px-4 py-1.5 bg-emerald-500 text-black rounded-full text-[8px] font-black italic tracking-widest font-mono">KEY: {selectedWorker.password}</span>

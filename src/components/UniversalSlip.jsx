@@ -48,7 +48,7 @@ const UniversalSlip = ({ data, type, copyTitle, logoUrl = null }) => {
                          </div>
                          <div className="flex justify-between items-end">
                             <div className="text-xs font-black border-4 border-black px-6 py-1 self-start bg-white">
-                                আইডি: {displayId}
+                                আইডি: {typeof displayId === 'object' ? JSON.stringify(displayId) : displayId}
                             </div>
                             <div className="text-right">
                                 <p className="text-[9px] font-black uppercase text-black dark:text-white dark:text-white">সিকিউরিটি হ্যাশ</p>
@@ -70,22 +70,22 @@ const UniversalSlip = ({ data, type, copyTitle, logoUrl = null }) => {
                         <div className="flex justify-between items-start">
                             <div className="space-y-1">
                                 <p className="text-[11px] font-black text-black dark:text-white dark:text-white">কারিগর</p>
-                                <p className="text-5xl font-black leading-none tracking-tighter">{worker}</p>
+                                <p className="text-5xl font-black leading-none tracking-tighter">{typeof worker === 'object' ? JSON.stringify(worker) : worker}</p>
                             </div>
                             <div className="text-right space-y-1">
                                 <p className="text-[11px] font-black text-black dark:text-white dark:text-white">লট নম্বর</p>
-                                <p className="text-4xl font-black tracking-tighter text-black dark:text-white underline decoration-4 underline-offset-8 decoration-black">{data.lotNo || 'N/A'}</p>
+                                <p className="text-4xl font-black tracking-tighter text-black dark:text-white underline decoration-4 underline-offset-8 decoration-black">{typeof data.lotNo === 'object' ? JSON.stringify(data.lotNo) : (data.lotNo || 'N/A')}</p>
                             </div>
                         </div>
 
                         <div className="grid grid-cols-2 gap-6 pt-4 border-t-4 border-black">
                             <div className="bg-slate-100 p-4 rounded-xl">
                                 <p className="text-[10px] font-black text-black dark:text-white dark:text-white">ডিজাইন</p>
-                                <p className="text-3xl font-black tracking-tighter">{data.design || 'GENERAL'}</p>
+                                <p className="text-3xl font-black tracking-tighter">{typeof data.design === 'object' ? JSON.stringify(data.design) : (data.design || 'GENERAL')}</p>
                             </div>
                             <div className="bg-slate-100 p-4 rounded-xl text-right">
                                 <p className="text-[10px] font-black text-black dark:text-white dark:text-white">রঙ</p>
-                                <p className="text-3xl font-black tracking-tighter">{data.color || 'N/A'}</p>
+                                <p className="text-3xl font-black tracking-tighter">{typeof data.color === 'object' ? JSON.stringify(data.color) : (data.color || 'N/A')}</p>
                             </div>
                         </div>
 
@@ -102,10 +102,10 @@ const UniversalSlip = ({ data, type, copyTitle, logoUrl = null }) => {
                                 <tbody>
                                     {data.sizes.map((s, i) => (
                                         <tr key={i} className="border-b-2 border-black">
-                                            <td className="px-2 py-1">{s.size}</td>
-                                            <td className="px-2 py-1">{s.borka || '-'}</td>
-                                            <td className="px-2 py-1">{s.hijab || '-'}</td>
-                                            <td className="px-2 py-1">{s.pataQty || '-'}</td>
+                                            <td className="px-2 py-1">{typeof s.size === 'object' ? JSON.stringify(s.size) : s.size}</td>
+                                            <td className="px-2 py-1">{typeof s.borka === 'object' ? JSON.stringify(s.borka) : (s.borka || '-')}</td>
+                                            <td className="px-2 py-1">{typeof s.hijab === 'object' ? JSON.stringify(s.hijab) : (s.hijab || '-')}</td>
+                                            <td className="px-2 py-1">{typeof s.pataQty === 'object' ? JSON.stringify(s.pataQty) : (s.pataQty || '-')}</td>
                                         </tr>
                                     ))}
                                 </tbody>
@@ -131,7 +131,10 @@ const UniversalSlip = ({ data, type, copyTitle, logoUrl = null }) => {
                         <div className="w-full text-center pt-6 border-t-4 border-black/10">
                             <p className="text-[11px] font-black text-black dark:text-white dark:text-white mb-1">মোট পরিমাণ</p>
                             <p className="text-7xl font-black leading-none italic tracking-tighter">
-                                {data.amount || data.pataQty || (Number(data.borka || 0) + Number(data.hijab || 0)) || (Number(data.issueBorka || 0) + Number(data.issueHijab || 0)) || (Number(data.receivedBorka || 0) + Number(data.receivedHijab || 0)) || Number(data.receivedQty || 0)}
+                                {(() => {
+                                    const val = data.amount || data.pataQty || (Number(data.borka || 0) + Number(data.hijab || 0)) || (Number(data.issueBorka || 0) + Number(data.issueHijab || 0)) || (Number(data.receivedBorka || 0) + Number(data.receivedHijab || 0)) || Number(data.receivedQty || 0);
+                                    return typeof val === 'object' ? JSON.stringify(val) : val;
+                                })()}
                             </p>
                             {type === 'PAYMENT' && <p className="text-2xl font-black text-emerald-600 mt-2">টাকা</p>}
                         </div>
