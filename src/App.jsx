@@ -672,12 +672,15 @@ const AppContent = () => {
         </div>
     );
 
+    const [isSuiteOpen, setIsSuiteOpen] = useState(false);
+
+    // Filtered Content
     return (
         <div className="min-h-screen bg-[var(--bg-primary)]">
             {!user ? (
                 <LoginView onLogin={handleLogin} masterData={masterData} />
             ) : (
-                <div className="flex min-h-screen relative overflow-x-hidden">
+                <div className="flex min-h-screen relative overflow-x-hidden text-black dark:text-white">
                     {/* Mobile Sidebar Backdrop */}
                     {isSidebarOpen && (
                         <div 
@@ -689,7 +692,7 @@ const AppContent = () => {
                     {user?.role !== 'client' && <Sidebar activePanel={activePanel} setActivePanel={setActivePanel} panelTab={panelTab} setPanelTab={setPanelTab} user={user} setUser={setUser} isOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} t={t} isDarkMode={isDarkMode} masterData={masterData} />}
                     
                     <main className={`flex-1 flex flex-col min-w-0 h-screen overflow-hidden relative transition-all duration-500 mesh-bg ${user?.role !== 'client' && isSidebarOpen ? 'lg:ml-[300px]' : ''}`}>
-                        {/* Header Section - Modern Responsive SaaS Style */}
+                        {/* Header Section */}
                         <header className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-100 dark:border-slate-800 px-2 md:px-8 py-2 md:py-4 sticky top-0 z-[100] transition-all no-print shadow-sm flex items-center justify-between">
                             <div className="flex items-center gap-4 md:gap-6">
                                 {user?.role !== 'client' && (
@@ -701,13 +704,13 @@ const AppContent = () => {
                                     </button>
                                 )}
                                 <div className="space-y-0.5">
-                                    <h2 className="text-xl md:text-2xl font-bold tracking-tight text-[var(--text-primary)] uppercase leading-tight">
+                                    <h2 className="text-xl md:text-2xl font-bold tracking-tight uppercase leading-tight">
                                         {t?.(activePanel?.toLowerCase()) || activePanel}
                                     </h2>
                                     <div className="flex items-center gap-2">
                                         <div className={`w-1.5 h-1.5 rounded-full ${syncStatus === 'syncing' ? 'bg-amber-500 animate-pulse' : syncStatus === 'error' ? 'bg-rose-500' : 'bg-emerald-500'}`}></div>
                                         <span className={`text-[9px] font-black uppercase tracking-widest ${syncStatus === 'error' ? 'text-rose-500' : 'text-slate-400'}`}>
-                                            {syncStatus === 'syncing' ? 'সিঙ্কিং হচ্ছে...' : syncStatus === 'error' ? 'সিঙ্ক ত্রুটি (Sync Error)' : 'সিস্টেম সুরক্ষিত (V5.2)'}
+                                            {syncStatus === 'syncing' ? 'সিঙ্কিং হচ্ছে...' : syncStatus === 'error' ? 'সিঙ্ক ত্রুটি' : 'সিস্টেম সুরক্ষিত'}
                                         </span>
                                     </div>
                                 </div>
@@ -716,43 +719,20 @@ const AppContent = () => {
                             <div className="flex items-center gap-3 md:gap-6">
                                 <div className="hidden sm:flex flex-col items-end pr-5 border-r border-slate-100 dark:border-slate-800">
                                     <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-0.5">অনুমোদিত ইউজার</p>
-                                    <p className="text-sm font-black uppercase text-[var(--text-primary)] leading-none italic">{user?.name || 'অпераটর'}</p>
+                                    <p className="text-sm font-black uppercase leading-none italic">{user?.name || 'অпераটর'}</p>
                                 </div>
                                 <div className="flex gap-2">
                                     {lowStockItems.length > 0 && user?.role !== 'client' && (
                                         <button 
                                             onClick={() => setActivePanel("Stock")}
                                             className="w-10 h-10 rounded-xl bg-orange-500 text-white shadow-lg flex items-center justify-center animate-pulse border-2 border-white dark:border-slate-900"
-                                            title={`Low Stock Alert: ${lowStockItems.length} items need attention!`}
                                         >
                                             <AlertTriangle size={18} />
-                                        </button>
-                                    )}
-                                    {user?.role === 'client' && (
-                                        <button 
-                                            onClick={() => {
-                                                setUser(null);
-                                                localStorage.removeItem('nrzone_user');
-                                            }}
-                                            className="w-10 h-10 rounded-xl bg-rose-500 text-white shadow-lg flex items-center justify-center hover:bg-rose-600 transition-all"
-                                            title="লগআউট"
-                                        >
-                                            <LogOut size={18} />
-                                        </button>
-                                    )}
-                                    {user?.role !== 'client' && (
-                                        <button 
-                                            onClick={() => setActivePanel("Settings")}
-                                            className="w-10 h-10 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-center hover:bg-slate-50 dark:hover:bg-slate-700 transition-all group"
-                                            title="সেটিংস"
-                                        >
-                                            <Settings size={18} className="group-hover:rotate-45 transition-transform text-[var(--text-primary)]" />
                                         </button>
                                     )}
                                     <button 
                                         onClick={() => setIsDarkMode(!isDarkMode)}
                                         className="w-10 h-10 rounded-xl bg-slate-950 text-white shadow-lg flex items-center justify-center hover:bg-black transition-all"
-                                        title="থিম পরিবর্তন"
                                     >
                                         {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
                                     </button>
@@ -763,14 +743,6 @@ const AppContent = () => {
                         <div className="flex-1 overflow-y-auto px-1 md:px-4 py-2 md:py-4 relative custom-scrollbar">
                             <div className="max-w-[1400px] mx-auto space-y-4 md:space-y-6 animate-fade-up">
                                 {activePanel === "ClientDashboard" && <ClientDashboard masterData={masterData} user={user} setMasterData={setMasterData} showNotify={showNotify} logAction={logAction} />}
-                                
-                                {(!activePanel || (activePanel === "Overview" && user?.role === 'client')) && (
-                                    <div className="flex flex-col items-center justify-center h-[60vh] opacity-50 space-y-4">
-                                        <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-                                        <p className="text-[10px] font-black uppercase tracking-[0.4em]">Initializing Client Workspace...</p>
-                                    </div>
-                                )}
-                                
                                 {user?.role !== 'client' && (
                                     <>
                                         {activePanel === "Overview" && <Overview masterData={masterData} user={user} setActivePanel={setActivePanel} t={t} syncStatus={syncStatus} />}
@@ -787,105 +759,108 @@ const AppContent = () => {
                                         {activePanel === "Menu" && <MenuPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} setActivePanel={setActivePanel} />}
                                         {activePanel === "ClientLedger" && <ClientLedgerPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} setActivePanel={setActivePanel} />}
                                         {activePanel === "History" && <SecurityPanel masterData={masterData} setActivePanel={setActivePanel} t={t} logs={logs} syncStatus={syncStatus} />}
+                                        {activePanel === "Notifications" && (
+                                             <div className="space-y-8 pb-24 animate-fade-up px-2">
+                                                 <div className="flex justify-between items-center mb-10">
+                                                    <h1 className="text-3xl font-bold tracking-tight uppercase leading-none">নোটিফিকেশন প্যানেল</h1>
+                                                    <button onClick={() => setMasterData(p => ({ ...p, notifications: (p.notifications || []).map(n => ({ ...n, read: true })) }))} className="px-5 py-2.5 bg-slate-100 dark:bg-slate-800 rounded-xl text-[10px] font-bold uppercase tracking-widest border border-slate-200 dark:border-slate-700 shadow-sm">Mark Read</button>
+                                                 </div>
+                                                 <div className="space-y-4">
+                                                    {(masterData.notifications || []).map((n, i) => (
+                                                        <div key={i} className={`saas-card flex items-center gap-6 ${n.read ? 'opacity-50' : 'bg-blue-600/5'}`}>
+                                                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 shadow-lg ${n.read ? 'bg-slate-100' : 'bg-blue-600 text-white'}`}>{n.type === 'task' ? <Activity size={20} /> : <ShieldAlert size={20} />}</div>
+                                                            <div className="flex-1 space-y-1"><h4 className="text-lg font-black uppercase italic leading-none">{n.title}</h4><p className="text-[11px] font-bold text-slate-400 italic">{n.message}</p></div>
+                                                        </div>
+                                                    ))}
+                                                 </div>
+                                             </div>
+                                        )}
                                     </>
-                                )}
-                                {activePanel === "Notifications" && (
-                                    <div className="space-y-8 pb-24 animate-fade-up px-2">
-                                         <div className="flex justify-between items-center mb-10">
-                                            <h1 className="text-3xl font-bold tracking-tight text-[var(--text-primary)] uppercase leading-none">নোটিফিকেশন <span className="text-blue-600">প্যানেল</span></h1>
-                                            <button 
-                                                onClick={() => setMasterData(p => ({ ...p, notifications: (p.notifications || []).map(n => ({ ...n, read: true })) }))} 
-                                                className="px-5 py-2.5 bg-slate-100 dark:bg-slate-800 rounded-xl text-[10px] font-bold uppercase tracking-widest hover:bg-slate-950 hover:text-white transition-all border border-slate-200 dark:border-slate-700 shadow-sm"
-                                            >
-                                                সব পড়া হয়েছে (Mark Read)
-                                            </button>
-                                         </div>
-                                         <div className="space-y-4">
-                                            {(masterData.notifications || []).length === 0 ? (
-                                                <div className="py-24 text-center saas-card border-dashed opacity-50 text-[10px] uppercase font-bold tracking-[0.2em]">কোন এলার্ট পাওয়া যায়নি (Empty)</div>
-                                            ) : (
-                                                (masterData.notifications || []).map((n, i) => (
-                                                    <div key={i} className={`saas-card flex items-center gap-6 group transition-all ${n.read ? 'opacity-80 grayscale-[0.5]' : 'border-blue-600/30 bg-blue-600/5'}`}>
-                                                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 shadow-lg ${n.read ? 'bg-slate-100 dark:bg-slate-800 text-black dark:text-white' : 'bg-blue-600 text-white'}`}>
-                                                            {n.type === 'task' ? <Activity size={20} /> : <Shield size={20} />}
-                                                        </div>
-                                                        <div className="flex-1 space-y-1">
-                                                            <h4 className="text-lg font-black text-black dark:text-white uppercase leading-none italic">{n.title}</h4>
-                                                            <p className="text-[11px] font-bold text-slate-400 italic">{n.message}</p>
-                                                            <p className="text-sm font-black italic tracking-tighter text-slate-500 leading-none">{new Date(n.timestamp).toLocaleString()}</p>
-                                                        </div>
-                                                    </div>
-                                                ))
-                                            )}
-                                         </div>
-                                    </div>
                                 )}
                             </div>
                         </div>
 
-                        {/* Floating Client Ledger Button - Only for non-clients */}
-                        {activePanel !== "ClientLedger" && user?.role !== 'client' && (
-                            <button 
-                                onClick={() => setActivePanel("ClientLedger")} 
-                                className="fixed bottom-10 right-10 w-20 h-20 bg-slate-950 text-white rounded-2xl shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all z-[200] border-4 border-white dark:border-slate-900 group no-print"
-                                title="ক্লায়েন্ট লেজার ওপেন করুন"
-                            >
-                                <LayoutGrid size={28} className="group-hover:rotate-12 transition-transform" />
-                            </button>
+                        {/* 🚀 New FAB Floating Menu - ADMIN/MANAGER ONLY */}
+                        {user && (user?.role === 'admin' || user?.role === 'manager') && (
+                            <div className="fixed bottom-10 right-8 z-[2000] flex flex-col items-end gap-3 no-print">
+                                <AnimatePresence>
+                                    {isSuiteOpen && (
+                                        <motion.div 
+                                            initial={{ opacity: 0, scale: 0.5, y: 20 }}
+                                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                                            exit={{ opacity: 0, scale: 0.5, y: 20 }}
+                                            className="flex flex-col gap-3 mb-2"
+                                        >
+                                            {/* WhatsApp Button */}
+                                            <button 
+                                                onClick={() => {
+                                                    const num = masterData.settings?.whatsappNumber || '01700000000';
+                                                    const intl = "88" + num.replace(/\D/g, "");
+                                                    window.open(`https://wa.me/${intl}?text=Hello NRZONE Support`, '_blank');
+                                                }}
+                                                className="w-14 h-14 bg-emerald-500 text-white rounded-2xl shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all border-4 border-white dark:border-slate-900"
+                                                title="WhatsApp Support"
+                                            >
+                                                <MessageCircle size={22} />
+                                            </button>
+
+                                            {/* Notifications Button */}
+                                            <button 
+                                                onClick={() => setActivePanel('Notifications')}
+                                                className="w-14 h-14 bg-blue-600 text-white rounded-2xl shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all relative border-4 border-white dark:border-slate-900"
+                                                title="Notifications"
+                                            >
+                                                <Bell size={22} />
+                                                {(masterData.notifications || []).filter(n => !n.read).length > 0 && (
+                                                    <span className="absolute -top-1 -right-1 w-6 h-6 bg-rose-600 text-white rounded-full flex items-center justify-center text-[10px] font-black border-2 border-white dark:border-slate-900 shadow-xl">{ (masterData.notifications || []).filter(n => !n.read).length }</span>
+                                                )}
+                                            </button>
+
+                                            {/* QR Scanner Button */}
+                                            <button 
+                                                onClick={() => setShowQR(true)}
+                                                className="w-14 h-14 bg-slate-950 text-white rounded-2xl shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all border-4 border-white dark:border-slate-900"
+                                                title="QR Scanner"
+                                            >
+                                                <Search size={22} />
+                                            </button>
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
+
+                                {/* Main TOGGLE Button: Delivery / Main Action */}
+                                <button 
+                                    onClick={() => {
+                                        setIsSuiteOpen(!isSuiteOpen);
+                                        // Optional: Direct go to Stockholm/Inventory if clicked long or double? 
+                                        // For now, toggle menu.
+                                    }}
+                                    className={`w-16 h-16 rounded-[2rem] shadow-2xl flex items-center justify-center hover:scale-105 active:scale-90 transition-all border-4 border-white dark:border-slate-900 relative z-10 ${isSuiteOpen ? 'bg-rose-600 rotate-45' : 'bg-slate-950'} text-white`}
+                                    title="Quick Access Menu"
+                                >
+                                    {isSuiteOpen ? <X size={28} /> : (
+                                        <div className="flex flex-col items-center">
+                                            <Truck size={24} />
+                                            <span className="text-[6px] font-black uppercase tracking-tighter mt-0.5">Delivery</span>
+                                        </div>
+                                    )}
+                                </button>
+                                
+                                {/* One-Click Direct Delivery Access (Next to main button if needed) */}
+                                {!isSuiteOpen && (
+                                    <button 
+                                        onClick={() => setActivePanel('Stock')}
+                                        className="absolute -left-16 bottom-1 w-12 h-12 bg-white dark:bg-slate-800 text-black dark:text-white rounded-xl shadow-xl border border-slate-100 dark:border-slate-700 flex items-center justify-center hover:bg-slate-50 transition-all opacity-0 hover:opacity-100 sm:opacity-100"
+                                        title="Direct Delivery Hub"
+                                    >
+                                        <Package size={18} />
+                                    </button>
+                                )}
+                            </div>
                         )}
                     </main>
                 </div>
             )}
-            
-            {/* Multi-Utility Global Hub - RESTRICTED TO ADMIN/MANAGER - MOVED TO SIDE */}
-            {user && (user?.role === 'admin' || user?.role === 'manager') && (
-                <div className="fixed bottom-24 right-8 z-[2000] flex flex-col gap-4 no-print animate-fade-left items-end">
-                    <p className="text-[7px] font-black text-slate-400 uppercase tracking-[0.5em] mb-2 rotate-90 translate-x-4">ADMIN SUITE</p>
-                    
-                    <button 
-                        onClick={() => {
-                            const num = masterData.settings?.whatsappNumber || '01700000000';
-                            const cleaned = num.replace(/\D/g, "");
-                            const intl = cleaned.length === 11 ? "88" + cleaned : (cleaned.startsWith('88') ? cleaned : "88" + cleaned);
-                            window.open(`https://wa.me/${intl}?text=Hello NRZONE Support`, '_blank');
-                        }}
-                       className="w-12 h-12 bg-emerald-500 text-white rounded-xl shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all border-2 border-white dark:border-slate-900"
-                       title="ওয়াটসঅ্যাপ সাপোর্ট"
-                    >
-                        <MessageCircle size={20} />
-                    </button>
-
-                    <button 
-                        onClick={() => setActivePanel('Notifications')}
-                        className="w-12 h-12 rounded-xl bg-white dark:bg-slate-800 shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all text-slate-950 dark:text-white relative border-2 border-white dark:border-slate-900"
-                        title="নোটিফিকেশন"
-                    >
-                        <Bell size={20} />
-                        {(masterData.notifications || []).filter(n => !n.read).length > 0 && (
-                            <span className="absolute -top-2 -right-2 w-5 h-5 bg-rose-600 text-white rounded-lg flex items-center justify-center text-[9px] font-black border-2 border-white dark:border-slate-900 shadow-lg">
-                                {(masterData.notifications || []).filter(n => !n.read).length}
-                            </span>
-                        )}
-                    </button>
-
-                    <button 
-                        onClick={() => { setIsListening(!isListening); playSound(); }}
-                        className={`w-12 h-12 rounded-xl shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all border-2 border-white dark:border-slate-900 ${isListening ? 'bg-rose-600 animate-pulse text-white' : 'bg-white dark:bg-slate-800 text-slate-950 dark:text-white'}`}
-                        title="ভয়েস কমান্ড"
-                    >
-                        <Activity size={20} />
-                    </button>
-                    
-                    <button 
-                        onClick={() => setShowQR(true)}
-                        className="w-12 h-12 rounded-xl bg-slate-950 text-white shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all border-2 border-white dark:border-slate-800"
-                        title="কিউ-আর স্ক্যানার"
-                    >
-                        <Search size={20} />
-                    </button>
-                </div>
-            )}
-
             {trackingId && <div className="fixed inset-0 z-[1000]"><TrackingView trackId={trackingId} masterData={masterData} onClose={() => setTrackingId(null)} isDarkMode={isDarkMode} /></div>}
             {showQR && <QRScanner onScanSuccess={setTrackingId} onClose={() => setShowQR(false)} />}
             {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
