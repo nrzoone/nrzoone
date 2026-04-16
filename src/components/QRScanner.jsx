@@ -19,35 +19,33 @@ const QRScanner = ({ onScanSuccess, onClose }) => {
         const scanner = new Html5QrcodeScanner(
             "reader",
             { 
-                fps: 10, 
-                qrbox: { width: 250, height: 250 },
-                aspectRatio: 1.0
+                fps: 5, 
+                qrbox: { width: 220, height: 220 },
+                aspectRatio: 1.0,
+                showTorchButtonIfSupported: true
             },
-            /* verbose= */ false
+            false
         );
 
-        scanner.render(
-            (decodedText) => {
-                if (!isBulkRef.current) {
-                    scanner.clear().then(() => {
-                        onScanSuccess(decodedText);
-                        onClose();
-                    }).catch(err => {
-                        console.error("Failed to clear scanner:", err);
-                        onScanSuccess(decodedText);
-                        onClose();
-                    });
-                } else {
-                    if (!scannedItemsRef.current.includes(decodedText)) {
-                        setScannedItems(prev => [decodedText, ...prev]);
-                        onScanSuccess(decodedText); // Notify parent but keep scanning
-                    }
+        const onScan = (decodedText) => {
+            if (!isBulkRef.current) {
+                scanner.clear().then(() => {
+                    onScanSuccess(decodedText);
+                    onClose();
+                }).catch(err => {
+                    console.error("Failed to clear scanner:", err);
+                    onScanSuccess(decodedText);
+                    onClose();
+                });
+            } else {
+                if (!scannedItemsRef.current.includes(decodedText)) {
+                    setScannedItems(prev => [decodedText, ...prev]);
+                    onScanSuccess(decodedText);
                 }
-            },
-            (errorMessage) => {
-                // parse error, ignore it
             }
-        );
+        };
+
+        scanner.render(onScan, (err) => {});
 
         return () => {
             scanner.clear().catch(err => console.error("Scanner cleanup failed", err));

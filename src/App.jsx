@@ -844,12 +844,12 @@ const AppContent = () => {
                     <p className="text-[7px] font-black text-slate-400 uppercase tracking-[0.5em] mb-2 rotate-90 translate-x-4">ADMIN SUITE</p>
                     
                     <button 
-                       onClick={() => {
-                           const num = masterData.settings?.whatsappNumber || '8801700000000';
-                           const cleaned = num.replace(/\D/g, "");
-                           const intl = cleaned.startsWith("880") ? cleaned : "880" + cleaned.replace(/^0/, "");
-                           window.open(`https://wa.me/${intl}`, '_blank');
-                       }}
+                        onClick={() => {
+                            const num = masterData.settings?.whatsappNumber || '01700000000';
+                            const cleaned = num.replace(/\D/g, "");
+                            const intl = cleaned.length === 11 ? "88" + cleaned : (cleaned.startsWith('88') ? cleaned : "88" + cleaned);
+                            window.open(`https://wa.me/${intl}?text=Hello NRZONE Support`, '_blank');
+                        }}
                        className="w-12 h-12 bg-emerald-500 text-white rounded-xl shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all border-2 border-white dark:border-slate-900"
                        title="ওয়াটসঅ্যাপ সাপোর্ট"
                     >

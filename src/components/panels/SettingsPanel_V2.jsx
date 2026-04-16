@@ -1287,26 +1287,30 @@ const SettingsPanel_V2 = ({
                   onClick={() => {
                     if(window.confirm('⚠️ চরম সাবধান! আপনি কি নিশ্চিতভাবে সব স্টক এবং এন্ট্রি মুছে ফেলতে চান? এটি আর ফিরিয়ে আনা সম্ভব নয়।')) {
                         if(window.confirm('সর্বশেষ নিশ্চিতকরণ: আপনি কি সত্যিই কারখানার সব ট্রানজ্যাকশন মুছে ফ্রেশ শুরু করতে চান?')) {
-                             setMasterData(prev => ({
-                                 ...prev,
-                                 productions: [],
-                                 rawInventory: (prev.rawInventory || []).filter(item => item.client === 'FACTORY'),
-                                 cutting: [],
-                                 pataEntries: [],
-                                 outsideWorkEntries: [],
-                                 expenses: [],
-                                 clientTransactions: [],
-                                 attendance: [],
-                                 deliveries: [],
-                                 notifications: [],
-                                 finishedStock: [],
-                                 productionRequests: [],
-                                 whatsappRequests: [],
-                                 workerPayments: [],
-                                 workerBiometrics: {},
-                                 jobEntries: [],
-                                 logs: []
-                             }));
+                             if (confirm("🚨 সতর্কবার্তা: এটি আপনার পুরো সিস্টেমের সব প্রোডাকশন, স্টক এবং ইতিহাস মুছে ফেলবে। এটি পুনরুদ্ধার করা সম্ভব নয়। আপনি কি নিশ্চিত?")) {
+                                 setMasterData(prev => ({
+                                     ...prev,
+                                     productions: [],
+                                     rawInventory: [],
+                                     cutting: [],
+                                     pataEntries: [],
+                                     outsideWorkEntries: [],
+                                     expenses: [],
+                                     clientTransactions: [],
+                                     attendance: [],
+                                     deliveries: [],
+                                     notifications: [],
+                                     finishedStock: [],
+                                     productionRequests: [],
+                                     whatsappRequests: [],
+                                     workerPayments: [],
+                                     workerBiometrics: {},
+                                     jobEntries: [],
+                                     logs: [],
+                                     cuttingStock: []
+                                 }));
+                                 showNotify("সিস্টেম পুরোপুরি রিসেট করা হয়েছে! (Pristine Condition)");
+                             }
                              showNotify("সিস্টেম সফলভাবে রিসেট করা হয়েছে!", "success");
                              setActivePanel("overview");
                         }
