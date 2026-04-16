@@ -336,7 +336,7 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
                         <div className="flex justify-between items-start mb-4">
                             <div className="space-y-0.5">
                                 <p className="text-[7.5px] font-black text-slate-400 uppercase tracking-widest leading-none italic">চুক্তিভিত্তিক কারিগর</p>
-                                <h4 className="text-xl font-black tracking-tighter text-[var(--text-primary)] uppercase leading-none italic truncate max-w-[150px]">{item.worker}</h4>
+                                <h4 className="text-xl font-black tracking-tighter text-[var(--text-primary)] uppercase leading-none italic truncate max-w-[150px]">{typeof item.worker === 'object' ? JSON.stringify(item.worker) : item.worker}</h4>
                             </div>
                             <div className={`w-10 h-10 ${item.status === 'Pending' ? 'bg-amber-100 text-amber-600' : 'bg-emerald-100 text-emerald-600'} rounded-xl flex items-center justify-center shadow-inner`}>
                                 <ExternalLink size={18} />
@@ -346,11 +346,11 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
                         <div className="grid grid-cols-2 gap-3 mb-4">
                             <div className="bg-slate-50 dark:bg-slate-800 p-3 rounded-xl border border-white dark:border-slate-700">
                                 <p className="text-[7.5px] font-black text-slate-400 uppercase tracking-widest mb-1.5 italic">ডিজাইন</p>
-                                <p className="text-[11px] font-black text-[var(--text-primary)] truncate uppercase italic">{item.design}</p>
+                                <p className="text-[11px] font-black text-[var(--text-primary)] truncate uppercase italic">{typeof item.design === 'object' ? JSON.stringify(item.design) : item.design}</p>
                             </div>
                             <div className="bg-slate-50 dark:bg-slate-800 p-3 rounded-xl border border-white dark:border-slate-700">
                                 <p className="text-[7.5px] font-black text-slate-400 uppercase tracking-widest mb-1.5 italic">কাজ/টাস্ক</p>
-                                <p className="text-[11px] font-black text-[var(--text-primary)] truncate uppercase italic">{item.task}</p>
+                                <p className="text-[11px] font-black text-[var(--text-primary)] truncate uppercase italic">{typeof item.task === 'object' ? JSON.stringify(item.task) : item.task}</p>
                             </div>
                         </div>
 
@@ -433,7 +433,7 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
                     <div className="fixed inset-0 z-[1000] bg-slate-950/60 backdrop-blur-md flex items-center justify-center p-4">
                         <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-white dark:bg-slate-900 w-full max-w-md rounded-3xl shadow-2xl p-8 relative border border-slate-100 dark:border-slate-800">
                             <button onClick={() => setReceiveModal(null)} className="absolute top-6 right-6 text-slate-400 hover:text-black transition-colors"><X size={24} /></button>
-                            <h2 className="text-2xl font-black uppercase italic mb-8 tracking-tighter text-center">{receiveModal.worker} <span className="text-emerald-500">জমা নিন</span></h2>
+                            <h2 className="text-2xl font-black uppercase italic mb-8 tracking-tighter text-center">{typeof receiveModal.worker === 'object' ? JSON.stringify(receiveModal.worker) : receiveModal.worker} <span className="text-emerald-500">জমা নিন</span></h2>
                             <div className="grid grid-cols-2 gap-4 mb-8 text-center bg-slate-50 dark:bg-slate-800/50 p-6 rounded-2xl border border-white dark:border-slate-700">
                                 <div><p className="text-[10px] font-black uppercase text-slate-400 opacity-60">বোরকা</p><input type="number" className="w-full text-center text-3xl font-black bg-transparent outline-none" value={receiveModal.rBorkaQty} onChange={(e) => setReceiveModal(p => ({ ...p, rBorkaQty: e.target.value }))} /></div>
                                 <div><p className="text-[10px] font-black uppercase text-slate-400 opacity-60">হিজাব</p><input type="number" className="w-full text-center text-3xl font-black bg-transparent outline-none" value={receiveModal.rHijabQty} onChange={(e) => setReceiveModal(p => ({ ...p, rHijabQty: e.target.value }))} /></div>
@@ -447,7 +447,7 @@ const OutsideWorkPanel = ({ masterData, setMasterData, showNotify, user, setActi
                     <div className="fixed inset-0 z-[1000] bg-slate-950/60 backdrop-blur-md flex items-center justify-center p-4">
                         <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-white dark:bg-slate-900 w-full max-w-md rounded-2xl shadow-2xl p-6 relative border border-slate-100 dark:border-slate-800">
                             <button onClick={() => setPayModal(null)} className="absolute top-6 right-6 text-slate-400 hover:text-black transition-colors"><X size={20} /></button>
-                            <h2 className="text-xl font-black uppercase italic mb-6 tracking-tighter text-center">{payModal.worker} <span className="text-blue-500">পেমেন্ট</span></h2>
+                            <h2 className="text-xl font-black uppercase italic mb-6 tracking-tighter text-center">{typeof payModal.worker === 'object' ? JSON.stringify(payModal.worker) : payModal.worker} <span className="text-blue-500">পেমেন্ট</span></h2>
                             <div className="p-6 bg-slate-50 dark:bg-slate-800/50 rounded-2xl text-center mb-6 border border-white dark:border-slate-700">
                                 <p className="text-[9px] font-black uppercase text-slate-400 mb-2 opacity-60 tracking-widest leading-none italic">টাকার পরিমাণ (৳)</p>
                                 <input type="number" className="w-full text-2xl font-black text-center bg-transparent outline-none text-blue-600 italic leading-none" placeholder="0" value={paymentAmount} onChange={(e) => setPaymentAmount(e.target.value)} />

@@ -232,9 +232,9 @@ const Overview = ({ masterData, stats: propStats, setActivePanel, t, user, syncS
                                         <td className="px-8 py-4">
                                             <div className="flex items-center gap-4">
                                                 <div className="w-9 h-9 bg-slate-950 text-white rounded-xl flex items-center justify-center font-black text-[10px] shadow-lg group-hover:scale-110 transition-transform">
-                                                    #{job.lotNo}
+                                                    #{typeof job.lotNo === 'object' ? JSON.stringify(job.lotNo) : job.lotNo}
                                                 </div>
-                                                <span className="text-xs font-black text-[var(--text-primary)] uppercase italic tracking-tighter">/ {(typeof job.worker === 'string' ? job.worker.split(' ')[0] : 'System')}</span>
+                                                <span className="text-xs font-black text-[var(--text-primary)] uppercase italic tracking-tighter">/ {(typeof job.worker === 'string' ? job.worker.split(' ')[0] : typeof job.worker === 'object' ? JSON.stringify(job.worker) : 'System')}</span>
                                             </div>
                                         </td>
                                         <td className="px-8 py-4">
@@ -244,7 +244,7 @@ const Overview = ({ masterData, stats: propStats, setActivePanel, t, user, syncS
                                             <p className="text-subtitle">{job.activityType === 'Pata' ? 'Logistics Node' : job.activityType === 'Sewing' ? 'Factory Line' : 'Stone Decor'}</p>
                                         </td>
                                         <td className="px-8 py-4 text-center">
-                                            <span className="text-xl font-black text-[var(--text-primary)] italic tracking-tighter">{job.issueBorka || job.pataQty || job.borka || 0}</span>
+                                            <span className="text-xl font-black text-[var(--text-primary)] italic tracking-tighter">{typeof (job.issueBorka || job.pataQty || job.borka || 0) === 'object' ? JSON.stringify(job.issueBorka || job.pataQty || job.borka || 0) : (job.issueBorka || job.pataQty || job.borka || 0)}</span>
                                             <span className="text-[9px] text-black/30 dark:text-white/30 ml-1.5 font-black uppercase tracking-widest italic">units</span>
                                         </td>
                                         <td className="px-8 py-4 text-right">

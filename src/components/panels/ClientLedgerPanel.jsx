@@ -238,7 +238,7 @@ const ClientLedgerPanel = ({ masterData, setMasterData, showNotify, user, setAct
             </div>
             <div className="space-y-0.5">
                 <h2 className="text-2xl md:text-4xl lg:text-4xl font-black tracking-tighter uppercase leading-none italic">
-                    {selectedClient ? <span className="text-white">{selectedClient} <span className="text-blue-500">Hub</span></span> : <span>Client <span className="text-blue-500">Ledger Hub</span></span>}
+                    {selectedClient ? <span className="text-white">{typeof selectedClient === 'object' ? JSON.stringify(selectedClient) : selectedClient} <span className="text-blue-500">Hub</span></span> : <span>Client <span className="text-blue-500">Ledger Hub</span></span>}
                 </h2>
                 <p className="text-[10px] font-bold text-white/50 uppercase tracking-[0.4em] font-mono leading-none">
                     {selectedClient ? `B2B ACCOUNT PROTOCOL: SECURE` : 'B2B Partner Matrix • Managed Security'}
@@ -319,7 +319,7 @@ const ClientLedgerPanel = ({ masterData, setMasterData, showNotify, user, setAct
                         <div className="flex justify-between items-start mb-8 relative z-10">
                             <div className="space-y-1">
                                 <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-3 leading-none">Partner Agency</p>
-                                <h3 className="text-2xl font-black tracking-tighter text-slate-950 dark:text-white leading-tight uppercase max-w-[220px]">{item.name}</h3>
+                                <h3 className="text-2xl font-black tracking-tighter text-slate-950 dark:text-white leading-tight uppercase max-w-[220px]">{typeof item.name === 'object' ? JSON.stringify(item.name) : item.name}</h3>
                             </div>
                             <div className="w-12 h-12 bg-white dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 flex items-center justify-center rounded-2xl"><ShieldCheck size={20} className="text-slate-400 group-hover:text-blue-600 transition-colors" /></div>
                         </div>
@@ -401,9 +401,9 @@ const ClientLedgerPanel = ({ masterData, setMasterData, showNotify, user, setAct
                     <div className="overflow-x-auto"><table className="w-full text-left order-collapse"><thead><tr className="border-b-2 border-slate-100 dark:border-slate-800"><th className="p-8 text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Date</th><th className="p-8 text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Ref / Note</th><th className="p-8 text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Type</th><th className="p-8 text-right text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Amount</th></tr></thead><tbody className="divide-y divide-slate-50 dark:divide-slate-800">
                                 {clientData.transactions.map((t, idx) => (
                                     <tr key={idx} className="group hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
-                                        <td className="p-8 text-[11px] font-black uppercase tracking-widest text-slate-950 dark:text-white">{t.date}</td>
-                                        <td className="p-8"><p className="text-[11px] font-bold uppercase text-slate-950 dark:text-white">{t.note}</p><p className="text-[8px] font-bold text-slate-400 mt-1">TXN: {t.id}</p></td>
-                                        <td className="p-8"><span className={`px-4 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-widest ${t.type === 'BILL' ? 'bg-rose-50 text-rose-600' : 'bg-emerald-50 text-emerald-600'}`}>{t.type}</span></td>
+                                        <td className="p-8 text-[11px] font-black uppercase tracking-widest text-slate-950 dark:text-white">{typeof t.date === 'object' ? JSON.stringify(t.date) : t.date}</td>
+                                        <td className="p-8"><p className="text-[11px] font-bold uppercase text-slate-950 dark:text-white">{typeof t.note === 'object' ? JSON.stringify(t.note) : t.note}</p><p className="text-[8px] font-bold text-slate-400 mt-1">TXN: {typeof t.id === 'object' ? JSON.stringify(t.id) : t.id}</p></td>
+                                        <td className="p-8"><span className={`px-4 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-widest ${t.type === 'BILL' ? 'bg-rose-50 text-rose-600' : 'bg-emerald-50 text-emerald-600'}`}>{typeof t.type === 'object' ? JSON.stringify(t.type) : t.type}</span></td>
                                         <td className={`p-8 text-right font-black text-xl italic tracking-tight ${t.type === 'BILL' ? 'text-rose-600' : 'text-emerald-600'}`}>
                                             <div className="flex items-center justify-end gap-6">
                                                 <span>{t.type === 'PAYMENT' ? '+' : '-'} ৳ {t.amount?.toLocaleString()}</span>
@@ -446,7 +446,7 @@ const ClientLedgerPanel = ({ masterData, setMasterData, showNotify, user, setAct
                                 <div key={idx} className="saas-card bg-slate-50 dark:bg-slate-800/20 border-l-4 border-l-blue-600 !p-6 flex justify-between items-center group">
                                     <div>
                                         <p className="text-[8px] font-black uppercase text-slate-400 mb-1 tracking-widest">Inventory Item</p>
-                                        <p className="text-lg font-black uppercase italic text-slate-950 dark:text-white">{m.name}</p>
+                                        <p className="text-lg font-black uppercase italic text-slate-950 dark:text-white">{typeof m.name === 'object' ? JSON.stringify(m.name) : m.name}</p>
                                     </div>
                                     <div className="text-right">
                                         <p className="text-2xl font-black italic text-blue-600">{m.qty.toFixed(1)} <span className="text-[10px] text-slate-400">{m.unit}</span></p>
@@ -469,8 +469,8 @@ const ClientLedgerPanel = ({ masterData, setMasterData, showNotify, user, setAct
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                             {clientData.readyStock.map((s, idx) => (
                                 <div key={idx} className="saas-card bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 p-8 space-y-6 group">
-                                    <div className="flex justify-between items-start"><div className="space-y-1"><p className="text-[9px] font-black text-blue-600 tracking-widest uppercase">Finished Product</p><h5 className="text-2xl font-black uppercase italic">{s.design}</h5></div><div className="w-12 h-12 bg-slate-50 dark:bg-slate-800 rounded-2xl flex items-center justify-center font-black text-xs">#{s.lotNo || 'Direct'}</div></div>
-                                    <div className="grid grid-cols-2 gap-4 border-y border-slate-50 dark:border-slate-800 py-6"><div><p className="text-[8px] font-black uppercase text-slate-400 mb-1">Color</p><p className="text-xs font-bold uppercase">{s.color}</p></div><div className="text-right"><p className="text-[8px] font-black uppercase text-slate-400 mb-1">Lot Size</p><p className="text-xs font-bold uppercase">{s.size}</p></div></div>
+                                    <div className="flex justify-between items-start"><div className="space-y-1"><p className="text-[9px] font-black text-blue-600 tracking-widest uppercase">Finished Product</p><h5 className="text-2xl font-black uppercase italic">{typeof s.design === 'object' ? JSON.stringify(s.design) : s.design}</h5></div><div className="w-12 h-12 bg-slate-50 dark:bg-slate-800 rounded-2xl flex items-center justify-center font-black text-xs">#{typeof s.lotNo === 'object' ? JSON.stringify(s.lotNo) : s.lotNo}</div></div>
+                                    <div className="grid grid-cols-2 gap-4 border-y border-slate-50 dark:border-slate-800 py-6"><div><p className="text-[8px] font-black uppercase text-slate-400 mb-1">Color</p><p className="text-xs font-bold uppercase">{typeof s.color === 'object' ? JSON.stringify(s.color) : s.color}</p></div><div className="text-right"><p className="text-[8px] font-black uppercase text-slate-400 mb-1">Lot Size</p><p className="text-xs font-bold uppercase">{typeof s.size === 'object' ? JSON.stringify(s.size) : s.size}</p></div></div>
                                     <div className="flex justify-between items-center pt-2"><div className="flex flex-col"><span className="text-[10px] font-black uppercase text-emerald-600">Total Borka</span><span className="text-3xl font-black italic">{s.receivedBorka || s.qtyBorka || 0}</span></div><div className="flex flex-col text-right"><span className="text-[10px] font-black uppercase text-emerald-600">Total Hijab</span><span className="text-3xl font-black italic">{s.receivedHijab || s.qtyHijab || 0}</span></div></div>
                                 </div>
                             ))}
@@ -489,7 +489,7 @@ const ClientLedgerPanel = ({ masterData, setMasterData, showNotify, user, setAct
                 <div className="saas-card bg-white dark:bg-slate-900 shadow-3xl overflow-hidden animate-fade-up">
                     <div className="overflow-x-auto"><table className="w-full text-left"><thead><tr className="border-b-2 border-slate-50 dark:border-slate-800"><th className="p-8 text-[10px] font-black uppercase tracking-widest text-slate-400">Date</th><th className="p-8 text-[10px] font-black uppercase tracking-widest text-slate-400">Portfolio</th><th className="p-8 text-right text-[10px] font-black uppercase tracking-widest text-slate-400">Quantity</th></tr></thead><tbody className="divide-y divide-slate-50 dark:divide-slate-800">
                                 {clientData.deliveries.map((d, idx) => (
-                                    <tr key={idx} className="hover:bg-slate-50 dark:hover:bg-slate-800/40"><td className="p-8 text-sm font-bold uppercase tracking-widest italic">{d.date}</td><td className="p-8"><p className="text-lg font-black uppercase italic">{d.design}</p><p className="text-[9px] font-bold text-slate-400 mt-1 uppercase">Lot: #{d.lotNo} • Color: {d.color}</p></td><td className="p-8 text-right"><span className="text-3xl font-black italic">{d.qty}</span><span className="text-[10px] font-bold text-slate-400 ml-2 uppercase">PCS</span></td></tr>
+                                    <tr key={idx} className="hover:bg-slate-50 dark:hover:bg-slate-800/40"><td className="p-8 text-sm font-bold uppercase tracking-widest italic">{typeof d.date === 'object' ? JSON.stringify(d.date) : d.date}</td><td className="p-8"><p className="text-lg font-black uppercase italic">{typeof d.design === 'object' ? JSON.stringify(d.design) : d.design}</p><p className="text-[9px] font-bold text-slate-400 mt-1 uppercase">Lot: #{typeof d.lotNo === 'object' ? JSON.stringify(d.lotNo) : d.lotNo} • Color: {typeof d.color === 'object' ? JSON.stringify(d.color) : d.color}</p></td><td className="p-8 text-right"><span className="text-3xl font-black italic">{d.qty}</span><span className="text-[10px] font-bold text-slate-400 ml-2 uppercase">PCS</span></td></tr>
                                 ))}
                     </tbody></table></div>
                 </div>

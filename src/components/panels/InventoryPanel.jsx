@@ -265,11 +265,11 @@ const InventoryPanel = ({
                             <div className="grid grid-cols-2 gap-3 border-t border-slate-100 dark:border-slate-800 pt-4 mt-auto">
                                 <div className="space-y-0">
                                     <p className="text-[7.5px] font-black text-slate-400 uppercase tracking-widest leading-none italic mb-1.5">বোরকা (Borka)</p>
-                                    <p className="text-lg font-black text-black dark:text-white leading-none tracking-tighter italic">{item.borka} PCS</p>
+                                    <p className="text-lg font-black text-black dark:text-white leading-none tracking-tighter italic">{typeof item.borka === 'object' ? JSON.stringify(item.borka) : item.borka} PCS</p>
                                 </div>
                                 <div className="space-y-0 border-l border-slate-100 dark:border-slate-800 pl-3">
                                     <p className="text-[7.5px] font-black text-slate-400 uppercase tracking-widest leading-none italic mb-1.5">হিজাব (Hijab)</p>
-                                    <p className="text-lg font-black text-black dark:text-white leading-none tracking-tighter italic">{item.hijab} PCS</p>
+                                    <p className="text-lg font-black text-black dark:text-white leading-none tracking-tighter italic">{typeof item.hijab === 'object' ? JSON.stringify(item.hijab) : item.hijab} PCS</p>
                                 </div>
                             </div>
                         </div>
@@ -308,11 +308,11 @@ const InventoryPanel = ({
                                   {item.client !== 'FACTORY' && <span className="px-1.5 py-0.5 bg-blue-100 dark:bg-blue-900/50 text-blue-600 rounded text-[6.5px] font-black uppercase tracking-widest">B2B</span>}
                                 </div>
                                 <p className="text-[7px] font-black text-black/30 dark:text-white/30 uppercase tracking-widest mb-3 italic truncate leading-none">
-                                    {item.color || "STANDARD GRADE"}
+                                    {typeof item.color === 'object' ? JSON.stringify(item.color) : (item.color || "STANDARD GRADE")}
                                 </p>
                                 <div className="flex items-end justify-between">
                                     <span className={`text-xl font-black tracking-tighter leading-none italic ${item.qty <= 5 ? "text-rose-600" : "text-black dark:text-white"}`}>
-                                        {item.qty.toLocaleString()} <span className="text-[9px] font-black ml-0.5">{item.unit || "গজ"}</span>
+                                        {typeof item.qty === 'object' ? JSON.stringify(item.qty) : item.qty.toLocaleString()} <span className="text-[9px] font-black ml-0.5">{typeof item.unit === 'object' ? JSON.stringify(item.unit) : (item.unit || "গজ")}</span>
                                     </span>
                                     <div className="flex items-center gap-1.5">
                                         <span className={`text-[6.5px] font-black py-0.5 px-1.5 rounded tracking-[0.1em] uppercase ${item.qty <= 5 ? "bg-rose-500 text-white animate-pulse" : "bg-slate-50 dark:bg-slate-800 text-black/40 dark:text-white/40"}`}>

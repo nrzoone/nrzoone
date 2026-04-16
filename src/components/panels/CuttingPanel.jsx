@@ -349,10 +349,10 @@ const CuttingPanel = ({
                       <div className="flex justify-between items-start">
                           <div>
                               <p className="text-[7px] font-black text-blue-600 uppercase tracking-widest mb-0.5 italic">B2B INCOMING</p>
-                              <h4 className="text-base font-black uppercase italic leading-none text-[var(--text-primary)]">{req.design}</h4>
+                              <h4 className="text-base font-black uppercase italic leading-none text-[var(--text-primary)]">{typeof req.design === 'object' ? JSON.stringify(req.design) : req.design}</h4>
                           </div>
                           <div className="text-right">
-                              <p className="text-[9px] font-black text-[var(--text-muted)] uppercase">{req.client}</p>
+                              <p className="text-[9px] font-black text-[var(--text-muted)] uppercase">{typeof req.client === 'object' ? JSON.stringify(req.client) : req.client}</p>
                               <p className="text-[8px] font-bold text-[var(--text-muted)] opacity-60 font-mono mt-0.5">{req.date}</p>
                           </div>
                       </div>
@@ -371,7 +371,7 @@ const CuttingPanel = ({
                       </div>
 
                       <div className="space-y-2.5 border-t border-slate-100 dark:border-slate-800 pt-3 mt-auto">
-                          <p className="text-[8px] font-bold text-[var(--text-muted)] line-clamp-1 italic uppercase leading-none">Note: {req.note || 'None'}</p>
+                          <p className="text-[8px] font-bold text-[var(--text-muted)] line-clamp-1 italic uppercase leading-none">Note: {typeof req.note === 'object' ? JSON.stringify(req.note) : (req.note || 'None')}</p>
                           <button 
                             onClick={() => {
                                 setEntryData({
@@ -418,25 +418,25 @@ const CuttingPanel = ({
                             <div className="flex justify-between items-start">
                                 <div className="space-y-0.5">
                                     <p className="text-[7px] font-black text-[var(--text-muted)] uppercase tracking-widest leading-none">ডিজাইন আইডি (Design)</p>
-                                    <h4 className="text-base font-black tracking-tight text-[var(--text-primary)] uppercase leading-none">{item.design}</h4>
+                                    <h4 className="text-base font-black tracking-tight text-[var(--text-primary)] uppercase leading-none">{typeof item.design === 'object' ? JSON.stringify(item.design) : item.design}</h4>
                                 </div>
                                 <div className="w-8 h-8 bg-slate-950 text-white rounded-lg flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform font-black text-[9px] flex-col leading-none text-center">
-                                    <span>#{item.lotNo}</span>
+                                    <span>#{typeof item.lotNo === 'object' ? JSON.stringify(item.lotNo) : item.lotNo}</span>
                                 </div>
                             </div>
 
                             <div className="grid grid-cols-3 gap-2">
                                 <div className="bg-slate-50 dark:bg-slate-800/50 p-2 rounded-lg border border-slate-100 dark:border-slate-800">
                                     <p className="text-[7px] font-black text-[var(--text-muted)] uppercase tracking-widest mb-0.5 italic">রঙ</p>
-                                    <p className="text-[9px] font-black text-[var(--text-primary)] truncate uppercase">{item.color}</p>
+                                    <p className="text-[9px] font-black text-[var(--text-primary)] truncate uppercase">{typeof item.color === 'object' ? JSON.stringify(item.color) : item.color}</p>
                                 </div>
                                 <div className="bg-slate-50 dark:bg-slate-800/50 p-2 rounded-lg border border-slate-100 dark:border-slate-800">
                                     <p className="text-[7px] font-black text-[var(--text-muted)] uppercase tracking-widest mb-0.5 italic">তারিখ</p>
-                                    <p className="text-[9px] font-black text-[var(--text-primary)] truncate italic">{item.date}</p>
+                                    <p className="text-[9px] font-black text-[var(--text-primary)] truncate italic">{typeof item.date === 'object' ? JSON.stringify(item.date) : item.date}</p>
                                 </div>
                                 <div className="bg-slate-50 dark:bg-slate-800/50 p-2 rounded-lg border border-slate-100 dark:border-slate-800">
                                     <p className="text-[7px] font-black text-[var(--text-muted)] uppercase tracking-widest mb-0.5 italic">ক্লায়েন্ট</p>
-                                    <p className="text-[9px] font-black text-[var(--text-primary)] truncate uppercase">{item.client || '-'}</p>
+                                    <p className="text-[9px] font-black text-[var(--text-primary)] truncate uppercase">{typeof item.client === 'object' ? JSON.stringify(item.client) : (item.client || '-')}</p>
                                 </div>
                             </div>
                             

@@ -352,7 +352,7 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                                 <div className="flex justify-between items-start">
                                     <div className="space-y-1">
                                         <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">PATA SPECIALIST</p>
-                                        <h4 className="text-xl font-black tracking-tighter uppercase italic">{w}</h4>
+                                        <h4 className="text-xl font-black tracking-tighter uppercase italic">{typeof w === 'object' ? JSON.stringify(w) : w}</h4>
                                     </div>
                                     <div className={`w-10 h-10 ${due > 0 ? 'bg-amber-100 text-amber-600' : 'bg-slate-100 text-slate-300'} rounded-lg flex items-center justify-center group-hover:rotate-12 transition-transform shadow-inner`}><User size={18} /></div>
                                 </div>
@@ -375,7 +375,7 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                             <div className="flex justify-between items-start mb-3 md:mb-4">
                                 <div className="space-y-0.5">
                                     <p className="text-[7.5px] font-black text-slate-400 uppercase tracking-widest italic">কারিগর</p>
-                                    <h4 className="text-lg md:text-xl font-black tracking-tighter uppercase italic truncate max-w-[150px] md:max-w-[200px]">{item.worker}</h4>
+                                    <h4 className="text-lg md:text-xl font-black tracking-tighter uppercase italic truncate max-w-[150px] md:max-w-[200px]">{typeof item.worker === 'object' ? JSON.stringify(item.worker) : item.worker}</h4>
                                 </div>
                                 <div className={`px-2 py-1 bg-slate-50 dark:bg-slate-800 rounded-lg shadow-inner font-black text-[9px] flex items-center justify-center`}>LOT: #{String(item.lotNo).slice(-4)}</div>
                             </div>
@@ -383,18 +383,18 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                             <div className="grid grid-cols-2 gap-2.5 mb-3 md:mb-4">
                                 <div className="bg-slate-50 dark:bg-slate-800 p-2.5 md:p-3 rounded-xl border border-white dark:border-slate-700">
                                     <p className="text-[7.5px] font-black text-slate-400 uppercase tracking-widest mb-0.5 italic">ডিজাইন</p>
-                                    <p className="text-[11px] font-black uppercase italic truncate">{item.design}</p>
+                                    <p className="text-[11px] font-black uppercase italic truncate">{typeof item.design === 'object' ? JSON.stringify(item.design) : item.design}</p>
                                 </div>
                                 <div className="bg-slate-50 dark:bg-slate-800 p-2.5 md:p-3 rounded-xl border border-white dark:border-slate-700">
                                     <p className="text-[7.5px] font-black text-slate-400 uppercase tracking-widest mb-0.5 italic">টাইপ</p>
-                                    <p className="text-[11px] font-black uppercase italic truncate">{item.pataType}</p>
+                                    <p className="text-[11px] font-black uppercase italic truncate">{typeof item.pataType === 'object' ? JSON.stringify(item.pataType) : item.pataType}</p>
                                 </div>
                             </div>
 
                             <div className="flex justify-between items-center py-3 md:py-4 border-y border-slate-50 dark:border-slate-800 border-dashed mb-3 md:mb-4">
                                 <div>
                                     <p className="text-[7.5px] font-black text-slate-400 uppercase tracking-widest mb-0.5 italic">পরিমাণ</p>
-                                    <p className="text-xl md:text-2xl font-black italic tracking-tighter leading-none">{item.pataQty} <span className="text-[9px] opacity-40">PCS</span></p>
+                                    <p className="text-xl md:text-2xl font-black italic tracking-tighter leading-none">{typeof item.pataQty === 'object' ? JSON.stringify(item.pataQty) : item.pataQty} <span className="text-[9px] opacity-40">PCS</span></p>
                                 </div>
                                 <div className="text-right">
                                     <p className="text-[7.5px] font-black text-slate-400 uppercase tracking-widest mb-0.5 italic">মজুরি</p>
@@ -505,7 +505,7 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                            className="bg-white dark:bg-slate-900 w-full max-w-lg rounded-3xl shadow-2xl p-6 md:p-10 relative border border-slate-100 dark:border-slate-800 my-auto"
                          >
                              <button onClick={() => setReceiveModal(null)} className="absolute top-6 right-6 text-slate-400"><X size={20} /></button>
-                             <h2 className="text-xl font-black uppercase italic mb-8 text-center text-[var(--text-primary)]">{receiveModal.worker} <span className="text-emerald-500">জমা দিন</span></h2>
+                             <h2 className="text-xl font-black uppercase italic mb-8 text-center text-[var(--text-primary)]">{typeof receiveModal.worker === 'object' ? JSON.stringify(receiveModal.worker) : receiveModal.worker} <span className="text-emerald-500">জমা দিন</span></h2>
                              <form onSubmit={handleConfirmReceive} className="space-y-6">
                                  <div className="p-8 bg-slate-50 dark:bg-slate-800 rounded-2xl text-center border border-white dark:border-slate-700 shadow-inner">
                                      <p className="text-[9px] font-black uppercase text-slate-400 mb-3">জমা দেওয়া পরিমাণ (PCS)</p>
@@ -525,7 +525,7 @@ const PataFactoryPanel = ({ masterData, setMasterData, showNotify, user, setActi
                            className="bg-white dark:bg-slate-900 w-full max-w-lg rounded-3xl shadow-2xl p-6 md:p-10 relative border border-slate-100 dark:border-slate-800 my-auto"
                          >
                              <button onClick={() => setPayModal(null)} className="absolute top-6 right-6 text-slate-400"><X size={20} /></button>
-                             <h2 className="text-xl font-black uppercase italic mb-8 text-center">{payModal} <span className="text-emerald-500">পেমেন্ট</span></h2>
+                             <h2 className="text-xl font-black uppercase italic mb-8 text-center">{typeof payModal === 'object' ? JSON.stringify(payModal) : payModal} <span className="text-emerald-500">পেমেন্ট</span></h2>
                             <div className="p-8 bg-slate-50 dark:bg-slate-800 rounded-2xl text-center mb-6 border border-white dark:border-slate-700 shadow-inner">
                                 <p className="text-[9px] font-black uppercase text-slate-400 mb-2 underline tracking-widest">টাকার পরিমাণ (৳)</p>
                                 <input type="number" className="w-full text-2xl font-black text-center bg-transparent outline-none italic" placeholder="0" value={paymentAmount} onChange={(e) => setPaymentAmount(e.target.value)} autoFocus />

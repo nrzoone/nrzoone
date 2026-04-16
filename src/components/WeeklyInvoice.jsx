@@ -97,9 +97,9 @@ const WeeklyInvoice = ({ masterData, user, logAction, showNotify, setActivePanel
                                 gt += d.bill;
                                 return (
                                     <tr key={w} className="border-b-2 border-gray-100 font-black italic">
-                                        <td className="py-6 uppercase text-xl">{w}</td>
-                                        <td className="py-6 text-center text-2xl">{d.qty} <span className="text-xs uppercase text-gray-200">{d.qtyLabel === 'Pcs' ? 'পিস' : 'দিন'}</span></td>
-                                        <td className="py-6 text-right text-3xl">৳{d.bill.toLocaleString()}</td>
+                                        <td className="py-6 uppercase text-xl">{typeof w === 'object' ? JSON.stringify(w) : w}</td>
+                                        <td className="py-6 text-center text-2xl">{typeof d.qty === 'object' ? JSON.stringify(d.qty) : d.qty} <span className="text-xs uppercase text-gray-200">{d.qtyLabel === 'Pcs' ? 'পিস' : 'দিন'}</span></td>
+                                        <td className="py-6 text-right text-3xl">৳{typeof d.bill === 'object' ? JSON.stringify(d.bill) : d.bill.toLocaleString()}</td>
                                     </tr>
                                 );
                             })}
@@ -171,9 +171,9 @@ const WeeklyInvoice = ({ masterData, user, logAction, showNotify, setActivePanel
                             if (d.bill === 0) return null;
                             return (
                                 <tr key={w} className="hover:bg-slate-50 transition-all group">
-                                    <td className="px-16 py-12"><p className="font-black text-3xl uppercase tracking-tighter italic text-black">{w}</p></td>
-                                    <td className="px-16 py-12 text-center font-black text-4xl italic text-black">{d.qty} <span className="text-xs text-black dark:text-white dark:text-white">{d.qtyLabel === 'Pcs' ? 'পিস' : 'দিন'}</span></td>
-                                    <td className="px-16 py-12 text-right font-black text-5xl italic tracking-tighter text-black">৳{d.bill.toLocaleString()}</td>
+                                    <td className="px-16 py-12"><p className="font-black text-3xl uppercase tracking-tighter italic text-black">{typeof w === 'object' ? JSON.stringify(w) : w}</p></td>
+                                    <td className="px-16 py-12 text-center font-black text-4xl italic text-black">{typeof d.qty === 'object' ? JSON.stringify(d.qty) : d.qty} <span className="text-xs text-black dark:text-white dark:text-white">{d.qtyLabel === 'Pcs' ? 'পিস' : 'দিন'}</span></td>
+                                    <td className="px-16 py-12 text-right font-black text-5xl italic tracking-tighter text-black">৳{typeof d.bill === 'object' ? JSON.stringify(d.bill) : d.bill.toLocaleString()}</td>
                                 </tr>
                             );
                         })}

@@ -885,8 +885,8 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify, logActio
                  materialStocks.map((m, i) => (
                     <div key={i} className="px-5 py-3.5 flex justify-between items-center hover:bg-amber-50/30 transition-colors">
                         <div>
-                           <p className="text-[10px] font-black uppercase italic text-slate-800 dark:text-white">{m.item || 'ফেব্রিক'} - {m.color || 'N/A'}</p>
-                           <p className="text-[8px] font-medium text-slate-400 uppercase tracking-widest leading-none mt-1">{m.design ? `Style: ${m.design}` : 'Global Stock'}</p>
+                           <p className="text-[10px] font-black uppercase italic text-slate-800 dark:text-white">{typeof m.item === 'object' ? JSON.stringify(m.item) : (m.item || 'ফেব্রিক')} - {typeof m.color === 'object' ? JSON.stringify(m.color) : (m.color || 'N/A')}</p>
+                           <p className="text-[8px] font-medium text-slate-400 uppercase tracking-widest leading-none mt-1">{m.design ? `Style: ${typeof m.design === 'object' ? JSON.stringify(m.design) : m.design}` : 'Global Stock'}</p>
                         </div>
                         <div className="text-right">
                            <p className={`text-sm font-black tabular-nums ${m.qty < 0 ? 'text-rose-600' : 'text-amber-600'}`}>{Math.abs(m.qty).toFixed(1)}</p>
@@ -916,8 +916,8 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify, logActio
                  readyStock.map((r, i) => (
                     <div key={i} className="px-5 py-3.5 flex justify-between items-center hover:bg-emerald-50/30 transition-colors">
                        <div>
-                          <p className="text-[10px] font-black uppercase italic text-slate-800">{r.design}</p>
-                          <p className="text-[8px] font-medium text-slate-400 uppercase tracking-widest italic">{r.color}</p>
+                          <p className="text-[10px] font-black uppercase italic text-slate-800">{typeof r.design === 'object' ? JSON.stringify(r.design) : r.design}</p>
+                          <p className="text-[8px] font-medium text-slate-400 uppercase tracking-widest italic">{typeof r.color === 'object' ? JSON.stringify(r.color) : r.color}</p>
                        </div>
                        <div className="text-center">
                           <p className="text-xl font-black text-emerald-600 tabular-nums leading-none">{r.qty}</p>

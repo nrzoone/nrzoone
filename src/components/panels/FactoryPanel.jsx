@@ -227,7 +227,7 @@ const FactoryPanel = ({ masterData, setMasterData, isAdmin, isWorker, showNotify
                 <div key={idx} className="saas-card space-y-4 flex flex-col justify-between animate-fade-up !p-5">
                   <div className="space-y-0.5">
                     <p className="text-subtitle !text-[7px]">{type.toUpperCase()} SPECIALIST</p>
-                    <h4 className="text-lg font-black tracking-tighter uppercase italic text-[var(--text-primary)]">{w}</h4>
+                    <h4 className="text-lg font-black tracking-tighter uppercase italic text-[var(--text-primary)]">{typeof w === 'object' ? JSON.stringify(w) : w}</h4>
                   </div>
                   <div className="bg-slate-50 dark:bg-slate-800/80 p-4 rounded-xl border border-white dark:border-slate-700 shadow-inner text-center">
                     <p className="text-subtitle !text-[7px] mb-1.5">বকেয়া মজুরি (DUE)</p>

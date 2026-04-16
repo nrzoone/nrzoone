@@ -443,10 +443,10 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t, logAction, showNoti
                             </td>
                             <td className="py-6 px-6 uppercase">
                               <p className="text-base text-black dark:text-white leading-none mb-1">
-                                {p.worker}
+                                {typeof p.worker === 'object' ? JSON.stringify(p.worker) : p.worker}
                               </p>
                               <p className="text-[9px] text-black dark:text-white italic uppercase tracking-widest">
-                                {typeof p.design === 'object' ? JSON.stringify(p.design) : p.design} ({typeof p.color === 'object' ? JSON.stringify(p.color) : p.color}) • Lot: {p.lotNo}
+                                {typeof p.design === 'object' ? JSON.stringify(p.design) : p.design} ({typeof p.color === 'object' ? JSON.stringify(p.color) : p.color}) • Lot: {typeof p.lotNo === 'object' ? JSON.stringify(p.lotNo) : p.lotNo}
                               </p>
                             </td>
                             <td className="py-6 px-6 text-center">
@@ -468,8 +468,8 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t, logAction, showNoti
                     <tr key={c.id || idx} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/20 transition-all font-bold">
                         <td className="py-6 px-6 text-black dark:text-white text-sm">{c.date}</td>
                         <td className="py-6 px-6 uppercase">
-                            <p className="text-base text-black dark:text-white leading-none mb-1">{c.design}</p>
-                            <p className="text-[9px] text-black dark:text-white italic uppercase tracking-widest">{c.color} • {c.cutterName || "Manual Cut"}</p>
+                            <p className="text-base text-black dark:text-white leading-none mb-1">{typeof c.design === 'object' ? JSON.stringify(c.design) : c.design}</p>
+                            <p className="text-[9px] text-black dark:text-white italic uppercase tracking-widest">{typeof c.color === 'object' ? JSON.stringify(c.color) : c.color} • {typeof c.cutterName === 'object' ? JSON.stringify(c.cutterName) : (c.cutterName || "Manual Cut")}</p>
                         </td>
                         <td className="py-6 px-6 text-center">
                             <span className="px-3 py-1 bg-slate-950 text-white rounded-md text-[8px] font-bold uppercase tracking-widest">CUTTING</span>
@@ -483,8 +483,8 @@ const ReportsPanel = ({ masterData, user, setActivePanel, t, logAction, showNoti
                     <tr key={idx} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/20 transition-all font-bold">
                         <td className="py-6 px-6 text-black dark:text-white text-sm">{item.date}</td>
                         <td className="py-6 px-6 uppercase">
-                            <p className="text-base text-black dark:text-white leading-none mb-1">{item.worker || item.description}</p>
-                            <p className="text-[9px] text-black dark:text-white italic uppercase tracking-widest">{item.task || item.category || item.department || "Factory Record"}</p>
+                            <p className="text-base text-black dark:text-white leading-none mb-1">{typeof (item.worker || item.description) === 'object' ? JSON.stringify(item.worker || item.description) : (item.worker || item.description)}</p>
+                            <p className="text-[9px] text-black dark:text-white italic uppercase tracking-widest">{typeof (item.task || item.category || item.department) === 'object' ? JSON.stringify(item.task || item.category || item.department) : (item.task || item.category || item.department || "Factory Record")}</p>
                         </td>
                         <td className="py-6 px-6 text-center">
                             <span className="px-3 py-1 bg-slate-100 dark:bg-slate-800 rounded-md text-[8px] font-bold uppercase tracking-widest text-black dark:text-white">{item.status || "LOG"}</span>

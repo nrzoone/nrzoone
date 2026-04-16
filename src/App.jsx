@@ -315,10 +315,10 @@ const TrackingView = ({ trackId, masterData, onClose, isDarkMode }) => {
                     <p className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400 mt-6 mb-6">Status</p>
                     <h2 className="text-4xl md:text-7xl font-black uppercase italic tracking-tighter">{item.status === 'Pending' ? 'In Production' : 'Completed'}</h2>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-12 border-t border-white/10 pt-12">
-                        <div><p className="text-[8px] text-black dark:text-white uppercase tracking-widest mb-1 font-black underline">Lot</p><p className="font-black">#{item.lotNo}</p></div>
-                        <div><p className="text-[8px] text-black dark:text-white uppercase tracking-widest mb-1 font-black underline">Worker</p><p className="font-black uppercase">{item.worker}</p></div>
-                        <div><p className="text-[8px] text-black dark:text-white uppercase tracking-widest mb-1 font-black underline">Design</p><p className="font-black uppercase">{item.design}</p></div>
-                        <div><p className="text-[8px] text-black dark:text-white uppercase tracking-widest mb-1 font-black underline">Qty</p><p className="font-black">{(item.issueBorka || item.pataQty || 0)} Pcs</p></div>
+                        <div><p className="text-[8px] text-black dark:text-white uppercase tracking-widest mb-1 font-black underline">Lot</p><p className="font-black">#{typeof item.lotNo === 'object' ? JSON.stringify(item.lotNo) : item.lotNo}</p></div>
+                        <div><p className="text-[8px] text-black dark:text-white uppercase tracking-widest mb-1 font-black underline">Worker</p><p className="font-black uppercase">{typeof item.worker === 'object' ? JSON.stringify(item.worker) : item.worker}</p></div>
+                        <div><p className="text-[8px] text-black dark:text-white uppercase tracking-widest mb-1 font-black underline">Design</p><p className="font-black uppercase">{typeof item.design === 'object' ? JSON.stringify(item.design) : item.design}</p></div>
+                        <div><p className="text-[8px] text-black dark:text-white uppercase tracking-widest mb-1 font-black underline">Qty</p><p className="font-black">{typeof (item.issueBorka || item.pataQty || 0) === 'object' ? JSON.stringify(item.issueBorka || item.pataQty || 0) : (item.issueBorka || item.pataQty || 0)} Pcs</p></div>
                     </div>
                 </div>
 
@@ -722,7 +722,7 @@ const AppContent = () => {
                             <div className="flex items-center gap-3 md:gap-6">
                                 <div className="hidden sm:flex flex-col items-end pr-5 border-r border-slate-100 dark:border-slate-800">
                                     <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-0.5">অনুমোদিত ইউজার</p>
-                                    <p className="text-sm font-black uppercase leading-none italic">{user?.name || 'অпераটর'}</p>
+                                    <p className="text-sm font-black uppercase leading-none italic">{typeof user?.name === 'object' ? JSON.stringify(user.name) : (user?.name || 'অпераটর')}</p>
                                 </div>
                                 <div className="flex gap-2">
                                     {lowStockItems.length > 0 && user?.role !== 'client' && (

@@ -790,9 +790,9 @@ const SettingsPanel_V2 = ({
                 </div>
 
                 <div className="relative z-10">
-                   <h4 className="text-2xl font-bold tracking-tight text-[var(--text-primary)] uppercase leading-none">{u.name}</h4>
+                   <h4 className="text-2xl font-bold tracking-tight text-[var(--text-primary)] uppercase leading-none">{typeof u.name === 'object' ? JSON.stringify(u.name) : u.name}</h4>
                    <div className="flex items-center gap-3 mt-3">
-                      <p className="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-widest">{u.id}</p>
+                      <p className="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-widest">{typeof u.id === 'object' ? JSON.stringify(u.id) : u.id}</p>
                       <div className="w-1 h-1 bg-slate-300 rounded-full"></div>
                       <p className="text-[9px] font-bold text-emerald-500 uppercase tracking-widest">Active Node</p>
                    </div>
