@@ -15,7 +15,7 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 
-const Overview = ({ masterData, stats: propStats, setActivePanel, t, user, syncStatus }) => {
+const Overview = ({ masterData, stats: propStats, setActivePanel, t, user, syncStatus, SafeText }) => {
     const [timeframe, setTimeframe] = useState("Weekly");
 
     const stats = propStats || {
@@ -140,7 +140,7 @@ const Overview = ({ masterData, stats: propStats, setActivePanel, t, user, syncS
                         <div className="space-y-0.5">
                             <p className="text-subtitle !text-[7px]">{kpi.label}</p>
                             <h3 className="text-xl font-black text-[var(--text-primary)] leading-tight tracking-tighter italic">
-                                {typeof kpi.value === 'object' ? JSON.stringify(kpi.value) : kpi.value}
+                                <SafeText data={kpi.value} />
                             </h3>
                         </div>
                     </div>
@@ -232,19 +232,19 @@ const Overview = ({ masterData, stats: propStats, setActivePanel, t, user, syncS
                                         <td className="px-8 py-4">
                                             <div className="flex items-center gap-4">
                                                 <div className="w-9 h-9 bg-slate-950 text-white rounded-xl flex items-center justify-center font-black text-[10px] shadow-lg group-hover:scale-110 transition-transform">
-                                                    #{typeof job.lotNo === 'object' ? JSON.stringify(job.lotNo) : job.lotNo}
+                                                    #<SafeText data={job.lotNo} />
                                                 </div>
-                                                <span className="text-xs font-black text-[var(--text-primary)] uppercase italic tracking-tighter">/ {(typeof job.worker === 'string' ? job.worker.split(' ')[0] : typeof job.worker === 'object' ? JSON.stringify(job.worker) : 'System')}</span>
+                                                <span className="text-xs font-black text-[var(--text-primary)] uppercase italic tracking-tighter">/ <SafeText data={typeof job.worker === 'string' ? job.worker.split(' ')[0] : job.worker} fallback="System" /></span>
                                             </div>
                                         </td>
                                         <td className="px-8 py-4">
                                             <p className="text-sm font-black text-[var(--text-primary)] uppercase leading-none mb-1 italic tracking-tight">
-                                                {typeof job.design === 'object' ? JSON.stringify(job.design) : job.design}
+                                                <SafeText data={job.design} />
                                             </p>
                                             <p className="text-subtitle">{job.activityType === 'Pata' ? 'Logistics Node' : job.activityType === 'Sewing' ? 'Factory Line' : 'Stone Decor'}</p>
                                         </td>
                                         <td className="px-8 py-4 text-center">
-                                            <span className="text-xl font-black text-[var(--text-primary)] italic tracking-tighter">{typeof (job.issueBorka || job.pataQty || job.borka || 0) === 'object' ? JSON.stringify(job.issueBorka || job.pataQty || job.borka || 0) : (job.issueBorka || job.pataQty || job.borka || 0)}</span>
+                                            <span className="text-xl font-black text-[var(--text-primary)] italic tracking-tighter"><SafeText data={job.issueBorka || job.pataQty || job.borka} fallback="0" /></span>
                                             <span className="text-[9px] text-black/30 dark:text-white/30 ml-1.5 font-black uppercase tracking-widest italic">units</span>
                                         </td>
                                         <td className="px-8 py-4 text-right">

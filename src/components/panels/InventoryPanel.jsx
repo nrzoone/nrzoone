@@ -36,7 +36,8 @@ const InventoryPanel = ({
   setActivePanel,
   t,
   user,
-  logAction
+  logAction,
+  SafeText
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [showModal, setShowModal] = useState(false);
@@ -252,10 +253,10 @@ const InventoryPanel = ({
                             <div className="flex justify-between items-start mb-4">
                                 <div className="space-y-0">
                                     <h4 className="text-base font-black tracking-tight text-black dark:text-white uppercase leading-none truncate max-w-[150px] italic">
-                                        {typeof item.design === 'object' ? JSON.stringify(item.design) : item.design}
+                                        <SafeText data={item.design} />
                                     </h4>
                                     <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest italic leading-none mt-1.5">
-                                        • {typeof item.color === 'object' ? JSON.stringify(item.color) : item.color} ({typeof item.size === 'object' ? JSON.stringify(item.size) : item.size})
+                                        • <SafeText data={item.color} /> (<SafeText data={item.size} />)
                                     </p>
                                 </div>
                                 <div className="w-8 h-8 bg-slate-50 dark:bg-slate-800 rounded flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
@@ -265,11 +266,11 @@ const InventoryPanel = ({
                             <div className="grid grid-cols-2 gap-3 border-t border-slate-100 dark:border-slate-800 pt-4 mt-auto">
                                 <div className="space-y-0">
                                     <p className="text-[7.5px] font-black text-slate-400 uppercase tracking-widest leading-none italic mb-1.5">বোরকা (Borka)</p>
-                                    <p className="text-lg font-black text-black dark:text-white leading-none tracking-tighter italic">{typeof item.borka === 'object' ? JSON.stringify(item.borka) : item.borka} PCS</p>
+                                    <p className="text-lg font-black text-black dark:text-white leading-none tracking-tighter italic"><SafeText data={item.borka} /> PCS</p>
                                 </div>
                                 <div className="space-y-0 border-l border-slate-100 dark:border-slate-800 pl-3">
                                     <p className="text-[7.5px] font-black text-slate-400 uppercase tracking-widest leading-none italic mb-1.5">হিজাব (Hijab)</p>
-                                    <p className="text-lg font-black text-black dark:text-white leading-none tracking-tighter italic">{typeof item.hijab === 'object' ? JSON.stringify(item.hijab) : item.hijab} PCS</p>
+                                    <p className="text-lg font-black text-black dark:text-white leading-none tracking-tighter italic"><SafeText data={item.hijab} /> PCS</p>
                                 </div>
                             </div>
                         </div>
@@ -303,16 +304,16 @@ const InventoryPanel = ({
                             <div key={idx} className="saas-card p-4 border border-slate-100 dark:border-slate-800 hover:border-slate-950 transition-all group rounded-xl bg-white dark:bg-slate-900 shadow-sm">
                                 <div className="flex justify-between items-start mb-0.5">
                                   <h4 className="text-[13px] font-black tracking-tight text-black dark:text-white uppercase truncate italic">
-                                      {typeof item.name === 'object' ? JSON.stringify(item.name) : item.name}
+                                      <SafeText data={item.name} />
                                   </h4>
                                   {item.client !== 'FACTORY' && <span className="px-1.5 py-0.5 bg-blue-100 dark:bg-blue-900/50 text-blue-600 rounded text-[6.5px] font-black uppercase tracking-widest">B2B</span>}
                                 </div>
                                 <p className="text-[7px] font-black text-black/30 dark:text-white/30 uppercase tracking-widest mb-3 italic truncate leading-none">
-                                    {typeof item.color === 'object' ? JSON.stringify(item.color) : (item.color || "STANDARD GRADE")}
+                                    <SafeText data={item.color} fallback="STANDARD GRADE" />
                                 </p>
                                 <div className="flex items-end justify-between">
                                     <span className={`text-xl font-black tracking-tighter leading-none italic ${item.qty <= 5 ? "text-rose-600" : "text-black dark:text-white"}`}>
-                                        {typeof item.qty === 'object' ? JSON.stringify(item.qty) : item.qty.toLocaleString()} <span className="text-[9px] font-black ml-0.5">{typeof item.unit === 'object' ? JSON.stringify(item.unit) : (item.unit || "গজ")}</span>
+                                        <SafeText data={item.qty?.toLocaleString()} /> <span className="text-[9px] font-black ml-0.5"><SafeText data={item.unit} fallback="গজ" /></span>
                                     </span>
                                     <div className="flex items-center gap-1.5">
                                         <span className={`text-[6.5px] font-black py-0.5 px-1.5 rounded tracking-[0.1em] uppercase ${item.qty <= 5 ? "bg-rose-500 text-white animate-pulse" : "bg-slate-50 dark:bg-slate-800 text-black/40 dark:text-white/40"}`}>
@@ -387,11 +388,11 @@ const InventoryPanel = ({
                         {(masterData.deliveries || []).slice(0, 10).map((d, i) => (
                             <div key={i} className="p-5 border border-slate-100 dark:border-slate-800 rounded-xl bg-slate-50/50 dark:bg-slate-900/50 flex justify-between items-center group hover:border-slate-300 dark:hover:border-slate-600 transition-all">
                                 <div>
-                                    <h4 className="font-bold text-lg leading-none mb-1 text-black dark:text-white">{d.design}</h4>
-                                    <p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">{d.receiver} • {d.date}</p>
+                                    <h4 className="font-bold text-lg leading-none mb-1 text-black dark:text-white"><SafeText data={d.design} /></h4>
+                                    <p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest"><SafeText data={d.receiver} /> • <SafeText data={d.date} /></p>
                                 </div>
                                 <div className="text-right">
-                                    <p className="font-black text-xl leading-none text-black dark:text-white">B:{d.qtyBorka} H:{d.qtyHijab}</p>
+                                    <p className="font-black text-xl leading-none text-black dark:text-white">B:<SafeText data={d.qtyBorka} /> H:<SafeText data={d.qtyHijab} /></p>
                                     <p className="text-[8px] font-black uppercase tracking-[0.2em] text-emerald-500">Delivered</p>
                                 </div>
                             </div>
@@ -414,7 +415,7 @@ const InventoryPanel = ({
                             <div className="flex justify-between items-start mb-8">
                                 <div className="space-y-1">
                                     <p className="text-[8px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest leading-none mb-1">প্রেরক (Operator)</p>
-                                    <h4 className="text-xl font-bold uppercase tracking-tight text-black dark:text-white dark:text-white">{req.worker}</h4>
+                                    <h4 className="text-xl font-bold uppercase tracking-tight text-black dark:text-white dark:text-white"><SafeText data={req.worker} /></h4>
                                 </div>
                                 <div className="p-2.5 bg-blue-50 dark:bg-blue-900/10 text-blue-600 rounded-xl group-hover:scale-110 transition-transform shadow-inner">
                                     <MessageSquare size={16} />
@@ -423,13 +424,13 @@ const InventoryPanel = ({
                             
                             <div className="bg-slate-50 dark:bg-slate-800/50 p-6 rounded-xl border border-slate-100 dark:border-slate-800 mb-8">
                                 <p className="text-[9px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest mb-2 italic">প্রয়োজনীয় মালামাল</p>
-                                <p className="text-2xl font-bold tracking-tight text-black dark:text-white dark:text-white uppercase leading-none">{req.item} <span className="text-sm text-black dark:text-white dark:text-white font-bold ml-2">x {req.qty}</span></p>
+                                <p className="text-2xl font-bold tracking-tight text-black dark:text-white dark:text-white uppercase leading-none"><SafeText data={req.item} /> <span className="text-sm text-black dark:text-white dark:text-white font-bold ml-2">x <SafeText data={req.qty} /></span></p>
                             </div>
                             
                             <div className="flex items-center justify-between border-t border-slate-100 dark:border-slate-800 pt-6">
                                 <div className="flex items-center gap-2 text-black dark:text-white dark:text-white">
                                     <Clock size={12} />
-                                    <span className="text-[9px] font-bold uppercase tracking-widest leading-none">{req.date}</span>
+                                    <span className="text-[9px] font-bold uppercase tracking-widest leading-none"><SafeText data={req.date} /></span>
                                 </div>
                                 <button 
                                     onClick={() => {
@@ -468,12 +469,12 @@ const InventoryPanel = ({
                         <tbody className="divide-y divide-slate-50 dark:divide-slate-800">
                             {(masterData.rawInventory || []).slice(0, 100).map((log, idx) => (
                                 <tr key={log.id || idx} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                                    <td className="p-6 text-xs font-bold italic">{log.date}</td>
+                                    <td className="p-6 text-xs font-bold italic"><SafeText data={log.date} /></td>
                                     <td className="p-6">
-                                        <p className="text-sm font-black uppercase">{log.item} {log.color ? `(${log.color})` : ""}</p>
-                                        <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">OWNER: {log.client || 'FACTORY'}</p>
+                                        <p className="text-sm font-black uppercase"><SafeText data={log.item} /> <SafeText data={log.color ? `(${log.color})` : ""} /></p>
+                                        <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">OWNER: <SafeText data={log.client} fallback="FACTORY" /></p>
                                     </td>
-                                    <td className="p-6 font-black text-lg">{log.qty} {log.unit}</td>
+                                    <td className="p-6 font-black text-lg"><SafeText data={log.qty} /> <SafeText data={log.unit} /></td>
                                     <td className="p-6">
                                         <span className={`px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest ${log.type === 'in' ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'}`}>
                                             {log.type === 'in' ? 'IN' : 'OUT'}

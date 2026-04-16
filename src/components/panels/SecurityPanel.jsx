@@ -1,7 +1,7 @@
 import React from 'react';
 import { Shield, Clock, User, Activity, AlertCircle, ArrowLeft, Search, Database } from 'lucide-react';
 
-const SecurityPanel = ({ masterData, setActivePanel, t, logs = [], syncStatus }) => {
+const SecurityPanel = ({ masterData, setActivePanel, t, logs = [], syncStatus, SafeText }) => {
     const [searchTerm, setSearchTerm] = React.useState("");
 
     return (
@@ -120,17 +120,17 @@ const SecurityPanel = ({ masterData, setActivePanel, t, logs = [], syncStatus })
                                                     <div className="w-9 h-9 bg-slate-950 text-white rounded-lg flex items-center justify-center text-xs font-bold uppercase">
                                                         {log.user ? log.user[0] : 'S'}
                                                     </div>
-                                                    <p className="text-sm font-bold uppercase text-black dark:text-white">{typeof log.user === 'object' ? JSON.stringify(log.user) : (log.user || 'SYSTEM')}</p>
+                                                    <p className="text-sm font-bold uppercase text-black dark:text-white"><SafeText data={log.user} fallback="SYSTEM" /></p>
                                                 </div>
                                             </td>
                                             <td className="px-6 py-6">
                                                 <span className="px-3 py-1 bg-slate-100 dark:bg-slate-800 rounded-md text-[9px] font-bold uppercase tracking-widest text-black dark:text-white group-hover:bg-slate-950 group-hover:text-white transition-all">
-                                                    {typeof (log.action || log.type) === 'object' ? JSON.stringify(log.action || log.type) : (log.action || log.type)}
+                                                    <SafeText data={log.action || log.type} />
                                                 </span>
                                             </td>
                                             <td className="px-8 py-6">
                                                 <p className="text-xs font-medium text-black dark:text-white tracking-tight leading-relaxed lg:max-w-md italic">
-                                                    {typeof (log.details || log.detail) === 'object' ? JSON.stringify(log.details || log.detail) : (log.details || log.detail)}
+                                                    <SafeText data={log.details || log.detail} />
                                                 </p>
                                             </td>
                                         </tr>

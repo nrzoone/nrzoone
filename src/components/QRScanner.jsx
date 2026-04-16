@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { Html5QrcodeScanner } from 'html5-qrcode';
 import { X, Camera, ShieldAlert } from 'lucide-react';
 
-const QRScanner = ({ onScanSuccess, onClose }) => {
+const QRScanner = ({ onScanSuccess, onClose, SafeText }) => {
     const scannerRef = useRef(null);
     const [scannedItems, setScannedItems] = React.useState([]);
     const [isBulk, setIsBulk] = React.useState(false);
@@ -116,7 +116,7 @@ const QRScanner = ({ onScanSuccess, onClose }) => {
                         <div className="max-h-[150px] overflow-y-auto space-y-2 pr-2 custom-scrollbar">
                             {scannedItems.map((item, idx) => (
                                 <div key={idx} className="p-4 bg-slate-50 rounded-xl flex justify-between items-center animate-fade-up">
-                                    <p className="text-[10px] font-black italic tracking-tighter truncate max-w-[200px]">LOT #{item}</p>
+                                    <p className="text-[10px] font-black italic tracking-tighter truncate max-w-[200px]">LOT #<SafeText data={item} /></p>
                                     <div className="px-3 py-1 bg-emerald-100 text-emerald-600 rounded-full text-[8px] font-black uppercase italic">Captured</div>
                                 </div>
                             ))}

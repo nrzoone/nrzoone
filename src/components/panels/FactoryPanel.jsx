@@ -24,7 +24,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const FactoryPanel = ({ masterData, setMasterData, isAdmin, isWorker, showNotify, type: propType }) => {
+const FactoryPanel = ({ masterData, setMasterData, isAdmin, isWorker, showNotify, type: propType, SafeText }) => {
   const [view, setView] = useState("active");
   const [lotSearch, setLotSearch] = useState("");
   const [showIssueModal, setShowIssueModal] = useState(false);
@@ -227,7 +227,7 @@ const FactoryPanel = ({ masterData, setMasterData, isAdmin, isWorker, showNotify
                 <div key={idx} className="saas-card space-y-4 flex flex-col justify-between animate-fade-up !p-5">
                   <div className="space-y-0.5">
                     <p className="text-subtitle !text-[7px]">{type.toUpperCase()} SPECIALIST</p>
-                    <h4 className="text-lg font-black tracking-tighter uppercase italic text-[var(--text-primary)]">{typeof w === 'object' ? JSON.stringify(w) : w}</h4>
+                    <h4 className="text-lg font-black tracking-tighter uppercase italic text-[var(--text-primary)]"><SafeText data={w} /></h4>
                   </div>
                   <div className="bg-slate-50 dark:bg-slate-800/80 p-4 rounded-xl border border-white dark:border-slate-700 shadow-inner text-center">
                     <p className="text-subtitle !text-[7px] mb-1.5">বকেয়া মজুরি (DUE)</p>
@@ -265,7 +265,7 @@ const FactoryPanel = ({ masterData, setMasterData, isAdmin, isWorker, showNotify
                   <div className="space-y-0.5">
                     <p className="text-subtitle !text-[7px]">নিযুক্ত কারিগর</p>
                     <h4 className="text-base font-black tracking-tighter uppercase italic truncate max-w-[150px] text-[var(--text-primary)]">
-                      {typeof item.worker === 'object' ? JSON.stringify(item.worker) : item.worker}
+                      <SafeText data={item.worker} />
                     </h4>
                   </div>
                   <div className="text-right">
@@ -282,13 +282,13 @@ const FactoryPanel = ({ masterData, setMasterData, isAdmin, isWorker, showNotify
                   <div className="bg-slate-50 dark:bg-slate-800/50 p-2.5 rounded-xl border border-white dark:border-slate-800 shadow-inner">
                     <p className="text-subtitle !text-[7px] mb-0.5">ডিজাইন কালার</p>
                     <p className="text-[10px] font-black uppercase italic truncate text-[var(--text-primary)]">
-                      {typeof item.color === 'object' ? JSON.stringify(item.color) : item.color}
+                      <SafeText data={item.color} />
                     </p>
                   </div>
                   <div className="bg-slate-50 dark:bg-slate-800/50 p-2.5 rounded-xl border border-white dark:border-slate-800 shadow-inner">
                     <p className="text-subtitle !text-[7px] mb-0.5">সাইজ ভেরিয়েন্ট</p>
                     <p className="text-[10px] font-black uppercase italic truncate text-[var(--text-primary)]">
-                      {typeof item.size === 'object' ? JSON.stringify(item.size) : item.size}
+                      <SafeText data={item.size} />
                     </p>
                   </div>
                 </div>
@@ -407,7 +407,7 @@ const FactoryPanel = ({ masterData, setMasterData, isAdmin, isWorker, showNotify
           <div className="fixed inset-0 z-[1000] bg-slate-950/40 backdrop-blur-md flex items-center justify-center p-4">
             <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-white dark:bg-slate-900 w-full max-md rounded-3xl shadow-2xl p-8 relative">
               <button onClick={() => setReceiveModal(null)} className="absolute top-6 right-6 text-slate-400"><X size={20} /></button>
-              <h2 className="text-xl font-black uppercase italic mb-8 text-center">{receiveModal.worker} <span className="text-emerald-500">জমা নিন</span></h2>
+              <h2 className="text-xl font-black uppercase italic mb-8 text-center"><SafeText data={receiveModal.worker} /> <span className="text-emerald-500">জমা নিন</span></h2>
               <div className="space-y-6">
                  <div className="grid grid-cols-2 gap-4">
                      <div>
@@ -433,7 +433,7 @@ const FactoryPanel = ({ masterData, setMasterData, isAdmin, isWorker, showNotify
           <div className="fixed inset-0 z-[1000] bg-slate-950/40 backdrop-blur-md flex items-center justify-center p-4">
              <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-white dark:bg-slate-900 w-full max-w-md rounded-3xl shadow-2xl p-8 relative">
                <button onClick={() => setPayModal(null)} className="absolute top-6 right-6 text-slate-400"><X size={20} /></button>
-               <h2 className="text-xl font-black uppercase italic mb-8 text-center">{payModal} <span className="text-blue-600">পেমেন্ট দিন</span></h2>
+               <h2 className="text-xl font-black uppercase italic mb-8 text-center"><SafeText data={payModal} /> <span className="text-blue-600">পেমেন্ট দিন</span></h2>
                <div className="space-y-6">
                   <div className="bg-slate-50 dark:bg-slate-800 p-6 rounded-2xl border border-dashed border-slate-200 text-center">
                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">প্রদেয় বকেয়া</p>

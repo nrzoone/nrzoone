@@ -1,13 +1,13 @@
 import React from 'react';
 import { ChevronRight, ArrowUpRight, TrendingUp, Sparkles } from 'lucide-react';
 
-export const DashboardCard = ({ title, pending, finished, bill, color, label2 = "Finished" }) => {
+export const DashboardCard = ({ title, pending, finished, bill, color, label2 = "Finished", SafeText }) => {
     return (
         <div className="premium-card group hover:shadow-premium !p-8 md:!p-10">
             <div className="flex justify-between items-start mb-10">
                 <div className="space-y-1">
                     <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-black dark:text-white dark:text-white">Operational Node</p>
-                    <h3 className="text-3xl md:text-4xl font-black uppercase tracking-tighter italic leading-none text-[var(--text-primary)]">{typeof title === 'object' ? JSON.stringify(title) : title}</h3>
+                    <h3 className="text-3xl md:text-4xl font-black uppercase tracking-tighter italic leading-none text-[var(--text-primary)]"><SafeText data={title} /></h3>
                 </div>
                 <div className="w-12 h-12 rounded-2xl bg-[var(--bg-primary)] shadow-[var(--neu-button)] flex items-center justify-center group-hover:bg-black group-hover:text-white transition-all duration-500">
                     <TrendingUp size={20} />
@@ -17,11 +17,11 @@ export const DashboardCard = ({ title, pending, finished, bill, color, label2 = 
             <div className="grid grid-cols-2 gap-6">
                 <div className="bg-[var(--bg-primary)] p-6 md:p-8 rounded-3xl shadow-[var(--neu-concave)]">
                     <p className="text-[9px] font-bold uppercase tracking-widest text-black dark:text-white dark:text-white mb-2">In Progress</p>
-                    <p className="text-3xl md:text-5xl font-black tracking-tighter leading-none italic text-[var(--text-primary)]">{typeof pending === 'object' ? JSON.stringify(pending) : pending}</p>
+                    <p className="text-3xl md:text-5xl font-black tracking-tighter leading-none italic text-[var(--text-primary)]"><SafeText data={pending} /></p>
                 </div>
                 <div className="bg-[var(--bg-primary)] p-6 md:p-8 rounded-3xl shadow-[var(--neu-concave)]">
                     <p className="text-[9px] font-bold uppercase tracking-widest text-black dark:text-white dark:text-white mb-2">{label2.toUpperCase()}</p>
-                    <p className="text-3xl md:text-5xl font-black tracking-tighter leading-none italic text-[var(--text-primary)]">{typeof finished === 'object' ? JSON.stringify(finished) : finished}</p>
+                    <p className="text-3xl md:text-5xl font-black tracking-tighter leading-none italic text-[var(--text-primary)]"><SafeText data={finished} /></p>
                 </div>
             </div>
 
@@ -63,7 +63,7 @@ export const MenuButton = ({ title, sub, onClick, icon, color }) => {
     );
 };
 
-export const Toast = ({ message, type, onClose }) => {
+export const Toast = ({ message, type, onClose, SafeText }) => {
     React.useEffect(() => {
         const audio = new Audio("https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3");
         audio.play().catch(() => {});
@@ -83,7 +83,7 @@ export const Toast = ({ message, type, onClose }) => {
         <div className={`fixed bottom-12 left-1/2 -translate-x-1/2 z-[1000] px-14 py-8 rounded-full animate-fade-slide-up flex items-center gap-8 whitespace-nowrap italic backdrop-blur-3xl ${styles[type] || styles.info}`}>
             <div className="w-3 h-3 rounded-full bg-white animate-pulse shadow-[0_0_15px_white]"></div>
             <p className="font-black uppercase text-sm tracking-[0.6em] leading-none text-white">
-                {typeof message === 'object' ? JSON.stringify(message) : message}
+                <SafeText data={message} />
             </p>
         </div>
     );

@@ -185,6 +185,15 @@ const Logo = ({ size = "md", white = false, customUrl = null }) => (
     <NRZLogo size={size} white={white} customUrl={customUrl} />
 );
 
+const SafeText = ({ data, fallback = "" }) => {
+    if (data === null || data === undefined) return fallback;
+    if (typeof data === 'object') {
+        const str = JSON.stringify(data);
+        return <span className="text-[10px] font-mono opacity-50 bg-rose-500/10 text-rose-500 px-1 rounded" title={str}>[ERR: OBJ]</span>;
+    }
+    return data;
+};
+
 const LoginView = ({ onLogin, masterData }) => {
     const [id, setId] = useState("");
     const [password, setPassword] = useState("");
@@ -298,7 +307,7 @@ const LoginView = ({ onLogin, masterData }) => {
     );
 };
 
-const TrackingView = ({ trackId, masterData, onClose, isDarkMode }) => {
+const TrackingView = ({ trackId, masterData, onClose, isDarkMode, SafeText }) => {
     const item = [...(masterData.productions || []), ...(masterData.pataEntries || [])].find(i => String(i.id) === trackId);
     if (!item) return <div className="min-h-screen flex items-center justify-center bg-black text-rose-500 font-black uppercase">Tracking ID Not Found <button onClick={onClose} className="ml-4 bg-white text-black p-2 rounded">Close</button></div>;
 
@@ -315,10 +324,10 @@ const TrackingView = ({ trackId, masterData, onClose, isDarkMode }) => {
                     <p className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400 mt-6 mb-6">Status</p>
                     <h2 className="text-4xl md:text-7xl font-black uppercase italic tracking-tighter">{item.status === 'Pending' ? 'In Production' : 'Completed'}</h2>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-12 border-t border-white/10 pt-12">
-                        <div><p className="text-[8px] text-black dark:text-white uppercase tracking-widest mb-1 font-black underline">Lot</p><p className="font-black">#{typeof item.lotNo === 'object' ? JSON.stringify(item.lotNo) : item.lotNo}</p></div>
-                        <div><p className="text-[8px] text-black dark:text-white uppercase tracking-widest mb-1 font-black underline">Worker</p><p className="font-black uppercase">{typeof item.worker === 'object' ? JSON.stringify(item.worker) : item.worker}</p></div>
-                        <div><p className="text-[8px] text-black dark:text-white uppercase tracking-widest mb-1 font-black underline">Design</p><p className="font-black uppercase">{typeof item.design === 'object' ? JSON.stringify(item.design) : item.design}</p></div>
-                        <div><p className="text-[8px] text-black dark:text-white uppercase tracking-widest mb-1 font-black underline">Qty</p><p className="font-black">{typeof (item.issueBorka || item.pataQty || 0) === 'object' ? JSON.stringify(item.issueBorka || item.pataQty || 0) : (item.issueBorka || item.pataQty || 0)} Pcs</p></div>
+                        <div><p className="text-[8px] text-black dark:text-white uppercase tracking-widest mb-1 font-black underline">Lot</p><p className="font-black">#<SafeText data={item.lotNo} /></p></div>
+                        <div><p className="text-[8px] text-black dark:text-white uppercase tracking-widest mb-1 font-black underline">Worker</p><p className="font-black uppercase"><SafeText data={item.worker} /></p></div>
+                        <div><p className="text-[8px] text-black dark:text-white uppercase tracking-widest mb-1 font-black underline">Design</p><p className="font-black uppercase"><SafeText data={item.design} /></p></div>
+                        <div><p className="text-[8px] text-black dark:text-white uppercase tracking-widest mb-1 font-black underline">Qty</p><p className="font-black"><SafeText data={item.issueBorka || item.pataQty || 0} /> Pcs</p></div>
                     </div>
                 </div>
 
@@ -708,7 +717,7 @@ const AppContent = () => {
                                 )}
                                 <div className="space-y-0.5">
                                     <h2 className="text-xl md:text-2xl font-bold tracking-tight uppercase leading-tight">
-                                        {typeof activePanel === 'object' ? JSON.stringify(activePanel) : (t?.(activePanel?.toLowerCase()) || activePanel)}
+                                        <SafeText data={activePanel === "Overview" ? "Dashboard" : activePanel} fallback={activePanel} />
                                     </h2>
                                     <div className="flex items-center gap-2">
                                         <div className={`w-1.5 h-1.5 rounded-full ${syncStatus === 'syncing' ? 'bg-amber-500 animate-pulse' : syncStatus === 'error' ? 'bg-rose-500' : 'bg-emerald-500'}`}></div>
@@ -722,7 +731,7 @@ const AppContent = () => {
                             <div className="flex items-center gap-3 md:gap-6">
                                 <div className="hidden sm:flex flex-col items-end pr-5 border-r border-slate-100 dark:border-slate-800">
                                     <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-0.5">অনুমোদিত ইউজার</p>
-                                    <p className="text-sm font-black uppercase leading-none italic">{typeof user?.name === 'object' ? JSON.stringify(user.name) : (user?.name || 'অпераটর')}</p>
+                                    <p className="text-sm font-black uppercase leading-none italic"><SafeText data={user?.name} fallback="অপারেটর" /></p>
                                 </div>
                                 <div className="flex gap-2">
                                     {lowStockItems.length > 0 && user?.role !== 'client' && (
@@ -745,23 +754,23 @@ const AppContent = () => {
 
                         <div className="flex-1 overflow-y-auto px-1 md:px-4 py-2 md:py-4 relative custom-scrollbar">
                             <div className="max-w-[1400px] mx-auto space-y-4 md:space-y-6 animate-fade-up">
-                                {activePanel === "ClientDashboard" && <ClientDashboard masterData={masterData} user={user} setMasterData={setMasterData} showNotify={showNotify} logAction={logAction} />}
+                                {activePanel === "ClientDashboard" && <ClientDashboard masterData={masterData} user={user} setMasterData={setMasterData} showNotify={showNotify} logAction={logAction} SafeText={SafeText} />}
                                 {user?.role !== 'client' && (
                                     <>
-                                        {activePanel === "Overview" && <Overview masterData={masterData} user={user} setActivePanel={setActivePanel} t={t} syncStatus={syncStatus} />}
-                                        {activePanel === "Cutting" && <CuttingPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} logAction={logAction} setActivePanel={setActivePanel} t={t} />}
-                                        {activePanel === "Swing" && <FactoryPanel type="sewing" masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} setActivePanel={setActivePanel} />}
-                                        {activePanel === "Stone" && <FactoryPanel type="stone" masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} setActivePanel={setActivePanel} />}
-                                        {activePanel === "Pata" && <PataFactoryPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} setActivePanel={setActivePanel} />}
-                                        {activePanel === "Outside" && <OutsideWorkPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} setActivePanel={setActivePanel} />}
-                                        {activePanel === "Stock" && <InventoryPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} setActivePanel={setActivePanel} logAction={logAction} />}
-                                        {activePanel === "Accounts" && <ExpensePanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} setActivePanel={setActivePanel} logAction={logAction} onSyncGoogle={handleSyncToGoogleSheets} initialTab={panelTab} logs={logs} />}
-                                        {activePanel === "Attendance" && <AttendancePanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} setActivePanel={setActivePanel} />}
-                                        {activePanel === "Transactions" && <ReportsPanel masterData={masterData} user={user} t={t} logAction={logAction} showNotify={showNotify} setActivePanel={setActivePanel} onSyncGoogle={handleSyncToGoogleSheets} />}
-                                        {activePanel === "Settings" && <SettingsPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} syncStatus={syncStatus} user={user} t={t} setActivePanel={setActivePanel} logs={logs} downloadBackup={downloadBackup} />}
-                                        {activePanel === "Menu" && <MenuPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} setActivePanel={setActivePanel} lowStockItems={lowStockItems} />}
-                                        {activePanel === "ClientLedger" && <ClientLedgerPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} setActivePanel={setActivePanel} />}
-                                        {activePanel === "History" && <SecurityPanel masterData={masterData} setActivePanel={setActivePanel} t={t} logs={logs} syncStatus={syncStatus} />}
+                                        {activePanel === "Overview" && <Overview masterData={masterData} user={user} setActivePanel={setActivePanel} t={t} syncStatus={syncStatus} SafeText={SafeText} />}
+                                        {activePanel === "Cutting" && <CuttingPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} logAction={logAction} setActivePanel={setActivePanel} t={t} SafeText={SafeText} />}
+                                        {activePanel === "Swing" && <FactoryPanel type="sewing" masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} setActivePanel={setActivePanel} SafeText={SafeText} />}
+                                        {activePanel === "Stone" && <FactoryPanel type="stone" masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} setActivePanel={setActivePanel} SafeText={SafeText} />}
+                                        {activePanel === "Pata" && <PataFactoryPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} setActivePanel={setActivePanel} SafeText={SafeText} />}
+                                        {activePanel === "Outside" && <OutsideWorkPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} setActivePanel={setActivePanel} SafeText={SafeText} />}
+                                        {activePanel === "Stock" && <InventoryPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} setActivePanel={setActivePanel} logAction={logAction} SafeText={SafeText} />}
+                                        {activePanel === "Accounts" && <ExpensePanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} setActivePanel={setActivePanel} logAction={logAction} onSyncGoogle={handleSyncToGoogleSheets} initialTab={panelTab} logs={logs} SafeText={SafeText} />}
+                                        {activePanel === "Attendance" && <AttendancePanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} setActivePanel={setActivePanel} SafeText={SafeText} />}
+                                        {activePanel === "Transactions" && <ReportsPanel masterData={masterData} user={user} t={t} logAction={logAction} showNotify={showNotify} setActivePanel={setActivePanel} onSyncGoogle={handleSyncToGoogleSheets} SafeText={SafeText} />}
+                                        {activePanel === "Settings" && <SettingsPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} syncStatus={syncStatus} user={user} t={t} setActivePanel={setActivePanel} logs={logs} downloadBackup={downloadBackup} SafeText={SafeText} />}
+                                        {activePanel === "Menu" && <MenuPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} setActivePanel={setActivePanel} lowStockItems={lowStockItems} SafeText={SafeText} />}
+                                        {activePanel === "ClientLedger" && <ClientLedgerPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} setActivePanel={setActivePanel} SafeText={SafeText} />}
+                                        {activePanel === "History" && <SecurityPanel masterData={masterData} setActivePanel={setActivePanel} t={t} logs={logs} syncStatus={syncStatus} SafeText={SafeText} />}
                                         {activePanel === "Notifications" && (
                                              <div className="space-y-8 pb-24 animate-fade-up px-2">
                                                  <div className="flex justify-between items-center mb-10">
@@ -774,10 +783,10 @@ const AppContent = () => {
                                                             <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 shadow-lg ${n.read ? 'bg-slate-100' : 'bg-blue-600 text-white'}`}>{n.type === 'task' ? <Activity size={20} /> : <ShieldAlert size={20} />}</div>
                                                             <div className="flex-1 space-y-1">
                                                                 <h4 className="text-lg font-black uppercase italic leading-none">
-                                                                    {typeof n.title === 'object' ? JSON.stringify(n.title) : n.title}
+                                                                    <SafeText data={n.title} />
                                                                 </h4>
                                                                 <p className="text-[11px] font-bold text-slate-400 italic">
-                                                                    {typeof n.message === 'object' ? JSON.stringify(n.message) : n.message}
+                                                                    <SafeText data={n.message} />
                                                                 </p>
                                                             </div>
                                                         </div>
@@ -871,9 +880,9 @@ const AppContent = () => {
                     </main>
                 </div>
             )}
-            {trackingId && <div className="fixed inset-0 z-[1000]"><TrackingView trackId={trackingId} masterData={masterData} onClose={() => setTrackingId(null)} isDarkMode={isDarkMode} /></div>}
-            {showQR && <QRScanner onScanSuccess={setTrackingId} onClose={() => setShowQR(false)} />}
-            {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
+            {trackingId && <div className="fixed inset-0 z-[1000]"><TrackingView trackId={trackingId} masterData={masterData} onClose={() => setTrackingId(null)} isDarkMode={isDarkMode} SafeText={SafeText} /></div>}
+            {showQR && <QRScanner onScanSuccess={setTrackingId} onClose={() => setShowQR(false)} SafeText={SafeText} />}
+            {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} SafeText={SafeText} />}
         </div>
     );
 };

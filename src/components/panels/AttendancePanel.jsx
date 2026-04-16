@@ -32,6 +32,7 @@ const AttendancePanel = ({
   setActivePanel,
   t,
   logAction,
+  SafeText
 }) => {
   const [selectedDate, setSelectedDate] = useState(
     new Date().toISOString().split("T")[0],
@@ -317,7 +318,7 @@ const AttendancePanel = ({
               <div className="flex justify-between items-start mb-6">
                  <div>
                     <h3 className="text-xl font-black tracking-tight text-[var(--text-primary)] italic uppercase truncate w-32">
-                      {typeof worker === 'object' ? JSON.stringify(worker) : worker}
+                      <SafeText data={worker} />
                     </h3>
                     <p className="text-[9px] font-black text-[var(--text-muted)] uppercase tracking-widest mt-0.5 italic leading-none">ID: REF-{typeof worker === 'string' ? worker.slice(0,3).toUpperCase() : 'ID'}</p>
                  </div>
@@ -405,10 +406,10 @@ const AttendancePanel = ({
               {weeklySummary.workers.map((w, i) => (
                 <tr key={i} className="text-sm font-black group">
                   <td className="py-4 uppercase tracking-tighter text-black">
-                    {w.worker}
+                    <SafeText data={w.worker} />
                   </td>
                   <td className="py-4 text-center text-black dark:text-white">
-                    {w.presentDays}{" "}
+                    <SafeText data={w.presentDays} />{" "}
                     <span className="text-[8px] tracking-widest">DAYS</span>
                   </td>
                   <td className="py-4 text-right text-black">
@@ -548,12 +549,12 @@ const AttendancePanel = ({
                   <div className="space-y-1">
                     <div className="flex items-center gap-3">
                         <h4 className="text-lg font-black tracking-tighter text-black dark:text-white uppercase leading-tight italic truncate max-w-[150px] md:max-w-[250px]">
-                          {typeof worker === 'object' ? JSON.stringify(worker) : worker}
+                          <SafeText data={worker} />
                         </h4>
-                        {workerId && <span className="px-1.5 py-0.5 bg-blue-50 dark:bg-blue-900/10 text-blue-600 text-[8px] font-black rounded border border-blue-100 dark:border-blue-800">REF:{typeof workerId === 'object' ? JSON.stringify(workerId) : workerId}</span>}
+                        {workerId && <span className="px-1.5 py-0.5 bg-blue-50 dark:bg-blue-900/10 text-blue-600 text-[8px] font-black rounded border border-blue-100 dark:border-blue-800">REF:<SafeText data={workerId} /></span>}
                     </div>
                     <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none flex items-center gap-2 italic">
-                       <DollarSign size={10} className="text-emerald-500" /> {typeof wage === 'object' ? JSON.stringify(wage) : (typeof wage === 'number' ? wage.toLocaleString() : wage)} (DAILY RATE)
+                       <DollarSign size={10} className="text-emerald-500" /> <SafeText data={wage} /> (DAILY RATE)
                     </p>
                   </div>
                 </div>

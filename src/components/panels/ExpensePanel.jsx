@@ -41,6 +41,7 @@ const ExpensePanel = ({
    logAction,
    onSyncGoogle,
    logs = [],
+   SafeText,
 }) => {
    const role = user?.role?.toLowerCase();
    const isAdmin = role === "admin";
@@ -171,7 +172,7 @@ const ExpensePanel = ({
                   </div>
                   <div className="space-y-6">
                      {filteredExpenses.map((exp, i) => (
-                        <div key={i} className="flex justify-between items-end py-6 border-b border-slate-50"><div className="space-y-2"><p className="text-xl font-black leading-none uppercase italic">{typeof exp.description === 'object' ? JSON.stringify(exp.description) : exp.description}</p><p className="text-[10px] font-bold text-blue-600 tracking-widest">[{typeof exp.category === 'object' ? JSON.stringify(exp.category) : (t(exp.category) || exp.category)}] // REF#{typeof exp.id === 'string' ? exp.id.slice(-6) : 'ID'}</p></div><p className="text-3xl font-black">৳{exp.amount.toLocaleString()}</p></div>
+                        <div key={i} className="flex justify-between items-end py-6 border-b border-slate-50"><div className="space-y-2"><p className="text-xl font-black leading-none uppercase italic"><SafeText data={exp.description} /></p><p className="text-[10px] font-bold text-blue-600 tracking-widest">[<SafeText data={t(exp.category) || exp.category} />] // REF#<SafeText data={typeof exp.id === 'string' ? exp.id.slice(-6) : exp.id} /></p></div><p className="text-3xl font-black">৳{exp.amount.toLocaleString()}</p></div>
                      ))}
                      {filteredExpenses.length === 0 && <div className="py-20 text-center opacity-20 text-[9px] font-black uppercase tracking-[0.4em]">No activity detected within the selected cycle</div>}
                   </div>
@@ -268,8 +269,8 @@ const ExpensePanel = ({
                                     {isAdmin && <button onClick={() => handleDeleteExpense(exp.id)} className="w-7 h-7 bg-slate-50 dark:bg-slate-700 rounded-lg flex items-center justify-center text-slate-300 dark:text-slate-500 hover:bg-rose-600 hover:text-white transition-all shadow-sm"><Trash2 size={11} /></button>}
                                  </div>
                               </div>
-                              <h5 className="text-[14px] md:text-[15px] font-black uppercase leading-tight italic text-slate-950 dark:text-white mb-1.5 tracking-tighter truncate leading-none">{typeof exp.description === 'object' ? JSON.stringify(exp.description) : exp.description}</h5>
-                              <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1.5"><Calendar size={10} className="text-blue-600" /> {typeof exp.date === 'object' ? JSON.stringify(exp.date) : exp.date}</p>
+                              <h5 className="text-[14px] md:text-[15px] font-black uppercase leading-tight italic text-slate-950 dark:text-white mb-1.5 tracking-tighter truncate leading-none"><SafeText data={exp.description} /></h5>
+                              <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1.5"><Calendar size={10} className="text-blue-600" /> <SafeText data={exp.date} /></p>
                            </div>
                            <div className="relative z-10 mt-3 flex justify-between items-end">
                               <p className="text-2xl md:text-3xl font-black italic tracking-tighter text-slate-950 dark:text-white leading-none">৳{exp.amount.toLocaleString()}</p>
@@ -300,8 +301,8 @@ const ExpensePanel = ({
                            <tbody className="divide-y-2 divide-slate-50 dark:divide-slate-800">
                               {cashEntries.map((cash, i) => (
                                  <tr key={cash.id || i} className="group hover:bg-emerald-50/10 dark:hover:bg-emerald-900/10 transition-all duration-300">
-                                    <td className="px-8 py-6 font-bold uppercase italic text-xs tabular-nums text-[var(--text-primary)]">{typeof cash.date === 'object' ? JSON.stringify(cash.date) : cash.date}</td>
-                                    <td className="px-8 py-6 font-bold uppercase text-[var(--text-primary)] leading-none italic text-xs">{typeof cash.description === 'object' ? JSON.stringify(cash.description) : cash.description}</td>
+                                    <td className="px-8 py-6 font-bold uppercase italic text-xs tabular-nums text-[var(--text-primary)]"><SafeText data={cash.date} /></td>
+                                    <td className="px-8 py-6 font-bold uppercase text-[var(--text-primary)] leading-none italic text-xs"><SafeText data={cash.description} /></td>
                                     <td className="px-8 py-6 text-right font-black text-2xl text-emerald-600 italic tracking-tighter">৳{cash.amount.toLocaleString()}</td>
                                     {isAdmin && (
                                        <td className="px-8 py-6 text-center">
@@ -376,7 +377,7 @@ const ExpensePanel = ({
                          <div key={idx} onClick={() => setSelectedClientLedger(item.client)} className="saas-card bg-white dark:bg-slate-900 shadow-xl flex flex-col justify-between h-[300px] border-l-[10px] border-l-slate-950 dark:border-l-white hover:border-l-blue-600 transition-all duration-500 group cursor-pointer relative overflow-hidden !p-8 italic hover:scale-105">
                             <div className="absolute -top-10 -right-10 p-16 opacity-[0.03] group-hover:opacity-10 transition-opacity"><UserCheck size={180} /></div>
                             <div className="flex justify-between items-start mb-6 relative z-10">
-                               <div className="space-y-2"><p className="text-[10px] font-black text-[var(--text-muted)] uppercase tracking-widest leading-none underline decoration-blue-500 decoration-2 mb-1">B2B NODE</p><h3 className="text-2xl font-black italic tracking-tighter text-[var(--text-primary)] leading-none uppercase truncate max-w-[160px]">{typeof item.client === 'object' ? JSON.stringify(item.client) : item.client}</h3></div>
+                               <div className="space-y-2"><p className="text-[10px] font-black text-[var(--text-muted)] uppercase tracking-widest leading-none underline decoration-blue-500 decoration-2 mb-1">B2B NODE</p><h3 className="text-2xl font-black italic tracking-tighter text-[var(--text-primary)] leading-none uppercase truncate max-w-[160px]"><SafeText data={item.client} /></h3></div>
                                <button onClick={e => { e.stopPropagation(); setReceivePaymentModal(item.client); }} className="w-14 h-14 bg-white dark:bg-slate-800 text-emerald-600 rounded-2xl shadow-lg flex items-center justify-center hover:bg-emerald-600 hover:text-white transition-all scale-90 group-hover:scale-110 active:scale-95"><Plus size={24} /></button>
                             </div>
                             <div className="space-y-6 relative z-10">
@@ -392,7 +393,7 @@ const ExpensePanel = ({
                       <div className="mb-12 flex items-center gap-8">
                          <div className="w-20 h-20 bg-blue-600 text-white rounded-3xl flex items-center justify-center shadow-xl rotate-12 animate-pulse"><UserCheck size={40} /></div>
                          <div className="space-y-2">
-                            <h3 className="text-4xl font-black uppercase italic tracking-tighter text-[var(--text-primary)] leading-none">{typeof selectedClientLedger === 'object' ? JSON.stringify(selectedClientLedger) : selectedClientLedger}</h3>
+                            <h3 className="text-4xl font-black uppercase italic tracking-tighter text-[var(--text-primary)] leading-none"><SafeText data={selectedClientLedger} /></h3>
                             <p className="text-[11px] font-black text-[var(--text-muted)] uppercase tracking-widest italic decoration-blue-500 underline underline-offset-4 decoration-4">Comprehensive Entity Audit Transcript</p>
                          </div>
                       </div>
@@ -410,9 +411,9 @@ const ExpensePanel = ({
                             <tbody className="divide-y-2 divide-slate-50 dark:divide-slate-800 bg-white dark:bg-slate-900">
                                {(masterData.clientTransactions || []).filter(t => t.client === selectedClientLedger).sort((a, b) => new Date(b.date?.split('/').reverse().join('-')) - new Date(a.date?.split('/').reverse().join('-'))).map((t, idx) => (
                                   <tr key={idx} className="group hover:bg-slate-50 dark:hover:bg-slate-800 transition-all duration-300">
-                                     <td className="py-6 px-8 font-bold uppercase italic tabular-nums text-sm text-[var(--text-primary)]">{typeof t.date === 'object' ? JSON.stringify(t.date) : t.date}</td>
-                                     <td className="py-6 px-8"><span className={`px-4 py-1.5 rounded-xl text-[9px] font-black tracking-widest uppercase shadow-md ${t.type === 'BILL' ? 'bg-rose-600 text-white' : 'bg-emerald-600 text-white'}`}>{typeof t.type === 'object' ? JSON.stringify(t.type) : t.type}</span></td>
-                                     <td className="py-6 px-8 text-[11px] font-bold uppercase text-[var(--text-muted)] italic max-w-xs truncate leading-none">{typeof t.note === 'object' ? JSON.stringify(t.note) : t.note}</td>
+                                     <td className="py-6 px-8 font-bold uppercase italic tabular-nums text-sm text-[var(--text-primary)]"><SafeText data={t.date} /></td>
+                                     <td className="py-6 px-8"><span className={`px-4 py-1.5 rounded-xl text-[9px] font-black tracking-widest uppercase shadow-md ${t.type === 'BILL' ? 'bg-rose-600 text-white' : 'bg-emerald-600 text-white'}`}><SafeText data={t.type} /></span></td>
+                                     <td className="py-6 px-8 text-[11px] font-bold uppercase text-[var(--text-muted)] italic max-w-xs truncate leading-none"><SafeText data={t.note} /></td>
                                      <td className={`py-6 px-8 text-right font-black text-2xl tabular-nums tracking-tighter italic ${t.type === 'BILL' ? 'text-rose-600' : 'text-emerald-500 dark:text-emerald-400'}`}>{t.type === 'BILL' ? '-' : '+'} ৳{t.amount?.toLocaleString()}</td>
                                   </tr>
                                ))}
@@ -451,7 +452,7 @@ const ExpensePanel = ({
                      <Database size={24} className="group-hover:animate-spin" /> GOOGLE SHEETS SYNC
                   </button>
                </div>
-               <BusinessIntel masterData={masterData} />
+               <BusinessIntel masterData={masterData} SafeText={SafeText} />
                <div className="saas-card !p-12 bg-slate-950 dark:bg-slate-950 text-white flex flex-col items-center justify-center gap-10 rounded-[3.5rem] relative overflow-hidden shadow-2xl">
                   <div className="absolute inset-0 bg-[radial-gradient(#ffffff05_1px,transparent_1px)] bg-[size:40px_40px] opacity-40"></div>
                   <Activity size={64} className="text-blue-600 animate-pulse" />

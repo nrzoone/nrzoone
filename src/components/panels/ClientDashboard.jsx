@@ -11,7 +11,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 
-const ClientDashboard = ({ masterData, user, setMasterData, showNotify, logAction }) => {
+const ClientDashboard = ({ masterData, user, setMasterData, showNotify, logAction, SafeText }) => {
   const isAdmin = user?.role === 'admin' || user?.role === 'manager';
   const [selectedClient, setSelectedClient] = useState(isAdmin ? null : user.name);
   const clientName = (selectedClient || '').trim();
@@ -565,7 +565,7 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify, logActio
                     .map(([name, qty]) => (
                         <div key={name} className="flex justify-between items-center border-b border-slate-50 dark:border-slate-800 pb-1">
                             <span className="text-[9px] font-black uppercase italic text-slate-600 dark:text-slate-400">
-                                {typeof name === 'object' ? JSON.stringify(name) : name}
+                                <SafeText data={name} />
                             </span>
                             <span className="text-xs font-black italic">{qty.toLocaleString()} YDS</span>
                         </div>
@@ -703,7 +703,7 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify, logActio
                     >
                         <div className="w-10 h-10 bg-blue-50 dark:bg-blue-900/20 text-blue-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform"><User size={18} /></div>
                         <div>
-                            <h4 className="text-lg font-black uppercase italic leading-none truncate w-full text-[var(--text-primary)]">{c}</h4>
+                            <h4 className="text-lg font-black uppercase italic leading-none truncate w-full text-[var(--text-primary)]"><SafeText data={c} /></h4>
                             <p className="text-[8px] font-black text-[var(--text-muted)] mt-1.5 uppercase tracking-widest leading-none italic">View Performance Dashboard</p>
                         </div>
                     </button>
@@ -735,7 +735,7 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify, logActio
                 </div>
                 <div>
                    <h2 className="text-xl font-black italic uppercase tracking-tighter text-white leading-none mb-1.5">
-                     {typeof clientName === 'object' ? JSON.stringify(clientName) : clientName}
+                     <SafeText data={clientName} />
                    </h2>
                    <div className="flex gap-2 items-center">
                       <span className="px-2 py-0.5 bg-blue-500/20 text-blue-400 rounded text-[8px] font-black uppercase tracking-widest border border-blue-500/30 italic">Active Partner</span>
@@ -787,7 +787,7 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify, logActio
                         <div className="space-y-4">
                             <div>
                                 <h4 className="text-lg font-black italic uppercase tracking-tighter text-black dark:text-white leading-none truncate mb-1 pr-16">
-                                    {typeof lot.design === 'object' ? JSON.stringify(lot.design) : lot.design}
+                                    <SafeText data={lot.design} />
                                 </h4>
                                 <p className="text-[8px] font-black text-slate-400 tracking-widest italic uppercase">LOT: #{lot.lotNo || 'PRO-LOG'}</p>
                             </div>
@@ -885,8 +885,8 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify, logActio
                  materialStocks.map((m, i) => (
                     <div key={i} className="px-5 py-3.5 flex justify-between items-center hover:bg-amber-50/30 transition-colors">
                         <div>
-                           <p className="text-[10px] font-black uppercase italic text-slate-800 dark:text-white">{typeof m.item === 'object' ? JSON.stringify(m.item) : (m.item || 'ফেব্রিক')} - {typeof m.color === 'object' ? JSON.stringify(m.color) : (m.color || 'N/A')}</p>
-                           <p className="text-[8px] font-medium text-slate-400 uppercase tracking-widest leading-none mt-1">{m.design ? `Style: ${typeof m.design === 'object' ? JSON.stringify(m.design) : m.design}` : 'Global Stock'}</p>
+                           <p className="text-[10px] font-black uppercase italic text-slate-800 dark:text-white"><SafeText data={m.item || 'ফেব্রিক'} /> - <SafeText data={m.color || 'N/A'} /></p>
+                           <p className="text-[8px] font-medium text-slate-400 uppercase tracking-widest leading-none mt-1">{m.design ? <span>Style: <SafeText data={m.design} /></span> : 'Global Stock'}</p>
                         </div>
                         <div className="text-right">
                            <p className={`text-sm font-black tabular-nums ${m.qty < 0 ? 'text-rose-600' : 'text-amber-600'}`}>{Math.abs(m.qty).toFixed(1)}</p>
@@ -916,8 +916,8 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify, logActio
                  readyStock.map((r, i) => (
                     <div key={i} className="px-5 py-3.5 flex justify-between items-center hover:bg-emerald-50/30 transition-colors">
                        <div>
-                          <p className="text-[10px] font-black uppercase italic text-slate-800">{typeof r.design === 'object' ? JSON.stringify(r.design) : r.design}</p>
-                          <p className="text-[8px] font-medium text-slate-400 uppercase tracking-widest italic">{typeof r.color === 'object' ? JSON.stringify(r.color) : r.color}</p>
+                          <p className="text-[10px] font-black uppercase italic text-slate-800"><SafeText data={r.design} /></p>
+                          <p className="text-[8px] font-medium text-slate-400 uppercase tracking-widest italic"><SafeText data={r.color} /></p>
                        </div>
                        <div className="text-center">
                           <p className="text-xl font-black text-emerald-600 tabular-nums leading-none">{r.qty}</p>

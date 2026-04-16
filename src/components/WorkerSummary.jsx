@@ -3,7 +3,7 @@ import { UserCheck, Activity, Search, Download, TrendingUp, X, FileText, ArrowUp
 import { sendWeeklySummary } from '../utils/whatsappUtils';
 import NRZLogo from "./NRZLogo";
 
-const WorkerSummary = ({ masterData, setMasterData, showNotify, user, logAction, setActivePanel }) => {
+const WorkerSummary = ({ masterData, setMasterData, showNotify, user, logAction, setActivePanel, SafeText }) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [filterDept, setFilterDept] = useState('all');
     const [selectedWorker, setSelectedWorker] = useState(null);
@@ -185,7 +185,7 @@ const WorkerSummary = ({ masterData, setMasterData, showNotify, user, logAction,
                             </div>
                             <div className="text-right">
                                 <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">Identity</p>
-                                <h4 className="text-xl font-black italic uppercase leading-none text-black dark:text-white truncate max-w-[130px]">{typeof w.name === 'object' ? JSON.stringify(w.name) : w.name}</h4>
+                                <h4 className="text-xl font-black italic uppercase leading-none text-black dark:text-white truncate max-w-[130px]"><SafeText data={w.name} /></h4>
                                 <div className="flex gap-1.5 justify-end mt-1.5">
                                     {masterData.workerDocs?.find(d => d.name.toUpperCase() === w.name.toUpperCase() && d.dept === w.dept)?.workerId && (
                                         <span className="px-1.5 py-0.5 bg-emerald-100 text-emerald-700 text-[6.5px] font-black rounded">ID: {masterData.workerDocs?.find(d => d.name.toUpperCase() === w.name.toUpperCase() && d.dept === w.dept)?.workerId}</span>
@@ -200,14 +200,14 @@ const WorkerSummary = ({ masterData, setMasterData, showNotify, user, logAction,
                                 <div className="flex justify-between items-center">
                                     <p className="text-[8.5px] font-black text-black dark:text-white uppercase tracking-widest font-mono opacity-40">Load Status</p>
                                     <div className="text-right">
-                                        <p className="text-base font-black italic text-black dark:text-white leading-none">{typeof w.qty === 'object' ? JSON.stringify(w.qty) : w.qty} <span className="text-[9px]">{w.label.includes('DAYS') ? 'DAYS' : 'PCS'}</span></p>
+                                        <p className="text-base font-black italic text-black dark:text-white leading-none"><SafeText data={w.qty} /> <span className="text-[9px]">{w.label.includes('DAYS') ? 'DAYS' : 'PCS'}</span></p>
                                         {w.shortage > 0 && <p className="text-[7.5px] font-black text-rose-500 uppercase">Gap: {w.shortage} pcs</p>}
                                     </div>
                                 </div>
                                 <div className="flex justify-between items-center group/p">
                                     <p className="text-[8.5px] font-black text-black dark:text-white uppercase tracking-widest font-mono opacity-40">Access PIN</p>
                                     <div className="flex items-center gap-1.5">
-                                         <p className="text-[14px] font-black italic text-black dark:text-white font-mono tracking-tighter bg-white dark:bg-slate-800 px-2 py-0.5 rounded border border-slate-100 dark:border-slate-700 opacity-0 group-hover/p:opacity-100 transition-opacity leading-none">{typeof w.password === 'object' ? JSON.stringify(w.password) : (w.password || 'N/A')}</p>
+                                         <p className="text-[14px] font-black italic text-black dark:text-white font-mono tracking-tighter bg-white dark:bg-slate-800 px-2 py-0.5 rounded border border-slate-100 dark:border-slate-700 opacity-0 group-hover/p:opacity-100 transition-opacity leading-none"><SafeText data={w.password} fallback="N/A" /></p>
                                          <Eye size={12} className="text-slate-200 group-hover/p:text-emerald-500 transition-colors" />
                                     </div>
                                 </div>
@@ -247,7 +247,7 @@ const WorkerSummary = ({ masterData, setMasterData, showNotify, user, logAction,
                         <div className="text-center space-y-1">
                            <div className="mx-auto w-12 h-12 bg-emerald-600 text-white rounded-xl flex items-center justify-center shadow-lg rotate-12 mb-3 animate-pulse"><DollarSign size={20} /></div>
                            <h3 className="text-xl font-black italic uppercase text-black dark:text-white">নতুন দাদন বা পেমেন্ট</h3>
-                           <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">{showPayModal.name} — {showPayModal.dept}</p>
+                           <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest"><SafeText data={showPayModal.name} /> — <SafeText data={showPayModal.dept} /></p>
                         </div>
                         <div className="space-y-6">
                             <div className="grid grid-cols-2 gap-4">
@@ -304,15 +304,15 @@ const WorkerSummary = ({ masterData, setMasterData, showNotify, user, logAction,
                                     </div>
                                     <div className="text-center md:text-left">
                                         <p className="text-[9px] font-black uppercase tracking-widest text-white/40 mb-2">Permanent Professional Ledger</p>
-                                        <h2 className="text-4xl md:text-5xl font-black uppercase italic tracking-tighter leading-tight">{typeof selectedWorker.name === 'object' ? JSON.stringify(selectedWorker.name) : selectedWorker.name}</h2>
+                                        <h2 className="text-4xl md:text-5xl font-black uppercase italic tracking-tighter leading-tight"><SafeText data={selectedWorker.name} /></h2>
                                         <div className="flex gap-3 mt-4 justify-center md:justify-start">
                                              <span className="px-4 py-1.5 bg-white/10 rounded-full text-[8px] font-black italic tracking-widest border border-white/10">{selectedWorker.dept.toUpperCase()} UNIT</span>
-                                             <span className="px-4 py-1.5 bg-emerald-500 text-black rounded-full text-[8px] font-black italic tracking-widest font-mono">KEY: {selectedWorker.password}</span>
+                                             <span className="px-4 py-1.5 bg-emerald-500 text-black rounded-full text-[8px] font-black italic tracking-widest font-mono">KEY: <SafeText data={selectedWorker.password} /></span>
                                         </div>
                                     </div>
                                 </div>
                                 <div className="grid grid-cols-2 md:grid-cols-4 gap-12 mt-16 border-t border-white/10 pt-16">
-                                    <div className="group/s"><p className="text-[10px] text-white/30 uppercase tracking-widest mb-3 font-black italic border-b border-white/5 pb-2">Load Capacity</p><p className="text-3xl font-black uppercase italic tracking-tighter">{typeof selectedWorker.qty === 'object' ? JSON.stringify(selectedWorker.qty) : selectedWorker.qty} <span className="text-xs opacity-50 font-normal">UNITS</span></p></div>
+                                    <div className="group/s"><p className="text-[10px] text-white/30 uppercase tracking-widest mb-3 font-black italic border-b border-white/5 pb-2">Load Capacity</p><p className="text-3xl font-black uppercase italic tracking-tighter"><SafeText data={selectedWorker.qty} /> <span className="text-xs opacity-50 font-normal">UNITS</span></p></div>
                                     <div className="group/s"><p className="text-[10px] text-white/30 uppercase tracking-widest mb-3 font-black italic border-b border-white/5 pb-2">Unit Value</p><p className="text-3xl font-black uppercase italic tracking-tighter">{selectedWorker.subLabel.split(': ')[1]}</p></div>
                                     <div className="group/s"><p className="text-[10px] text-white/30 uppercase tracking-widest mb-3 font-black italic border-b border-white/5 pb-2">Gross Earnings</p><p className="text-3xl font-black uppercase italic text-emerald-400 tracking-tighter">৳{selectedWorker.bill.toLocaleString()}</p></div>
                                     <div className="group/s"><p className="text-[10px] text-rose-400 uppercase tracking-widest mb-3 font-black italic border-b border-rose-900 pb-2">Net Payable</p><p className="text-3xl font-black uppercase italic text-rose-500 underline decoration-8 underline-offset-8 tracking-tighter">৳{selectedWorker.balance.toLocaleString()}</p></div>
@@ -333,8 +333,8 @@ const WorkerSummary = ({ masterData, setMasterData, showNotify, user, logAction,
                                                      {p.type === 'Dadon' ? 'D' : 'S'}
                                                  </div>
                                                  <div>
-                                                     <p className="text-[10px] font-black text-black dark:text-white uppercase tracking-widest mb-2 italic">{p.date}</p>
-                                                     <p className="text-xl font-black uppercase italic text-black dark:text-white">{p.type === 'Dadon' ? 'দাদন (Advance)' : 'বেতন (Direct)'} <span className="text-[11px] text-black dark:text-white ml-2 italic tracking-tight">— {p.note}</span></p>
+                                                     <p className="text-[10px] font-black text-black dark:text-white uppercase tracking-widest mb-2 italic"><SafeText data={p.date} /></p>
+                                                     <p className="text-xl font-black uppercase italic text-black dark:text-white"><SafeText data={p.type === 'Dadon' ? 'দাদন (Advance)' : 'বেতন (Direct)'} /> <span className="text-[11px] text-black dark:text-white ml-2 italic tracking-tight">— <SafeText data={p.note} /></span></p>
                                                  </div>
                                              </div>
                                              <p className="text-3xl font-black italic text-rose-600 tracking-tighter font-mono">- ৳{p.amount.toLocaleString()}</p>
@@ -359,9 +359,9 @@ const WorkerSummary = ({ masterData, setMasterData, showNotify, user, logAction,
                                                 <div className="flex items-center gap-6">
                                                     <div className="w-16 h-16 bg-slate-50 dark:bg-slate-900 rounded-2xl flex items-center justify-center font-black text-xl italic border-4 border-white dark:border-slate-800 shadow-inner group-hover:bg-black group-hover:text-white transition-all transform group-hover:scale-110">{log.date.split('/')[0]}</div>
                                                     <div>
-                                                        <p className="text-[9px] font-black text-black dark:text-white uppercase tracking-widest mb-1 italic">{log.date} • LOT #{typeof log.lotNo === 'object' ? JSON.stringify(log.lotNo) : (log.lotNo || 'NZ-PRO')}</p>
-                                                        <h4 className="text-lg font-black uppercase italic text-black dark:text-white tracking-tight leading-none">{typeof log.design === 'object' ? JSON.stringify(log.design) : (log.design || 'Manual Workshop')}</h4>
-                                                        <p className="text-[9px] font-black text-emerald-500 uppercase tracking-widest mt-2 bg-emerald-50 dark:bg-emerald-900/30 px-3 py-1 rounded-full border border-emerald-100 dark:border-emerald-800 inline-block font-mono italic">UNIT: ৳{typeof log.rate === 'object' ? JSON.stringify(log.rate) : (log.rate || 0)}</p>
+                                                        <p className="text-[9px] font-black text-black dark:text-white uppercase tracking-widest mb-1 italic"><SafeText data={log.date} /> • LOT #<SafeText data={log.lotNo} fallback="NZ-PRO" /></p>
+                                                        <h4 className="text-lg font-black uppercase italic text-black dark:text-white tracking-tight leading-none"><SafeText data={log.design} fallback="Manual Workshop" /></h4>
+                                                        <p className="text-[9px] font-black text-emerald-500 uppercase tracking-widest mt-2 bg-emerald-50 dark:bg-emerald-900/30 px-3 py-1 rounded-full border border-emerald-100 dark:border-emerald-800 inline-block font-mono italic">UNIT: ৳<SafeText data={log.rate} fallback="0" /></p>
                                                     </div>
                                                 </div>
                                                 <div className="text-right">
@@ -381,8 +381,8 @@ const WorkerSummary = ({ masterData, setMasterData, showNotify, user, logAction,
                                     {(selectedWorker.attendanceHistory || []).slice(0, 18).map((a, aidx) => (
                                         <div key={aidx} className="bg-white dark:bg-slate-800 p-8 rounded-[2.5rem] border-2 border-slate-50 dark:border-slate-700 flex items-center justify-between relative overflow-hidden group hover:border-black transition-all shadow-lg text-center h-32 flex-col justify-center">
                                             <div className="relative z-10">
-                                                <p className="text-[9px] font-black text-black dark:text-white uppercase italic mb-2 tracking-widest">{a.date}</p>
-                                                <p className={`text-[10px] font-black uppercase italic ${a.status.toLowerCase().includes('present') ? 'text-emerald-500 decoration-2 underline-offset-4' : 'text-rose-500'}`}>{a.status}</p>
+                                                <p className="text-[9px] font-black text-black dark:text-white uppercase italic mb-2 tracking-widest"><SafeText data={a.date} /></p>
+                                                <p className={`text-[10px] font-black uppercase italic ${String(a.status || '').toLowerCase().includes('present') ? 'text-emerald-500 decoration-2 underline-offset-4' : 'text-rose-500'}`}><SafeText data={a.status} /></p>
                                             </div>
                                             <div className={`w-1.5 h-1/2 absolute right-0 top-1/4 rounded-l-full ${a.status.toLowerCase().includes('present') ? 'bg-emerald-500' : 'bg-rose-500'}`}></div>
                                         </div>
