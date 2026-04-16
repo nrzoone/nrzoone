@@ -2,16 +2,17 @@ import React from 'react';
 import { 
   Scissors, Layers, Hammer, Activity, Truck, Package, 
   DollarSign, FileText, Settings, Shield, UserCheck, 
-  BarChart2, X, LayoutGrid, ChevronRight, Share2 
+  BarChart2, X, LayoutGrid, ChevronRight, Share2, Database
 } from 'lucide-react';
 
-const MenuPanel = ({ setActivePanel, user, t, showNotify }) => {
+const MenuPanel = ({ setActivePanel, user, t, showNotify, lowStockItems }) => {
     const categories = [
         {
             title: "মুখ্য হাব (CORE HUB)",
             items: [
-                { id: 'Overview', label: 'ড্যাশবোর্ড', icon: <Activity size={32} />, color: 'bg-[var(--text-primary)]', desc: 'লাইভ সিস্টেম মনিটর' },
-                { id: 'Attendance', label: 'হাজিরা', icon: <UserCheck size={32} />, color: 'bg-[var(--text-primary)]', desc: 'দৈনিক বায়োমেট্রিক হাজিরা' }
+                { id: 'Overview', label: 'ড্যাশবোর্ড', icon: <Activity size={32} />, color: 'bg-slate-950', desc: 'লাইভ সিস্টেম মনিটর' },
+                { id: 'Stock', label: 'ইনভেন্টরি', icon: <Database size={32} />, color: 'bg-slate-950', desc: 'মালামাল ও মজুত কন্ট্রোল', pulse: true },
+                { id: 'Attendance', label: 'হাজিরা', icon: <UserCheck size={32} />, color: 'bg-slate-950', desc: 'দৈনিক বায়োমেট্রিক হাজিরা' }
             ]
         },
         {
@@ -81,7 +82,7 @@ const MenuPanel = ({ setActivePanel, user, t, showNotify }) => {
                                         <button
                                             key={idx}
                                             onClick={() => setActivePanel(item.id)}
-                                            className="bg-white dark:bg-slate-900 rounded-[var(--radius-saas)] shadow-sm hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all text-left flex items-center justify-between p-10 md:p-12 border border-slate-100 dark:border-slate-800 group"
+                                            className={`bg-white dark:bg-slate-900 rounded-[var(--radius-saas)] shadow-sm hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all text-left flex items-center justify-between p-10 md:p-12 border border-slate-100 dark:border-slate-800 group ${item.pulse && lowStockItems?.length > 0 ? 'low-stock-alert' : ''}`}
                                         >
                                             <div className="flex items-center gap-10 md:gap-14 relative z-10">
                                                 <div className={`w-16 h-16 md:w-24 md:h-24 ${item.color} text-white dark:text-[var(--bg-primary)] rounded-2xl flex items-center justify-center shadow-lg group-hover:rotate-3 transition-all duration-700`}>

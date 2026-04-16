@@ -370,7 +370,7 @@ const MENU_CATEGORIES = [
     }
 ];
 
-const Sidebar = ({ activePanel, setActivePanel, panelTab, setPanelTab, user, setUser, isOpen, setIsSidebarOpen, t, isDarkMode, masterData }) => {
+const Sidebar = ({ activePanel, setActivePanel, panelTab, setPanelTab, user, setUser, isOpen, setIsSidebarOpen, t, isDarkMode, masterData, lowStockItems }) => {
     const navigate = (id, tab) => {
         setActivePanel(id);
         if (tab) setPanelTab(tab);
@@ -406,11 +406,12 @@ const Sidebar = ({ activePanel, setActivePanel, panelTab, setPanelTab, user, set
                             {filteredItems.map(item => {
                                 const Icon = item.icon;
                                 const active = activePanel === item.id;
+                                const isLowStock = item.id === 'Stock' && lowStockItems?.length > 0;
                                 return (
                                     <button
                                         key={item.id + (item.tab || "")} 
                                         onClick={() => navigate(item.id, item.tab)}
-                                        className={`w-full flex items-center gap-4 px-4 py-3 rounded-2xl transition-all group relative border ${active && (item.tab ? panelTab === item.tab : true) ? "bg-slate-950 text-white border-black dark:bg-white dark:text-black dark:border-white shadow-xl" : "text-[var(--text-secondary)] border-transparent hover:bg-slate-50 dark:hover:bg-white/5 hover:border-slate-100 dark:hover:border-white/5"}`}
+                                        className={`w-full flex items-center gap-4 px-4 py-3 rounded-2xl transition-all group relative border ${active && (item.tab ? panelTab === item.tab : true) ? "bg-slate-950 text-white border-black dark:bg-white dark:text-black dark:border-white shadow-xl" : "text-[var(--text-secondary)] border-transparent hover:bg-slate-50 dark:hover:bg-white/5 hover:border-slate-100 dark:hover:border-white/5"} ${isLowStock ? 'low-stock-alert' : ''}`}
                                     >
                                         <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${active && (item.tab ? panelTab === item.tab : true) ? "bg-white/20 dark:bg-black/10 shadow-inner" : "bg-slate-100 dark:bg-white/10 group-hover:scale-110"}`}>
                                             <Icon size={18} strokeWidth={active ? 2.5 : 2} className="shrink-0" />
@@ -484,7 +485,7 @@ const AppContent = () => {
             else inventory[key] -= Number(log.qty);
         });
         return Object.entries(inventory)
-            .filter(([_, qty]) => qty > 0 && qty < 20)
+            .filter(([_, qty]) => qty > 0 && qty < 50)
             .map(([name, qty]) => ({ name, qty }));
     }, [masterData.rawInventory]);
 
@@ -689,7 +690,7 @@ const AppContent = () => {
                         />
                     )}
                     
-                    {user?.role !== 'client' && <Sidebar activePanel={activePanel} setActivePanel={setActivePanel} panelTab={panelTab} setPanelTab={setPanelTab} user={user} setUser={setUser} isOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} t={t} isDarkMode={isDarkMode} masterData={masterData} />}
+                    {user?.role !== 'client' && <Sidebar activePanel={activePanel} setActivePanel={setActivePanel} panelTab={panelTab} setPanelTab={setPanelTab} user={user} setUser={setUser} isOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} t={t} isDarkMode={isDarkMode} masterData={masterData} lowStockItems={lowStockItems} />}
                     
                     <main className={`flex-1 flex flex-col min-w-0 h-screen overflow-hidden relative transition-all duration-500 mesh-bg ${user?.role !== 'client' && isSidebarOpen ? 'lg:ml-[300px]' : ''}`}>
                         {/* Header Section */}
@@ -756,7 +757,7 @@ const AppContent = () => {
                                         {activePanel === "Attendance" && <AttendancePanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} setActivePanel={setActivePanel} />}
                                         {activePanel === "Transactions" && <ReportsPanel masterData={masterData} user={user} t={t} logAction={logAction} showNotify={showNotify} setActivePanel={setActivePanel} onSyncGoogle={handleSyncToGoogleSheets} />}
                                         {activePanel === "Settings" && <SettingsPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} syncStatus={syncStatus} user={user} t={t} setActivePanel={setActivePanel} logs={logs} downloadBackup={downloadBackup} />}
-                                        {activePanel === "Menu" && <MenuPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} setActivePanel={setActivePanel} />}
+                                        {activePanel === "Menu" && <MenuPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} setActivePanel={setActivePanel} lowStockItems={lowStockItems} />}
                                         {activePanel === "ClientLedger" && <ClientLedgerPanel masterData={masterData} setMasterData={setMasterData} showNotify={showNotify} user={user} t={t} logAction={logAction} setActivePanel={setActivePanel} />}
                                         {activePanel === "History" && <SecurityPanel masterData={masterData} setActivePanel={setActivePanel} t={t} logs={logs} syncStatus={syncStatus} />}
                                         {activePanel === "Notifications" && (
