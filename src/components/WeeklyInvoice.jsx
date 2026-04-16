@@ -76,10 +76,10 @@ const WeeklyInvoice = ({ masterData, user, logAction, showNotify, setActivePanel
                     <div className="flex justify-between items-start border-b-4 border-black pb-12 mb-12">
                         <div>
                             <h1 className="text-6xl font-black uppercase italic tracking-tighter">NRZO0NE <span className="text-gray-200">WEEKLY</span></h1>
-                            <p className="text-xs font-black text-black dark:text-white dark:text-white mt-4 tracking-widest">{selectedDept === 'sewing' ? 'সেলাই' : selectedDept === 'stone' ? 'স্টোন' : 'পাটা'} বিভাগের সাপ্তাহিক বিল</p>
+                            <p className="text-xs font-black text-black dark:text-white dark:text-white mt-4 tracking-widest"><SafeText data={selectedDept === 'sewing' ? 'সেলাই' : selectedDept === 'stone' ? 'স্টোন' : 'পাটা'} /> বিভাগের সাপ্তাহিক বিল</p>
                         </div>
                         <div className="text-right">
-                            <p className="text-sm font-black italic">{range.saturday.toLocaleDateString('bn-BD')} - {range.thursday.toLocaleDateString('bn-BD')}</p>
+                            <p className="text-sm font-black italic"><SafeText data={range.saturday.toLocaleDateString('bn-BD')} /> - <SafeText data={range.thursday.toLocaleDateString('bn-BD')} /></p>
                         </div>
                     </div>
                     <table className="w-full">
@@ -151,7 +151,7 @@ const WeeklyInvoice = ({ masterData, user, logAction, showNotify, setActivePanel
             <div className="bg-white p-12 rounded-[4rem] border-4 border-slate-50 shadow-2xl flex items-center justify-between">
                 <div>
                     <p className="text-[10px] font-black text-black dark:text-white dark:text-white uppercase tracking-[0.5em] mb-4">Current Cycle</p>
-                    <p className="text-5xl font-black italic tracking-tighter text-black">{range.saturday.toLocaleDateString('en-GB')} — {range.thursday.toLocaleDateString('en-GB')}</p>
+                    <p className="text-5xl font-black italic tracking-tighter text-black"><SafeText data={range.saturday.toLocaleDateString('en-GB')} /> — <SafeText data={range.thursday.toLocaleDateString('en-GB')} /></p>
                 </div>
                 <div className="p-8 bg-slate-50 rounded-full rotate-12 border border-slate-100 shadow-inner"><Calendar size={48} className="text-black dark:text-white dark:text-white" /></div>
             </div>

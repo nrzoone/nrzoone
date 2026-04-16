@@ -483,6 +483,7 @@ const AppContent = () => {
     const [isListening, setIsListening] = useState(false);
     const [trackingId, setTrackingId] = useState(null);
     const [showQR, setShowQR] = useState(false);
+    const [isSuiteOpen, setIsSuiteOpen] = useState(false);
 
     // NEW: Stock Alert Logic
     const lowStockItems = useMemo(() => {
@@ -684,7 +685,6 @@ const AppContent = () => {
         </div>
     );
 
-    const [isSuiteOpen, setIsSuiteOpen] = useState(false);
 
     // Filtered Content
     return (

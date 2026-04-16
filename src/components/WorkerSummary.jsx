@@ -45,31 +45,31 @@ const WorkerSummary = ({ masterData, setMasterData, showNotify, user, logAction,
         }
 
         if (dept === 'pata') {
-            const totalBill = history.reduce((acc, e) => acc + Number(e.amount || 0), 0);
-            const actualQty = history.reduce((a, b) => a + Number(b.pataQty || 0), 0);
-            const totalShortage = history.reduce((a, b) => a + Number(b.shortage || 0), 0);
-            return { ...stats, qty: actualQty, bill: totalBill, paid, balance: totalBill - paid, shortage: totalShortage, label: 'PATA PRODUCED', subLabel: 'PIECE RATE', history, attendanceHistory };
+            const totalBill = (history || []).reduce((acc, e) => acc + Number(e.amount || 0), 0);
+            const actualQty = (history || []).reduce((a, b) => a + Number(b.pataQty || 0), 0);
+            const totalShortage = (history || []).reduce((a, b) => a + Number(b.shortage || 0), 0);
+            return { ...stats, qty: actualQty, bill: totalBill, paid: Number(paid || 0), balance: (totalBill - Number(paid || 0)), shortage: totalShortage, label: 'PATA PRODUCED', subLabel: 'PIECE RATE', history, attendanceHistory };
         } else {
-            const totalQty = history.reduce((a, b) => a + Number(b.receivedBorka || 0) + Number(b.receivedHijab || 0), 0);
-            const totalShortage = history.reduce((a, b) => a + Number(b.totalShortage || 0), 0);
-            const totalPenalty = history.reduce((acc, b) => acc + Number(b.penalty || 0), 0);
-            const totalBill = history.reduce((acc, b) => {
+            const totalQty = (history || []).reduce((a, b) => a + Number(b.receivedBorka || 0) + Number(b.receivedHijab || 0), 0);
+            const totalShortage = (history || []).reduce((a, b) => a + Number(b.totalShortage || 0), 0);
+            const totalPenalty = (history || []).reduce((acc, b) => acc + Number(b.penalty || 0), 0);
+            const totalBill = (history || []).reduce((acc, b) => {
                 const design = (masterData.designs || []).find(d => d.name === b.design);
                 const netBorka = Number(b.receivedBorka || 0);
                 const netHijab = Number(b.receivedHijab || 0);
                 let earnings = 0;
                 if (dept === 'sewing') {
-                    const bRate = b.rate || design?.sewingRate || 0;
-                    const hRate = design?.hijabRate || bRate;
+                    const bRate = Number(b.rate || design?.sewingRate || 0);
+                    const hRate = Number(design?.hijabRate || bRate);
                     earnings = (netBorka * bRate) + (netHijab * hRate);
                 } else {
-                    const rate = b.rate || design?.stoneRate || 0;
+                    const rate = Number(b.rate || design?.stoneRate || 0);
                     earnings = ((netBorka + netHijab) * rate);
                 }
-                return acc + earnings;
+                return acc + (Number(earnings) || 0);
             }, 0) - totalPenalty;
 
-            return { ...stats, qty: totalQty, bill: totalBill, paid, balance: totalBill - paid, shortage: totalShortage, penalty: totalPenalty, label: 'PIECES PRODUCED', subLabel: 'PIECE RATE', history, attendanceHistory };
+            return { ...stats, qty: totalQty, bill: totalBill, paid: Number(paid || 0), balance: (totalBill - Number(paid || 0)), shortage: totalShortage, penalty: totalPenalty, label: 'PIECES PRODUCED', subLabel: 'PIECE RATE', history, attendanceHistory };
         }
     };
 

@@ -129,6 +129,52 @@ const SettingsPanel_V2 = ({
   const [personnelTab, setPersonnelTab] = useState("staff");
   const [workerSearch, setWorkerSearch] = useState("");
 
+  // Controlled Form States for Stability
+  const [workerFormData, setWorkerFormData] = useState({
+    name: "",
+    phone: "",
+    password: "",
+    wage: 0,
+    nid: "",
+    address: "",
+    date: new Date().toISOString().split('T')[0],
+    emergency: "",
+    notes: ""
+  });
+
+  const [designFormData, setDesignFormData] = useState({
+    name: "",
+    sewingRate: 0,
+    stoneRate: 0,
+    pataRateSingle: 3,
+    pataRateDouble: 6,
+    outsideRate: 0,
+    sellingPrice: 0,
+    clientRates: {},
+    defaultClientRates: {
+      sewing: 0,
+      stone: 0,
+      pataSingle: 3,
+      pataDouble: 6,
+      outwork: 0
+    }
+  });
+
+  const [systemForm, setSystemForm] = useState({
+    whatsapp: masterData.settings?.whatsapp || "",
+    factoryName: masterData.settings?.factoryName || "",
+    logo: masterData.settings?.logo || ""
+  });
+
+  const [genericItemValue, setGenericItemValue] = useState("");
+  const [editingItemValue, setEditingItemValue] = useState("");
+  const [userFormData, setUserFormData] = useState({
+    id: "",
+    name: "",
+    password: "",
+    role: "manager"
+  });
+
   // Sync photos when modal opens
   React.useEffect(() => {
     if (workerDocModal && workerDocModal !== "add") {
@@ -139,6 +185,29 @@ const SettingsPanel_V2 = ({
       setTempNidPhoto(null);
     }
   }, [workerDocModal]);
+
+  // Sync design form when editing
+  React.useEffect(() => {
+    if (editDesignModal) {
+      setDesignFormData({
+        name: editDesignModal.name || "",
+        sewingRate: editDesignModal.sewingRate || 0,
+        stoneRate: editDesignModal.stoneRate || 0,
+        pataRateSingle: editDesignModal.pataRateSingle || 3,
+        pataRateDouble: editDesignModal.pataRateDouble || 6,
+        outsideRate: editDesignModal.outsideRate || 0,
+        sellingPrice: editDesignModal.sellingPrice || 0,
+        clientRates: editDesignModal.clientRates || {},
+        defaultClientRates: editDesignModal.defaultClientRates || {
+          sewing: 0,
+          stone: 0,
+          pataSingle: 3,
+          pataDouble: 6,
+          outwork: 0
+        }
+      });
+    }
+  }, [editDesignModal]);
 
   // ===== WhatsApp Message Sender =====
   const sendWhatsApp = (phone, message) => {
@@ -646,16 +715,15 @@ const SettingsPanel_V2 = ({
               className="saas-card !p-6 flex flex-col justify-between group h-44 hover:border-slate-950 dark:hover:border-white transition-all shadow-sm"
             >
               {isEditing ? (
-                <div className="space-y-4 relative z-10 h-full flex flex-col">
+                <div className="space-y-4 animate-in fade-in zoom-in duration-200">
                   <input
-                    autoFocus
-                    id={`edit-${category}-${idx}`}
                     className="premium-input !h-12 !text-center"
-                    defaultValue={item}
+                    value={editingItemValue}
+                    onChange={(e) => setEditingItemValue(e.target.value)}
                   />
                   <div className="flex gap-2 mt-auto">
                     <button
-                      onClick={() => setEditingItem(null)}
+                      onClick={() => { setEditingItem(null); setEditingItemValue(""); }}
                       className="flex-1 py-3 rounded-lg bg-slate-50 dark:bg-slate-800 text-[8px] font-bold uppercase tracking-widest text-black dark:text-white dark:text-white"
                     >
                       Cancel
@@ -665,7 +733,7 @@ const SettingsPanel_V2 = ({
                         handleUpdateListItem(
                           category,
                           idx,
-                          document.getElementById(`edit-${category}-${idx}`).value,
+                          editingItemValue,
                         )
                       }
                       className="flex-1 py-3 rounded-lg bg-slate-950 text-white text-[8px] font-bold uppercase tracking-widest shadow-lg"
@@ -684,7 +752,10 @@ const SettingsPanel_V2 = ({
                   </div>
                   <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-all mt-6">
                     <button
-                      onClick={() => setEditingItem(`${category}-${idx}`)}
+                      onClick={() => {
+                        setEditingItem(`${category}-${idx}`);
+                        setEditingItemValue(item);
+                      }}
                       className="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-black dark:text-white dark:text-white hover:text-black dark:text-white dark:hover:text-white transition-all shadow-sm border border-slate-100 dark:border-slate-800"
                     >
                       <Edit2 size={14} />
@@ -1162,87 +1233,103 @@ const SettingsPanel_V2 = ({
           </div>
        </div>
 
-       {/* Card 1.5: Factory Details */}
-       <div className="saas-card bg-white dark:bg-slate-900 flex flex-col md:flex-row items-center gap-10 group transition-all shadow-sm border border-slate-100 dark:border-slate-800">
-          <div className="w-40 h-40 bg-slate-50 dark:bg-slate-800 rounded-xl shadow-inner flex items-center justify-center overflow-hidden border border-slate-100 dark:border-slate-700 relative shrink-0">
-             <div className="p-6 bg-slate-950 text-white rounded-xl shadow-lg group-hover:scale-110 transition-transform">
-                <Database size={32} />
-             </div>
-          </div>
-          <div className="flex-1 w-full flex flex-col md:flex-row gap-6 items-start md:items-center">
-             <div className="flex-1 space-y-4 w-full">
-                <div className="text-center md:text-left mb-2">
-                   <h4 className="text-2xl font-bold uppercase tracking-tight text-black dark:text-white dark:text-white">কোম্পানি <span className="text-blue-600">তথ্য (Info)</span></h4>
-                   <p className="text-slate-500 text-[10px] font-bold leading-relaxed italic mt-1">
-                      রিপোর্ট ও প্রিন্ট স্লিপের জন্য ফ্যাক্টরির নাম ও ঠিকানা সেট করুন।
-                   </p>
-                </div>
-                <div className="grid grid-cols-1 gap-3 w-full">
-                   <input id="factory-name" className="premium-input !h-12 !text-[11px]" placeholder="Factory Name (e.g. NRZOONE FACTORY)" defaultValue={masterData.settings?.factoryName || "NRZOONE FACTORY"} />
-                   <input id="factory-slogan" className="premium-input !h-12 !text-[11px]" placeholder="Slogan (Optional)" defaultValue={masterData.settings?.slogan || ""} />
-                   <input id="factory-address" className="premium-input !h-12 !text-[11px]" placeholder="Address" defaultValue={masterData.settings?.factoryAddress || ""} />
-                </div>
-             </div>
-             <button
-                onClick={() => {
-                   const fName = document.getElementById('factory-name').value.trim();
-                   const fSlogan = document.getElementById('factory-slogan').value.trim();
-                   const fAddress = document.getElementById('factory-address').value.trim();
-                   setMasterData(prev => ({
-                      ...prev,
-                      settings: { ...(prev.settings || {}), factoryName: fName || "NRZOONE FACTORY", slogan: fSlogan, factoryAddress: fAddress }
-                   }));
-                   window.dispatchEvent(new CustomEvent('notify', { detail: "কোম্পানির তথ্য সফলভাবে সেভ হয়েছে!" }));
-                }}
-                className="w-full md:w-auto px-8 py-10 bg-slate-950 text-white rounded-xl font-bold uppercase text-[10px] tracking-widest shadow-xl hover:bg-black transition-all active:scale-95"
-             >
-                আপডেট করুন
-             </button>
-          </div>
-       </div>
+        {/* Card 1.5: Factory Details */}
+        <div className="saas-card bg-white dark:bg-slate-900 flex flex-col md:flex-row items-center gap-10 group transition-all shadow-sm border border-slate-100 dark:border-slate-800">
+           <div className="w-40 h-40 bg-slate-50 dark:bg-slate-800 rounded-xl shadow-inner flex items-center justify-center overflow-hidden border border-slate-100 dark:border-slate-700 relative shrink-0">
+              <div className="p-6 bg-slate-950 text-white rounded-xl shadow-lg group-hover:scale-110 transition-transform">
+                 <Database size={32} />
+              </div>
+           </div>
+           <div className="flex-1 w-full flex flex-col md:flex-row gap-6 items-start md:items-center">
+              <div className="flex-1 space-y-4 w-full">
+                 <div className="text-center md:text-left mb-2">
+                    <h4 className="text-2xl font-bold uppercase tracking-tight text-black dark:text-white">কোম্পানি <span className="text-blue-600">তথ্য (Info)</span></h4>
+                    <p className="text-slate-500 text-[10px] font-bold leading-relaxed italic mt-1">
+                       রিপোর্ট ও প্রিন্ট স্লিপের জন্য ফ্যাক্টরির নাম ও ঠিকানা সেট করুন।
+                    </p>
+                 </div>
+                 <div className="grid grid-cols-1 gap-3 w-full">
+                    <input 
+                      className="premium-input !h-12 !text-[11px]" 
+                      placeholder="Factory Name (e.g. NRZOONE FACTORY)" 
+                      value={systemForm.factoryName} 
+                      onChange={(e) => setSystemForm({...systemForm, factoryName: e.target.value})}
+                    />
+                    <input 
+                      className="premium-input !h-12 !text-[11px]" 
+                      placeholder="Slogan (Optional)" 
+                      value={systemForm.slogan || ""} 
+                      onChange={(e) => setSystemForm({...systemForm, slogan: e.target.value})}
+                    />
+                    <input 
+                      className="premium-input !h-12 !text-[11px]" 
+                      placeholder="Address" 
+                      value={systemForm.factoryAddress || ""} 
+                      onChange={(e) => setSystemForm({...systemForm, factoryAddress: e.target.value})}
+                    />
+                 </div>
+              </div>
+              <button
+                 onClick={() => {
+                    setMasterData(prev => ({
+                       ...prev,
+                       settings: { 
+                         ...(prev.settings || {}), 
+                         factoryName: systemForm.factoryName || "NRZOONE FACTORY", 
+                         slogan: systemForm.slogan, 
+                         factoryAddress: systemForm.factoryAddress 
+                       }
+                    }));
+                    showNotify("কোম্পানির তথ্য সফলভাবে সেভ হয়েছে!");
+                 }}
+                 className="w-full md:w-auto px-8 py-10 bg-slate-950 text-white rounded-xl font-bold uppercase text-[10px] tracking-widest shadow-xl hover:bg-black transition-all active:scale-95"
+              >
+                 আপডেট করুন
+              </button>
+           </div>
+        </div>
 
-       {/* Card 2: WhatsApp Connectivity */}
-       <div className="saas-card bg-emerald-500/5 border-emerald-500/20 flex flex-col md:flex-row items-center gap-10 group transition-all hover:border-emerald-500 shadow-sm">
-          <div className="w-40 h-40 bg-white dark:bg-slate-800 rounded-xl shadow-inner flex items-center justify-center overflow-hidden border border-emerald-100 dark:border-emerald-900/40 relative shrink-0">
-             <div className="p-6 bg-emerald-500 text-white rounded-xl shadow-lg group-hover:scale-110 transition-transform">
-                <MessageCircle size={32} />
-             </div>
-          </div>
-          <div className="flex-1 text-center md:text-left">
-             <h4 className="text-2xl font-bold uppercase tracking-tight mb-3 text-emerald-900 dark:text-emerald-400">হোয়াটসঅ্যাপ <span className="opacity-40">কানেক্টিভিটি</span></h4>
-             <p className="text-emerald-700/60 dark:text-emerald-400/60 text-xs font-bold leading-relaxed mb-8 italic">
-                অটোমেটেড রিপোর্ট এবং সিস্টেম নোটিফিকেশন পাওয়ার জন্য ফ্যাক্টরির অফিশিয়াল নম্বরটি সেট করুন।
-             </p>
-             <div className="flex flex-col md:flex-row gap-4">
-                <div className="relative flex-1 md:max-w-sm">
-                   <div className="absolute left-5 top-1/2 -translate-y-1/2 text-emerald-500">
-                      <Phone size={16} />
-                   </div>
-                   <input 
-                      id="system-whatsapp"
-                      className="premium-input !pl-14 !h-14 !bg-white dark:!bg-slate-900 border-emerald-100 dark:border-emerald-900/50 !text-emerald-900 dark:!text-emerald-100 font-bold"
-                      placeholder="01XXXXXXXXX"
-                      defaultValue={masterData.settings?.whatsappNumber || ""}
-                   />
-                </div>
-                <button 
-                   onClick={() => {
-                      const num = document.getElementById('system-whatsapp').value.trim();
-                      if (num) {
-                         setMasterData(prev => ({
-                            ...prev, 
-                            settings: { ...(prev.settings || {}), whatsappNumber: num }
-                         }));
-                         showNotify("WhatsApp Connection Updated!", "success");
-                      }
-                   }}
-                   className="bg-emerald-600 text-white px-10 py-4 rounded-xl font-bold uppercase text-[10px] tracking-widest shadow-xl hover:bg-emerald-700 active:scale-95 transition-all"
-                >
-                   সেভ করুন (Secure Link)
-                </button>
-             </div>
-          </div>
-       </div>
+        {/* Card 2: WhatsApp Connectivity */}
+        <div className="saas-card bg-emerald-500/5 border-emerald-500/20 flex flex-col md:flex-row items-center gap-10 group transition-all hover:border-emerald-500 shadow-sm">
+           <div className="w-40 h-40 bg-white dark:bg-slate-900 rounded-xl shadow-inner flex items-center justify-center overflow-hidden border border-emerald-100 dark:border-emerald-900/40 relative shrink-0">
+              <div className="p-6 bg-emerald-500 text-white rounded-xl shadow-lg group-hover:scale-110 transition-transform">
+                 <MessageCircle size={32} />
+              </div>
+           </div>
+           <div className="flex-1 text-center md:text-left">
+              <h4 className="text-2xl font-bold uppercase tracking-tight mb-3 text-emerald-900 dark:text-emerald-400">হোয়াটসঅ্যাপ <span className="opacity-40">কানেক্টিভিটি</span></h4>
+              <p className="text-emerald-700/60 dark:text-emerald-400/60 text-xs font-bold leading-relaxed mb-8 italic">
+                 অটোমেটেড রিপোর্ট এবং সিস্টেম নোটিফিকেশন পাওয়ার জন্য ফ্যাক্টরির অফিশিয়াল নম্বরটি সেট করুন।
+              </p>
+              <div className="flex flex-col md:flex-row gap-4">
+                 <div className="relative flex-1 md:max-w-sm">
+                    <div className="absolute left-5 top-1/2 -translate-y-1/2 text-emerald-500">
+                       <Phone size={16} />
+                    </div>
+                    <input 
+                       className="premium-input !pl-14 !h-14 !bg-white dark:!bg-slate-900 border-emerald-100 dark:border-emerald-900/50 !text-emerald-900 dark:!text-emerald-100 font-bold"
+                       placeholder="01XXXXXXXXX"
+                       value={systemForm.whatsapp}
+                       onChange={(e) => setSystemForm({...systemForm, whatsapp: e.target.value})}
+                    />
+                 </div>
+                 <button 
+                    onClick={() => {
+                       if (systemForm.whatsapp) {
+                          setMasterData(prev => ({
+                             ...prev, 
+                             settings: { ...(prev.settings || {}), whatsappNumber: systemForm.whatsapp }
+                          }));
+                          showNotify("WhatsApp Connection Updated!", "success");
+                       }
+                    }}
+                    className="bg-emerald-600 text-white px-10 py-4 rounded-xl font-bold uppercase text-[10px] tracking-widest shadow-xl hover:bg-emerald-700 active:scale-95 transition-all"
+                 >
+                    সেভ করুন (Secure Link)
+                 </button>
+              </div>
+           </div>
+        </div>
     </div>
   );
   const renderMaintenanceContent = () => (
@@ -1399,9 +1486,6 @@ const SettingsPanel_V2 = ({
                   <p className="text-[9px] font-bold text-black dark:text-white dark:text-white uppercase tracking-widest mb-1"><SafeText data={key.toUpperCase()} /></p>
                   <p className="text-2xl font-bold tracking-tighter text-black dark:text-white dark:text-white">{masterData[key]?.length || 0}</p>
                </div>
-               <button onClick={() => { if(confirm(`সব ${key} মুছে ফেলতে চান?`)) setMasterData(prev => ({...prev, [key]: []})); }} className="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-800 text-rose-500 flex items-center justify-center hover:bg-rose-500 hover:text-white transition-all shadow-sm opacity-20 group-hover:opacity-100">
-                  <Trash2 size={16} />
-               </button>
             </div>
          ))}
       </div>
@@ -1491,16 +1575,17 @@ const SettingsPanel_V2 = ({
                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-10">{showAddModal.toUpperCase()} CONFIGURATION NODE</p>
                <div className="space-y-6">
                   <input 
-                    id="generic-item-input" 
                     className="premium-input !h-20 !text-3xl !font-black !uppercase !tracking-tighter !text-center !bg-slate-50 dark:!bg-slate-900 !border-slate-200 dark:!border-slate-700" 
                     placeholder="লিখুন..." 
                     autoFocus 
+                    value={genericItemValue}
+                    onChange={(e) => setGenericItemValue(e.target.value)}
                     onKeyDown={(e) => { 
                         if(e.key === 'Enter') {
                             const val = e.target.value;
-                            const createPortal = document.getElementById("client-portal-access")?.checked;
                             if(val) {
-                                handleAddListItem(showAddModal, val, createPortal);
+                                handleAddListItem(showAddModal, val, false);
+                                setGenericItemValue("");
                             }
                         }
                     }} 
@@ -1508,7 +1593,7 @@ const SettingsPanel_V2 = ({
                   {showAddModal === 'clients' && (
                      <div className="p-6 bg-slate-100 dark:bg-slate-800/50 rounded-2xl flex items-center gap-5 border border-slate-200 dark:border-slate-700">
                         <div className="w-10 h-10 bg-slate-900 text-white rounded-xl flex items-center justify-center">
-                           <UserCheck size={20} />
+                           <Users size={20} />
                         </div>
                         <div className="flex-1">
                            <h4 className="text-[11px] font-black uppercase text-slate-800 dark:text-white">অভ্যন্তরীণ ক্লায়েন্ট রেকর্ড</h4>
@@ -1517,13 +1602,12 @@ const SettingsPanel_V2 = ({
                      </div>
                   )}
                   <div className="flex gap-4 pt-6">
-                     <button onClick={() => setShowAddModal(false)} className="flex-1 py-4 rounded-2xl font-bold uppercase text-[10px] tracking-widest text-black dark:text-white hover:bg-slate-50 dark:hover:bg-slate-800 transition-all border border-slate-100 dark:border-slate-800">Cancel</button>
+                     <button onClick={() => { setShowAddModal(false); setGenericItemValue(""); }} className="flex-1 py-4 rounded-2xl font-bold uppercase text-[10px] tracking-widest text-black dark:text-white hover:bg-slate-50 dark:hover:bg-slate-800 transition-all border border-slate-100 dark:border-slate-800">Cancel</button>
                      <button 
                         onClick={() => {
-                            const val = document.getElementById("generic-item-input").value;
-                            const createPortal = document.getElementById("client-portal-access")?.checked;
-                            if(val) {
-                                handleAddListItem(showAddModal, val, createPortal);
+                            if(genericItemValue) {
+                                handleAddListItem(showAddModal, genericItemValue, false);
+                                setGenericItemValue("");
                             }
                         }} 
                         className="flex-[2] py-4 rounded-2xl bg-blue-600 text-white font-bold uppercase text-[11px] tracking-[0.2em] shadow-xl hover:bg-blue-700 hover:-translate-y-1 active:scale-95 transition-all border-b-4 border-blue-800"
@@ -1542,7 +1626,11 @@ const SettingsPanel_V2 = ({
             <div className="space-y-5">
               <div className="space-y-1">
                 <label className="text-[9px] font-bold uppercase ml-2 italic">ইউজার টাইপ (Role)</label>
-                <select id="new-user-role" className="premium-input !h-12 !text-[10px] !font-bold">
+                <select 
+                  className="premium-input !h-12 !text-[10px] !font-bold"
+                  value={userFormData.role}
+                  onChange={(e) => setUserFormData({...userFormData, role: e.target.value})}
+                >
                   <option value="manager">ম্যানেজার (Manager)</option>
                   <option value="client">ক্লায়েন্ট (B2B Client)</option>
                   <option value="admin">অ্যাডমিন (Admin Access)</option>
@@ -1550,27 +1638,46 @@ const SettingsPanel_V2 = ({
               </div>
               <div className="space-y-1">
                 <label className="text-[9px] font-bold uppercase ml-2 italic">লগইন আইডি / ফোন *</label>
-                <input id="new-user-id" className="premium-input !h-12 !text-[10px] !font-bold" placeholder="EG: 01700000000" />
+                <input 
+                  className="premium-input !h-12 !text-[10px] !font-bold" 
+                  placeholder="EG: 01700000000" 
+                  value={userFormData.id}
+                  onChange={(e) => setUserFormData({...userFormData, id: e.target.value})}
+                />
               </div>
               <div className="space-y-1">
                 <label className="text-[9px] font-bold uppercase ml-2 italic">পূর্ণ নাম (Display Name) *</label>
-                <input id="new-user-name" className="premium-input !h-12 !text-[10px] !font-bold" placeholder="EG: RAHIM (CLIENT)" />
+                <input 
+                  className="premium-input !h-12 !text-[10px] !font-bold" 
+                  placeholder="EG: RAHIM (CLIENT)" 
+                  value={userFormData.name}
+                  onChange={(e) => setUserFormData({...userFormData, name: e.target.value})}
+                />
               </div>
               <div className="space-y-1">
                 <label className="text-[9px] font-bold uppercase ml-2 italic">পাসওয়ার্ড (Password) *</label>
-                <input id="new-user-pass" type="password" className="premium-input !h-12 !text-center !text-xl !font-black !tracking-widest" placeholder="••••••••" />
+                <input 
+                  type="password" 
+                  className="premium-input !h-12 !text-center !text-xl !font-black !tracking-widest" 
+                  placeholder="••••••••" 
+                  value={userFormData.password}
+                  onChange={(e) => setUserFormData({...userFormData, password: e.target.value})}
+                />
               </div>
 
               <div className="flex gap-4 pt-6">
-                <button onClick={() => setShowAddModal(false)} className="flex-1 py-4 rounded-xl font-bold uppercase text-[10px] tracking-widest text-black dark:text-white hover:bg-slate-50 dark:hover:bg-slate-800 transition-all border border-slate-100 dark:border-slate-800">বাতিল</button>
+                <button onClick={() => { setShowAddModal(false); setUserFormData({ id: "", name: "", password: "", role: "manager" }); }} className="flex-1 py-4 rounded-xl font-bold uppercase text-[10px] tracking-widest text-black dark:text-white hover:bg-slate-50 dark:hover:bg-slate-800 transition-all border border-slate-100 dark:border-slate-800">বাতিল</button>
                 <button 
                   onClick={() => {
-                    const id = document.getElementById("new-user-id").value;
-                    const pass = document.getElementById("new-user-pass").value;
-                    const name = document.getElementById("new-user-name").value;
-                    const role = document.getElementById("new-user-role").value;
+                    const { id, pass, name, role } = { 
+                      id: userFormData.id, 
+                      pass: userFormData.password, 
+                      name: userFormData.name, 
+                      role: userFormData.role 
+                    };
                     if(id && pass && name) {
                       handleAddUser(id, pass, name, role);
+                      setUserFormData({ id: "", name: "", password: "", role: "manager" });
                     } else {
                       showNotify("সব তথ্য পূরণ করুন!", "error");
                     }
@@ -1592,7 +1699,7 @@ const SettingsPanel_V2 = ({
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                  <div className="space-y-1">
                     <label className="text-[9px] font-bold uppercase ml-2">বিভাগ (Department)</label>
-                    <select id="new-worker-dept" className="premium-input !h-12" value={newWorkerDept} onChange={(e) => setNewWorkerDept(e.target.value)}>
+                    <select className="premium-input !h-12" value={newWorkerDept} onChange={(e) => setNewWorkerDept(e.target.value)}>
                       <option value="monthly">মূল কর্মী (Core Staff)</option>
                       <option value="cutting">কাটিং (Cutting)</option>
                       <option value="sewing">সেলাই (Sewing)</option>
@@ -1603,53 +1710,111 @@ const SettingsPanel_V2 = ({
                  </div>
                  <div className="space-y-1">
                     <label className="text-[9px] font-bold uppercase ml-2">পূর্ণ নাম *</label>
-                    <input id="new-worker-name" className="premium-input !h-12" placeholder="কর্মীর নাম" />
+                    <input 
+                      className="premium-input !h-12" 
+                      placeholder="কর্মীর নাম" 
+                      value={workerFormData.name}
+                      onChange={(e) => setWorkerFormData({...workerFormData, name: e.target.value})}
+                    />
                  </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
                  <div className="space-y-1">
                     <label className="text-[9px] font-bold uppercase ml-2">মোবাইল নম্বর *</label>
-                    <input id="new-worker-phone" className="premium-input !h-12" placeholder="01XXXXXXXXX" />
+                    <input 
+                      className="premium-input !h-12" 
+                      placeholder="01XXXXXXXXX" 
+                      value={workerFormData.phone}
+                      onChange={(e) => setWorkerFormData({...workerFormData, phone: e.target.value})}
+                    />
                  </div>
                  <div className="space-y-1">
                     <label className="text-[9px] font-bold uppercase ml-2">পাসওয়ার্ড (Login Access)</label>
-                    <input id="new-worker-pass" type="password" className="premium-input !h-12" placeholder="নির্ধারণ করুন" />
+                    <input 
+                      type="password" 
+                      className="premium-input !h-12" 
+                      placeholder="নির্ধারণ করুন" 
+                      value={workerFormData.password}
+                      onChange={(e) => setWorkerFormData({...workerFormData, password: e.target.value})}
+                    />
                  </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
                  <div className="space-y-1">
                     <label className="text-[9px] font-bold uppercase ml-2">নির্ধারিত রেট (Wage/Salary)</label>
-                    <input id="new-worker-wage" type="number" className="premium-input !h-12" placeholder="৳ 0.00" />
+                    <input 
+                      type="number" 
+                      className="premium-input !h-12" 
+                      placeholder="৳ 0.00" 
+                      value={workerFormData.wage}
+                      onChange={(e) => setWorkerFormData({...workerFormData, wage: e.target.value})}
+                    />
                  </div>
                  <div className="space-y-1">
                     <label className="text-[9px] font-bold uppercase ml-2">NID / পরিচয়পত্র নম্বর</label>
-                    <input id="new-worker-nid" className="premium-input !h-12" placeholder="NID No." />
+                    <input 
+                      className="premium-input !h-12" 
+                      placeholder="NID No." 
+                      value={workerFormData.nid}
+                      onChange={(e) => setWorkerFormData({...workerFormData, nid: e.target.value})}
+                    />
                  </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
                  <div className="space-y-1">
                     <label className="text-[9px] font-bold uppercase ml-2">স্থায়ী ঠিকানা</label>
-                    <input id="new-worker-address" className="premium-input !h-12" placeholder="গ্রাম, উপজেলা, জেলা" />
+                    <input 
+                      className="premium-input !h-12" 
+                      placeholder="গ্রাম, উপজেলা, জেলা" 
+                      value={workerFormData.address}
+                      onChange={(e) => setWorkerFormData({...workerFormData, address: e.target.value})}
+                    />
                  </div>
                  <div className="space-y-1">
                     <label className="text-[9px] font-bold uppercase ml-2">যোগদানের তারিখ</label>
-                    <input id="new-worker-date" type="date" defaultValue={new Date().toISOString().split('T')[0]} className="premium-input !h-12" />
+                    <input 
+                      type="date" 
+                      className="premium-input !h-12" 
+                      value={workerFormData.date}
+                      onChange={(e) => setWorkerFormData({...workerFormData, date: e.target.value})}
+                    />
                  </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
                  <div className="space-y-1">
                     <label className="text-[9px] font-bold uppercase ml-2">জরুরি যোগাযোগ</label>
-                    <input id="new-worker-emergency" className="premium-input !h-12" placeholder="নাম — 01XXXXXXXXX" />
+                    <input 
+                      className="premium-input !h-12" 
+                      placeholder="নাম — 01XXXXXXXXX" 
+                      value={workerFormData.emergency}
+                      onChange={(e) => setWorkerFormData({...workerFormData, emergency: e.target.value})}
+                    />
                  </div>
                  <div className="space-y-1">
                     <label className="text-[9px] font-bold uppercase ml-2">অতিরিক্ত নোট</label>
-                    <input id="new-worker-notes" className="premium-input !h-12" placeholder="বিশেষ তথ্য..." />
+                    <input 
+                      className="premium-input !h-12" 
+                      placeholder="বিশেষ তথ্য..." 
+                      value={workerFormData.notes}
+                      onChange={(e) => setWorkerFormData({...workerFormData, notes: e.target.value})}
+                    />
                  </div>
               </div>
               <div className="flex gap-4 pt-6">
-                <button onClick={() => setShowAddModal(false)} className="flex-1 py-4 rounded-xl font-bold uppercase text-[10px] tracking-widest text-black dark:text-white hover:bg-slate-50 transition-all border border-slate-100 dark:border-slate-800">বাতিল</button>
+                <button onClick={() => { setShowAddModal(false); setWorkerFormData({ name: "", phone: "", password: "", wage: 0, nid: "", address: "", date: new Date().toISOString().split('T')[0], emergency: "", notes: "" }); }} className="flex-1 py-4 rounded-xl font-bold uppercase text-[10px] tracking-widest text-black dark:text-white hover:bg-slate-50 transition-all border border-slate-100 dark:border-slate-800">বাতিল</button>
                 <button 
-                   onClick={() => handleAddWorker(newWorkerDept, document.getElementById("new-worker-name").value, document.getElementById("new-worker-wage")?.value || 0, document.getElementById("new-worker-phone")?.value || "", document.getElementById("new-worker-pass")?.value || "", document.getElementById("new-worker-nid")?.value || "", document.getElementById("new-worker-address")?.value || "", document.getElementById("new-worker-date")?.value || "", document.getElementById("new-worker-emergency")?.value || "", document.getElementById("new-worker-notes")?.value || "")} 
+                  onClick={() => handleAddWorker(
+                    newWorkerDept, 
+                    workerFormData.name, 
+                    workerFormData.wage, 
+                    workerFormData.phone, 
+                    workerFormData.password, 
+                    workerFormData.nid, 
+                    workerFormData.address, 
+                    workerFormData.date, 
+                    workerFormData.emergency, 
+                    workerFormData.notes
+                  )} 
                   className="flex-[2] py-4 rounded-xl bg-slate-950 text-white font-bold uppercase text-[10px] tracking-widest shadow-xl hover:bg-black transition-all"
                 >সংরক্ষণ করুন</button>
               </div>
@@ -1683,7 +1848,12 @@ const SettingsPanel_V2 = ({
               <div className="flex-1 space-y-6">
                  <div className="space-y-2">
                     <label className="text-[10px] font-black text-slate-400 uppercase ml-2 tracking-widest italic">Product Identity</label>
-                    <input id="design-name" className="premium-input !h-14 !text-xl !font-bold" placeholder="DESIGN NAME (EG: ABAYA-X)" defaultValue={editDesignModal?.name || ""} />
+                    <input 
+                      className="premium-input !h-14 !text-xl !font-bold" 
+                      placeholder="DESIGN NAME (EG: ABAYA-X)" 
+                      value={designFormData.name} 
+                      onChange={(e) => setDesignFormData({...designFormData, name: e.target.value})}
+                    />
                  </div>
                  <div className="bg-slate-50 dark:bg-slate-800/50 p-6 rounded-3xl border border-slate-100 dark:border-slate-700/50 space-y-6">
                     <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest text-center border-b border-slate-200 dark:border-slate-700 pb-3">বেস রেট কনফিগারেশন (Base Rates)</p>
@@ -1696,11 +1866,21 @@ const SettingsPanel_V2 = ({
                            <div className="flex items-center gap-2">
                               <div className="flex-1">
                                  <p className="text-[7px] font-bold text-slate-400 uppercase mb-1">কারিগর (Worker)</p>
-                                 <input id="design-sewing" type="number" className="w-full premium-input !h-10 !text-sm !font-bold !bg-white dark:!bg-slate-900" defaultValue={editDesignModal?.sewingRate || 0} />
+                                 <input 
+                                   type="number" 
+                                   className="w-full premium-input !h-10 !text-sm !font-bold !bg-white dark:!bg-slate-900" 
+                                   value={designFormData.sewingRate} 
+                                   onChange={(e) => setDesignFormData({...designFormData, sewingRate: Number(e.target.value)})}
+                                 />
                               </div>
                               <div className="flex-1">
                                  <p className="text-[7px] font-bold text-blue-600 uppercase mb-1">ক্লায়েন্ট (Client)</p>
-                                 <input id="design-client-sewing-default" type="number" className="w-full premium-input !h-10 !text-sm !font-bold !bg-blue-50/50 !border-blue-200 !text-blue-600" defaultValue={editDesignModal?.defaultClientRates?.sewing || 0} />
+                                 <input 
+                                   type="number" 
+                                   className="w-full premium-input !h-10 !text-sm !font-bold !bg-blue-50/50 !border-blue-200 !text-blue-600" 
+                                   value={designFormData.defaultClientRates.sewing} 
+                                   onChange={(e) => setDesignFormData({...designFormData, defaultClientRates: {...designFormData.defaultClientRates, sewing: Number(e.target.value)}})}
+                                 />
                               </div>
                            </div>
                         </div>
@@ -1712,11 +1892,21 @@ const SettingsPanel_V2 = ({
                            <div className="flex items-center gap-2">
                               <div className="flex-1">
                                  <p className="text-[7px] font-bold text-slate-400 uppercase mb-1">কারিগর (Worker)</p>
-                                 <input id="design-stone" type="number" className="w-full premium-input !h-10 !text-sm !font-bold !bg-white dark:!bg-slate-900" defaultValue={editDesignModal?.stoneRate || 0} />
+                                 <input 
+                                   type="number" 
+                                   className="w-full premium-input !h-10 !text-sm !font-bold !bg-white dark:!bg-slate-900" 
+                                   value={designFormData.stoneRate} 
+                                   onChange={(e) => setDesignFormData({...designFormData, stoneRate: Number(e.target.value)})}
+                                 />
                               </div>
                               <div className="flex-1">
                                  <p className="text-[7px] font-bold text-blue-600 uppercase mb-1">ক্লায়েন্ট (Client)</p>
-                                 <input id="design-client-stone-default" type="number" className="w-full premium-input !h-10 !text-sm !font-bold !bg-blue-50/50 !border-blue-200 !text-blue-600" defaultValue={editDesignModal?.defaultClientRates?.stone || 0} />
+                                 <input 
+                                   type="number" 
+                                   className="w-full premium-input !h-10 !text-sm !font-bold !bg-blue-50/50 !border-blue-200 !text-blue-600" 
+                                   value={designFormData.defaultClientRates.stone} 
+                                   onChange={(e) => setDesignFormData({...designFormData, defaultClientRates: {...designFormData.defaultClientRates, stone: Number(e.target.value)}})}
+                                 />
                               </div>
                            </div>
                         </div>
@@ -1731,11 +1921,21 @@ const SettingsPanel_V2 = ({
                                  <div className="flex gap-2">
                                     <div className="flex-1">
                                        <p className="text-[6px] font-bold text-slate-400 uppercase mb-0.5">Single</p>
-                                       <input id="design-pata-single" type="number" className="premium-input !h-9 !text-xs !font-bold" defaultValue={editDesignModal?.pataRateSingle || 3} />
+                                       <input 
+                                         type="number" 
+                                         className="premium-input !h-9 !text-xs !font-bold" 
+                                         value={designFormData.pataRateSingle} 
+                                         onChange={(e) => setDesignFormData({...designFormData, pataRateSingle: Number(e.target.value)})}
+                                       />
                                     </div>
                                     <div className="flex-1">
                                        <p className="text-[6px] font-bold text-slate-400 uppercase mb-0.5">Double</p>
-                                       <input id="design-pata-double" type="number" className="premium-input !h-9 !text-xs !font-bold" defaultValue={editDesignModal?.pataRateDouble || 6} />
+                                       <input 
+                                         type="number" 
+                                         className="premium-input !h-9 !text-xs !font-bold" 
+                                         value={designFormData.pataRateDouble} 
+                                         onChange={(e) => setDesignFormData({...designFormData, pataRateDouble: Number(e.target.value)})}
+                                       />
                                     </div>
                                  </div>
                               </div>
@@ -1744,11 +1944,21 @@ const SettingsPanel_V2 = ({
                                  <div className="flex gap-2">
                                     <div className="flex-1">
                                        <p className="text-[6px] font-bold text-blue-400 uppercase mb-0.5">Single</p>
-                                       <input id="design-client-pata-single" type="number" className="premium-input !h-9 !text-xs !font-bold !bg-white dark:!bg-slate-950 !border-blue-200 !text-blue-600" defaultValue={editDesignModal?.defaultClientRates?.pataSingle || 3} />
+                                       <input 
+                                         type="number" 
+                                         className="premium-input !h-9 !text-xs !font-bold !bg-white dark:!bg-slate-950 !border-blue-200 !text-blue-600" 
+                                         value={designFormData.defaultClientRates.pataSingle} 
+                                         onChange={(e) => setDesignFormData({...designFormData, defaultClientRates: {...designFormData.defaultClientRates, pataSingle: Number(e.target.value)}})}
+                                       />
                                     </div>
                                     <div className="flex-1">
                                        <p className="text-[6px] font-bold text-blue-400 uppercase mb-0.5">Double</p>
-                                       <input id="design-client-pata-double" type="number" className="premium-input !h-9 !text-xs !font-bold !bg-white dark:!bg-slate-950 !border-blue-200 !text-blue-600" defaultValue={editDesignModal?.defaultClientRates?.pataDouble || 6} />
+                                       <input 
+                                         type="number" 
+                                         className="premium-input !h-9 !text-xs !font-bold !bg-white dark:!bg-slate-950 !border-blue-200 !text-blue-600" 
+                                         value={designFormData.defaultClientRates.pataDouble} 
+                                         onChange={(e) => setDesignFormData({...designFormData, defaultClientRates: {...designFormData.defaultClientRates, pataDouble: Number(e.target.value)}})}
+                                       />
                                     </div>
                                  </div>
                               </div>
@@ -1762,11 +1972,21 @@ const SettingsPanel_V2 = ({
                            <div className="flex items-center gap-2">
                               <div className="flex-1">
                                  <p className="text-[7px] font-bold text-slate-400 uppercase mb-1">কারিগর (Worker)</p>
-                                 <input id="design-outside" type="number" className="w-full premium-input !h-10 !text-sm !font-bold !bg-white dark:!bg-slate-900" defaultValue={editDesignModal?.outsideRate || 0} />
+                                 <input 
+                                   type="number" 
+                                   className="w-full premium-input !h-10 !text-sm !font-bold !bg-white dark:!bg-slate-900" 
+                                   value={designFormData.outsideRate} 
+                                   onChange={(e) => setDesignFormData({...designFormData, outsideRate: Number(e.target.value)})}
+                                 />
                               </div>
                               <div className="flex-1">
                                  <p className="text-[7px] font-bold text-blue-600 uppercase mb-1">ক্লায়েন্ট (Client)</p>
-                                 <input id="design-client-outside-default" type="number" className="w-full premium-input !h-10 !text-sm !font-bold !bg-blue-50/50 !border-blue-200 !text-blue-600" defaultValue={editDesignModal?.defaultClientRates?.outwork || 0} />
+                                 <input 
+                                   type="number" 
+                                   className="w-full premium-input !h-10 !text-sm !font-bold !bg-blue-50/50 !border-blue-200 !text-blue-600" 
+                                   value={designFormData.defaultClientRates.outwork} 
+                                   onChange={(e) => setDesignFormData({...designFormData, defaultClientRates: {...designFormData.defaultClientRates, outwork: Number(e.target.value)}})}
+                                 />
                                </div>
                             </div>
                          </div>
@@ -1775,7 +1995,12 @@ const SettingsPanel_V2 = ({
                       <label className="text-[10px] font-black text-emerald-500 uppercase tracking-widest italic flex items-center gap-2 mb-2">
                          <DollarSign size={14} /> খুচরা বিক্রয় মূল্য (Retail Selling Price)
                       </label>
-                      <input id="design-sell" type="number" className="premium-input !h-14 border-emerald-200 dark:border-emerald-900/50 !text-emerald-600 !text-2xl !font-black !bg-emerald-50/30" defaultValue={editDesignModal?.sellingPrice || 0} />
+                      <input 
+                        type="number" 
+                        className="premium-input !h-14 border-emerald-200 dark:border-emerald-900/50 !text-emerald-600 !text-2xl !font-black !bg-emerald-50/30" 
+                        value={designFormData.sellingPrice} 
+                        onChange={(e) => setDesignFormData({...designFormData, sellingPrice: Number(e.target.value)})}
+                      />
                     </div>
                   </div>
                   {masterData.clients?.length > 0 && (
@@ -1795,10 +2020,19 @@ const SettingsPanel_V2 = ({
                         </div>
                       </div>
                       <div className="space-y-2 max-h-80 overflow-y-auto pr-2 no-scrollbar">
-                          {(masterData.clients || []).map(client => {
-                            const cid = client.replace(/[^a-zA-Z0-9]/g,'-');
-                            const cRate = editDesignModal?.clientRates?.[client] || {};
+                           {(masterData.clients || []).map(client => {
+                            const cRate = designFormData.clientRates[client] || {};
                             const isLegacy = typeof cRate === 'number';
+                            const updateRate = (field, val) => {
+                               const currentClientRate = isLegacy ? { sewing: cRate } : cRate;
+                               setDesignFormData({
+                                  ...designFormData,
+                                  clientRates: {
+                                     ...designFormData.clientRates,
+                                     [client]: { ...currentClientRate, [field]: Number(val) }
+                                  }
+                               });
+                            };
                             return (
                              <div key={client} className="flex items-center gap-4 bg-slate-50 dark:bg-slate-800/50 p-3 rounded-xl border border-slate-200 dark:border-slate-700/50 hover:border-blue-600 transition-all group shadow-sm">
                                 <div className="w-32 shrink-0">
@@ -1807,19 +2041,39 @@ const SettingsPanel_V2 = ({
                                 </div>
                                 <div className="flex-1 grid grid-cols-4 gap-3">
                                    <div className="relative">
-                                      <input id={`design-client-${cid}-sewing`} type="number" className="w-full premium-input !h-10 !text-[12px] !text-center !bg-white dark:!bg-slate-900 !border-slate-300 !font-black !text-blue-600" defaultValue={isLegacy ? cRate : (cRate.sewing || 0)} />
+                                      <input 
+                                        type="number" 
+                                        className="w-full premium-input !h-10 !text-[12px] !text-center !bg-white dark:!bg-slate-900 !border-slate-300 !font-black !text-blue-600" 
+                                        value={isLegacy ? cRate : (cRate.sewing || 0)} 
+                                        onChange={(e) => updateRate('sewing', e.target.value)}
+                                      />
                                       <p className="absolute -bottom-1 right-1 text-[6px] font-bold text-slate-300">SEW</p>
                                    </div>
                                    <div className="relative">
-                                      <input id={`design-client-${cid}-stone`} type="number" className="w-full premium-input !h-10 !text-[12px] !text-center !bg-white dark:!bg-slate-900 !border-slate-300 !font-black !text-blue-600" defaultValue={isLegacy ? 0 : (cRate.stone || 0)} />
+                                      <input 
+                                        type="number" 
+                                        className="w-full premium-input !h-10 !text-[12px] !text-center !bg-white dark:!bg-slate-900 !border-slate-300 !font-black !text-blue-600" 
+                                        value={isLegacy ? 0 : (cRate.stone || 0)} 
+                                        onChange={(e) => updateRate('stone', e.target.value)}
+                                      />
                                       <p className="absolute -bottom-1 right-1 text-[6px] font-bold text-slate-300">STO</p>
                                    </div>
                                    <div className="relative">
-                                      <input id={`design-client-${cid}-pata`} type="number" className="w-full premium-input !h-10 !text-[12px] !text-center !bg-white dark:!bg-slate-900 !border-slate-300 !font-black !text-blue-600" defaultValue={isLegacy ? 0 : (cRate.pata || 0)} />
+                                      <input 
+                                        type="number" 
+                                        className="w-full premium-input !h-10 !text-[12px] !text-center !bg-white dark:!bg-slate-900 !border-slate-300 !font-black !text-blue-600" 
+                                        value={isLegacy ? 0 : (cRate.pata || 0)} 
+                                        onChange={(e) => updateRate('pata', e.target.value)}
+                                      />
                                       <p className="absolute -bottom-1 right-1 text-[6px] font-bold text-slate-300">PAT</p>
                                    </div>
                                    <div className="relative">
-                                      <input id={`design-client-${cid}-outwork`} type="number" className="w-full premium-input !h-10 !text-[12px] !text-center !bg-white dark:!bg-slate-900 !border-slate-300 !font-black !text-blue-600" defaultValue={isLegacy ? 0 : (cRate.outwork || 0)} />
+                                      <input 
+                                        type="number" 
+                                        className="w-full premium-input !h-10 !text-[12px] !text-center !bg-white dark:!bg-slate-900 !border-slate-300 !font-black !text-blue-600" 
+                                        value={isLegacy ? 0 : (cRate.outwork || 0)} 
+                                        onChange={(e) => updateRate('outwork', e.target.value)}
+                                      />
                                       <p className="absolute -bottom-1 right-1 text-[6px] font-bold text-slate-300">OUT</p>
                                    </div>
                                 </div>
@@ -1838,37 +2092,9 @@ const SettingsPanel_V2 = ({
               >Cancel</button>
               <button 
                 onClick={() => {
-                  const clientRatesObj = {};
-                  (masterData.clients || []).forEach(client => {
-                     const cid = client.replace(/[^a-zA-Z0-9]/g,'-');
-                     const sew = Number(document.getElementById(`design-client-${cid}-sewing`)?.value || 0);
-                     const sto = Number(document.getElementById(`design-client-${cid}-stone`)?.value || 0);
-                     const pat = Number(document.getElementById(`design-client-${cid}-pata`)?.value || 0);
-                     const out = Number(document.getElementById(`design-client-${cid}-outwork`)?.value || 0);
-                     
-                     if (sew || sto || pat || out) {
-                        clientRatesObj[client] = { sewing: sew, stone: sto, pata: pat, outwork: out };
-                     }
-                  });
-
-                  const defaultClientRates = {
-                    sewing: Number(document.getElementById("design-client-sewing-default")?.value || 0),
-                    stone: Number(document.getElementById("design-client-stone-default")?.value || 0),
-                    pataSingle: Number(document.getElementById("design-client-pata-single")?.value || 3),
-                    pataDouble: Number(document.getElementById("design-client-pata-double")?.value || 6),
-                    outwork: Number(document.getElementById("design-client-outside-default")?.value || 0),
-                  };
-
                   const data = {
-                    name: document.getElementById("design-name").value.trim().toUpperCase(),
-                    sewingRate: Number(document.getElementById("design-sewing").value),
-                    stoneRate: Number(document.getElementById("design-stone").value),
-                    pataRateSingle: Number(document.getElementById("design-pata-single").value),
-                    pataRateDouble: Number(document.getElementById("design-pata-double").value),
-                    outsideRate: Number(document.getElementById("design-outside").value),
-                    sellingPrice: Number(document.getElementById("design-sell").value),
-                    clientRates: clientRatesObj,
-                    defaultClientRates,
+                    ...designFormData,
+                    name: designFormData.name.trim().toUpperCase(),
                     image: tempImgUrl
                   };
                   

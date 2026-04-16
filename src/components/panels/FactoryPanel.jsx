@@ -49,6 +49,17 @@ const FactoryPanel = ({ masterData, setMasterData, isAdmin, isWorker, showNotify
     note: ""
   });
 
+  const [receiveFormData, setReceiveFormData] = useState({
+    date: new Date().toISOString().split('T')[0],
+    borka: 0,
+    hijab: 0
+  });
+
+  const [paymentFormData, setPaymentFormData] = useState({
+    amount: 0,
+    date: new Date().toISOString().split('T')[0]
+  });
+
   const workers = useMemo(() => {
     const list = masterData.workerDocs || masterData.workers || [];
     return list.filter(w => w.dept?.toLowerCase() === (type === 'sewing' ? 'sewing' : 'stone')).map(w => w.name);
@@ -79,15 +90,23 @@ const FactoryPanel = ({ masterData, setMasterData, isAdmin, isWorker, showNotify
 
   const handleLotSearch = (val) => {
     setLotSearch(val);
-    const lot = (masterData.cutting || []).find(c => c.lotNo === val);
+    const lot = (masterData.cuttingStock || []).find(c => c.lotNo === val);
     if (lot) {
+      const design = (masterData.designs || []).find(d => d.name === lot.design);
+      const targetRate = design?.[type === 'sewing' ? 'sewingRate' : 'stoneRate'];
+      
+      if (!targetRate || Number(targetRate) <= 0) {
+        showNotify(`এই ডিজাইনের ${type === 'sewing' ? 'সেলাই' : 'স্টোন'} রেট সেট করা নেই!`, "error");
+        return;
+      }
+
       setEntryData(prev => ({
         ...prev,
         lotNo: lot.lotNo,
         design: lot.design,
         color: lot.color,
         size: lot.size,
-        rate: (masterData.designs || []).find(d => d.name === lot.design)?.[type === 'sewing' ? 'sewingRate' : 'stoneRate'] || ""
+        rate: targetRate
       }));
       showNotify("মাস্টার লট পাওয়া গেছে!");
     }
@@ -130,14 +149,35 @@ const FactoryPanel = ({ masterData, setMasterData, isAdmin, isWorker, showNotify
     setReceiveModal(null);
   };
 
-  const setPayment = (workerName, amount) => {
+  const setPayment = (workerName, amount, date) => {
     const pId = Date.now();
+    const payDate = date || new Date().toISOString().split('T')[0];
+    
     setMasterData(prev => ({
       ...prev,
-      productions: prev.productions.map(p => p.worker === workerName && p.status === "Received" && !p.paid && p.type === type ? { ...p, paid: true, paymentId: pId } : p),
+      // 1. Mark related productions as paid
+      productions: (prev.productions || []).map(p => 
+        p.worker === workerName && p.status === "Received" && !p.paid && p.type === type 
+        ? { ...p, paid: true, paymentId: pId } 
+        : p
+      ),
+      // 2. Add to global workerPayments ledger (Source of Truth for WorkerSummary)
+      workerPayments: [
+        {
+          id: `pay_${pId}`,
+          date: new Date(payDate).toLocaleDateString('en-GB'),
+          worker: workerName,
+          dept: type,
+          amount: Number(amount),
+          type: 'Direct',
+          note: `${type.toUpperCase()} UNIT PAYMENT`
+        },
+        ...(prev.workerPayments || [])
+      ],
+      // 3. Add to global expenses
       expenses: [...(prev.expenses || []), {
         id: pId,
-        date: new Date().toISOString().split('T')[0],
+        date: payDate,
         type: 'Payment',
         amount: Number(amount),
         description: `${workerName} (${type.toUpperCase()}) পেমেন্ট`,
@@ -317,7 +357,9 @@ const FactoryPanel = ({ masterData, setMasterData, isAdmin, isWorker, showNotify
                     </div>
                   )}
                   {isAdmin && (
-                    <button onClick={() => { if(window.confirm('মুছে ফেলতে চান?')) setMasterData(prev => ({ ...prev, productions: prev.productions.filter(p => p.id !== item.id) })) }} className="w-10 h-10 flex items-center justify-center text-rose-500 hover:bg-rose-50 rounded-lg"><Trash2 size={16} /></button>
+                    <button onClick={() => { 
+                      if(window.confirm('মুছে ফেলতে চান?')) setMasterData(prev => ({ ...prev, productions: prev.productions.filter(p => p.id !== item.id) })) 
+                    }} className="w-10 h-10 flex items-center justify-center text-rose-500 hover:bg-rose-50 rounded-lg"><Trash2 size={16} /></button>
                   )}
                 </div>
               </div>
@@ -326,8 +368,24 @@ const FactoryPanel = ({ masterData, setMasterData, isAdmin, isWorker, showNotify
         })()}
       </div>
 
-      {/* Modals */}
       <AnimatePresence>
+        {/* Sync state for new modal opening */}
+        {(() => {
+          if (receiveModal && receiveFormData.borka !== receiveModal.issueBorka && receiveFormData.hijab !== receiveModal.issueHijab) {
+            setReceiveFormData({
+              date: new Date().toISOString().split('T')[0],
+              borka: receiveModal.issueBorka,
+              hijab: receiveModal.issueHijab
+            });
+          }
+          if (payModal && paymentFormData.amount === 0) {
+            setPaymentFormData({
+              amount: getWorkerDue(payModal),
+              date: new Date().toISOString().split('T')[0]
+            });
+          }
+          return null;
+        })()}
         {showIssueModal && (
           <div className="fixed inset-0 z-[1000] bg-slate-950/60 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto no-scrollbar">
             <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-white dark:bg-slate-900 w-full max-w-2xl rounded-3xl shadow-2xl p-6 md:p-10 relative border border-slate-100 my-auto">
@@ -412,18 +470,33 @@ const FactoryPanel = ({ masterData, setMasterData, isAdmin, isWorker, showNotify
                  <div className="grid grid-cols-2 gap-4">
                      <div>
                         <label className="text-[10px] font-black uppercase text-slate-400 ml-4 italic">প্রাপ্ত বোরকা (BORKA RECV)</label>
-                        <input type="number" id="rec_borka" className="premium-input !h-14 font-black text-center" defaultValue={receiveModal.issueBorka} />
+                        <input 
+                          type="number" 
+                          className="premium-input !h-14 font-black text-center" 
+                          value={receiveFormData.borka}
+                          onChange={(e) => setReceiveFormData({...receiveFormData, borka: e.target.value})}
+                        />
                      </div>
                      <div>
                         <label className="text-[10px] font-black uppercase text-slate-400 ml-4 italic">প্রাপ্ত হিজাব (HIJAB RECV)</label>
-                        <input type="number" id="rec_hijab" className="premium-input !h-14 font-black text-center" defaultValue={receiveModal.issueHijab} />
+                        <input 
+                          type="number" 
+                          className="premium-input !h-14 font-black text-center" 
+                          value={receiveFormData.hijab}
+                          onChange={(e) => setReceiveFormData({...receiveFormData, hijab: e.target.value})}
+                        />
                      </div>
                  </div>
                  <div>
                     <label className="text-[10px] font-black uppercase text-slate-400 ml-4 italic">গ্রহণের তারিখ (RECEIVE DATE)</label>
-                    <input type="date" id="rec_date" className="premium-input !h-14 font-black italic" defaultValue={new Date().toISOString().split('T')[0]} />
+                    <input 
+                      type="date" 
+                      className="premium-input !h-14 font-black italic" 
+                      value={receiveFormData.date}
+                      onChange={(e) => setReceiveFormData({...receiveFormData, date: e.target.value})}
+                    />
                  </div>
-                 <button onClick={() => setReceive(receiveModal.id, document.getElementById('rec_date').value, document.getElementById('rec_borka').value, document.getElementById('rec_hijab').value)} className="w-full py-4 bg-emerald-500 text-white rounded-xl font-black uppercase text-[10px] tracking-widest italic shadow-lg">জমা সম্পন্ন করুন (CONFIRM)</button>
+                 <button onClick={() => setReceive(receiveModal.id, receiveFormData.date, receiveFormData.borka, receiveFormData.hijab)} className="w-full py-4 bg-emerald-500 text-white rounded-xl font-black uppercase text-[10px] tracking-widest italic shadow-lg">জমা সম্পন্ন করুন (CONFIRM)</button>
               </div>
             </motion.div>
           </div>
@@ -441,9 +514,14 @@ const FactoryPanel = ({ masterData, setMasterData, isAdmin, isWorker, showNotify
                   </div>
                   <div>
                     <label className="text-[10px] font-black uppercase text-slate-400 ml-4 italic">পেমেন্ট অ্যামাউন্ট (৳)</label>
-                    <input type="number" id="pay_amt" className="premium-input !h-16 !text-3xl font-black text-center" defaultValue={getWorkerDue(payModal)} />
+                    <input 
+                      type="number" 
+                      className="premium-input !h-16 !text-3xl font-black text-center" 
+                      value={paymentFormData.amount}
+                      onChange={(e) => setPaymentFormData({...paymentFormData, amount: e.target.value})}
+                    />
                   </div>
-                  <button onClick={() => setPayment(payModal, document.getElementById('pay_amt').value)} className="w-full py-5 bg-slate-950 text-white rounded-2xl font-black uppercase text-[10px] tracking-widest italic shadow-xl">পেমেন্ট নিশ্চিত করুন (SYNC)</button>
+                  <button onClick={() => setPayment(payModal, paymentFormData.amount, paymentFormData.date)} className="w-full py-5 bg-slate-950 text-white rounded-2xl font-black uppercase text-[10px] tracking-widest italic shadow-xl">পেমেন্ট নিশ্চিত করুন (SYNC)</button>
                </div>
              </motion.div>
           </div>
