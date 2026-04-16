@@ -14,7 +14,7 @@ import "jspdf-autotable";
 const ClientDashboard = ({ masterData, user, setMasterData, showNotify, logAction }) => {
   const isAdmin = user?.role === 'admin' || user?.role === 'manager';
   const [selectedClient, setSelectedClient] = useState(isAdmin ? null : user.name);
-  const clientName = selectedClient || '';
+  const clientName = (selectedClient || '').trim();
   
   const handleDownloadInvoice = (txn) => {
     const doc = new jsPDF({ format: 'a5' }); // A5 is professional for invoices
@@ -106,16 +106,16 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify, logActio
   const materialStocks = useMemo(() => {
     const stocks = {};
     (masterData.rawInventory || []).forEach(log => {
-        if ((log.client || '').toUpperCase() === clientName.toUpperCase()) {
+        if ((log.client || '').trim().toUpperCase() === clientName.toUpperCase()) {
             const colorTag = log.color || '';
             const designTag = log.design || '';
             const key = `${log.item}||${colorTag}||${designTag}`;
-            if (!stocks[key]) stocks[key] = { qty: 0, unit: log.unit || 'গজ', item: log.item, color: colorTag, design: designTag };
+            if (!stocks[key]) stocks[key] = { qty: 0, unit: log.unit, item: log.item, color: colorTag, design: designTag };
             if (log.type === 'in') stocks[key].qty += Number(log.qty);
             else stocks[key].qty -= Number(log.qty);
         }
     });
-    return Object.values(stocks).filter(s => s.qty !== 0);
+    return Object.values(stocks).filter(s => Math.abs(s.qty) > 0.01);
   }, [masterData.rawInventory, clientName]);
 
   const liveLots = useMemo(() => {
@@ -188,12 +188,12 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify, logActio
     
     // 1. Raw Requests (In Review)
     (masterData.productionRequests || [])
-        .filter(r => (r.client || '').toUpperCase() === clientName.toUpperCase() && r.status === 'Pending Review')
+        .filter(r => (r.client || '').trim().toUpperCase() === clientName.toUpperCase() && r.status === 'Pending Review')
         .forEach(r => list.push({ ...r, currentStage: 'ORDER_INTAKE', stageColor: 'bg-slate-400' }));
 
     // 2. Active in Factory (Cutting / Sewing / Stone)
     (masterData.cutting || [])
-        .filter(c => (c.client || '').toUpperCase() === clientName.toUpperCase())
+        .filter(c => (c.client || '').trim().toUpperCase() === clientName.toUpperCase())
         .forEach(c => {
             // Determine current department stage
             const isAtStone = (masterData.productions || []).some(p => p.lotNo === c.lotNo && p.type === 'stone' && p.status === 'Pending');
@@ -882,10 +882,10 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify, logActio
                            <p className="text-[10px] font-black uppercase italic text-slate-800 dark:text-white">{m.item || 'ফেব্রিক'} - {m.color || 'N/A'}</p>
                            <p className="text-[8px] font-medium text-slate-400 uppercase tracking-widest leading-none mt-1">{m.design ? `Style: ${m.design}` : 'Global Stock'}</p>
                         </div>
-                       <div className="text-right">
-                          <p className={`text-base font-black tabular-nums ${m.qty < 0 ? 'text-rose-600' : 'text-amber-600'}`}>{Math.abs(m.qty).toFixed(1)}</p>
-                          <p className="text-[8px] font-black text-slate-400 uppercase">{m.unit || 'গজ'}</p>
-                       </div>
+                        <div className="text-right">
+                           <p className={`text-sm font-black tabular-nums ${m.qty < 0 ? 'text-rose-600' : 'text-amber-600'}`}>{Math.abs(m.qty).toFixed(1)}</p>
+                           <p className="text-[7px] font-black text-slate-400 uppercase leading-none mt-1 italic">{m.unit || (m.item?.toUpperCase().includes('STONE') ? 'PKT' : 'YDS')}</p>
+                        </div>
                     </div>
                  ))
               )}
