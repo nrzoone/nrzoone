@@ -120,8 +120,8 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify, logActio
 
   const liveLots = useMemo(() => {
     const lots = [];
-    // 1. From Cutting Stock (Pending/In Sewing)
-    (masterData.cuttingStock || [])
+    // 1. From Cutting Lots (Pending/In Sewing)
+    (masterData.cutting || [])
       .filter(c => (c.client || '').toUpperCase() === clientName.toUpperCase())
       .forEach(c => lots.push({ ...c, status: 'In Production', stage: 'Cutting/Sewing' }));
 
@@ -192,7 +192,7 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify, logActio
         .forEach(r => list.push({ ...r, currentStage: 'ORDER_INTAKE', stageColor: 'bg-slate-400' }));
 
     // 2. Active in Factory (Cutting / Sewing / Stone)
-    (masterData.cuttingStock || [])
+    (masterData.cutting || [])
         .filter(c => (c.client || '').toUpperCase() === clientName.toUpperCase())
         .forEach(c => {
             // Determine current department stage
