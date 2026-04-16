@@ -10,13 +10,11 @@ const WorkerSummary = ({ masterData, setMasterData, showNotify, user, logAction,
     const [showPayModal, setShowPayModal] = useState(null); 
 
     const getAllWorkers = () => {
-        const sewing = (masterData.workerCategories?.sewing || []).map(w => ({ name: w, dept: 'sewing' }));
-        const stone = (masterData.workerCategories?.stone || []).map(w => ({ name: w, dept: 'stone' }));
-        const pata = (masterData.workerCategories?.pata || []).map(w => ({ name: w, dept: 'pata' }));
-        const cutting = (masterData.workerCategories?.cutting || masterData.cutters || []).map(w => ({ name: w, dept: 'cutting' }));
-        const monthly = (masterData.workerCategories?.monthly || []).map(w => ({ name: w, dept: 'monthly' }));
-        
-        return [...sewing, ...stone, ...pata, ...cutting, ...monthly];
+        // Source of TRUTH: workerDocs
+        return (masterData.workerDocs || []).map(d => ({ 
+            name: d.name, 
+            dept: d.dept || 'sewing' 
+        }));
     };
 
     const getWorkerStats = (name, dept) => {

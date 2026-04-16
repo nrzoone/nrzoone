@@ -840,7 +840,7 @@ const AppContent = () => {
             
             {/* Multi-Utility Global Hub - RESTRICTED TO ADMIN/MANAGER - MOVED TO SIDE */}
             {user && (user?.role === 'admin' || user?.role === 'manager') && (
-                <div className="fixed bottom-10 right-6 z-[200] flex flex-col gap-3 no-print animate-fade-left items-end">
+                <div className="fixed bottom-24 right-8 z-[2000] flex flex-col gap-4 no-print animate-fade-left items-end">
                     <p className="text-[7px] font-black text-slate-400 uppercase tracking-[0.5em] mb-2 rotate-90 translate-x-4">ADMIN SUITE</p>
                     
                     <button 
