@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
     LogOut,
     ArrowLeft,
@@ -21,7 +22,9 @@ import {
     Sun,
     Moon,
     Globe,
-    // Production Build Hook v2.11 - Final Branding Sync
+    MessageCircle,
+    ShieldCheck,
+    Bell,
     X,
     Send,
     Archive,
