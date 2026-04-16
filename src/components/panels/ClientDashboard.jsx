@@ -878,10 +878,10 @@ const ClientDashboard = ({ masterData, user, setMasterData, showNotify, logActio
               ) : (
                  materialStocks.map((m, i) => (
                     <div key={i} className="px-5 py-3.5 flex justify-between items-center hover:bg-amber-50/30 transition-colors">
-                       <div>
-                          <p className="text-[10px] font-black uppercase italic text-slate-800">{m.color || 'N/A'}{m.design ? ` / ${m.design}` : ''}</p>
-                          <p className="text-[8px] font-medium text-slate-400 uppercase tracking-widest">{m.item || 'ফেব্রিক'}</p>
-                       </div>
+                        <div>
+                           <p className="text-[10px] font-black uppercase italic text-slate-800 dark:text-white">{m.item || 'ফেব্রিক'} - {m.color || 'N/A'}</p>
+                           <p className="text-[8px] font-medium text-slate-400 uppercase tracking-widest leading-none mt-1">{m.design ? `Style: ${m.design}` : 'Global Stock'}</p>
+                        </div>
                        <div className="text-right">
                           <p className={`text-base font-black tabular-nums ${m.qty < 0 ? 'text-rose-600' : 'text-amber-600'}`}>{Math.abs(m.qty).toFixed(1)}</p>
                           <p className="text-[8px] font-black text-slate-400 uppercase">{m.unit || 'গজ'}</p>
