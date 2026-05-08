@@ -161,9 +161,9 @@ const HijabCollection = () => {
                     </motion.div>
 
                     <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="flex-1 w-full max-w-2xl">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
                             {/* Dynamic Image Preview */}
-                            <div className="relative rounded-[2rem] overflow-hidden shadow-2xl border-8 border-white aspect-[9/16] bg-black">
+                            <div className="relative rounded-[2rem] overflow-hidden shadow-2xl border-8 border-white aspect-[3/4] bg-black">
                                 <AnimatePresence mode="wait">
                                     <motion.img
                                         key={`${selectedDesign}-${selectedColor}`}
@@ -180,7 +180,7 @@ const HijabCollection = () => {
                             </div>
 
                             {/* Product Video */}
-                            <div className="relative rounded-[2rem] overflow-hidden shadow-2xl border-8 border-white aspect-[9/16] bg-black">
+                            <div className="relative rounded-[2rem] overflow-hidden shadow-2xl border-8 border-white aspect-[3/4] bg-black">
                                 <iframe 
                                     src="https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Freel%2F3941295516004637&show_text=false&autoplay=1&mute=1"
                                     width="100%" 
@@ -255,7 +255,7 @@ const HijabCollection = () => {
                         <p className="text-slate-400 font-bold">নিচ থেকে আপনার পছন্দেরটি বেছে নিন</p>
                     </div>
 
-                    <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-6">
+                    <div className="grid grid-cols-3 md:grid-cols-5 gap-4 md:gap-6">
                         {designs.flatMap(d => colors.map(c => ({ design: d, color: c.name }))).map((item, idx) => (
                             <motion.div 
                                 key={idx} 
@@ -280,6 +280,38 @@ const HijabCollection = () => {
                     </div>
                 </div>
             </section>
+
+            {/* Testimonials Section */}
+            <section className="py-12 px-6 bg-slate-50">
+                <div className="max-w-7xl mx-auto space-y-8">
+                    <div className="text-center">
+                        <h2 className="text-2xl md:text-3xl font-black text-slate-900">কাস্টমারদের মতামত</h2>
+                        <p className="text-sm text-slate-500">আমাদের হিজাব পড়ে কাস্টমাররা যা বলছেন</p>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        {[
+                            { name: "সুমাইয়া আক্তার", text: "হিজাবটার কাপড় অনেক ভালো, একদম যেমনটা চেয়েছিলাম। ধন্যবাদ!", stars: 5, img: "/reviews/review1.jpg" },
+                            { name: "ফারহানা রহমান", text: "অর্ডার করার ২ দিনের মধ্যেই পেয়ে গেছি। কালারটা খুব সুন্দর।", stars: 5, img: "/reviews/review2.jpg" },
+                            { name: "নাসরিন সুলতানা", text: "এরকম প্রিমিয়াম হিজাব এই দামে পাবো ভাবিনি। খুবই আরামদায়ক।", stars: 5, img: "/reviews/review3.jpg" }
+                        ].map((review, i) => (
+                            <div key={i} className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 space-y-3">
+                                <div className="flex gap-1">
+                                    {[...Array(review.stars)].map((_, i) => <Star key={i} size={14} className="fill-yellow-400 text-yellow-400" />)}
+                                </div>
+                                <p className="text-sm text-slate-600 italic">"{review.text}"</p>
+                                <div className="flex items-center gap-3 pt-2">
+                                    <div className="w-8 h-8 rounded-full bg-slate-100 overflow-hidden">
+                                        <img src={review.img} alt={review.name} className="w-full h-full object-cover" />
+                                    </div>
+                                    <span className="font-bold text-xs text-slate-800">{review.name}</span>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
             <section id="products" className="py-24 bg-white">
                 <div className="max-w-7xl mx-auto px-6">
                     <div className="text-center mb-20">
