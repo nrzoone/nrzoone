@@ -9,6 +9,6 @@ export const SMS_API_URL = "https://bulksmsbd.net/api/smsapi";
 
 // WhatsApp Notification (CallMeBot - Free)
 // Get your API Key by messaging "+34 644 10 55 23" on WhatsApp with "resend apikey"
-export const WHATSAPP_PHONE = "8801XXXXXXXXX"; // আপনার নম্বর দিন
-export const WHATSAPP_API_KEY = "XXXXXX"; // আপনার পাওয়া এপিআই কী দিন
+export const WHATSAPP_PHONE = "8801783155897"; // আপনার নম্বর সেট করা হয়েছে
+export const WHATSAPP_API_KEY = "XXXXXX"; // এখানে আপনার পাওয়া এপিআই কী বসাবেন
 export const WHATSAPP_API_URL = "https://api.callmebot.com/whatsapp.php";
