@@ -190,19 +190,9 @@ const KidsCollection = () => {
                         animate={{ opacity: 1, scale: 1 }}
                         className="flex-1 relative"
                     >
-                        <div className="relative rounded-[2.5rem] overflow-hidden shadow-2xl border-8 border-white group aspect-[9/16] w-full max-w-sm mx-auto md:max-w-md bg-black">
-                            <iframe 
-                                src="https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Freel%2F1732876178150702&show_text=false&autoplay=1&mute=0"
-                                width="100%" 
-                                height="100%" 
-                                style={{ border: 'none', overflow: 'hidden', position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }} 
-                                scrolling="no" 
-                                frameBorder="0" 
-                                allowFullScreen={true} 
-                                allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-                                title="Kids Borka Video"
-                            ></iframe>
-                            <div className="absolute top-6 right-6 bg-white/90 backdrop-blur p-4 rounded-2xl shadow-xl z-10">
+                        <div className="relative rounded-[2.5rem] overflow-hidden shadow-2xl border-8 border-white group">
+                            <img src={currentHeroImage} alt="Kids Borka" className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-110" />
+                            <div className="absolute top-6 right-6 bg-white/90 backdrop-blur p-4 rounded-2xl shadow-xl">
                                 <p className="text-xs font-bold text-gray-400 mb-1">এভেলেবল কালার</p>
                                 <div className="flex gap-2">
                                     {colors.map(c => (

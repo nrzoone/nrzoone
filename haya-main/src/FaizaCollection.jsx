@@ -28,11 +28,11 @@ const FaizaCollection = () => {
 
     const heroImages = {
         'নীল': '/faiza_blue.jpg',
-        'কালো': '/faiza_black.png',
+        'কালো': '/faiza_black.jpg',
         'অলিভ': '/faiza_olive.jpg',
         'মেরুন': '/faiza_maroon.jpg',
         'কফি': '/faiza_coffee.jpg',
-        'default': '/faiza_black.png'
+        'default': '/faiza_black.jpg'
     };
 
     const currentHeroImage = heroImages[selectedColor] || heroImages['default'];

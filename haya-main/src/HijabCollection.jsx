@@ -27,7 +27,6 @@ const HijabCollection = () => {
     const { addToCart } = useCart();
     
     const [selectedColor, setSelectedColor] = useState('Black');
-    const [selectedDesign, setSelectedDesign] = useState('haya');
     const [selectedSize, setSelectedSize] = useState('72 Inchi (Majhari)');
     const [quantity, setQuantity] = useState(1);
     const [deliveryArea, setDeliveryArea] = useState('inside');
@@ -43,35 +42,20 @@ const HijabCollection = () => {
         { id: '80', label: '80 Inchi (Boro)', price: 650 }
     ];
 
-    const designs = [
-        { id: 'haya', name: 'হায়া বোরকা হিজাব' },
-        { id: 'lota', name: 'লতা বোরকা হিজাব' }
-    ];
-
     const colors = [
         { name: 'Black', class: 'bg-black' },
         { name: 'Maroon', class: 'bg-[#800000]' },
         { name: 'Olive', class: 'bg-[#556B2F]' },
         { name: 'Navy', class: 'bg-[#1E3A8A]' },
-        { name: 'Brown', class: 'bg-[#A52A2A]' }
+        { name: 'Grey', class: 'bg-[#808080]' },
+        { name: 'Brown', class: 'bg-[#A52A2A]' },
+        { name: 'Purple', class: 'bg-[#800080]' },
+        { name: 'White', class: 'bg-white border' }
     ];
-
-    const getImageUrl = (design, color) => {
-        const colorMap = {
-            'Black': 'black',
-            'Maroon': 'maroon',
-            'Olive': 'green',
-            'Navy': 'blue',
-            'Brown': 'brown'
-        };
-        const colorSuffix = colorMap[color] || 'black';
-        return `/${design}-${colorSuffix}.jpg`;
-    };
 
     const deliveryCharges = { inside: 80, outside: 150 };
 
     const currentSizeObj = hijabSizes.find(s => s.label === selectedSize) || hijabSizes[1];
-    const currentDesignObj = designs.find(d => d.id === selectedDesign) || designs[0];
     const currentPrice = currentSizeObj.price * quantity;
     const currentTotal = currentPrice + deliveryCharges[deliveryArea];
 
@@ -82,8 +66,7 @@ const HijabCollection = () => {
         const orderData = {
             ...formData,
             landingPage: 'Hijab Collection',
-            productType: `${currentDesignObj.name} (${selectedSize})`,
-            design: currentDesignObj.name,
+            productType: `Hijab (${selectedSize})`,
             color: selectedColor,
             size: selectedSize,
             quantity,
@@ -153,126 +136,18 @@ const HijabCollection = () => {
                         </div>
                     </motion.div>
 
-                    <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="flex-1 w-full max-w-2xl">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-                            {/* Dynamic Image Preview */}
-                            <div className="relative rounded-[2rem] overflow-hidden shadow-2xl border-8 border-white aspect-[9/16] bg-black">
-                                <AnimatePresence mode="wait">
-                                    <motion.img
-                                        key={`${selectedDesign}-${selectedColor}`}
-                                        initial={{ opacity: 0, scale: 1.1 }}
-                                        animate={{ opacity: 1, scale: 1 }}
-                                        exit={{ opacity: 0, scale: 0.9 }}
-                                        transition={{ duration: 0.5 }}
-                                        src={getImageUrl(selectedDesign, selectedColor)}
-                                        alt={`${selectedColor} ${selectedDesign} Hijab`}
-                                        className="w-full h-full object-cover"
-                                    />
-                                </AnimatePresence>
-                                <div className="absolute top-4 right-4 bg-blue-600 text-white px-4 py-1.5 rounded-full font-black text-[10px] uppercase tracking-widest shadow-xl">Top Choice</div>
+                    <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="flex-1 relative">
+                         <div className="relative rounded-[3rem] overflow-hidden shadow-2xl border-[12px] border-white aspect-[4/5] bg-slate-100 flex items-center justify-center">
+                            <div className="text-center p-12">
+                                <ImageIcon size={80} className="mx-auto text-slate-200 mb-6" />
+                                <p className="text-slate-400 font-black uppercase tracking-widest">Premium Hijab Preview</p>
                             </div>
-
-                            {/* Product Video */}
-                            <div className="relative rounded-[2rem] overflow-hidden shadow-2xl border-8 border-white aspect-[9/16] bg-black">
-                                <iframe 
-                                    src="https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Freel%2F3941295516004637&show_text=false&autoplay=1&mute=1"
-                                    width="100%" 
-                                    height="100%" 
-                                    style={{ border: 'none', overflow: 'hidden', position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }} 
-                                    scrolling="no" 
-                                    frameBorder="0" 
-                                    allowFullScreen={true} 
-                                    allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-                                    title="Premium Hijab Video"
-                                ></iframe>
-                                <div className="absolute bottom-4 left-0 right-0 text-center bg-black/50 backdrop-blur-sm py-2 text-[10px] font-black text-white uppercase tracking-widest">Product Video</div>
-                            </div>
-                        </div>
-                        
-                        {/* Instant Design & Color Selection */}
-                        <div className="mt-8 space-y-8">
-                            <div className="flex flex-col items-center gap-3">
-                                <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest">১. ডিজাইন সিলেক্ট করুন:</p>
-                                <div className="flex gap-4">
-                                    {designs.map(d => (
-                                        <button 
-                                            key={d.id} 
-                                            onClick={() => setSelectedDesign(d.id)}
-                                            className={`px-6 py-2 rounded-full font-bold text-sm transition-all border-2 ${selectedDesign === d.id ? 'bg-blue-600 border-blue-600 text-white shadow-lg' : 'bg-white border-slate-200 text-slate-500 hover:border-blue-300'}`}
-                                        >
-                                            {d.name}
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-
-                            <div className="flex flex-col items-center gap-3">
-                                <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest">২. কালার সিলেক্ট করুন:</p>
-                                <div className="flex justify-center gap-4">
-                                    {colors.map(c => (
-                                        <button 
-                                            key={c.name} 
-                                            onClick={() => setSelectedColor(c.name)} 
-                                            className={`w-10 h-10 rounded-full transition-all shadow-md ${selectedColor === c.name ? 'ring-4 ring-blue-600 scale-125 z-10' : 'opacity-70 hover:opacity-100'} ${c.class}`}
-                                            title={c.name}
-                                        ></button>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Collective View Banner */}
-                            <motion.div 
-                                key={selectedDesign}
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                className="pt-4"
-                            >
-                                <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest text-center mb-4">ডিজাইনের সবগুলো কালার একনজরে:</p>
-                                <div className="rounded-2xl overflow-hidden shadow-xl border-4 border-white aspect-[16/9] w-full max-w-md mx-auto bg-slate-100">
-                                    <img 
-                                        src={selectedDesign === 'lota' ? '/lota-all.jpg' : '/premium-hijab.jpg'} 
-                                        alt="All Colors" 
-                                        className="w-full h-full object-cover"
-                                    />
-                                </div>
-                            </motion.div>
-                        </div>
+                            <div className="absolute top-8 right-8 bg-blue-600 text-white px-6 py-2 rounded-full font-black text-xs uppercase tracking-widest shadow-xl">Hot Selection</div>
+                         </div>
                     </motion.div>
                 </div>
             </section>
-            {/* Full Gallery Section */}
-            <section className="py-24 bg-slate-900">
-                <div className="max-w-7xl mx-auto px-6">
-                    <div className="text-center mb-16">
-                        <h2 className="text-3xl md:text-5xl font-black mb-4 text-white uppercase tracking-tighter">সবগুলো কালার ও ডিজাইন একনজরে</h2>
-                        <p className="text-slate-400 font-bold">নিচ থেকে আপনার পছন্দেরটি বেছে নিন</p>
-                    </div>
 
-                    <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-6">
-                        {designs.flatMap(d => colors.map(c => ({ design: d, color: c.name }))).map((item, idx) => (
-                            <motion.div 
-                                key={idx} 
-                                whileHover={{ scale: 1.05 }}
-                                onClick={() => {
-                                    setSelectedDesign(item.design.id);
-                                    setSelectedColor(item.color);
-                                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                                }}
-                                className="group cursor-pointer"
-                            >
-                                <div className="relative rounded-2xl overflow-hidden shadow-lg border-2 border-white/10 aspect-[3/4]">
-                                    <img src={getImageUrl(item.design.id, item.color)} alt={`${item.color} ${item.design.name}`} className="w-full h-full object-cover" />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4">
-                                        <p className="text-[10px] font-black text-blue-400 uppercase">{item.design.name}</p>
-                                        <p className="text-white font-bold text-xs">{item.color}</p>
-                                    </div>
-                                </div>
-                                <p className="mt-3 text-center text-white/60 text-[10px] font-bold uppercase">{item.color}</p>
-                            </motion.div>
-                        ))}
-                    </div>
-                </div>
-            </section>
             <section id="products" className="py-24 bg-white">
                 <div className="max-w-7xl mx-auto px-6">
                     <div className="text-center mb-20">
@@ -308,7 +183,6 @@ const HijabCollection = () => {
                     <div className="md:w-1/2 p-12 lg:p-16 space-y-10">
                         <h2 className="text-4xl font-black tracking-tight leading-none uppercase">অর্ডার কনফার্ম করুন</h2>
                         <div className="space-y-6 pt-10 border-t border-white/10">
-                            <div className="flex justify-between items-center bg-white/5 p-4 rounded-2xl"><span className="text-xs font-black uppercase text-white/40">ডিজাইন:</span><span className="font-black text-xl">{currentDesignObj.name}</span></div>
                             <div className="flex justify-between items-center bg-white/5 p-4 rounded-2xl"><span className="text-xs font-black uppercase text-white/40">সাইজ:</span><span className="font-black text-xl">{selectedSize}</span></div>
                             <div className="flex justify-between items-center bg-white/5 p-4 rounded-2xl"><span className="text-xs font-black uppercase text-white/40">কালার:</span><span className="font-black text-xl">{selectedColor}</span></div>
                             <div className="flex justify-between items-center bg-blue-600 p-6 rounded-2xl shadow-xl mt-12"><span className="font-black text-lg uppercase">টোটাল (চার্জসহ):</span><span className="font-black text-3xl">৳ {currentTotal}</span></div>
@@ -322,22 +196,6 @@ const HijabCollection = () => {
                             <textarea required className="w-full p-5 bg-slate-50 border-2 border-transparent rounded-2xl font-bold outline-none focus:border-blue-600 transition-all min-h-[120px]" placeholder="ডেলিভারি ঠিকানা" value={formData.address} onChange={(e) => setFormData({ ...formData, address: e.target.value })} />
                             
                             <div className="space-y-4">
-                                <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest">ডিজাইন সিলেক্ট করুন:</p>
-                                <div className="flex flex-wrap gap-3">
-                                    {designs.map(d => (
-                                        <button 
-                                            key={d.id} 
-                                            type="button"
-                                            onClick={() => setSelectedDesign(d.id)} 
-                                            className={`px-4 py-2 rounded-xl border-2 font-bold text-xs transition-all ${selectedDesign === d.id ? 'bg-slate-900 border-slate-900 text-white' : 'border-slate-100'}`}
-                                        >
-                                            {d.name}
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-
-                            <div className="space-y-4">
                                 <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest">পছন্দমতো কালারটি সিলেক্ট করুন:</p>
                                 <div className="flex flex-wrap gap-3">
                                     {colors.map(c => (
@@ -346,39 +204,9 @@ const HijabCollection = () => {
                                 </div>
                             </div>
 
-                            <div className="space-y-4">
-                                <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest">৩. সাইজ সিলেক্ট করুন:</p>
-                                <div className="grid grid-cols-1 gap-3">
-                                    {hijabSizes.map(size => (
-                                        <button 
-                                            key={size.id} 
-                                            type="button"
-                                            onClick={() => setSelectedSize(size.label)} 
-                                            className={`p-4 rounded-xl border-2 flex justify-between items-center transition-all ${selectedSize === size.label ? 'bg-slate-900 border-slate-900 text-white shadow-lg' : 'bg-slate-50 border-transparent text-slate-600 hover:border-slate-200'}`}
-                                        >
-                                            <span className="font-bold text-sm">{size.label}</span>
-                                            <span className={`font-black ${selectedSize === size.label ? 'text-blue-400' : 'text-blue-600'}`}>৳ {size.price}</span>
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-
-                            <div className="grid grid-cols-2 gap-4 pt-4">
-                                <div className="space-y-2">
-                                    <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest">ডেলিভারি এরিয়া:</p>
-                                    <div className="grid grid-cols-1 gap-2">
-                                        <button type="button" onClick={() => setDeliveryArea('inside')} className={`p-4 rounded-2xl border-2 font-black text-xs uppercase transition-all ${deliveryArea === 'inside' ? 'bg-slate-900 text-white' : 'border-slate-100 text-slate-400'}`}>ঢাকার ভিতরে</button>
-                                        <button type="button" onClick={() => setDeliveryArea('outside')} className={`p-4 rounded-2xl border-2 font-black text-xs uppercase transition-all ${deliveryArea === 'outside' ? 'bg-slate-900 text-white' : 'border-slate-100 text-slate-400'}`}>ঢাকার বাইরে</button>
-                                    </div>
-                                </div>
-                                <div className="space-y-2 text-right">
-                                    <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest">পরিমাণ (Quantity):</p>
-                                    <div className="flex items-center justify-end gap-4 bg-slate-50 p-2 rounded-2xl border-2 border-slate-100">
-                                        <button type="button" onClick={() => setQuantity(Math.max(1, quantity - 1))} className="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center hover:bg-slate-900 hover:text-white transition-all"><Minus size={16}/></button>
-                                        <span className="font-black text-xl w-8 text-center">{quantity}</span>
-                                        <button type="button" onClick={() => setQuantity(quantity + 1)} className="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center hover:bg-slate-900 hover:text-white transition-all"><Plus size={16}/></button>
-                                    </div>
-                                </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <button type="button" onClick={() => setDeliveryArea('inside')} className={`p-4 rounded-2xl border-2 font-black text-sm uppercase transition-all ${deliveryArea === 'inside' ? 'bg-slate-900 text-white' : 'border-slate-100'}`}>ঢাকার ভিতরে</button>
+                                <button type="button" onClick={() => setDeliveryArea('outside')} className={`p-4 rounded-2xl border-2 font-black text-sm uppercase transition-all ${deliveryArea === 'outside' ? 'bg-slate-900 text-white' : 'border-slate-100'}`}>ঢাকার বাইরে</button>
                             </div>
 
                             <button type="submit" disabled={isSubmitting} className="w-full bg-blue-600 text-white py-6 rounded-3xl font-black text-2xl uppercase tracking-widest shadow-2xl hover:scale-[1.02] active:scale-95 transition-all">অর্ডার কনফার্ম করুন</button>

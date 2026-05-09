@@ -30,12 +30,11 @@ const LandingPage = () => {
     const [selectedColor, setSelectedColor] = useState('কালো');
 
     const heroImages = {
-        'মেরুন': '/classic_maroon.jpg',
-        'নীল': '/classic_blue.jpg',
-        'কালো': '/classic_black.jpg',
-        'অলিভ': '/classic_olive.jpg',
-        'কফি': '/classic_coffee.jpg',
-        'default': '/classic_black.jpg'
+        'কালো': '/classic_black.png',
+        'নীল': '/classic_blue.png',
+        'অলিভ': '/classic_olive.png',
+        'কফি': '/classic_coffee.png',
+        'default': '/classic_combo_main.jpg'
     };
 
     const currentHeroImage = heroImages[selectedColor] || heroImages['default'];
@@ -72,9 +71,8 @@ const LandingPage = () => {
     };
 
     const colors = [
-        { name: 'মেরুন', class: 'bg-[#800000]' },
-        { name: 'নীল', class: 'bg-blue-900' },
         { name: 'কালো', class: 'bg-black' },
+        { name: 'নীল', class: 'bg-blue-900' },
         { name: 'অলিভ', class: 'bg-[#556B2F]' },
         { name: 'কফি', class: 'bg-[#4B3621]' }
     ];

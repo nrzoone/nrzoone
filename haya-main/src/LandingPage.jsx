@@ -30,11 +30,10 @@ const LandingPage = () => {
     const [selectedColor, setSelectedColor] = useState('কালো');
 
     const heroImages = {
-        'কালো': '/hero_black.jpg',
-        'নীল': '/hero_blue.jpg',
         'অলিভ': '/hero_olive.jpg',
         'মেরুন': '/hero_maroon.jpg',
-        'কফি': '/hero_black.jpg', // Fallback for coffee
+        'কালো': '/hero_black.jpg',
+        'নীল': '/hero_blue.jpg',
         'default': '/hero_black.jpg'
     };
 
@@ -180,20 +179,6 @@ const LandingPage = () => {
                     অর্ডার দিন
                 </button>
             </nav>
-
-            {/* Featured Reel Video Section */}
-            <section className="w-full bg-black py-0">
-                <div className="max-w-[1600px] mx-auto flex flex-col items-center">
-                    <div className="relative w-full max-w-[500px] aspect-[9/16] bg-black overflow-hidden shadow-2xl">
-                        <iframe 
-                            src={`https://www.facebook.com/plugins/video.php?href=${encodeURIComponent('https://www.facebook.com/reel/1558834275471712')}&show_text=0&t=0&autoplay=1&mute=1`}
-                            className="absolute inset-0 w-full h-full border-none"
-                            allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" 
-                            allowFullScreen={true}
-                        ></iframe>
-                    </div>
-                </div>
-            </section>
 
             {/* Hero Section */}
             <section className="relative pt-24 pb-12 md:pt-32 md:pb-24 px-6 overflow-hidden">

@@ -31,10 +31,10 @@ const LandingPage = () => {
 
     const heroImages = {
         'কালো': '/ma_boro_meye_black.jpg',
-        'নীল': '/ma_boro_meye_blue_new.jpg',
+        'নীল': '/ma_boro_meye_blue.jpg',
         'অলিভ': '/ma_boro_meye_olive.jpg',
         'কফি': '/ma_boro_meye_coffee.jpg',
-        'মেরুন': '/ma_boro_meye_maroon_new.jpg',
+        'মেরুন': '/ma_boro_meye_maroon.jpg',
         'default': '/ma_boro_meye_black.jpg'
     };
 
@@ -228,8 +228,8 @@ const LandingPage = () => {
                         transition={{ duration: 0.8 }}
                         className="flex-1 relative"
                     >
-                        <div className="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white aspect-[4/5] bg-gray-100 flex items-center justify-center">
-                            <img src={currentHeroImage} alt="NR Zone Hero" className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-700" />
+                        <div className="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white">
+                            <img src={currentHeroImage} alt="NR Zone Hero" className="w-full h-auto object-cover transform hover:scale-105 transition-transform duration-700" />
                             <div className="absolute bottom-6 left-6 right-6 glass-morphism p-4 rounded-2xl flex justify-between items-center">
                                 <div>
                                     <p className="text-sm font-medium opacity-70 italic">মা-বড় মেয়ে ম্যাচিং সেট</p>
