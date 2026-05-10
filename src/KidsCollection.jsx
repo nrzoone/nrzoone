@@ -110,9 +110,12 @@ const KidsCollection = () => {
             if (GOOGLE_SHEET_URL) {
                 const sheetData = { ...orderData };
                 delete sheetData.createdAt;
-                const params = new URLSearchParams(sheetData).toString();
-                fetch(`${GOOGLE_SHEET_URL}?${params}`, { method: 'GET', mode: 'no-cors' })
-                    .catch(err => console.error("Sheets Sync Error:", err));
+                fetch(GOOGLE_SHEET_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(sheetData)
+                }).catch(err => console.error("Sheets Sync Error:", err));
             }
 
             // 2. Submit to Firebase

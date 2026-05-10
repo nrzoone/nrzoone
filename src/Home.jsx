@@ -96,10 +96,10 @@ const Home = () => {
 
                 {/* Center Nav Items */}
                 <nav className="hidden md:flex items-center gap-8 font-semibold text-sm">
-                    <button onClick={() => navigate('/haya')} className="hover:text-black transition-colors flex items-center gap-1">BORKA</button>
+                    <button onClick={() => navigate('/classic')} className="hover:text-black transition-colors flex items-center gap-1">BORKA</button>
                     <button onClick={() => navigate('/ma')} className="hover:text-black transition-colors flex items-center gap-1">ABAYA</button>
                     <button onClick={() => navigate('/hijab')} className="hover:text-black transition-colors flex items-center gap-1">HIJAB</button>
-                    <button className="hover:text-gray-500 transition-colors flex items-center gap-1">Store Locator</button>
+                    <button onClick={() => window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'})} className="hover:text-gray-500 transition-colors flex items-center gap-1">Store Locator</button>
                 </nav>
 
                 {/* Right Icons */}
@@ -129,11 +129,11 @@ const Home = () => {
                         className="md:hidden bg-white border-b border-gray-100 overflow-hidden"
                     >
                         <nav className="flex flex-col px-6 py-4 gap-4 font-semibold text-sm">
-                            <button onClick={() => { navigate('/haya'); setIsMobileMenuOpen(false); }} className="text-left py-2 hover:text-gray-500 border-b border-gray-50 flex items-center justify-between">BORKA <ArrowRight className="w-4 h-4" /></button>
+                            <button onClick={() => { navigate('/classic'); setIsMobileMenuOpen(false); }} className="text-left py-2 hover:text-gray-500 border-b border-gray-50 flex items-center justify-between">BORKA <ArrowRight className="w-4 h-4" /></button>
                             <button onClick={() => { navigate('/ma'); setIsMobileMenuOpen(false); }} className="text-left py-2 hover:text-gray-500 border-b border-gray-50 flex items-center justify-between">ABAYA <ArrowRight className="w-4 h-4" /></button>
                             <button onClick={() => { navigate('/hijab'); setIsMobileMenuOpen(false); }} className="text-left py-2 hover:text-gray-500 border-b border-gray-50 flex items-center justify-between">HIJAB <ArrowRight className="w-4 h-4" /></button>
                             <button onClick={() => { navigate('/kids'); setIsMobileMenuOpen(false); }} className="text-left py-2 hover:text-gray-500 border-b border-gray-50 flex items-center justify-between">KIDS COLLECTION <ArrowRight className="w-4 h-4" /></button>
-                            <button className="text-left py-2 hover:text-gray-500">Store Locator</button>
+                            <button onClick={() => { window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'}); setIsMobileMenuOpen(false); }} className="text-left py-2 hover:text-gray-500">Store Locator</button>
                         </nav>
                     </motion.div>
                 )}
@@ -453,8 +453,10 @@ const Home = () => {
                 </div>
                 <p className="font-bold text-gray-400">© 2019 NRZOONE | All Rights Reserved</p>
                 <div className="flex gap-6 mt-2">
-                    <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
-                    <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
+                    <a href="https://www.facebook.com/nrzonee" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Facebook</a>
+                    <a href="https://wa.me/8801783155897" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">WhatsApp</a>
+                    <a href="/haya#delivery" className="hover:text-white transition-colors">Terms of Service</a>
+                    <a href="/haya#delivery" className="hover:text-white transition-colors">Privacy Policy</a>
                 </div>
             </footer>
         </div>
