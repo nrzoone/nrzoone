@@ -126,13 +126,35 @@ const LandingPage = () => {
 
             // 1. Submit to Google Sheets (Exclude Firebase-specific objects)
             if (GOOGLE_SHEET_URL) {
-                const sheetData = { ...orderData };
-                delete sheetData.createdAt; // Cannot serialize serverTimestamp
-                fetch(GOOGLE_SHEET_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(sheetData)
+                const sheetData = {
+                    Date: orderData.date,
+                    date: orderData.date,
+                    Name: orderData.name,
+                    name: orderData.name,
+                    Phone: orderData.phone,
+                    phone: orderData.phone,
+                    Address: orderData.address,
+                    address: orderData.address,
+                    Product: orderData.productType,
+                    product: orderData.productType,
+                    Color: orderData.color,
+                    color: orderData.color,
+                    Size: orderData.size,
+                    size: orderData.size,
+                    Qty: orderData.quantity,
+                    qty: orderData.quantity,
+                    Total: orderData.total,
+                    total: orderData.total,
+                    Status: orderData.status,
+                    status: orderData.status,
+                    landingPage: orderData.landingPage
+                };
+                const params = new URLSearchParams(sheetData).toString();
+                const syncUrl = `${GOOGLE_SHEET_URL}?${params}`;
+                
+                fetch(syncUrl, { 
+                    method: 'GET', 
+                    mode: 'no-cors' 
                 }).catch(err => console.error("Sheets Sync Error:", err));
             }
 
@@ -381,17 +403,16 @@ const LandingPage = () => {
                                                     <p className="text-xs font-bold text-gray-500 uppercase">পছন্দের সাইজ (লং):</p>
                                                     <span className="text-xs font-bold text-premium-dark">বডি: ৪৬/৪৮ ফ্রি সাইজ</span>
                                                 </div>
-                                                <div className="flex flex-wrap gap-2">
-                                                    {['৫০', '৫২', '৫৪', '৫৬', '৫৮'].map(size => (
-                                                        <button
-                                                            key={size}
-                                                            onClick={() => setItemSize(size)}
-                                                            className={`w-10 h-10 rounded-xl border-2 flex items-center justify-center text-sm font-bold transition-all ${itemSize === size ? 'bg-[#FF4D6D] border-[#FF4D6D] text-white shadow-md' : 'bg-white border-gray-100 text-gray-500 hover:border-gray-300'}`}
-                                                        >
-                                                            {size}
-                                                        </button>
-                                                    ))}
-                                                </div>
+                                                    <select
+                                                        value={itemSize}
+                                                        onChange={(e) => setItemSize(e.target.value)}
+                                                        className="w-full p-3 rounded-xl border-2 border-gray-100 bg-white font-bold text-sm cursor-pointer appearance-none"
+                                                        style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'currentColor\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\'%3E%3C/path%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 0.75rem center', backgroundSize: '1.2em' }}
+                                                    >
+                                                        {['৫০', '৫২', '৫৪', '৫৬', '৫৮'].map(size => (
+                                                            <option key={size} value={size}>{size}</option>
+                                                        ))}
+                                                    </select>
                                             </div>
                                         </div>
 

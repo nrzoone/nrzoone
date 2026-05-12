@@ -102,13 +102,25 @@ const HijabCollection = () => {
             setIsSubmitting(false);
 
             if (GOOGLE_SHEET_URL) {
-                const sheetData = { ...orderData };
-                delete sheetData.createdAt;
-                fetch(GOOGLE_SHEET_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(sheetData)
+                const sheetData = {
+                    Date: orderData.date,
+                    Name: orderData.name,
+                    Phone: orderData.phone,
+                    Address: orderData.address,
+                    Product: orderData.productType,
+                    Color: orderData.color,
+                    Size: orderData.size,
+                    Qty: orderData.quantity,
+                    Total: orderData.total,
+                    Status: orderData.status,
+                    landingPage: orderData.landingPage
+                };
+                const params = new URLSearchParams(sheetData).toString();
+                const syncUrl = `${GOOGLE_SHEET_URL}?${params}`;
+                
+                fetch(syncUrl, { 
+                    method: 'GET', 
+                    mode: 'no-cors' 
                 }).catch(err => console.error("Sheets Sync Error:", err));
             }
             addDoc(collection(db, "orders"), orderData).catch(e => console.error(e));
@@ -391,19 +403,22 @@ const HijabCollection = () => {
 
                             <div className="space-y-4">
                                 <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest">৩. সাইজ সিলেক্ট করুন:</p>
-                                <div className="grid grid-cols-1 gap-3">
+                                <select
+                                    value={selectedSize}
+                                    onChange={(e) => {
+                                        const size = hijabSizes.find(s => s.label === e.target.value);
+                                        if (size) setSelectedSize(size.label);
+                                    }}
+                                    className="w-full p-5 bg-slate-50 border-2 border-transparent rounded-2xl font-bold outline-none focus:border-blue-600 transition-all cursor-pointer appearance-none text-slate-900"
+                                    style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'currentColor\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\'%3E%3C/path%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 1rem center', backgroundSize: '1.5em' }}
+                                >
+                                    <option value="" disabled>সাইজ সিলেক্ট করুন</option>
                                     {hijabSizes.map(size => (
-                                        <button 
-                                            key={size.id} 
-                                            type="button"
-                                            onClick={() => setSelectedSize(size.label)} 
-                                            className={`p-4 rounded-xl border-2 flex justify-between items-center transition-all ${selectedSize === size.label ? 'bg-slate-900 border-slate-900 text-white shadow-lg' : 'bg-slate-50 border-transparent text-slate-600 hover:border-slate-200'}`}
-                                        >
-                                            <span className="font-bold text-sm">{size.label}</span>
-                                            <span className={`font-black ${selectedSize === size.label ? 'text-blue-400' : 'text-blue-600'}`}>৳ {size.price}</span>
-                                        </button>
+                                        <option key={size.id} value={size.label}>
+                                            {size.label} - ৳ {size.price}
+                                        </option>
                                     ))}
-                                </div>
+                                </select>
                             </div>
 
                             <div className="grid grid-cols-2 gap-4 pt-4">

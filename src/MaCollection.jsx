@@ -1,134 +1,109 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ShoppingBag, Phone, MapPin, CheckCircle, ArrowRight, ShieldCheck, Truck, Star, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { db } from './firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
-import {
-    ShoppingBag,
-    Phone,
-    MapPin,
-    ChevronRight,
-    Star,
-    CheckCircle2,
-    Truck,
-    ShieldCheck,
-    Headphones,
-    ArrowRight,
-    Minus,
-    Plus,
-    Sparkles
-} from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { GOOGLE_SHEET_URL, SMS_API_KEY, SMS_SENDER_ID, SMS_API_URL } from './config';
-import { useCart } from './CartContext';
 
 const MaCollection = () => {
     const navigate = useNavigate();
-    const { addToCart } = useCart();
-    const [selectedColor, setSelectedColor] = useState('কালো');
-
-    const heroImages = {
-        'কালো': '/ma_cherry_black.png',
-        'নীল': '/ma_cherry_blue.jpg',
-        'অলিভ': '/ma_cherry_olive.png',
-        'মেরুন': '/ma_maroon_final.jpg',
-        'কফি': '/ma_cherry_coffee.png',
-        'default': '/ma_cherry_black.png'
-    };
-
-    const currentHeroImage = heroImages[selectedColor] || heroImages['default'];
-    const [selectedSize, setSelectedSize] = useState('৫০');
-    const [formData, setFormData] = useState({
-        name: '',
-        phone: '',
-        address: '',
-        note: ''
-    });
-
-    const sizes = ['৫০', '৫২', '৫৪', '৫৬', '৫৮'];
-    const orderFormRef = useRef(null);
-
-    const prices = {
-        single: 1190,
-        hijab: 280
-    };
-
-    const deliveryCharges = {
-        inside: 80,
-        outside: 150
-    };
-
-    const colors = [
-        { name: 'কালো', class: 'bg-black' },
-        { name: 'নীল', class: 'bg-[#1E3A8A]' },
-        { name: 'অলিভ', class: 'bg-[#556B2F]' },
-        { name: 'মেরুন', class: 'bg-[#800000]' },
-        { name: 'কফি', class: 'bg-[#4B3621]' }
-    ];
-
-    const [withHijab, setWithHijab] = useState(true);
+    const [selectedSize, setSelectedSize] = useState('Standard');
+    const [selectedColor, setSelectedColor] = useState('Black');
     const [quantity, setQuantity] = useState(1);
-    const [deliveryArea, setDeliveryArea] = useState('inside');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [orderSuccess, setOrderSuccess] = useState(false);
 
-    const scrollToForm = () => {
-        orderFormRef.current?.scrollIntoView({ behavior: 'smooth' });
+    const [formData, setFormData] = useState({
+        name: '',
+        phone: '',
+        address: ''
+    });
+
+    const colors = [
+        { name: 'Black', code: '#000000' },
+        { name: 'Maroon', code: '#800000' },
+        { name: 'Navy', code: '#000080' },
+        { name: 'Bottle Green', code: '#006a4e' },
+        { name: 'Coffee', code: '#4b3621' }
+    ];
+
+    const colorImages = {
+        'Black': '/ma_cherry_black.png',
+        'Maroon': '/ma_cherry_maroon.jpg',
+        'Navy': '/ma_cherry_blue.jpg',
+        'Bottle Green': '/ma_cherry_olive.png',
+        'Coffee': '/ma_cherry_coffee.png'
     };
 
-    const itemPrice = prices.single + (withHijab ? prices.hijab : 0);
-    const currentPrice = itemPrice * quantity;
-    const currentTotal = currentPrice + deliveryCharges[deliveryArea];
-
-    const handleOrderSubmit = async (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        const orderData = {
-            ...formData,
-            landingPage: 'Ma Collection',
-            productType: withHijab ? 'বোরকা + হিজাব (মা)' : 'বোরকা সিঙ্গেল (মা)',
-            color: selectedColor,
-            size: selectedSize,
-            quantity,
-            price: currentPrice,
-            deliveryCharge: deliveryCharges[deliveryArea],
-            total: currentTotal,
-            status: 'pending',
-            date: new Date().toLocaleDateString('en-GB'),
-            createdAt: serverTimestamp()
-        };
+        if (isSubmitting) return;
 
         try {
             setIsSubmitting(true);
 
-            // OPTIMISTIC UPDATE: Show success modal immediately to prevent UI hang
-            setOrderSuccess(true);
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            setIsSubmitting(false);
+            const currentOrderData = {
+                orderId: "NRZ-" + Date.now().toString().slice(-6),
+                name: formData.name,
+                phone: formData.phone,
+                address: formData.address,
+                productType: "Ma Collection",
+                productName: "Ma Collection Borka",
+                color: selectedColor,
+                size: selectedSize,
+                quantity: Number(quantity),
+                total: selectedSize === 'বোরকা + হিজাব (Combo)' ? 1680 * quantity : 1190 * quantity,
+                status: 'pending',
+                createdAt: serverTimestamp()
+            };
 
-            // BACKGROUND SYNC
-            // 1. Submit to Google Sheets (Exclude Firebase-specific objects)
+            // 1. Submit to Firebase
+            await addDoc(collection(db, "orders"), currentOrderData);
+
+            // 2. Submit to Google Sheets
             if (GOOGLE_SHEET_URL) {
-                const sheetData = { ...orderData };
-                delete sheetData.createdAt;
-                fetch(GOOGLE_SHEET_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(sheetData)
-                }).catch(err => console.error("Sheets Sync Error:", err));
+                const sheetData = {
+                    Date: new Date().toLocaleString('en-GB'),
+                    Name: currentOrderData.name,
+                    name: currentOrderData.name,
+                    Phone: currentOrderData.phone,
+                    phone: currentOrderData.phone,
+                    Address: currentOrderData.address,
+                    address: currentOrderData.address,
+                    Product: currentOrderData.productType,
+                    product: currentOrderData.productType,
+                    Color: currentOrderData.color,
+                    color: currentOrderData.color,
+                    Size: currentOrderData.size,
+                    size: currentOrderData.size,
+                    Qty: currentOrderData.quantity,
+                    qty: currentOrderData.quantity,
+                    Total: currentOrderData.total,
+                    total: currentOrderData.total,
+                    Status: currentOrderData.status,
+                    status: currentOrderData.status,
+                    landingPage: "Ma Collection"
+                };
+                
+                const params = new URLSearchParams(sheetData).toString();
+                const syncUrl = `${GOOGLE_SHEET_URL}?${params}`;
+                
+                fetch(syncUrl, { method: 'GET', mode: 'no-cors' })
+                    .catch(err => console.error("Sheets Sync Error:", err));
             }
 
-            // 2. Submit to Firebase
-            addDoc(collection(db, "orders"), orderData).catch(err => console.error("Firebase Error:", err));
-
-            // 4. Automated SMS Notification
-            if (SMS_API_KEY && SMS_API_KEY !== 'VoYeTuiZ7OH6ZW1rLFZf' && SMS_API_KEY !== 'PASTE_YOUR_API_KEY_HERE') {
+            // 3. SMS Notification (Optional)
+            if (SMS_API_KEY && SMS_API_KEY.length > 5) {
                 const formattedNumber = formData.phone.trim().startsWith('88') ? formData.phone.trim() : `88${formData.phone.trim()}`;
-                const smsMessage = `প্রিয় ${formData.name}, NRZOONE এ আপনার মা কালেকশন বোরকা অর্ডারটি গ্রহণ করা হয়েছে। শীঘ্রই আমরা আপনাকে কল করবো। ধন্যবাদ!`;
+                const smsMessage = `Prio ${formData.name}, NRZOONE e apnar order ti grahon kora hoyeche. Dhonnobad!`;
                 fetch(`${SMS_API_URL}?api_key=${encodeURIComponent(SMS_API_KEY)}&type=text&number=${encodeURIComponent(formattedNumber)}&senderid=${encodeURIComponent(SMS_SENDER_ID || '')}&message=${encodeURIComponent(smsMessage)}`, { mode: 'no-cors' })
                     .catch(err => console.error("SMS Error:", err));
             }
 
-            return; // Success flow handled above
+            setOrderSuccess(true);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
         } catch (error) {
             console.error("Order Submission Error:", error);
             alert('দুঃখিত, অর্ডারটি সম্পন্ন করতে সমস্যা হচ্ছে। অনুগ্রহ করে ফোন করে অর্ডার দিন।');
@@ -138,328 +113,334 @@ const MaCollection = () => {
     };
 
     return (
-        <div className="min-h-screen bg-[#FDFBF7] font-bengali text-[#2D2D2D] overflow-x-hidden">
-            {/* Navigation */}
-            <nav className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md py-4 px-6 md:px-12 flex justify-between items-center border-b border-gray-100">
-                <div onClick={() => navigate('/')} className="flex items-center gap-2 cursor-pointer">
-                    <img src="/logo-dark.png" alt="NRzone Logo" className="h-[40px] md:h-[50px] object-contain" onError={(e)=>{e.target.style.display='none';}} />
+        <div className="min-h-screen bg-[#FDFBF7] font-sans text-[#2D2D2D] overflow-x-hidden">
+            {/* Header / Navigation */}
+            <header className="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-[#E8E1D5] py-4 px-6 md:px-12 flex items-center justify-between">
+                <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/')}>
+                    <img src="/logo.jpg" alt="Logo" className="h-10 md:h-14 mix-blend-multiply" />
+                    <span className="text-xl md:text-2xl font-black tracking-tighter text-[#1A1A1A]">NRZOONE</span>
                 </div>
-                <button
-                    onClick={scrollToForm}
-                    className="bg-black text-white px-6 py-2 rounded-full font-bold hover:bg-neutral-800 transition-all shadow-lg text-sm md:text-base"
+                <button 
+                    onClick={() => navigate('/')}
+                    className="text-sm font-bold bg-[#1A1A1A] text-white px-6 py-2.5 rounded-full hover:bg-black transition-all flex items-center gap-2"
                 >
-                    অর্ডার দিন
+                    অন্যান্য কালেকশন <ArrowRight size={16} />
                 </button>
-            </nav>
+            </header>
 
             {/* Hero Section */}
-            <section className="relative pt-24 pb-12 md:pt-32 md:pb-24 px-6">
-                <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-12">
-                    <motion.div
-                        initial={{ opacity: 0, x: -50 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        className="flex-1 space-y-6 text-center md:text-left"
-                    >
-                        <div className="inline-flex items-center gap-2 bg-neutral-100 text-black px-4 py-1 rounded-full text-sm font-bold">
-                            <Sparkles size={16} /> মা কালেকশন
-                        </div>
-                        <h1 className="text-4xl md:text-6xl font-black leading-tight text-[#1A1A1A]">
-                            মা বোরকা <br />
-                            <span className="text-black">প্রিমিয়াম চেরি ফ্যাব্রিক</span>
-                        </h1>
-                        <div className="space-y-2 text-lg text-gray-600">
-                            <p>✨ মায়েদের জন্য বিশেষভাবে তৈরি আরামদায়ক বোরকা</p>
-                            <p>🧣 ম্যাচিং বড় হিজাব (৮০ ইঞ্চি) সহ সম্পূর্ণ সেট</p>
-                            <p>👗 সাইজ ৫০ থেকে ৫৮ পর্যন্ত এভেলেবল</p>
-                        </div>
+            <main className="max-w-7xl mx-auto px-4 md:px-6 py-8 md:py-16">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-20 items-start">
+                    
+                    {/* Left: Visual Content */}
+                    <div className="space-y-6">
+                        <motion.div 
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="relative group rounded-3xl overflow-hidden border-4 border-white shadow-2xl"
+                        >
+                            <img 
+                                src={colorImages[selectedColor] || '/ma_cherry_black.png'} 
+                                alt={`Ma Collection Borka - ${selectedColor}`} 
+                                className="w-full aspect-[4/5] object-cover transition-transform duration-700 group-hover:scale-105"
+                            />
+                            
 
-                        <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start pt-4">
-                            <button
-                                onClick={scrollToForm}
-                                className="bg-black text-white px-10 py-4 rounded-2xl font-bold text-xl hover:shadow-2xl hover:bg-neutral-800 transition-all shadow-xl shadow-black/10"
-                            >
-                                এখনই অর্ডার করুন
-                            </button>
-                            <div className="flex flex-col justify-center">
-                                <p className="text-sm font-bold text-gray-400 uppercase tracking-widest">মূল্য শুরু মাত্র</p>
-                                <p className="text-3xl font-black text-black">৳ ১১৯০ <span className="text-base font-medium text-gray-400 line-through ml-2">৳ ১৫০০</span></p>
+                            <div className="absolute top-6 left-6 flex flex-col gap-3">
+                                <span className="bg-black text-white text-[10px] md:text-xs font-black uppercase tracking-widest px-4 py-2 rounded-full shadow-xl">Best Seller</span>
+                                <span className="bg-[#D4AF37] text-white text-[10px] md:text-xs font-black uppercase tracking-widest px-4 py-2 rounded-full shadow-xl">Premium Cherry</span>
+                            </div>
+                        </motion.div>
+                        
+                        {/* Benefits Icons */}
+                        <div className="grid grid-cols-3 gap-4">
+                            <div className="bg-white p-4 rounded-2xl text-center shadow-sm border border-[#E8E1D5]">
+                                <ShieldCheck className="mx-auto text-[#D4AF37] mb-2" size={24} />
+                                <span className="text-[10px] md:text-xs font-bold uppercase tracking-tighter">অরিজিনাল চেরি</span>
+                            </div>
+                            <div className="bg-white p-4 rounded-2xl text-center shadow-sm border border-[#E8E1D5]">
+                                <Truck className="mx-auto text-[#D4AF37] mb-2" size={24} />
+                                <span className="text-[10px] md:text-xs font-bold uppercase tracking-tighter">সারা দেশে ডেলিভারি</span>
+                            </div>
+                            <div className="bg-white p-4 rounded-2xl text-center shadow-sm border border-[#E8E1D5]">
+                                <Star className="mx-auto text-[#D4AF37] mb-2" size={24} />
+                                <span className="text-[10px] md:text-xs font-bold uppercase tracking-tighter">প্রিমিয়াম কোয়ালিটি</span>
                             </div>
                         </div>
-                    </motion.div>
 
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        className="flex-1 relative"
-                    >
-                        <div className="relative rounded-[2.5rem] overflow-hidden shadow-2xl border-8 border-white group aspect-[9/16] w-full max-w-sm mx-auto md:max-w-md bg-black">
-                            <iframe 
-                                src="https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Freel%2F835249912617282&show_text=false&autoplay=1&mute=0"
-                                width="100%" 
-                                height="100%" 
-                                style={{ border: 'none', overflow: 'hidden', position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }} 
-                                scrolling="no" 
-                                frameBorder="0" 
-                                allowFullScreen={true} 
-                                allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-                                title="Ma Borka Video"
-                            ></iframe>
-                            <div className="absolute top-6 right-6 bg-white/90 backdrop-blur p-4 rounded-2xl shadow-xl z-10">
-                                <p className="text-xs font-bold text-gray-400 mb-1">এভেলেবল কালার</p>
-                                <div className="flex gap-2">
-                                    {colors.map(c => (
-                                        <div
-                                            key={c.name}
-                                            onClick={() => setSelectedColor(c.name)}
-                                            className={`w-6 h-6 rounded-full cursor-pointer border-2 ${selectedColor === c.name ? 'border-black scale-125' : 'border-transparent'} ${c.class} transition-all`}
-                                        ></div>
-                                    ))}
-                                </div>
-                            </div>
-                        </div>
-                    </motion.div>
-                </div>
-            </section>
-
-            {/* Selection Grid */}
-            <section className="py-20 bg-white">
-                <div className="max-w-7xl mx-auto px-6">
-                    <div className="text-center mb-16">
-                        <h2 className="text-3xl md:text-5xl font-black mb-4">পছন্দের কালার ও প্যাকেজ</h2>
-                        <div className="w-24 h-2 bg-black mx-auto rounded-full"></div>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {colors.map((color) => {
-                            const [itemWithHijab, setItemWithHijab] = useState(true);
-                            const price = prices.single + (itemWithHijab ? prices.hijab : 0);
-
-                            return (
-                                <motion.div
-                                    key={color.name}
-                                    whileHover={{ y: -10 }}
-                                    className="bg-[#FDFBF7] rounded-3xl overflow-hidden border border-gray-100 shadow-xl flex flex-col"
+                        {/* Vertical Image Gallery (Landing Page Style) */}
+                        <div className="space-y-6 mt-8">
+                            <h4 className="text-xl font-black text-center uppercase tracking-widest text-[#1A1A1A] mb-8">
+                                <span className="bg-[#1A1A1A] text-white px-6 py-2 rounded-full">আমাদের সবকটি কালার দেখুন</span>
+                            </h4>
+                            {Object.entries(colorImages).map(([color, img]) => (
+                                <motion.div 
+                                    key={color}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true }}
+                                    className="relative group rounded-[2.5rem] overflow-hidden border-4 border-white shadow-2xl"
                                 >
-                                    <div className="aspect-[4/5] relative overflow-hidden">
-                                        <img src={heroImages[color.name]} className="w-full h-full object-cover" />
-                                        <div className="absolute bottom-4 left-4 bg-white/90 px-4 py-1 rounded-full text-xs font-bold shadow-lg">
-                                            {color.name}
-                                        </div>
-                                    </div>
-                                    <div className="p-8 space-y-6 flex-1 flex flex-col">
-                                        <h3 className="text-2xl font-bold">মা বোরকা - {color.name}</h3>
-
-                                        <div className="space-y-3">
-                                            <p className="text-sm font-bold text-gray-400 uppercase">প্যাকেজ সিলেক্ট করুন:</p>
-                                            <div className="grid grid-cols-1 gap-2">
-                                                <button
-                                                    onClick={() => setItemWithHijab(true)}
-                                                    className={`p-3 rounded-xl border-2 text-left font-bold transition-all ${itemWithHijab ? 'border-black bg-black/5' : 'border-gray-100'}`}
-                                                >
-                                                    বোরকা + হিজাব (৳ {prices.single + prices.hijab})
-                                                </button>
-                                                <button
-                                                    onClick={() => setItemWithHijab(false)}
-                                                    className={`p-3 rounded-xl border-2 text-left font-bold transition-all ${!itemWithHijab ? 'border-black bg-black/5' : 'border-gray-100'}`}
-                                                >
-                                                    শুধুমাত্র বোরকা (৳ {prices.single})
-                                                </button>
-                                            </div>
-                                        </div>
-
-                                        <div className="flex flex-col gap-3 mt-auto">
-                                            <button
-                                                onClick={() => {
-                                                    addToCart({
-                                                        id: `ma_${color.name}_${itemWithHijab ? 'with_hijab' : 'no_hijab'}`,
-                                                        name: `মা বোরকা - ${color.name} ${itemWithHijab ? '(হিজাবসহ)' : '(সিঙ্গেল)'}`,
-                                                        color: color.name,
-                                                        size: selectedSize,
-                                                        price: price,
-                                                        quantity: 1,
-                                                        image: heroImages[color.name]
-                                                    });
-                                                }}
-                                                className="w-full bg-white text-black border-2 border-black py-3 rounded-2xl font-bold hover:bg-neutral-100 transition-all shadow-sm flex items-center justify-center gap-2"
-                                            >
-                                                <ShoppingBag size={20} /> কার্টে যোগ করুন
-                                            </button>
-                                            <button
-                                                onClick={() => {
-                                                    setSelectedColor(color.name);
-                                                    setWithHijab(itemWithHijab);
-                                                    scrollToForm();
-                                                }}
-                                                className="w-full bg-black text-white py-3 rounded-2xl font-bold hover:bg-neutral-800 transition-all shadow-lg"
-                                            >
-                                                অর্ডার করুন
-                                            </button>
-                                        </div>
+                                    <img 
+                                        src={img} 
+                                        alt={`Ma Collection Borka - ${color}`} 
+                                        className="w-full aspect-[4/5] object-cover"
+                                    />
+                                    <div className="absolute bottom-6 left-1/2 -translate-x-1/2">
+                                        <button 
+                                            onClick={() => {
+                                                setSelectedColor(color);
+                                                window.scrollTo({ top: 0, behavior: 'smooth' });
+                                            }}
+                                            className="bg-white/90 backdrop-blur-md text-black px-8 py-3 rounded-2xl font-black text-sm shadow-xl border border-white hover:bg-black hover:text-white transition-all"
+                                        >
+                                            {color} কালারটি কিনুন
+                                        </button>
                                     </div>
                                 </motion.div>
-                            )
-                        })}
-                    </div>
-                </div>
-            </section>
+                            ))}
+                        </div>
 
-            {/* Order Form */}
-            <section ref={orderFormRef} className="py-24 px-6 bg-neutral-100">
-                <div className="max-w-5xl mx-auto bg-white rounded-[3rem] shadow-2xl overflow-hidden flex flex-col md:flex-row border border-white">
-                    <div className="md:w-[40%] bg-black text-white p-12 space-y-8">
-                        <h2 className="text-4xl font-black leading-tight">অর্ডার তথ্য</h2>
-                        <div className="space-y-4 pt-8">
-                            <div className="flex justify-between items-center text-lg border-b border-white/10 pb-4">
-                                <span className="opacity-70">কালার:</span>
-                                <span className="font-bold">{selectedColor}</span>
+                        {/* Customer Reviews Section */}
+                        <div className="mt-16 bg-white p-8 rounded-[3rem] shadow-2xl border border-[#E8E1D5]">
+                            <div className="text-center mb-10">
+                                <h4 className="text-2xl font-black text-[#1A1A1A] uppercase tracking-wider mb-2">আমাদের কাস্টমার রিভিউ</h4>
+                                <div className="flex justify-center gap-1 text-[#D4AF37]">
+                                    {[...Array(5)].map((_, i) => <Star key={i} fill="#D4AF37" size={20} />)}
+                                </div>
+                                <p className="text-gray-400 text-sm mt-2">৫০০+ এর বেশি কাস্টমার আমাদের ড্রেস পছন্দ করেছেন</p>
                             </div>
-                            <div className="flex justify-between items-center text-lg border-b border-white/10 pb-4">
-                                <span className="opacity-70">প্যাকেজ:</span>
-                                <span className="font-bold">{withHijab ? 'বোরকা + হিজাব' : 'শুধুমাত্র বোরকা'}</span>
+
+                            <div className="space-y-6">
+                                {[
+                                    { name: "সামিয়া আক্তার", comment: "বোরকাটির কাপড় অনেক সফট এবং ডিজাইনটি একদম ইউনিক। মা কালেকশন সত্যি প্রিমিয়াম!", date: "২ দিন আগে" },
+                                    { name: "ফারিয়া ইসলাম", comment: "হিজাবসহ সেটটি অনেক সাশ্রয়ী মনে হয়েছে। কালারটা একদম ছবির মতোই সুন্দর।", date: "৫ দিন আগে" },
+                                    { name: "নুসরাত জাহান", comment: "ডেলিভারি অনেক ফাস্ট ছিল। কোয়ালিটি নিয়ে কোনো সন্দেহ নেই। ধন্যবাদ NRZOONE!", date: "১ সপ্তাহ আগে" }
+                                ].map((review, idx) => (
+                                    <div key={idx} className="p-6 rounded-2xl bg-gray-50 border border-gray-100 flex flex-col gap-3">
+                                        <div className="flex justify-between items-center">
+                                            <span className="font-bold text-[#1A1A1A]">{review.name}</span>
+                                            <span className="text-[10px] text-gray-400">{review.date}</span>
+                                        </div>
+                                        <div className="flex gap-1 text-[#D4AF37]">
+                                            {[...Array(5)].map((_, i) => <Star key={i} fill="#D4AF37" size={12} />)}
+                                        </div>
+                                        <p className="text-sm text-gray-600 italic">"{review.comment}"</p>
+                                    </div>
+                                ))}
                             </div>
-                            <div className="flex justify-between items-center text-lg border-b border-white/10 pb-4">
-                                <span className="opacity-70">সাইজ:</span>
-                                <span className="font-bold">লং {selectedSize}</span>
-                            </div>
-                            <div className="flex justify-between items-center text-3xl font-black text-white pt-4">
-                                <span>সর্বমোট:</span>
-                                <span>৳ {currentTotal}</span>
+
+                            <div className="mt-10 text-center">
+                                <button className="bg-[#1A1A1A] text-white px-8 py-4 rounded-2xl font-black text-sm hover:scale-105 transition-all shadow-xl">
+                                    আরও ৫৭০টি রিভিউ দেখুন
+                                </button>
                             </div>
                         </div>
                     </div>
 
-                    <div className="flex-1 p-8 md:p-12">
-                        <form onSubmit={handleOrderSubmit} className="space-y-6">
-                            <div className="grid grid-cols-1 gap-6">
-                                <div className="space-y-2">
-                                    <label className="text-sm font-bold text-gray-500 uppercase">আপনার নাম *</label>
-                                    <input
-                                        required
-                                        type="text"
-                                        className="w-full p-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-black outline-none transition-all"
-                                        placeholder="সম্পূর্ণ নাম লিখুন"
-                                        value={formData.name}
-                                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                    />
+                    {/* Right: Product Details & Order Form */}
+                    <div className="space-y-10">
+                        <div className="space-y-4">
+                            <h1 className="text-4xl md:text-6xl font-black text-[#1A1A1A] leading-[1.1] tracking-tighter">
+                                মা কালেকশন <br/> 
+                                <span className="text-[#D4AF37]">প্রিমিয়াম বোরকা</span>
+                            </h1>
+                            <p className="text-lg md:text-xl text-gray-500 font-medium leading-relaxed">
+                                দুবাই থেকে আমদানিকৃত ১০০% অরিজিনাল চেরি জর্জেট ফেব্রিক দিয়ে তৈরি। মডেস্টি এবং আভিজাত্যের এক অনন্য মেলবন্ধন।
+                            </p>
+                            
+                            <div className="flex items-center gap-6 py-4">
+                                <div className="space-y-1">
+                                    <span className="text-red-500 line-through text-lg md:text-xl font-bold">৳১,৬৯০</span>
+                                    <div className="text-4xl md:text-5xl font-black text-[#1A1A1A]">৳{selectedSize === 'বোরকা + হিজাব (Combo)' ? '১,৬৮০' : '১,১৯০'}</div>
                                 </div>
-                                <div className="space-y-2">
-                                    <label className="text-sm font-bold text-gray-500 uppercase">মোবাইল নম্বর *</label>
-                                    <input
-                                        required
-                                        type="tel"
-                                        className="w-full p-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-black outline-none transition-all"
-                                        placeholder="০১XXXXXXXXX"
-                                        value={formData.phone}
-                                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <label className="text-sm font-bold text-gray-500 uppercase">সম্পূর্ণ ঠিকানা *</label>
-                                    <textarea
-                                        required
-                                        className="w-full p-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-black outline-none transition-all min-h-[100px]"
-                                        placeholder="বাসা নম্বর, রোড, এলাকা ও জেলা"
-                                        value={formData.address}
-                                        onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                                    />
-                                </div>
+                            <div className="bg-[#FFF4E5] text-[#D4AF37] px-4 py-2 rounded-xl font-black text-sm md:text-base animate-pulse">
+                                     স্পেশাল অফার!
+                                 </div>
                             </div>
 
+                            {/* Video Review Section */}
+                            <div className="bg-white p-6 rounded-3xl shadow-lg border border-pink-100 mb-8">
+                                <h4 className="text-sm font-bold text-gray-800 mb-4 flex items-center gap-2">
+                                    <span className="flex h-2 w-2 rounded-full bg-red-500 animate-ping"></span>
+                                    রিয়েল ভিডিও রিভিউ দেখুন
+                                </h4>
+                                <div className="aspect-video rounded-2xl overflow-hidden bg-black relative group">
+                                    <iframe 
+                                        src={`https://www.facebook.com/plugins/video.php?href=${encodeURIComponent('https://www.facebook.com/facebook/videos/835249912617282/')}&show_text=0&width=560`} 
+                                        className="absolute inset-0 w-full h-full border-0"
+                                        allowFullScreen={true}
+                                        allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                                    ></iframe>
+                                </div>
+                                <p className="text-[11px] text-gray-400 mt-3 text-center italic">ভিডিওতে বোরকাটির মান এবং কাপড় ভালো করে দেখে নিন</p>
+                            </div>
+                        </div>
+
+                        {/* Customization Options */}
+                        <div className="space-y-8 bg-white p-6 md:p-10 rounded-[40px] shadow-xl border border-[#E8E1D5]">
+                            {/* Color Selector */}
                             <div className="space-y-4">
-                                <label className="text-sm font-bold text-gray-500 uppercase block">সাইজ সিলেক্ট করুন *</label>
-                                <div className="flex flex-wrap gap-2">
-                                    {sizes.map(s => (
+                                <label className="text-xs font-black uppercase tracking-widest text-gray-400">পছন্দের কালার সিলেক্ট করুন</label>
+                                <div className="flex flex-wrap gap-4">
+                                    {colors.map((color) => (
                                         <button
-                                            key={s}
-                                            type="button"
-                                            onClick={() => setSelectedSize(s)}
-                                            className={`w-20 md:w-24 px-2 h-14 rounded-2xl border-2 font-bold transition-all ${selectedSize === s ? 'bg-black border-black text-white' : 'bg-white border-gray-100 text-gray-400 hover:border-gray-200'}`}
+                                            key={color.name}
+                                            onClick={() => setSelectedColor(color.name)}
+                                            className={`group relative flex flex-col items-center gap-2 p-2 rounded-2xl transition-all ${
+                                                selectedColor === color.name ? 'bg-gray-50 scale-105' : 'hover:bg-gray-50'
+                                            }`}
                                         >
-                                            {s}
+                                            <div 
+                                                className={`w-10 h-10 md:w-12 md:h-12 rounded-full border-4 shadow-inner transition-all ${
+                                                    selectedColor === color.name ? 'border-[#1A1A1A] scale-110' : 'border-white'
+                                                }`}
+                                                style={{ backgroundColor: color.code }}
+                                            />
+                                            <span className={`text-[10px] font-bold uppercase tracking-tighter ${selectedColor === color.name ? 'text-black' : 'text-gray-400'}`}>
+                                                {color.name}
+                                            </span>
+                                            {selectedColor === color.name && (
+                                                <div className="absolute -top-1 -right-1 bg-[#1A1A1A] text-white rounded-full p-1 shadow-lg">
+                                                    <CheckCircle size={10} />
+                                                </div>
+                                            )}
                                         </button>
                                     ))}
                                 </div>
                             </div>
 
+                            {/* Size Selector */}
                             <div className="space-y-4">
-                                <label className="text-sm font-bold text-gray-500 uppercase block">ডেলিভারি এরিয়া *</label>
-                                <div className="grid grid-cols-2 gap-4">
-                                    <button
-                                        type="button"
-                                        onClick={() => setDeliveryArea('inside')}
-                                        className={`p-4 rounded-2xl border-2 text-left ${deliveryArea === 'inside' ? 'border-black bg-black/5' : 'border-gray-100'}`}
-                                    >
-                                        <p className="font-bold">ঢাকার ভিতরে</p>
-                                        <p className="text-xs opacity-50">৮০ ৳</p>
-                                    </button>
-                                    <button
-                                        type="button"
-                                        onClick={() => setDeliveryArea('outside')}
-                                        className={`p-4 rounded-2xl border-2 text-left ${deliveryArea === 'outside' ? 'border-black bg-black/5' : 'border-gray-100'}`}
-                                    >
-                                        <p className="font-bold">ঢাকার বাইরে</p>
-                                        <p className="text-xs opacity-50">১৫০ ৳</p>
-                                    </button>
-                                </div>
+                                <label className="text-xs font-black uppercase tracking-widest text-gray-400">সাইজ নির্বাচন করুন</label>
+                                <select
+                                    value={selectedSize}
+                                    onChange={(e) => setSelectedSize(e.target.value)}
+                                    className="w-full p-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-black outline-none transition-all font-bold text-lg cursor-pointer appearance-none"
+                                    style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'currentColor\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\'%3E%3C/path%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 1rem center', backgroundSize: '1.5em' }}
+                                >
+                                    <option value="" disabled>সাইজ সিলেক্ট করুন</option>
+                                    {['50', '52', '54', '56', 'বোরকা + হিজাব (Combo)'].map((size) => (
+                                        <option key={size} value={size}>{size}</option>
+                                    ))}
+                                </select>
                             </div>
 
-                            <button
-                                type="submit"
-                                disabled={isSubmitting}
-                                className="w-full bg-black text-white py-6 rounded-2xl font-black text-2xl shadow-2xl hover:bg-neutral-800 transition-all flex items-center justify-center gap-3 active:scale-95"
-                            >
-                                {isSubmitting ? 'প্রসেস হচ্ছে...' : 'অর্ডার সম্পন্ন করুন'} <ArrowRight />
-                            </button>
-                        </form>
+                            {/* Order Form */}
+                            <div id="order-form" className="space-y-6 pt-6 border-t border-gray-100">
+                                <div className="flex items-center gap-4 mb-4">
+                                    <ShoppingBag className="text-[#D4AF37]" size={28} />
+                                    <h3 className="text-xl md:text-2xl font-black tracking-tighter">অর্ডার করতে নিচের তথ্য দিন</h3>
+                                </div>
+                                
+                                <form onSubmit={handleSubmit} className="space-y-5">
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-2">আপনার নাম</label>
+                                        <input
+                                            required
+                                            type="text"
+                                            placeholder="পুরো নাম লিখুন"
+                                            className="w-full bg-[#F9F9F9] border-2 border-transparent focus:border-[#D4AF37] focus:bg-white px-6 py-4 rounded-2xl outline-none transition-all font-bold"
+                                            value={formData.name}
+                                            onChange={(e) => setFormData({...formData, name: e.target.value})}
+                                        />
+                                    </div>
+                                    
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-2">মোবাইল নম্বর</label>
+                                        <input
+                                            required
+                                            type="tel"
+                                            placeholder="১১ ডিজিটের মোবাইল নম্বর দিন"
+                                            className="w-full bg-[#F9F9F9] border-2 border-transparent focus:border-[#D4AF37] focus:bg-white px-6 py-4 rounded-2xl outline-none transition-all font-bold"
+                                            value={formData.phone}
+                                            onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                                        />
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-2">পুরো ঠিকানা</label>
+                                        <textarea
+                                            required
+                                            placeholder="বাসা নং, রোড নং, থানা ও জেলা লিখুন"
+                                            className="w-full bg-[#F9F9F9] border-2 border-transparent focus:border-[#D4AF37] focus:bg-white px-6 py-5 rounded-2xl outline-none transition-all font-bold min-h-[120px] resize-none"
+                                            value={formData.address}
+                                            onChange={(e) => setFormData({...formData, address: e.target.value})}
+                                        />
+                                    </div>
+
+                                    <button
+                                        disabled={isSubmitting}
+                                        type="submit"
+                                        className={`w-full group relative overflow-hidden py-6 rounded-3xl font-black text-xl md:text-2xl tracking-tighter transition-all flex items-center justify-center gap-3 shadow-2xl ${
+                                            isSubmitting ? 'bg-gray-400' : 'bg-[#D4AF37] hover:bg-[#B8860B] text-white active:scale-95'
+                                        }`}
+                                    >
+                                        <span className="relative z-10">{isSubmitting ? 'অর্ডার হচ্ছে...' : 'অর্ডার নিশ্চিত করুন'}</span>
+                                        {!isSubmitting && <ArrowRight className="relative z-10 group-hover:translate-x-2 transition-transform" size={24} />}
+                                        <div className="absolute inset-0 bg-white/10 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 skew-x-12" />
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </section>
+            </main>
 
             {/* Success Modal */}
             <AnimatePresence>
                 {orderSuccess && (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/80 backdrop-blur-md"
-                    >
-                        <motion.div
-                            initial={{ scale: 0.9, y: 20 }}
-                            animate={{ scale: 1, y: 0 }}
-                            className="bg-white rounded-[3rem] p-12 max-w-lg w-full text-center shadow-2xl"
+                    <div className="fixed inset-0 z-[100] flex items-center justify-center px-4">
+                        <motion.div 
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+                        />
+                        <motion.div 
+                            initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                            animate={{ scale: 1, opacity: 1, y: 0 }}
+                            exit={{ scale: 0.9, opacity: 0, y: 20 }}
+                            className="relative bg-white rounded-[40px] p-8 md:p-12 max-w-lg w-full text-center shadow-2xl overflow-hidden"
                         >
-                            <div className="w-24 h-24 bg-neutral-100 rounded-full flex items-center justify-center mx-auto mb-8">
-                                <CheckCircle2 size={48} className="text-black" />
+                            <div className="absolute top-0 left-0 w-full h-3 bg-gradient-to-r from-[#D4AF37] via-[#F3E5AB] to-[#D4AF37]" />
+                            <button 
+                                onClick={() => setOrderSuccess(false)}
+                                className="absolute top-6 right-6 text-gray-400 hover:text-black transition-colors"
+                            >
+                                <X size={24} />
+                            </button>
+
+                            <div className="mb-8 relative">
+                                <div className="w-24 h-24 bg-[#F1FDF6] rounded-full flex items-center justify-center mx-auto mb-4 border-4 border-white shadow-lg">
+                                    <CheckCircle className="text-[#22C55E]" size={48} />
+                                </div>
+                                <h2 className="text-3xl md:text-4xl font-black tracking-tighter text-black mb-4">অর্ডারটি সফল হয়েছে!</h2>
+                                <p className="text-gray-500 font-bold leading-relaxed">
+                                    আমাদের প্রতিনিধি শীঘ্রই আপনার নাম্বারে কল করে অর্ডারটি কনফার্ম করবেন। NRZOONE এর সাথে থাকার জন্য ধন্যবাদ!
+                                </p>
                             </div>
-                            <h2 className="text-4xl font-black text-gray-900 mb-4">অর্ডার সফল!</h2>
-                            <p className="text-lg text-gray-600 mb-8 leading-relaxed">
-                                শীঘ্রই আপনাকে কল করে নিশ্চিত করা হবে।
-                            </p>
-                             <div className="space-y-4">
+
+                            <div className="space-y-4">
                                 <a 
-                                    href={`https://wa.me/8801783155897?text=${encodeURIComponent(`*নতুন অর্ডার (Ma)*\n\n*নাম:* ${formData.name}\n*মোবাইল:* ${formData.phone}\n*প্যাকেজ:* ${withHijab ? 'বোরকা + হিজাব' : 'শুধুমাত্র বোরকা'}\n*সর্বমোট:* ${currentTotal} ৳\n\n_অর্ডারটি কনফার্ম করতে এই মেসেজটি পাঠান।_`)}`}
+                                    href={`https://wa.me/8801783155897?text=${encodeURIComponent('Hi NRZOONE, I just placed an order for Ma Collection Borka.')}`}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="w-full bg-[#25D366] text-white py-4 rounded-2xl font-bold text-xl flex items-center justify-center gap-2 hover:scale-[1.02] transition-all shadow-lg"
+                                    className="block w-full bg-[#25D366] text-white py-5 rounded-2xl font-black text-lg hover:shadow-xl transition-all flex items-center justify-center gap-2"
                                 >
-                                    WhatsApp এ কনফার্ম করুন
+                                    <Phone size={20} /> WhatsApp এ নিশ্চিত করুন
                                 </a>
-                                <button
+                                <button 
                                     onClick={() => setOrderSuccess(false)}
-                                    className="w-full bg-neutral-100 text-black py-4 rounded-2xl font-bold text-xl"
+                                    className="w-full bg-gray-100 text-black py-4 rounded-2xl font-bold hover:bg-gray-200 transition-all"
                                 >
                                     ঠিক আছে
                                 </button>
                             </div>
                         </motion.div>
-                    </motion.div>
+                    </div>
                 )}
             </AnimatePresence>
-
-            {/* Sticky WhatsApp */}
-            <a href="https://wa.me/8801783155897" target="_blank" className="fixed bottom-8 right-8 z-[60] bg-[#25D366] text-white p-4 rounded-full shadow-2xl hover:scale-110 transition-all">
-                <Phone size={32} />
-            </a>
         </div>
     );
 };

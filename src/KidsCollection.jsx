@@ -45,7 +45,7 @@ const KidsCollection = () => {
         customSize: ''
     });
 
-    const sizes = ['৩০', '৩২', '৩৪', '৩৬', '৩৮', '৪০', 'কাস্টমাইজ'];
+    const sizes = ['৩০', '৩২', '৩৪', '৩৬', '৩৮', '৪০'];
     const orderFormRef = useRef(null);
 
     const prices = {
@@ -87,7 +87,7 @@ const KidsCollection = () => {
             landingPage: 'Kids Collection',
             productType: withHijab ? 'বোরকা + হিজাব (ছোটদের)' : 'বোরকা সিঙ্গেল (ছোটদের)',
             color: selectedColor,
-            size: selectedSize === 'কাস্টমাইজ' ? `কাস্টমাইজ: ${formData.customSize}` : selectedSize,
+            size: selectedSize,
             quantity,
             price: currentPrice,
             deliveryCharge: deliveryCharges[deliveryArea],
@@ -108,13 +108,25 @@ const KidsCollection = () => {
             // BACKGROUND SYNC
             // 1. Submit to Google Sheets (Exclude Firebase-specific objects)
             if (GOOGLE_SHEET_URL) {
-                const sheetData = { ...orderData };
-                delete sheetData.createdAt;
-                fetch(GOOGLE_SHEET_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(sheetData)
+                const sheetData = {
+                    Date: orderData.date,
+                    Name: orderData.name,
+                    Phone: orderData.phone,
+                    Address: orderData.address,
+                    Product: orderData.productType,
+                    Color: orderData.color,
+                    Size: orderData.size,
+                    Qty: orderData.quantity,
+                    Total: orderData.total,
+                    Status: orderData.status,
+                    landingPage: orderData.landingPage
+                };
+                const params = new URLSearchParams(sheetData).toString();
+                const syncUrl = `${GOOGLE_SHEET_URL}?${params}`;
+                
+                fetch(syncUrl, { 
+                    method: 'GET', 
+                    mode: 'no-cors' 
                 }).catch(err => console.error("Sheets Sync Error:", err));
             }
 
@@ -368,27 +380,18 @@ const KidsCollection = () => {
 
                             <div className="space-y-4">
                                 <label className="text-sm font-bold text-gray-500 uppercase block">সাইজ সিলেক্ট করুন *</label>
-                                <div className="flex flex-wrap gap-2">
+                                <select
+                                    value={selectedSize}
+                                    onChange={(e) => setSelectedSize(e.target.value)}
+                                    className="w-full p-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-black outline-none transition-all font-bold text-lg cursor-pointer appearance-none"
+                                    style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'currentColor\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\'%3E%3C/path%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 1rem center', backgroundSize: '1.5em' }}
+                                >
+                                    <option value="" disabled>সাইজ সিলেক্ট করুন</option>
                                     {sizes.map(s => (
-                                        <button
-                                            key={s}
-                                            type="button"
-                                            onClick={() => setSelectedSize(s)}
-                                            className={`w-20 md:w-24 px-2 h-14 rounded-2xl border-2 font-bold transition-all ${selectedSize === s ? 'bg-black border-black text-white' : 'bg-white border-gray-100 text-gray-400 hover:border-gray-200'}`}
-                                        >
-                                            {s}
-                                        </button>
+                                        <option key={s} value={s}>{s}</option>
                                     ))}
-                                </div>
-                                {selectedSize === 'কাস্টমাইজ' && (
-                                    <input
-                                        type="text"
-                                        placeholder="আপনার সাইজ লিখুন (যেমন: ৪২)"
-                                        className="w-full p-4 rounded-2xl bg-gray-50 border-2 border-black outline-none"
-                                        value={formData.customSize}
-                                        onChange={(e) => setFormData({ ...formData, customSize: e.target.value })}
-                                    />
-                                )}
+                                </select>
+
                             </div>
 
                             <div className="space-y-4">

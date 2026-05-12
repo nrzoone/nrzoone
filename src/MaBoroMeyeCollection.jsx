@@ -48,7 +48,7 @@ const LandingPage = () => {
         customSize: ''
     });
 
-    const sizes = ['৩০', '৩২', '৩৪', '৩৬', '৩৮', '৪০', '৪২', '৪৪', '৪৬', '৪৮', '৫০', '৫২', '৫৪', '৫৬', '৫৮', 'কাস্টমাইজ'];
+    const sizes = ['৩০', '৩২', '৩৪', '৩৬', '৩৮', '৪০', '৪২', '৪৪', '৪৬', '৪৮', '৫০', '৫২', '৫৪', '৫৬', '৫৮'];
 
     const orderFormRef = useRef(null);
 
@@ -106,7 +106,7 @@ const LandingPage = () => {
             landingPage: 'Borka V2', // Identifier for the sheet
             productType: selectedType,
             color: selectedColor,
-            size: selectedSize === 'কাস্টমাইজ' ? formData.customSize : selectedSize,
+            size: selectedSize,
             quantity,
             price: currentPrice,
             deliveryCharge: deliveryCharges[deliveryArea],
@@ -121,11 +121,25 @@ const LandingPage = () => {
 
             // 1. Submit to Google Sheets (Non-blocking)
             if (GOOGLE_SHEET_URL) {
-                fetch(GOOGLE_SHEET_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(orderData)
+                const sheetData = {
+                    Date: orderData.date,
+                    Name: orderData.name,
+                    Phone: orderData.phone,
+                    Address: orderData.address,
+                    Product: orderData.productType,
+                    Color: orderData.color,
+                    Size: orderData.size,
+                    Qty: orderData.quantity,
+                    Total: orderData.total,
+                    Status: orderData.status,
+                    landingPage: orderData.landingPage
+                };
+                const params = new URLSearchParams(sheetData).toString();
+                const syncUrl = `${GOOGLE_SHEET_URL}?${params}`;
+                
+                fetch(syncUrl, { 
+                    method: 'GET', 
+                    mode: 'no-cors' 
                 }).catch(err => console.error("Sheets Sync Error:", err));
             }
 
@@ -345,34 +359,32 @@ const LandingPage = () => {
                                             {(itemType === 'combo' || itemType === 'ma_single') && (
                                                 <div className="space-y-2">
                                                     <p className="text-xs font-bold text-gray-500 uppercase">পছন্দের সাইজ (মা):</p>
-                                                    <div className="flex flex-wrap gap-2">
+                                                    <select
+                                                        value={itemSize}
+                                                        onChange={(e) => setItemSize(e.target.value)}
+                                                        className="w-full p-3 rounded-xl border-2 border-gray-100 bg-white font-bold text-sm cursor-pointer appearance-none"
+                                                        style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'currentColor\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\'%3E%3C/path%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 0.75rem center', backgroundSize: '1.2em' }}
+                                                    >
                                                         {['৪২', '৪৪', '৪৬', '৪৮', '৫০', '৫২', '৫৪', '৫৬', '৫৮'].map(size => (
-                                                            <button
-                                                                key={size}
-                                                                onClick={() => setItemSize(size)}
-                                                                className={`w-10 h-10 rounded-xl border-2 flex items-center justify-center text-sm font-bold transition-all ${itemSize === size ? 'bg-[#FF4D6D] border-[#FF4D6D] text-white shadow-md' : 'bg-white border-gray-100 text-gray-500 hover:border-gray-300'}`}
-                                                            >
-                                                                {size}
-                                                            </button>
+                                                            <option key={size} value={size}>{size}</option>
                                                         ))}
-                                                    </div>
+                                                    </select>
                                                 </div>
                                             )}
 
                                             {(itemType === 'combo' || itemType === 'baby_single') && (
                                                 <div className="space-y-2">
                                                     <p className="text-xs font-bold text-gray-500 uppercase">পছন্দের সাইজ (বড় মেয়ে):</p>
-                                                    <div className="flex flex-wrap gap-2">
+                                                    <select
+                                                        value={babySize}
+                                                        onChange={(e) => setBabySize(e.target.value)}
+                                                        className="w-full p-3 rounded-xl border-2 border-gray-100 bg-white font-bold text-sm cursor-pointer appearance-none"
+                                                        style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'currentColor\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\'%3E%3C/path%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 0.75rem center', backgroundSize: '1.2em' }}
+                                                    >
                                                         {['৩৮', '৪০', '৪২', '৪৪', '৪৬', '৪৮', '৫০'].map(size => (
-                                                            <button
-                                                                key={size}
-                                                                onClick={() => setBabySize(size)}
-                                                                className={`w-10 h-10 rounded-xl border-2 flex items-center justify-center text-sm font-bold transition-all ${babySize === size ? 'bg-[#FF4D6D] border-[#FF4D6D] text-white shadow-md' : 'bg-white border-gray-100 text-gray-500 hover:border-gray-300'}`}
-                                                            >
-                                                                {size}
-                                                            </button>
+                                                            <option key={size} value={size}>{size}</option>
                                                         ))}
-                                                    </div>
+                                                    </select>
                                                 </div>
                                             )}
                                         </div>

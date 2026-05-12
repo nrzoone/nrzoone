@@ -49,18 +49,18 @@ import { GOOGLE_SHEET_URL, GOOGLE_SHEET_VIEW_URL } from './config';
 
 const LINKS = {
     website: [
-        { label: 'হোম পেজ', url: 'https://nrzoone.com/', icon: '🏠' },
-        { label: 'হায়া সিরিজ', url: 'https://nrzoone.com/haya', icon: '✨' },
-        { label: 'ক্লাসিক কম্বো', url: 'https://nrzoone.com/classic', icon: '👗' },
-        { label: 'মা কালেকশন', url: 'https://nrzoone.com/ma', icon: '💝' },
-        { label: 'মা ও বড়মেয়ে', url: 'https://nrzoone.com/maboromeye', icon: '💫' },
-        { label: 'বড়বোন কালেকশন', url: 'https://nrzoone.com/borobon', icon: '🌸' },
-        { label: 'ফাইজা বোরকা', url: 'https://nrzoone.com/faiza', icon: '💎' },
-        { label: 'কিডস কালেকশন', url: 'https://nrzoone.com/kids', icon: '🎀' },
-        { label: 'হিজাব কালেকশন', url: 'https://nrzoone.com/hijab', icon: '🧕' },
+        { label: 'হোম পেজ', url: '/', icon: '🏠' },
+        { label: 'হায়া সিরিজ', url: '/haya', icon: '✨' },
+        { label: 'ক্লাসিক কম্বো', url: '/classic', icon: '👗' },
+        { label: 'মা কালেকশন', url: '/ma', icon: '💝' },
+        { label: 'মা ও বড়মেয়ে', url: '/maboromeye', icon: '💫' },
+        { label: 'বড়বোন কালেকশন', url: '/borobon', icon: '🌸' },
+        { label: 'ফাইজা বোরকা', url: '/faiza', icon: '💎' },
+        { label: 'কিডস কালেকশন', url: '/kids', icon: '🎀' },
+        { label: 'হিজাব কালেকশন', url: '/hijab', icon: '🧕' },
     ],
     admin: [
-        { label: 'Admin Dashboard', url: 'https://nrzoone.com/admin', icon: '🔐' },
+        { label: 'Admin Dashboard', url: '/admin', icon: '🔐' },
         { label: 'Google Sheet (Orders)', url: GOOGLE_SHEET_VIEW_URL, icon: '📊' },
         { label: 'Firebase Console', url: 'https://console.firebase.google.com/project/nr-zone-bd/firestore', icon: '🔥' },
         { label: 'Vercel Dashboard', url: 'https://vercel.com/dashboard', icon: '▲' },
@@ -155,6 +155,25 @@ const AdminDashboard = () => {
                 ordersArray.push({ ...doc.data(), firebaseId: doc.id });
             });
             setOrders(ordersArray);
+        }, (error) => {
+            console.error("Firestore Orders Error:", error);
+            alert("Firestore Error (Orders): " + error.message);
+            // Fallback for missing index
+            if (error.message.includes('index')) {
+                console.warn("Falling back to unordered orders fetch.");
+                const fallbackQ = query(collection(db, "orders"));
+                onSnapshot(fallbackQ, (fallbackSnapshot) => {
+                    const fallbackArray = [];
+                    fallbackSnapshot.forEach((doc) => {
+                        fallbackArray.push({ ...doc.data(), firebaseId: doc.id });
+                    });
+                    // Sort manually if createdAt exists
+                    fallbackArray.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+                    setOrders(fallbackArray);
+                }, (fallbackError) => {
+                    alert("Fallback Fetch Error: " + fallbackError.message);
+                });
+            }
         });
         return () => unsubscribe();
     }, []);
