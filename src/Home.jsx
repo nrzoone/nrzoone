@@ -402,6 +402,71 @@ const Home = () => {
                         <p className="text-gray-700 text-sm italic leading-relaxed mt-2">"হিজাবগুলোর কালার একদম ছবির মতোই ব্রাইট। এবং পরতেও অনেক আরামদায়ক। প্রাইস অনুযায়ী বেস্ট কোয়ালিটি!"</p>
                     </div>
                     
+                    {/* New Review: Alisha Khan */}
+                    <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 break-inside-avoid">
+                        <div className="flex items-center gap-3 mb-4">
+                            <div className="w-10 h-10 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold text-xl">A</div>
+                            <div>
+                                <h4 className="font-bold flex items-center gap-1 text-gray-900">Alisha Khan <CheckCircle2 size={16} className="text-green-500" /></h4>
+                                <p className="text-xs text-gray-500">Facebook Review · Verified Purchase</p>
+                            </div>
+                        </div>
+                        <div className="flex text-yellow-400 mb-3">
+                            <Star size={14} className="fill-current" /><Star size={14} className="fill-current" /><Star size={14} className="fill-current" /><Star size={14} className="fill-current" /><Star size={14} className="fill-current" />
+                        </div>
+                        <p className="text-gray-700 text-sm italic leading-relaxed mt-2">"আলহামদুলিল্লাহ! এর আগে একবার নিয়েছি আবার এই ডিজাইনটা নিলাম খুব সুন্দর হয়েছে ❤️ আপনাদের পেজ থেকে অনেক গুলো বোরকা নেওয়া হয়েছে। এর পরে নতুন ডিজাইন আসলে কিন্তু অফার দিবেন আমার জন্য 😎"</p>
+                    </div>
+
+                    {/* New Image 1: Alisha's Post */}
+                    <div className="rounded-2xl overflow-hidden shadow-lg break-inside-avoid hover:scale-[1.02] transition-transform duration-300">
+                        <img src="/reviews/new_review_1.jpg" alt="Customer Review Post" className="w-full h-auto object-cover" loading="lazy" />
+                    </div>
+
+                    {/* New Review: Family Chat */}
+                    <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 break-inside-avoid">
+                        <div className="flex items-center gap-3 mb-4">
+                            <div className="w-10 h-10 bg-green-100 text-green-600 rounded-full flex items-center justify-center font-bold text-xl">C</div>
+                            <div>
+                                <h4 className="font-bold flex items-center gap-1 text-gray-900">কাস্টমার রিভিউ <CheckCircle2 size={16} className="text-green-500" /></h4>
+                                <p className="text-xs text-gray-500">WhatsApp Chat · Verified Order</p>
+                            </div>
+                        </div>
+                        <div className="flex text-yellow-400 mb-3">
+                            <Star size={14} className="fill-current" /><Star size={14} className="fill-current" /><Star size={14} className="fill-current" /><Star size={14} className="fill-current" /><Star size={14} className="fill-current" />
+                        </div>
+                        <p className="text-gray-700 text-sm italic leading-relaxed mt-2">"একথায় অসাধারণ 🤩 মানিয়েছে আমাদের মা, মেয়ে, শাশুড়ি, ননদ এর খুবই পছন্দ হয়েছে। ❤️"</p>
+                    </div>
+
+                    {/* New Image 2: Chat Screenshot */}
+                    <div className="rounded-2xl overflow-hidden shadow-lg break-inside-avoid hover:scale-[1.02] transition-transform duration-300">
+                        <img src="/reviews/new_review_2.jpg" alt="Customer Chat Review" className="w-full h-auto object-cover" loading="lazy" />
+                    </div>
+
+                    {/* New Image 3: Product on Bed */}
+                    <div className="rounded-2xl overflow-hidden shadow-lg break-inside-avoid hover:scale-[1.02] transition-transform duration-300">
+                        <img src="/reviews/new_review_3.jpg" alt="Product Quality" className="w-full h-auto object-cover" loading="lazy" />
+                    </div>
+
+                    {/* New Image 4: Kid in Field */}
+                    <div className="rounded-2xl overflow-hidden shadow-lg break-inside-avoid hover:scale-[1.02] transition-transform duration-300">
+                        <img src="/reviews/new_review_4.jpg" alt="Kid Wearing Borka" className="w-full h-auto object-cover" loading="lazy" />
+                    </div>
+
+                    {/* New Image 5: Baby on Bed */}
+                    <div className="rounded-2xl overflow-hidden shadow-lg break-inside-avoid hover:scale-[1.02] transition-transform duration-300">
+                        <img src="/reviews/new_review_5.jpg" alt="Baby Borka Review" className="w-full h-auto object-cover" loading="lazy" />
+                    </div>
+
+                    {/* New Image 6: Two Kids Peace Sign */}
+                    <div className="rounded-2xl overflow-hidden shadow-lg break-inside-avoid hover:scale-[1.02] transition-transform duration-300">
+                        <img src="/reviews/new_review_6.jpg" alt="Kids Borka Collection" className="w-full h-auto object-cover" loading="lazy" />
+                    </div>
+
+                    {/* New Image 7: Mother and Kid */}
+                    <div className="rounded-2xl overflow-hidden shadow-lg break-inside-avoid hover:scale-[1.02] transition-transform duration-300">
+                        <img src="/reviews/new_review_7.jpg" alt="Mother-Daughter Combo" className="w-full h-auto object-cover" loading="lazy" />
+                    </div>
+
                     {/* Extra Images for padding out the masonry */}
                     {[
                         "/reviews/media__1778274732436.jpg",

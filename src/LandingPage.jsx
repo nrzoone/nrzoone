@@ -44,8 +44,7 @@ const LandingPage = () => {
         name: '',
         phone: '',
         address: '',
-        note: '',
-        customSize: ''
+        note: ''
     });
 
     const sizes = ['৫০', '৫২', '৫৪', '৫৬', '৫৮'];

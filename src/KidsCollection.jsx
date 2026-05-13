@@ -41,8 +41,7 @@ const KidsCollection = () => {
         name: '',
         phone: '',
         address: '',
-        note: '',
-        customSize: ''
+        note: ''
     });
 
     const sizes = ['৩০', '৩২', '৩৪', '৩৬', '৩৮', '৪০'];
