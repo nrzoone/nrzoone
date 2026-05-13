@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './Home';
 import LandingPage from './LandingPage';
 import ClassicCollection from './ClassicCollection';
-import FaizaCollection from './FaizaCollection';
+
 import KidsCollection from './KidsCollection';
 import BoroBonCollection from './BoroBonCollection';
 import MaCollection from './MaCollection';
@@ -24,7 +24,7 @@ function App() {
                     <Route path="/" element={<Home />} />
                     <Route path="/haya" element={<LandingPage />} />
                     <Route path="/classic" element={<ClassicCollection />} />
-                    <Route path="/faiza" element={<FaizaCollection />} />
+
                     <Route path="/kids" element={<KidsCollection />} />
                     <Route path="/borobon" element={<BoroBonCollection />} />
                     <Route path="/ma" element={<MaCollection />} />

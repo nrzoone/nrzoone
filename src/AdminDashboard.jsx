@@ -55,7 +55,6 @@ const LINKS = {
         { label: 'মা কালেকশন', url: '/ma', icon: '💝' },
         { label: 'মা ও বড়মেয়ে', url: '/maboromeye', icon: '💫' },
         { label: 'বড়বোন কালেকশন', url: '/borobon', icon: '🌸' },
-        { label: 'ফাইজা বোরকা', url: '/faiza', icon: '💎' },
         { label: 'কিডস কালেকশন', url: '/kids', icon: '🎀' },
         { label: 'হিজাব কালেকশন', url: '/hijab', icon: '🧕' },
     ],
