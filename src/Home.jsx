@@ -272,137 +272,24 @@ const Home = () => {
                 </div>
                 
                 <div className="columns-1 md:columns-2 lg:columns-3 xl:columns-4 gap-6 space-y-6">
-                    {/* Review 1 */}
-                    <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 break-inside-avoid">
-                        <div className="flex items-center gap-3 mb-4">
-                            <div className="w-10 h-10 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold text-xl">স</div>
-                            <div>
-                                <h4 className="font-bold flex items-center gap-1 text-gray-900">সানজিদা আক্তার <CheckCircle2 size={16} className="text-green-500" /></h4>
-                                <p className="text-xs text-gray-500">মিরপুর, ঢাকা · Verified Purchase</p>
-                            </div>
-                        </div>
-                        <div className="flex text-yellow-400 mb-3">
-                            <Star size={14} className="fill-current" /><Star size={14} className="fill-current" /><Star size={14} className="fill-current" /><Star size={14} className="fill-current" /><Star size={14} className="fill-current" />
-                        </div>
-                        <p className="text-sm font-bold text-gray-800 mb-2 bg-gray-100 inline-block px-2 py-1 rounded">✅ ব্লু + ব্ল্যাক কম্বো</p>
-                        <p className="text-gray-700 text-sm italic leading-relaxed mt-2">"আলহামদুলিল্লাহ! যেমনটা ছবিতে দেখেছি ঠিক তেমনই পেয়েছি। কাপড় অনেক সফট, স্টোন কাজ অসাধারণ! পরের বার আবার নেবো।"</p>
+                    {/* Priority People Images - Now at the Top */}
+                    <div className="rounded-2xl overflow-hidden shadow-lg break-inside-avoid hover:scale-[1.02] transition-transform duration-300">
+                        <img src="/reviews/new_review_7.jpg" alt="Mother-Daughter Combo" className="w-full h-auto object-cover" loading="lazy" />
                     </div>
 
-                    {/* Image 1 */}
-                    <div className="rounded-2xl overflow-hidden shadow-lg break-inside-avoid">
-                        <img src="/reviews/media__1778274732225.jpg" alt="Customer Photo" className="w-full h-auto object-cover" loading="lazy" />
+                    <div className="rounded-2xl overflow-hidden shadow-lg break-inside-avoid hover:scale-[1.02] transition-transform duration-300">
+                        <img src="/reviews/new_review_6.jpg" alt="Kids Borka Collection" className="w-full h-auto object-cover" loading="lazy" />
                     </div>
 
-                    {/* Review 2 */}
-                    <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 break-inside-avoid">
-                        <div className="flex items-center gap-3 mb-4">
-                            <div className="w-10 h-10 bg-pink-100 text-pink-600 rounded-full flex items-center justify-center font-bold text-xl">ন</div>
-                            <div>
-                                <h4 className="font-bold flex items-center gap-1 text-gray-900">নাসরিন বেগম <CheckCircle2 size={16} className="text-green-500" /></h4>
-                                <p className="text-xs text-gray-500">গাজীপুর · Verified Purchase</p>
-                            </div>
-                        </div>
-                        <div className="flex text-yellow-400 mb-3">
-                            <Star size={14} className="fill-current" /><Star size={14} className="fill-current" /><Star size={14} className="fill-current" /><Star size={14} className="fill-current" /><Star size={14} className="fill-current" />
-                        </div>
-                        <p className="text-sm font-bold text-gray-800 mb-2 bg-gray-100 inline-block px-2 py-1 rounded">✅ ব্লু স্টোন বোরকা — ফ্রন্ট</p>
-                        <p className="text-gray-700 text-sm italic leading-relaxed mt-2">"ছবির চেয়ে আরও সুন্দর পেয়েছি হাতে! কাপড় প্রিমিয়াম, স্টোনের কাজ অনেক সূক্ষ্ম। ১০০% রেকমেন্ড করবো।"</p>
+                    <div className="rounded-2xl overflow-hidden shadow-lg break-inside-avoid hover:scale-[1.02] transition-transform duration-300">
+                        <img src="/reviews/new_review_4.jpg" alt="Kid Wearing Borka" className="w-full h-auto object-cover" loading="lazy" />
                     </div>
 
-                    {/* Image 2 */}
-                    <div className="rounded-2xl overflow-hidden shadow-lg break-inside-avoid">
-                        <img src="/reviews/media__1778274754641.jpg" alt="Customer Photo" className="w-full h-auto object-cover" loading="lazy" />
+                    <div className="rounded-2xl overflow-hidden shadow-lg break-inside-avoid hover:scale-[1.02] transition-transform duration-300">
+                        <img src="/reviews/new_review_5.jpg" alt="Baby Borka Review" className="w-full h-auto object-cover" loading="lazy" />
                     </div>
 
-                    {/* Review 3 */}
-                    <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 break-inside-avoid">
-                        <div className="flex items-center gap-3 mb-4">
-                            <div className="w-10 h-10 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center font-bold text-xl">ফ</div>
-                            <div>
-                                <h4 className="font-bold flex items-center gap-1 text-gray-900">ফারহানা আফরোজ <CheckCircle2 size={16} className="text-green-500" /></h4>
-                                <p className="text-xs text-gray-500">চট্টগ্রাম · Verified Purchase</p>
-                            </div>
-                        </div>
-                        <div className="flex text-yellow-400 mb-3">
-                            <Star size={14} className="fill-current" /><Star size={14} className="fill-current" /><Star size={14} className="fill-current" /><Star size={14} className="fill-current" />
-                        </div>
-                        <p className="text-sm font-bold text-gray-800 mb-2 bg-gray-100 inline-block px-2 py-1 rounded">✅ ব্লু বোরকা — ব্যাক ডিটেইল</p>
-                        <p className="text-gray-700 text-sm italic leading-relaxed mt-2">"ব্যাক ডিজাইনটা দেখে মুগ্ধ হয়ে গেছি! পরিবারের সবাই দেখে পছন্দ করলেন। ইনশাআল্লাহ আবার নেবো।"</p>
-                    </div>
-
-                    {/* Image 3 */}
-                    <div className="rounded-2xl overflow-hidden shadow-lg break-inside-avoid">
-                        <img src="/reviews/media__1778274790842.jpg" alt="Customer Photo" className="w-full h-auto object-cover" loading="lazy" />
-                    </div>
-
-                    {/* Review 4 */}
-                    <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 break-inside-avoid">
-                        <div className="flex items-center gap-3 mb-4">
-                            <div className="w-10 h-10 bg-green-100 text-green-600 rounded-full flex items-center justify-center font-bold text-xl">R</div>
-                            <div>
-                                <h4 className="font-bold flex items-center gap-1 text-gray-900">রহিমা বেগম <CheckCircle2 size={16} className="text-green-500" /></h4>
-                                <p className="text-xs text-gray-500">সিলেট · Verified Customer</p>
-                            </div>
-                        </div>
-                        <div className="flex text-yellow-400 mb-3">
-                            <Star size={14} className="fill-current" /><Star size={14} className="fill-current" /><Star size={14} className="fill-current" /><Star size={14} className="fill-current" /><Star size={14} className="fill-current" />
-                        </div>
-                        <p className="text-gray-700 text-sm italic leading-relaxed mt-2">"একথায় অসাধারণ। মা, মেয়ে, শাশুড়ি, ননদ — সবার পছন্দ হয়েছে। এই দামে এত কোয়ালিটি পাবো ভাবিনি! ❤️"</p>
-                    </div>
-
-                    {/* Image 4 */}
-                    <div className="rounded-2xl overflow-hidden shadow-lg break-inside-avoid">
-                        <img src="/reviews/media__1778274790970.jpg" alt="Customer Photo" className="w-full h-auto object-cover" loading="lazy" />
-                    </div>
-                    {/* Review 5 */}
-                    <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 break-inside-avoid">
-                        <div className="flex items-center gap-3 mb-4">
-                            <div className="w-10 h-10 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center font-bold text-xl">স</div>
-                            <div>
-                                <h4 className="font-bold flex items-center gap-1 text-gray-900">সুমাইয়া ইসলাম <CheckCircle2 size={16} className="text-green-500" /></h4>
-                                <p className="text-xs text-gray-500">কুমিল্লা · Verified Purchase</p>
-                            </div>
-                        </div>
-                        <div className="flex text-yellow-400 mb-3">
-                            <Star size={14} className="fill-current" /><Star size={14} className="fill-current" /><Star size={14} className="fill-current" /><Star size={14} className="fill-current" /><Star size={14} className="fill-current" />
-                        </div>
-                        <p className="text-sm font-bold text-gray-800 mb-2 bg-gray-100 inline-block px-2 py-1 rounded">✅ হায়া সিরিজ বোরকা</p>
-                        <p className="text-gray-700 text-sm italic leading-relaxed mt-2">"কাপড়ের কোয়ালিটি নিয়ে একটু ভয়ে ছিলাম, কিন্তু হাতে পাওয়ার পর জাস্ট ওয়াও! এত সফট এবং কমফোর্টেবল যা বলার বাইরে। ডেলিভারিও অনেক ফাস্ট ছিল।"</p>
-                    </div>
-
-                    {/* Review 6 */}
-                    <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 break-inside-avoid">
-                        <div className="flex items-center gap-3 mb-4">
-                            <div className="w-10 h-10 bg-teal-100 text-teal-600 rounded-full flex items-center justify-center font-bold text-xl">ত</div>
-                            <div>
-                                <h4 className="font-bold flex items-center gap-1 text-gray-900">তাসনিম জারা <CheckCircle2 size={16} className="text-green-500" /></h4>
-                                <p className="text-xs text-gray-500">খুলনা · Verified Purchase</p>
-                            </div>
-                        </div>
-                        <div className="flex text-yellow-400 mb-3">
-                            <Star size={14} className="fill-current" /><Star size={14} className="fill-current" /><Star size={14} className="fill-current" /><Star size={14} className="fill-current" /><Star size={14} className="fill-current" />
-                        </div>
-                        <p className="text-sm font-bold text-gray-800 mb-2 bg-gray-100 inline-block px-2 py-1 rounded">✅ মা-মেয়ে স্পেশাল কম্বো</p>
-                        <p className="text-gray-700 text-sm italic leading-relaxed mt-2">"আমার মেয়ের জন্য আর আমার জন্য নিয়েছিলাম। দুজনকে একসাথে অনেক কিউট লাগছিল। সবাই জিজ্ঞেস করছিল কোথা থেকে নিয়েছি। ধন্যবাদ NRZOONE কে!"</p>
-                    </div>
-
-                    {/* Review 7 */}
-                    <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 break-inside-avoid">
-                        <div className="flex items-center gap-3 mb-4">
-                            <div className="w-10 h-10 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center font-bold text-xl">জ</div>
-                            <div>
-                                <h4 className="font-bold flex items-center gap-1 text-gray-900">জান্নাতুল ফেরদৌস <CheckCircle2 size={16} className="text-green-500" /></h4>
-                                <p className="text-xs text-gray-500">বরিশাল · Verified Purchase</p>
-                            </div>
-                        </div>
-                        <div className="flex text-yellow-400 mb-3">
-                            <Star size={14} className="fill-current" /><Star size={14} className="fill-current" /><Star size={14} className="fill-current" /><Star size={14} className="fill-current" />
-                        </div>
-                        <p className="text-sm font-bold text-gray-800 mb-2 bg-gray-100 inline-block px-2 py-1 rounded">✅ প্রিমিয়াম হিজাব কালেকশন</p>
-                        <p className="text-gray-700 text-sm italic leading-relaxed mt-2">"হিজাবগুলোর কালার একদম ছবির মতোই ব্রাইট। এবং পরতেও অনেক আরামদায়ক। প্রাইস অনুযায়ী বেস্ট কোয়ালিটি!"</p>
-                    </div>
-                    
-                    {/* New Review: Alisha Khan */}
+                    {/* New Review Card: Alisha Khan */}
                     <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 break-inside-avoid">
                         <div className="flex items-center gap-3 mb-4">
                             <div className="w-10 h-10 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold text-xl">A</div>
@@ -422,7 +309,152 @@ const Home = () => {
                         <img src="/reviews/new_review_1.jpg" alt="Customer Review Post" className="w-full h-auto object-cover" loading="lazy" />
                     </div>
 
-                    {/* New Review: Family Chat */}
+                    {/* New Review Card: Family Chat */}
+                    <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 break-inside-avoid">
+                        <div className="flex items-center gap-3 mb-4">
+                            <div className="w-10 h-10 bg-green-100 text-green-600 rounded-full flex items-center justify-center font-bold text-xl">C</div>
+                            <div>
+                                <h4 className="font-bold flex items-center gap-1 text-gray-900">কাস্টমার রিভিউ <CheckCircle2 size={16} className="text-green-500" /></h4>
+                                <p className="text-xs text-gray-500">WhatsApp Chat · Verified Order</p>
+                            </div>
+                        </div>
+                        <div className="flex text-yellow-400 mb-3">
+                            <Star size={14} className="fill-current" /><Star size={14} className="fill-current" /><Star size={14} className="fill-current" /><Star size={14} className="fill-current" /><Star size={14} className="fill-current" />
+                        </div>
+                        <p className="text-gray-700 text-sm italic leading-relaxed mt-2">"একথায় অসাধারণ 🤩 মানিয়েছে আমাদের মা, মেয়ে, শাশুড়ি, ননদ এর খুবই পছন্দ হয়েছে। ❤️"</p>
+                    </div>
+
+                    {/* Image: Product on Bed */}
+                    <div className="rounded-2xl overflow-hidden shadow-lg break-inside-avoid hover:scale-[1.02] transition-transform duration-300">
+                        <img src="/reviews/new_review_3.jpg" alt="Product Quality" className="w-full h-auto object-cover" loading="lazy" />
+                    </div>
+
+                    {/* Image: Chat Screenshot */}
+                    <div className="rounded-2xl overflow-hidden shadow-lg break-inside-avoid hover:scale-[1.02] transition-transform duration-300">
+                        <img src="/reviews/new_review_2.jpg" alt="Customer Chat Review" className="w-full h-auto object-cover" loading="lazy" />
+                    </div>
+
+                    {/* Existing Reviews and Images */}
+                    <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 break-inside-avoid">
+                        <div className="flex items-center gap-3 mb-4">
+                            <div className="w-10 h-10 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold text-xl">স</div>
+                            <div>
+                                <h4 className="font-bold flex items-center gap-1 text-gray-900">সানজিদা আক্তার <CheckCircle2 size={16} className="text-green-500" /></h4>
+                                <p className="text-xs text-gray-500">মিরপুর, ঢাকা · Verified Purchase</p>
+                            </div>
+                        </div>
+                        <div className="flex text-yellow-400 mb-3">
+                            <Star size={14} className="fill-current" /><Star size={14} className="fill-current" /><Star size={14} className="fill-current" /><Star size={14} className="fill-current" /><Star size={14} className="fill-current" />
+                        </div>
+                        <p className="text-sm font-bold text-gray-800 mb-2 bg-gray-100 inline-block px-2 py-1 rounded">✅ ব্লু + ব্ল্যাক কম্বো</p>
+                        <p className="text-gray-700 text-sm italic leading-relaxed mt-2">"আলহামদুলিল্লাহ! যেমনটা ছবিতে দেখেছি ঠিক তেমনই পেয়েছি। কাপড় অনেক সফট, স্টোন কাজ অসাধারণ! পরের বার আবার নেবো।"</p>
+                    </div>
+
+                    <div className="rounded-2xl overflow-hidden shadow-lg break-inside-avoid">
+                        <img src="/reviews/media__1778274732225.jpg" alt="Customer Photo" className="w-full h-auto object-cover" loading="lazy" />
+                    </div>
+
+                    <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 break-inside-avoid">
+                        <div className="flex items-center gap-3 mb-4">
+                            <div className="w-10 h-10 bg-pink-100 text-pink-600 rounded-full flex items-center justify-center font-bold text-xl">ন</div>
+                            <div>
+                                <h4 className="font-bold flex items-center gap-1 text-gray-900">নাসরিন বেগম <CheckCircle2 size={16} className="text-green-500" /></h4>
+                                <p className="text-xs text-gray-500">গাজীপুর · Verified Purchase</p>
+                            </div>
+                        </div>
+                        <div className="flex text-yellow-400 mb-3">
+                            <Star size={14} className="fill-current" /><Star size={14} className="fill-current" /><Star size={14} className="fill-current" /><Star size={14} className="fill-current" /><Star size={14} className="fill-current" />
+                        </div>
+                        <p className="text-sm font-bold text-gray-800 mb-2 bg-gray-100 inline-block px-2 py-1 rounded">✅ ব্লু স্টোন বোরকা — ফ্রন্ট</p>
+                        <p className="text-gray-700 text-sm italic leading-relaxed mt-2">"ছবির চেয়ে আরও সুন্দর পেয়েছি হাতে! কাপড় প্রিমিয়াম, স্টোনের কাজ অনেক সূক্ষ্ম। ১০০% রেকমেন্ড করবো।"</p>
+                    </div>
+
+                    <div className="rounded-2xl overflow-hidden shadow-lg break-inside-avoid">
+                        <img src="/reviews/media__1778274754641.jpg" alt="Customer Photo" className="w-full h-auto object-cover" loading="lazy" />
+                    </div>
+
+                    <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 break-inside-avoid">
+                        <div className="flex items-center gap-3 mb-4">
+                            <div className="w-10 h-10 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center font-bold text-xl">ফ</div>
+                            <div>
+                                <h4 className="font-bold flex items-center gap-1 text-gray-900">ফারহানা আফরোজ <CheckCircle2 size={16} className="text-green-500" /></h4>
+                                <p className="text-xs text-gray-500">চট্টগ্রাম · Verified Purchase</p>
+                            </div>
+                        </div>
+                        <div className="flex text-yellow-400 mb-3">
+                            <Star size={14} className="fill-current" /><Star size={14} className="fill-current" /><Star size={14} className="fill-current" /><Star size={14} className="fill-current" />
+                        </div>
+                        <p className="text-sm font-bold text-gray-800 mb-2 bg-gray-100 inline-block px-2 py-1 rounded">✅ ব্লু বোরকা — ব্যাক ডিটেইল</p>
+                        <p className="text-gray-700 text-sm italic leading-relaxed mt-2">"ব্যাক ডিজাইনটা দেখে মুগ্ধ হয়ে গেছি! পরিবারের সবাই দেখে পছন্দ করলেন। ইনশাআল্লাহ আবার নেবো।"</p>
+                    </div>
+
+                    <div className="rounded-2xl overflow-hidden shadow-lg break-inside-avoid">
+                        <img src="/reviews/media__1778274790842.jpg" alt="Customer Photo" className="w-full h-auto object-cover" loading="lazy" />
+                    </div>
+
+                    <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 break-inside-avoid">
+                        <div className="flex items-center gap-3 mb-4">
+                            <div className="w-10 h-10 bg-green-100 text-green-600 rounded-full flex items-center justify-center font-bold text-xl">R</div>
+                            <div>
+                                <h4 className="font-bold flex items-center gap-1 text-gray-900">রহিমা বেগম <CheckCircle2 size={16} className="text-green-500" /></h4>
+                                <p className="text-xs text-gray-500">সিলেট · Verified Customer</p>
+                            </div>
+                        </div>
+                        <div className="flex text-yellow-400 mb-3">
+                            <Star size={14} className="fill-current" /><Star size={14} className="fill-current" /><Star size={14} className="fill-current" /><Star size={14} className="fill-current" /><Star size={14} className="fill-current" />
+                        </div>
+                        <p className="text-gray-700 text-sm italic leading-relaxed mt-2">"একথায় অসাধারণ। মা, মেয়ে, শাশুড়ি, ননদ — সবার পছন্দ হয়েছে। এই দামে এত কোয়ালিটি পাবো ভাবিনি! ❤️"</p>
+                    </div>
+
+                    <div className="rounded-2xl overflow-hidden shadow-lg break-inside-avoid">
+                        <img src="/reviews/media__1778274790970.jpg" alt="Customer Photo" className="w-full h-auto object-cover" loading="lazy" />
+                    </div>
+
+                    <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 break-inside-avoid">
+                        <div className="flex items-center gap-3 mb-4">
+                            <div className="w-10 h-10 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center font-bold text-xl">স</div>
+                            <div>
+                                <h4 className="font-bold flex items-center gap-1 text-gray-900">সুমাইয়া ইসলাম <CheckCircle2 size={16} className="text-green-500" /></h4>
+                                <p className="text-xs text-gray-500">কুমিল্লা · Verified Purchase</p>
+                            </div>
+                        </div>
+                        <div className="flex text-yellow-400 mb-3">
+                            <Star size={14} className="fill-current" /><Star size={14} className="fill-current" /><Star size={14} className="fill-current" /><Star size={14} className="fill-current" /><Star size={14} className="fill-current" />
+                        </div>
+                        <p className="text-sm font-bold text-gray-800 mb-2 bg-gray-100 inline-block px-2 py-1 rounded">✅ হায়া সিরিজ বোরকা</p>
+                        <p className="text-gray-700 text-sm italic leading-relaxed mt-2">"কাপড়ের কোয়ালিটি নিয়ে একটু ভয়ে ছিলাম, কিন্তু হাতে পাওয়ার পর জাস্ট ওয়াও! এত সফট এবং কমফোর্টেবল যা বলার বাইরে। ডেলিভারিও অনেক ফাস্ট ছিল।"</p>
+                    </div>
+
+                    <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 break-inside-avoid">
+                        <div className="flex items-center gap-3 mb-4">
+                            <div className="w-10 h-10 bg-teal-100 text-teal-600 rounded-full flex items-center justify-center font-bold text-xl">ত</div>
+                            <div>
+                                <h4 className="font-bold flex items-center gap-1 text-gray-900">তাসনিম জারা <CheckCircle2 size={16} className="text-green-500" /></h4>
+                                <p className="text-xs text-gray-500">খুলনা · Verified Purchase</p>
+                            </div>
+                        </div>
+                        <div className="flex text-yellow-400 mb-3">
+                            <Star size={14} className="fill-current" /><Star size={14} className="fill-current" /><Star size={14} className="fill-current" /><Star size={14} className="fill-current" /><Star size={14} className="fill-current" />
+                        </div>
+                        <p className="text-sm font-bold text-gray-800 mb-2 bg-gray-100 inline-block px-2 py-1 rounded">✅ মা-মেয়ে স্পেশাল কম্বো</p>
+                        <p className="text-gray-700 text-sm italic leading-relaxed mt-2">"আমার মেয়ের জন্য আর আমার জন্য নিয়েছিলাম। দুজনকে একসাথে অনেক কিউট লাগছিল। সবাই জিজ্ঞেস করছিল কোথা থেকে নিয়েছি। ধন্যবাদ NRZOONE কে!"</p>
+                    </div>
+
+                    <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 break-inside-avoid">
+                        <div className="flex items-center gap-3 mb-4">
+                            <div className="w-10 h-10 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center font-bold text-xl">জ</div>
+                            <div>
+                                <h4 className="font-bold flex items-center gap-1 text-gray-900">জান্নাতুল ফেরদৌস <CheckCircle2 size={16} className="text-green-500" /></h4>
+                                <p className="text-xs text-gray-500">বরিশাল · Verified Purchase</p>
+                            </div>
+                        </div>
+                        <div className="flex text-yellow-400 mb-3">
+                            <Star size={14} className="fill-current" /><Star size={14} className="fill-current" /><Star size={14} className="fill-current" /><Star size={14} className="fill-current" />
+                        </div>
+                        <p className="text-sm font-bold text-gray-800 mb-2 bg-gray-100 inline-block px-2 py-1 rounded">✅ প্রিমিয়াম হিজাব কালেকশন</p>
+                        <p className="text-gray-700 text-sm italic leading-relaxed mt-2">"হিজাবগুলোর কালার একদম ছবির মতোই ব্রাইট। এবং পরতেও অনেক আরামদায়ক। প্রাইস অনুযায়ী বেস্ট কোয়ালিটি!"</p>
+                    </div>
+                    {/* New Review Card: Family Chat */}
                     <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 break-inside-avoid">
                         <div className="flex items-center gap-3 mb-4">
                             <div className="w-10 h-10 bg-green-100 text-green-600 rounded-full flex items-center justify-center font-bold text-xl">C</div>
