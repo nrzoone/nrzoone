@@ -49,14 +49,6 @@ const Home = () => {
             path: '/maboromeye',
         },
         {
-            id: 'faiza',
-            title: 'ফাইজা এক্সক্লুসিভ বোরকা ডিজাইন উইথ স্টোন ওয়ার্ক',
-            image: '/faiza_black.jpg',
-            oldPrice: '১,১৯০',
-            price: '৮৯০',
-            path: '/faiza',
-        },
-        {
             id: 'haya',
             title: 'হায়া সিরিজ বোরকা ডিজাইন',
             image: '/hero_black.jpg',
